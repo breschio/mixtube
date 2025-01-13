@@ -1,43 +1,24 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import VolumeControl from './VolumeControl';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 
 interface VideoPlayerProps {
   videoId: string | null;
   side: 'left' | 'right';
+  volume: number;
+  playing: boolean;
+  onVolumeChange: (value: number) => void;
 }
 
-export default function VideoPlayer({ videoId, side }: VideoPlayerProps) {
-  const [volume, setVolume] = useState(0.5);
-  const [playing, setPlaying] = useState(false);
-  const [showControls, setShowControls] = useState(true);
+export default function VideoPlayer({ 
+  videoId, 
+  side,
+  volume,
+  playing,
+  onVolumeChange
+}: VideoPlayerProps) {
   const playerRef = useRef<ReactPlayer>(null);
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
-
-  const handleVolumeChange = (value: number) => {
-    setVolume(value);
-    setShowControls(true);
-    resetControlsTimeout();
-  };
-
-  const resetControlsTimeout = () => {
-    if (controlsTimeoutRef.current) {
-      clearTimeout(controlsTimeoutRef.current);
-    }
-    controlsTimeoutRef.current = setTimeout(() => {
-      setShowControls(false);
-    }, 3000);
-  };
-
-  useEffect(() => {
-    resetControlsTimeout();
-    return () => {
-      if (controlsTimeoutRef.current) {
-        clearTimeout(controlsTimeoutRef.current);
-      }
-    };
-  }, []);
 
   if (!videoId) {
     return (
@@ -48,13 +29,7 @@ export default function VideoPlayer({ videoId, side }: VideoPlayerProps) {
   }
 
   return (
-    <div 
-      className="space-y-2 relative group"
-      onMouseMove={() => {
-        setShowControls(true);
-        resetControlsTimeout();
-      }}
-    >
+    <div className="space-y-2">
       <div className="aspect-video bg-black rounded-lg overflow-hidden">
         <ReactPlayer
           ref={playerRef}
@@ -64,16 +39,10 @@ export default function VideoPlayer({ videoId, side }: VideoPlayerProps) {
           playing={playing}
           volume={volume}
           controls={true}
-          onPlay={() => setPlaying(true)}
-          onPause={() => setPlaying(false)}
         />
       </div>
-      <div 
-        className={`p-2 transition-opacity duration-300 ${
-          showControls ? 'opacity-100' : 'opacity-0'
-        } group-hover:opacity-100`}
-      >
-        <VolumeControl value={volume} onChange={handleVolumeChange} />
+      <div className="p-2">
+        <VolumeControl value={volume} onChange={onVolumeChange} />
       </div>
     </div>
   );
