@@ -38,11 +38,12 @@ export default function DJControls({
       {/* Play/Pause Button */}
       <Button
         size="lg"
-        variant={isPlaying ? "destructive" : "default"}
+        variant="default"
         onClick={isPlaying ? onPauseAll : onPlayAll}
         className={cn(
           "w-full h-16 text-lg font-bold transition-all duration-300 hover:scale-[1.02]",
-          !isPlaying && "animate-slow-pulse"
+          !isPlaying && "animate-slow-pulse",
+          isPlaying && "bg-primary/90 hover:bg-primary"
         )}
       >
         {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
