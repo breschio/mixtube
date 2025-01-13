@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0A0A0B] p-8 space-y-8">
       <h1 className="mixtube-logo text-center text-primary mb-12">
-        MIXTUBE
+        mixtube
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
