@@ -11,14 +11,44 @@ interface RecommendedVideosProps {
 }
 
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
-  const { data: videos, isLoading } = useQuery({
+  const { data: videos, isLoading, error } = useQuery({
     queryKey: [`/api/youtube/related?v=${videoId}`],
     queryFn: () => getRelatedVideos(videoId!),
     enabled: !!videoId,
+    retry: false,
   });
 
-  if (!videoId || isLoading || !videos?.length) {
+  // Don't render anything if there's no video selected
+  if (!videoId) {
     return null;
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        <h3 className="text-xs font-bold text-primary/80">Loading recommendations...</h3>
+      </div>
+    );
+  }
+
+  // Show error state if any
+  if (error) {
+    console.error('Failed to load recommendations:', error);
+    return (
+      <div className="space-y-2">
+        <h3 className="text-xs font-bold text-destructive">Failed to load recommendations</h3>
+      </div>
+    );
+  }
+
+  // Show empty state if no videos
+  if (!videos?.length) {
+    return (
+      <div className="space-y-2">
+        <h3 className="text-xs font-bold text-primary/80">No recommendations available</h3>
+      </div>
+    );
   }
 
   return (
