@@ -68,10 +68,10 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
               <img 
                 src={video.thumbnail} 
                 alt={video.title}
-                className="w-32 aspect-video object-cover rounded"
+                className="w-40 aspect-video object-cover rounded"
               />
-              <div className="flex-1 min-w-0 space-y-2">
-                <p className="text-xs line-clamp-2 normal-case font-medium">
+              <div className="flex-1 min-w-0 flex flex-col justify-between">
+                <p className="text-sm line-clamp-3 normal-case font-medium mb-2">
                   {video.title}
                 </p>
                 <Button
