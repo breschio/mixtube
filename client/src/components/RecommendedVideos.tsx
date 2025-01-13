@@ -77,11 +77,11 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="w-full"
+                  className="w-fit"
                   onClick={() => onVideoSelect(video.id)}
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add to Player
+                  <Plus className="h-3 w-3 mr-1" />
+                  Add
                 </Button>
               </div>
             </div>
