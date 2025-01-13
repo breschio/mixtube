@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Search } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface SearchBarProps {
   onVideoSelect: (videoId: string) => void;
@@ -24,16 +25,29 @@ interface SearchBarProps {
 export default function SearchBar({ onVideoSelect }: SearchBarProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  const debouncedSetSearch = useDebouncedCallback((value: string) => {
+    setDebouncedSearch(value);
+  }, 500);
 
   const { data: searchResults, isLoading } = useQuery({
-    queryKey: ['/api/youtube/search', search],
+    queryKey: ['/api/youtube/search', debouncedSearch],
     queryFn: async () => {
-      if (!search) return [];
-      const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(search)}`);
+      if (!debouncedSearch) return [];
+      const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(debouncedSearch)}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch search results');
+      }
       return response.json();
     },
-    enabled: search.length > 0
+    enabled: debouncedSearch.length > 0
   });
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
+    debouncedSetSearch(value);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,8 +58,11 @@ export default function SearchBar({ onVideoSelect }: SearchBarProps) {
           aria-expanded={open}
           className="w-full justify-between transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:border-primary/50 bg-background/80 backdrop-blur-sm"
         >
-          <Search className="mr-2 h-4 w-4 text-primary/80" />
-          Search YouTube videos...
+          <div className="flex items-center">
+            <Search className="mr-2 h-4 w-4 text-primary/80" />
+            Search YouTube videos...
+          </div>
+          {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0 shadow-lg shadow-primary/20">
@@ -53,11 +70,20 @@ export default function SearchBar({ onVideoSelect }: SearchBarProps) {
           <CommandInput
             placeholder="Search videos..."
             value={search}
-            onValueChange={setSearch}
+            onValueChange={handleSearch}
             className="focus:ring-primary/30"
           />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty className="py-6 text-center text-sm">
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Searching...
+                </div>
+              ) : (
+                'No results found.'
+              )}
+            </CommandEmpty>
             <CommandGroup>
               {searchResults?.map((video: any) => (
                 <CommandItem
