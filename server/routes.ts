@@ -44,8 +44,6 @@ export function registerRoutes(app: Express): Server {
         id: item.id.videoId,
         title: item.snippet.title,
         thumbnail: item.snippet.thumbnails.medium.url,
-        description: item.snippet.description,
-        channelTitle: item.snippet.channelTitle,
       }));
 
       res.json({
@@ -72,7 +70,7 @@ export function registerRoutes(app: Express): Server {
         return res.status(500).json({ error: 'YouTube API key not configured' });
       }
 
-      // First, get the video details to use as search terms
+      // First, get just the video title to use as search terms
       const videoParams = new URLSearchParams({
         part: 'snippet',
         id: videoId,
@@ -84,7 +82,7 @@ export function registerRoutes(app: Express): Server {
       );
 
       if (!videoResponse.ok) {
-        throw new Error('Failed to fetch video details');
+        throw new Error('Failed to fetch video title');
       }
 
       const videoData = await videoResponse.json();
@@ -92,17 +90,21 @@ export function registerRoutes(app: Express): Server {
         return res.json({ videos: [] });
       }
 
-      // Use the video's title and channel as search terms
-      const videoDetails = videoData.items[0].snippet;
-      const searchQuery = `${videoDetails.channelTitle} ${videoDetails.tags?.slice(0, 2).join(' ') || ''}`.trim();
+      // Extract meaningful keywords from the title (remove common words)
+      const title = videoData.items[0].snippet.title;
+      const keywords = title
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(word => word.length > 3 && !['the', 'and', 'that', 'with'].includes(word))
+        .slice(0, 3)
+        .join(' ');
 
-      // Search for similar videos
+      // Search for videos with similar keywords
       const searchParams = new URLSearchParams({
         part: 'snippet',
-        q: searchQuery,
+        q: keywords,
         type: 'video',
-        maxResults: '8',
-        videoCategoryId: videoDetails.categoryId,
+        maxResults: '4',
         key: YOUTUBE_API_KEY,
       });
 
