@@ -59,6 +59,54 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.get('/api/youtube/related', async (req, res) => {
+    try {
+      const videoId = req.query.v as string;
+
+      if (!videoId) {
+        return res.status(400).json({ error: 'Video ID required' });
+      }
+
+      const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+      if (!YOUTUBE_API_KEY) {
+        return res.status(500).json({ error: 'YouTube API key not configured' });
+      }
+
+      const searchParams = new URLSearchParams({
+        part: 'snippet',
+        relatedToVideoId: videoId,
+        type: 'video',
+        maxResults: '10',
+        videoEmbeddable: 'true',
+        key: YOUTUBE_API_KEY,
+      });
+
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        return res.status(response.status).json({
+          error: error.error?.message || 'Failed to fetch related videos'
+        });
+      }
+
+      const data = await response.json();
+
+      const videos = data.items.map((item: any) => ({
+        id: item.id.videoId,
+        title: item.snippet.title,
+        thumbnail: item.snippet.thumbnails.medium.url,
+      }));
+
+      res.json({ videos });
+    } catch (error) {
+      console.error('YouTube related videos error:', error);
+      res.status(500).json({ error: 'Failed to fetch related videos' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
