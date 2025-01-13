@@ -4,6 +4,13 @@ export interface YouTubeVideo {
   thumbnail: string;
 }
 
+export interface YouTubeError {
+  error: {
+    code: number;
+    message: string;
+  };
+}
+
 export async function searchVideos(query: string): Promise<YouTubeVideo[]> {
   const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(query)}`);
   if (!response.ok) {
@@ -14,9 +21,15 @@ export async function searchVideos(query: string): Promise<YouTubeVideo[]> {
 
 export async function getRelatedVideos(videoId: string): Promise<YouTubeVideo[]> {
   const response = await fetch(`/api/youtube/related?v=${videoId}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch related videos');
-  }
   const data = await response.json();
-  return data.videos || [];
+
+  if (!response.ok) {
+    const error = data as YouTubeError;
+    if (error.error?.code === 403) {
+      throw new Error('API quota exceeded. Please try again later.');
+    }
+    throw new Error(error.error?.message || 'Failed to fetch related videos');
+  }
+
+  return data || [];
 }

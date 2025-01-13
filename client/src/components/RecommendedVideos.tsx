@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getRelatedVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
 
 interface RecommendedVideosProps {
@@ -11,9 +12,19 @@ interface RecommendedVideosProps {
 }
 
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
-  const { data: videos, isLoading, error } = useQuery<YouTubeVideo[]>({
-    queryKey: [`/api/youtube/related?v=${videoId}`],
+  const { data: videos, isLoading, error, isError } = useQuery<YouTubeVideo[]>({
+    queryKey: [`/api/youtube/related`, videoId],
+    queryFn: () => getRelatedVideos(videoId!),
     enabled: !!videoId,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    retry: (failureCount, error) => {
+      // Don't retry on quota exceeded
+      if (error.message.includes('quota exceeded')) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
   if (!videoId) {
@@ -30,11 +41,11 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     );
   }
 
-  if (error || !videos?.length) {
+  if (isError || !videos?.length) {
     return (
       <div className="mt-4 p-4 text-center">
         <p className="text-sm text-muted-foreground">
-          No related videos available
+          {error?.message || 'No related videos available'}
         </p>
       </div>
     );
