@@ -72,37 +72,12 @@ export function registerRoutes(app: Express): Server {
         return res.status(500).json({ error: 'YouTube API key not configured' });
       }
 
-      // First, get the video details to use as search terms
-      const videoParams = new URLSearchParams({
-        part: 'snippet',
-        id: videoId,
-        key: YOUTUBE_API_KEY,
-      });
-
-      const videoResponse = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?${videoParams.toString()}`
-      );
-
-      if (!videoResponse.ok) {
-        throw new Error('Failed to fetch video details');
-      }
-
-      const videoData = await videoResponse.json();
-      if (!videoData.items?.[0]) {
-        return res.json({ videos: [] });
-      }
-
-      // Use the video's title and channel as search terms
-      const videoDetails = videoData.items[0].snippet;
-      const searchQuery = `${videoDetails.channelTitle} ${videoDetails.tags?.slice(0, 2).join(' ') || ''}`.trim();
-
-      // Search for similar videos
+      // Search for similar videos using video ID as search term
       const searchParams = new URLSearchParams({
         part: 'snippet',
-        q: searchQuery,
+        relatedToVideoId: videoId,
         type: 'video',
         maxResults: '8',
-        videoCategoryId: videoDetails.categoryId,
         key: YOUTUBE_API_KEY,
       });
 
@@ -116,7 +91,7 @@ export function registerRoutes(app: Express): Server {
 
       const searchData = await searchResponse.json();
       const videos = searchData.items
-        .filter((item: any) => item.id.videoId !== videoId) // Remove the current video
+        .filter((item: any) => item.id.videoId !== videoId)
         .map((item: any) => ({
           id: item.id.videoId,
           title: item.snippet.title,
