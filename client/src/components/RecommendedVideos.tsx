@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import type { YouTubeVideo } from '@/lib/youtube';
 import { cn } from '@/lib/utils';
+import { getRelatedVideos } from '@/lib/youtube';
 
 interface RecommendedVideosProps {
   videoId: string | null;
@@ -10,12 +11,13 @@ interface RecommendedVideosProps {
 }
 
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
-  const { data, isLoading } = useQuery({
+  const { data: videos, isLoading } = useQuery({
     queryKey: [`/api/youtube/related?v=${videoId}`],
+    queryFn: () => getRelatedVideos(videoId!),
     enabled: !!videoId,
   });
 
-  if (!videoId || isLoading) {
+  if (!videoId || isLoading || !videos?.length) {
     return null;
   }
 
@@ -23,7 +25,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     <div className="space-y-2">
       <h3 className="text-xs font-bold text-primary/80">Related Videos</h3>
       <div className="grid grid-cols-2 gap-2">
-        {data?.videos?.slice(0, 4).map((video: YouTubeVideo) => (
+        {videos.slice(0, 4).map((video: YouTubeVideo) => (
           <Card 
             key={video.id}
             className={cn(
