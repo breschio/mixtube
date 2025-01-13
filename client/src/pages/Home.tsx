@@ -28,10 +28,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] p-4 md:p-8">
-      <h1 className="mixtube-logo text-center text-primary mb-12">
-        mixtube
-      </h1>
-
       <div className="space-y-8 lg:space-y-0">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr,1fr,2fr] gap-8 items-start">
           {/* Left Video */}
