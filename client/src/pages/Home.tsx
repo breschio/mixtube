@@ -2,12 +2,13 @@ import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import DJControls from "@/components/DJControls";
+import RecommendedVideos from "@/components/RecommendedVideos";
 import { Card } from "@/components/ui/card";
 
 export default function Home() {
   const [videos, setVideos] = useState<{ left: string | null; right: string | null }>({
     left: 'xpvjPsme8_k',
-    right: 'OYXLVpyv0f4'
+    right: 'OYXLVpyv4f4'
   });
 
   const [playing, setPlaying] = useState(false);
@@ -32,10 +33,8 @@ export default function Home() {
         mixtube
       </h1>
 
-      {/* Main content grid */}
       <div className="space-y-8 lg:space-y-0">
-        {/* Video players grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr,1fr,2fr] gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr,1fr,2fr] gap-8 items-start">
           {/* Left Video */}
           <div className="space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
@@ -51,6 +50,10 @@ export default function Home() {
             <SearchBar 
               onVideoSelect={(id) => handleVideoSelect(id, 'left')} 
               videoId={videos.left}
+            />
+            <RecommendedVideos
+              videoId={videos.left}
+              onVideoSelect={(id) => handleVideoSelect(id, 'left')}
             />
           </div>
 
@@ -80,6 +83,10 @@ export default function Home() {
             <SearchBar 
               onVideoSelect={(id) => handleVideoSelect(id, 'right')} 
               videoId={videos.right}
+            />
+            <RecommendedVideos
+              videoId={videos.right}
+              onVideoSelect={(id) => handleVideoSelect(id, 'right')}
             />
           </div>
         </div>
