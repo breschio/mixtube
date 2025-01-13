@@ -11,7 +11,7 @@ export default function Home() {
   });
 
   const [playing, setPlaying] = useState(false);
-  const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
+  const [volumes, setVolumes] = useState({ left: 0.1, right: 0.25 });
   const [crossFader, setCrossFader] = useState(0.5);
 
   const handleVideoSelect = (videoId: string, side: 'left' | 'right') => {
