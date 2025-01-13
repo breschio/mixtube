@@ -45,7 +45,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     return (
       <div className="mt-4 p-4 text-center">
         <p className="text-sm text-muted-foreground">
-          {error?.message || 'No related videos available'}
+          {error instanceof Error ? error.message : 'No related videos available'}
         </p>
       </div>
     );

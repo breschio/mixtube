@@ -32,11 +32,14 @@ export default function VideoPlayer({
     }
   }, []);
 
-  const handleRelatedVideo = useCallback((event: any) => {
-    // Extract videoId when a related video is selected
-    const videoData = event?.target?.getVideoData?.();
-    if (videoData?.video_id) {
-      onVideoSelect(videoData.video_id);
+  const handleEnded = useCallback(() => {
+    // Handle video end event
+    const player = playerRef.current?.getInternalPlayer();
+    if (player?.getVideoData) {
+      const videoData = player.getVideoData();
+      if (videoData?.video_id) {
+        onVideoSelect(videoData.video_id);
+      }
     }
   }, [onVideoSelect]);
 
@@ -60,17 +63,17 @@ export default function VideoPlayer({
           volume={volume}
           controls={true}
           onReady={handlePlayerReady}
-          onStateChange={handleRelatedVideo}
+          onEnded={handleEnded}
           config={{
-            playerVars: {
-              rel: 1,
-              showinfo: 1,
-              iv_load_policy: 3,
-              modestbranding: 1,
-              enablejsapi: 1,
-              origin: window.location.origin,
-              suggested_videos: 1,
-              show_related: 1
+            youtube: {
+              playerVars: {
+                rel: 1,
+                showinfo: 1,
+                iv_load_policy: 3,
+                modestbranding: 1,
+                enablejsapi: 1,
+                origin: window.location.origin
+              }
             }
           }}
         />
