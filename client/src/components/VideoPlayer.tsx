@@ -11,23 +11,51 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ videoId, side }: VideoPlayerProps) {
   const [volume, setVolume] = useState(0.5);
   const [playing, setPlaying] = useState(false);
+  const [showControls, setShowControls] = useState(true);
   const playerRef = useRef<ReactPlayer>(null);
+  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
 
   const handleVolumeChange = (value: number) => {
     setVolume(value);
+    setShowControls(true);
+    resetControlsTimeout();
   };
+
+  const resetControlsTimeout = () => {
+    if (controlsTimeoutRef.current) {
+      clearTimeout(controlsTimeoutRef.current);
+    }
+    controlsTimeoutRef.current = setTimeout(() => {
+      setShowControls(false);
+    }, 3000);
+  };
+
+  useEffect(() => {
+    resetControlsTimeout();
+    return () => {
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
+    };
+  }, []);
 
   if (!videoId) {
     return (
-      <Card className="aspect-video bg-muted flex items-center justify-center">
+      <Card className="aspect-video bg-muted/50 flex items-center justify-center transition-colors hover:bg-muted">
         <p className="text-muted-foreground">Select a video to play</p>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-2">
-      <div className="aspect-video">
+    <div 
+      className="space-y-2 relative group"
+      onMouseMove={() => {
+        setShowControls(true);
+        resetControlsTimeout();
+      }}
+    >
+      <div className="aspect-video bg-black rounded-lg overflow-hidden">
         <ReactPlayer
           ref={playerRef}
           url={`https://www.youtube.com/watch?v=${videoId}`}
@@ -40,7 +68,11 @@ export default function VideoPlayer({ videoId, side }: VideoPlayerProps) {
           onPause={() => setPlaying(false)}
         />
       </div>
-      <div className="p-2">
+      <div 
+        className={`p-2 transition-opacity duration-300 ${
+          showControls ? 'opacity-100' : 'opacity-0'
+        } group-hover:opacity-100`}
+      >
         <VolumeControl value={volume} onChange={handleVolumeChange} />
       </div>
     </div>

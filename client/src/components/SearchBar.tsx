@@ -42,18 +42,19 @@ export default function SearchBar({ onVideoSelect }: SearchBarProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:border-primary/50 bg-background/80 backdrop-blur-sm"
         >
-          <Search className="mr-2 h-4 w-4" />
+          <Search className="mr-2 h-4 w-4 text-primary/80" />
           Search YouTube videos...
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
+      <PopoverContent className="w-full p-0 shadow-lg shadow-primary/20">
+        <Command className="rounded-lg border border-primary/10">
           <CommandInput
             placeholder="Search videos..."
             value={search}
             onValueChange={setSearch}
+            className="focus:ring-primary/30"
           />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
@@ -65,12 +66,13 @@ export default function SearchBar({ onVideoSelect }: SearchBarProps) {
                     onVideoSelect(video.id);
                     setOpen(false);
                   }}
+                  className="transition-colors duration-200 hover:bg-primary/5"
                 >
                   <div className="flex items-center">
                     <img
                       src={video.thumbnail}
                       alt={video.title}
-                      className="w-16 h-9 object-cover mr-2"
+                      className="w-16 h-9 object-cover mr-2 rounded"
                     />
                     <span className="truncate">{video.title}</span>
                   </div>
