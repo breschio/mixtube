@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useCallback } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import { Slider } from "@/components/ui/slider";
@@ -10,6 +10,7 @@ interface VideoPlayerProps {
   volume: number;
   playing: boolean;
   onVolumeChange: (value: number) => void;
+  onVideoSelect: (videoId: string) => void;
 }
 
 export default function VideoPlayer({ 
@@ -18,8 +19,29 @@ export default function VideoPlayer({
   volume,
   playing,
   onVolumeChange,
+  onVideoSelect,
 }: VideoPlayerProps) {
   const playerRef = useRef<ReactPlayer>(null);
+
+  const handlePlayerReady = useCallback(() => {
+    // Enable related videos when the player is ready
+    if (playerRef.current) {
+      const player = playerRef.current.getInternalPlayer();
+      if (player?.loadModule) {
+        player.loadModule('captions');
+      }
+    }
+  }, []);
+
+  const handleVideoEnd = useCallback(() => {
+    // Show related videos when the current video ends
+    if (playerRef.current) {
+      const player = playerRef.current.getInternalPlayer();
+      if (player?.loadModule) {
+        player.loadModule('related');
+      }
+    }
+  }, []);
 
   if (!videoId) {
     return (
@@ -40,6 +62,22 @@ export default function VideoPlayer({
           playing={playing}
           volume={volume}
           controls={true}
+          onReady={handlePlayerReady}
+          onEnded={handleVideoEnd}
+          config={{
+            youtube: {
+              playerVars: {
+                rel: 1, // Show related videos
+                showinfo: 1,
+                iv_load_policy: 3,
+                modestbranding: 1,
+                enablejsapi: 1,
+              },
+              embedOptions: {
+                related: true,
+              },
+            },
+          }}
         />
       </div>
       <div className="flex items-center gap-4 px-2 pb-2">

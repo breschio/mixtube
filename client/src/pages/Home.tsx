@@ -2,7 +2,6 @@ import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import DJControls from "@/components/DJControls";
-import RecommendedVideos from "@/components/RecommendedVideos";
 import { Card } from "@/components/ui/card";
 
 export default function Home() {
@@ -46,15 +45,12 @@ export default function Home() {
                 volume={calculateVolume(volumes.left, 'left')}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                onVideoSelect={(id) => handleVideoSelect(id, 'left')}
               />
             </Card>
             <SearchBar 
               onVideoSelect={(id) => handleVideoSelect(id, 'left')} 
               videoId={videos.left}
-            />
-            <RecommendedVideos
-              videoId={videos.left}
-              onVideoSelect={(id) => handleVideoSelect(id, 'left')}
             />
           </div>
 
@@ -78,15 +74,12 @@ export default function Home() {
                 volume={calculateVolume(volumes.right, 'right')}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                onVideoSelect={(id) => handleVideoSelect(id, 'right')}
               />
             </Card>
             <SearchBar 
               onVideoSelect={(id) => handleVideoSelect(id, 'right')} 
               videoId={videos.right}
-            />
-            <RecommendedVideos
-              videoId={videos.right}
-              onVideoSelect={(id) => handleVideoSelect(id, 'right')}
             />
           </div>
         </div>
