@@ -31,7 +31,7 @@ export default function VideoPlayer({
 
   return (
     <div className="space-y-4">
-      <div className="aspect-video bg-black rounded-lg overflow-hidden">
+      <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4">
         <ReactPlayer
           ref={playerRef}
           url={`https://www.youtube.com/watch?v=${videoId}`}
@@ -42,7 +42,7 @@ export default function VideoPlayer({
           controls={true}
         />
       </div>
-      <div className="flex items-center gap-4 px-2 pb-8">
+      <div className="flex items-center gap-4 px-2 pb-2">
         <Volume2 className="h-4 w-4 text-primary/80" />
         <Slider
           value={[volume]}
