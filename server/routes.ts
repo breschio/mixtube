@@ -67,6 +67,11 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: 'Video ID required' });
       }
 
+      // Validate video ID format (11 characters, alphanumeric and dashes/underscores)
+      if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
+        return res.status(400).json({ error: 'Invalid video ID format' });
+      }
+
       const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
       if (!YOUTUBE_API_KEY) {
         return res.status(500).json({ error: 'YouTube API key not configured' });
@@ -74,10 +79,9 @@ export function registerRoutes(app: Express): Server {
 
       const searchParams = new URLSearchParams({
         part: 'snippet',
-        relatedToVideoId: videoId,
         type: 'video',
         maxResults: '10',
-        videoEmbeddable: 'true',
+        relatedToVideoId: videoId,
         key: YOUTUBE_API_KEY,
       });
 
@@ -87,12 +91,17 @@ export function registerRoutes(app: Express): Server {
 
       if (!response.ok) {
         const error = await response.json();
+        console.error('YouTube API error:', error);
         return res.status(response.status).json({
           error: error.error?.message || 'Failed to fetch related videos'
         });
       }
 
       const data = await response.json();
+
+      if (!data.items?.length) {
+        return res.json({ videos: [] });
+      }
 
       const videos = data.items.map((item: any) => ({
         id: item.id.videoId,
