@@ -22,6 +22,19 @@
   }
 }
 
+@keyframes slow-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-slow-pulse {
+  animation: slow-pulse 3s ease-in-out infinite;
+}
+
 .input {
   @apply bg-background/50 backdrop-blur-sm;
 }

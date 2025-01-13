@@ -42,7 +42,7 @@ export default function DJControls({
         onClick={isPlaying ? onPauseAll : onPlayAll}
         className={cn(
           "w-full h-16 text-lg font-bold transition-all duration-300 hover:scale-[1.02]",
-          !isPlaying && "animate-pulse"
+          !isPlaying && "animate-slow-pulse"
         )}
       >
         {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
