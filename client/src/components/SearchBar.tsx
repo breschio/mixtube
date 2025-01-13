@@ -103,7 +103,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
                 placeholder="Search videos..."
                 value={search}
                 onValueChange={handleSearch}
-                className="focus:ring-primary/30"
+                className="focus:ring-primary/30 normal-case"
               />
               <CommandList>
                 <CommandEmpty className="py-6 text-center text-sm">
@@ -145,10 +145,10 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
         <div className="relative flex-1">
           <Input
             type="text"
-            placeholder="Paste YouTube URL..."
+            placeholder="paste youtube url..."
             value={url}
             onChange={handleUrlChange}
-            className="pr-8"
+            className="pr-8 normal-case"
           />
           {url && (
             <Button
