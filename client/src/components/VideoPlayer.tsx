@@ -67,12 +67,13 @@ export default function VideoPlayer({
           config={{
             youtube: {
               playerVars: {
-                rel: 1,
+                rel: 0,
                 showinfo: 1,
                 iv_load_policy: 3,
                 modestbranding: 1,
                 enablejsapi: 1,
-                origin: window.location.origin
+                origin: window.location.origin,
+                playsinline: 1,
               }
             }
           }}

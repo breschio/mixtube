@@ -1,0 +1,41 @@
+Here's a detailed prompt for your Replit agent:
+
+---
+
+**Prompt:**
+
+You are an expert software developer tasked with building a video DJ app, allowing users to source existing YouTube videos and play them simultaneously, just like a DJ would mix tracks. This app should integrate deeply with the YouTube API and other related APIs to ensure a smooth experience for the users.
+
+The primary requirements for this project include:
+
+1. **YouTube Video Sourcing**: 
+   - Implement the ability for users to search, discover, and select videos from YouTube.
+   - Use the **YouTube Data API v3** to fetch video metadata, including titles, descriptions, thumbnails, and video IDs.
+   - Ensure that the app can pull live or pre-recorded videos based on user input.
+
+2. **Simultaneous Playback**:
+   - Develop functionality for the simultaneous playback of multiple YouTube videos.
+   - Implement video synchronization so that all videos play in unison, starting and ending at the same time.
+   - Handle latency and buffering to keep playback smooth across videos.
+
+3. **User Interface**:
+   - Design an intuitive UI where users can manage multiple videos, adjust the volume levels, or change video positions (like a DJ would adjust the sound levels of each track).
+   - Include features such as play, pause, skip, and seek to specific timestamps, similar to DJ software controls.
+
+4. **API Integration**:
+   - Ensure proper integration with the **YouTube Player API** for controlling playback.
+   - Provide options for users to load and play videos using only video URLs, or allow users to integrate video playlists.
+   - If necessary, integrate additional APIs (e.g., for audio manipulation, video effects, etc.) to enhance the DJ-like experience.
+
+5. **Additional Features**:
+   - Allow users to create and share playlists, similar to how a DJ might curate a set.
+   - Consider the possibility of future enhancements like adding effects, transitions, or sound manipulation.
+
+Make sure to focus on:
+- **Performance**: Ensure smooth playback with minimal buffering.
+- **API Limitations**: Consider YouTube API rate limits and ensure the app operates within these constraints while providing the best user experience.
+- **Scalability**: Design the app to handle multiple concurrent users watching and interacting with the same playlist of videos.
+
+---
+
+This prompt emphasizes the deep technical knowledge required to integrate YouTube APIs, focus on seamless video playback, and create a user-friendly experience.
