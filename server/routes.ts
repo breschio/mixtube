@@ -75,10 +75,10 @@ export function registerRoutes(app: Express): Server {
       // Search for similar videos using video ID as search term
       const searchParams = new URLSearchParams({
         part: 'snippet',
-        relatedToVideoId: videoId,
-        type: 'video',
         maxResults: '8',
+        type: 'video',
         key: YOUTUBE_API_KEY,
+        q: videoId, // Use the video ID as a search term
       });
 
       const searchResponse = await fetch(
