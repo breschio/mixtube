@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,11 +20,12 @@ import { useDebouncedCallback } from 'use-debounce';
 
 interface SearchBarProps {
   onVideoSelect: (videoId: string) => void;
+  videoId: string | null;
 }
 
-export default function SearchBar({ onVideoSelect }: SearchBarProps) {
+export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
   const [open, setOpen] = useState(false);
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(videoId ? `https://www.youtube.com/watch?v=${videoId}` : '');
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -71,20 +72,36 @@ export default function SearchBar({ onVideoSelect }: SearchBarProps) {
     const videoId = extractVideoId(newUrl);
     if (videoId) {
       onVideoSelect(videoId);
-      setUrl('');
     }
+  };
+
+  const handleClear = () => {
+    setUrl('');
+    onVideoSelect('');
   };
 
   return (
     <div className="space-y-2 w-full">
       <div className="flex gap-2">
-        <Input
-          type="text"
-          placeholder="Paste YouTube URL..."
-          value={url}
-          onChange={handleUrlChange}
-          className="flex-1"
-        />
+        <div className="relative flex-1">
+          <Input
+            type="text"
+            placeholder="Paste YouTube URL..."
+            value={url}
+            onChange={handleUrlChange}
+            className="pr-8"
+          />
+          {url && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+              onClick={handleClear}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -125,6 +142,7 @@ export default function SearchBar({ onVideoSelect }: SearchBarProps) {
                       key={video.id}
                       onSelect={() => {
                         onVideoSelect(video.id);
+                        setUrl(`https://www.youtube.com/watch?v=${video.id}`);
                         setOpen(false);
                       }}
                       className="transition-colors duration-200 hover:bg-primary/5"
