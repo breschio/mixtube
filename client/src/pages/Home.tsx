@@ -41,7 +41,6 @@ export default function Home() {
               side="left" 
               volume={calculateVolume(volumes.left, 'left')}
               playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
             />
           </Card>
           <SearchBar onVideoSelect={(id) => handleVideoSelect(id, 'left')} />
@@ -55,7 +54,6 @@ export default function Home() {
               side="right"
               volume={calculateVolume(volumes.right, 'right')}
               playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
             />
           </Card>
           <SearchBar onVideoSelect={(id) => handleVideoSelect(id, 'right')} />
