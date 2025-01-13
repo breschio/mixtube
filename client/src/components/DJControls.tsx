@@ -26,13 +26,13 @@ export default function DJControls({
   onCrossFaderChange,
 }: DJControlsProps) {
   return (
-    <div className="bg-black/90 p-6 rounded-lg shadow-xl border border-primary/20">
+    <div className="bg-card/90 p-6 rounded-lg shadow-xl border border-primary/20">
       <div className="grid grid-cols-3 gap-8">
         {/* Left Volume Control */}
         <div className="space-y-2">
           <div className="flex items-center justify-between mb-2">
-            <Volume2 className="h-4 w-4 text-primary/80" />
-            <span className="text-xs text-primary/80">LEFT</span>
+            <Volume2 className="h-4 w-4 text-primary" />
+            <span className="text-xs font-medium text-primary">LEFT</span>
           </div>
           <Slider
             orientation="vertical"
@@ -50,11 +50,11 @@ export default function DJControls({
             size="lg"
             variant={isPlaying ? "destructive" : "default"}
             onClick={isPlaying ? onPauseAll : onPlayAll}
-            className="w-full mb-4 h-12"
+            className="w-full mb-4 h-12 transition-all duration-300 hover:scale-[1.02]"
           >
             {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
           </Button>
-          
+
           {/* Cross-fader */}
           <div className="w-full space-y-2">
             <Slider
@@ -64,7 +64,7 @@ export default function DJControls({
               onValueChange={([value]) => onCrossFaderChange(value)}
               className="w-full"
             />
-            <div className="flex justify-between text-xs text-primary/80">
+            <div className="flex justify-between text-xs font-medium text-primary">
               <span>A</span>
               <span>B</span>
             </div>
@@ -74,8 +74,8 @@ export default function DJControls({
         {/* Right Volume Control */}
         <div className="space-y-2">
           <div className="flex items-center justify-between mb-2">
-            <Volume2 className="h-4 w-4 text-primary/80" />
-            <span className="text-xs text-primary/80">RIGHT</span>
+            <Volume2 className="h-4 w-4 text-primary" />
+            <span className="text-xs font-medium text-primary">RIGHT</span>
           </div>
           <Slider
             orientation="vertical"
