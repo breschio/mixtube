@@ -19,9 +19,9 @@ export default function DJControls({
   onCrossFaderChange,
 }: DJControlsProps) {
   return (
-    <div className="bg-card/90 p-8 rounded-lg shadow-xl border border-primary/20">
+    <div className="bg-card/90 p-8 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col justify-between">
       {/* Cross-fader Section */}
-      <div className="relative pb-8">
+      <div className="relative flex-1 flex flex-col justify-center">
         <div className="flex justify-between mb-2">
           <span className="text-sm font-bold text-primary">LEFT</span>
           <span className="text-sm font-bold text-primary">RIGHT</span>
@@ -41,7 +41,7 @@ export default function DJControls({
         variant="default"
         onClick={isPlaying ? onPauseAll : onPlayAll}
         className={cn(
-          "w-full h-16 text-lg font-bold transition-all duration-300 hover:scale-[1.02]",
+          "w-full h-16 text-lg font-bold transition-all duration-300 hover:scale-[1.02] mt-8",
           !isPlaying && "animate-slow-pulse",
           isPlaying && "bg-primary/90 hover:bg-primary"
         )}

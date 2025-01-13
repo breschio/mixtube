@@ -32,7 +32,7 @@ export default function Home() {
         mixtube
       </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr,2fr] gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr,2fr] gap-8 items-stretch">
         {/* Left Video */}
         <div className="space-y-4">
           <Card className="overflow-hidden border-none bg-transparent">
@@ -51,7 +51,7 @@ export default function Home() {
         </div>
 
         {/* DJ Controls */}
-        <div className="w-full">
+        <div className="flex items-stretch">
           <DJControls
             isPlaying={playing}
             onPlayAll={() => setPlaying(true)}
