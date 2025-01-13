@@ -33,8 +33,7 @@ export default function VideoPlayer({
     }
   }, []);
 
-  const handleVideoEnd = useCallback(() => {
-    // Show related videos when the current video ends
+  const handleEnded = useCallback(() => {
     if (playerRef.current) {
       const player = playerRef.current.getInternalPlayer();
       if (player?.loadModule) {
@@ -63,19 +62,15 @@ export default function VideoPlayer({
           volume={volume}
           controls={true}
           onReady={handlePlayerReady}
-          onEnded={handleVideoEnd}
+          onEnded={handleEnded}
           config={{
-            youtube: {
-              playerVars: {
-                rel: 1, // Show related videos
-                showinfo: 1,
-                iv_load_policy: 3,
-                modestbranding: 1,
-                enablejsapi: 1,
-              },
-              embedOptions: {
-                related: true,
-              },
+            playerVars: {
+              rel: 1,
+              showinfo: 1,
+              iv_load_policy: 3,
+              modestbranding: 1,
+              enablejsapi: 1,
+              origin: window.location.origin,
             },
           }}
         />
