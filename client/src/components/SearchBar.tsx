@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Search, Loader2, Link } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -50,14 +50,6 @@ export default function SearchBar({ onVideoSelect }: SearchBarProps) {
     debouncedSetSearch(value);
   };
 
-  const handleUrlSubmit = () => {
-    const videoId = extractVideoId(url);
-    if (videoId) {
-      onVideoSelect(videoId);
-      setUrl('');
-    }
-  };
-
   const extractVideoId = (url: string): string | null => {
     const patterns = [
       /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
@@ -71,6 +63,18 @@ export default function SearchBar({ onVideoSelect }: SearchBarProps) {
     return null;
   };
 
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUrl = e.target.value;
+    setUrl(newUrl);
+
+    // Try to extract and submit video ID automatically
+    const videoId = extractVideoId(newUrl);
+    if (videoId) {
+      onVideoSelect(videoId);
+      setUrl('');
+    }
+  };
+
   return (
     <div className="space-y-2 w-full">
       <div className="flex gap-2">
@@ -78,19 +82,9 @@ export default function SearchBar({ onVideoSelect }: SearchBarProps) {
           type="text"
           placeholder="Paste YouTube URL..."
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={handleUrlChange}
           className="flex-1"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') handleUrlSubmit();
-          }}
         />
-        <Button 
-          variant="outline"
-          onClick={handleUrlSubmit}
-          className="shrink-0"
-        >
-          <Link className="h-4 w-4" />
-        </Button>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
