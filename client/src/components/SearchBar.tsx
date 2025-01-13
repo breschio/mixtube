@@ -68,7 +68,6 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
     const newUrl = e.target.value;
     setUrl(newUrl);
 
-    // Try to extract and submit video ID automatically
     const videoId = extractVideoId(newUrl);
     if (videoId) {
       onVideoSelect(videoId);
@@ -83,25 +82,6 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
   return (
     <div className="space-y-2 w-full">
       <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Input
-            type="text"
-            placeholder="Paste YouTube URL..."
-            value={url}
-            onChange={handleUrlChange}
-            className="pr-8"
-          />
-          {url && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
-              onClick={handleClear}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -115,7 +95,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
           </PopoverTrigger>
           <PopoverContent 
             className="w-[300px] p-0 shadow-lg shadow-primary/20" 
-            align="end"
+            align="start"
             sideOffset={4}
           >
             <Command className="rounded-lg border border-primary/10">
@@ -162,6 +142,25 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
             </Command>
           </PopoverContent>
         </Popover>
+        <div className="relative flex-1">
+          <Input
+            type="text"
+            placeholder="Paste YouTube URL..."
+            value={url}
+            onChange={handleUrlChange}
+            className="pr-8"
+          />
+          {url && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+              onClick={handleClear}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

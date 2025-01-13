@@ -34,7 +34,7 @@ export default function Home() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
         {/* Left Video */}
-        <div className="space-y-8">
+        <div className="space-y-4">
           <Card className="overflow-hidden border-none bg-transparent">
             <VideoPlayer 
               videoId={videos.left} 
@@ -51,7 +51,7 @@ export default function Home() {
         </div>
 
         {/* Right Video */}
-        <div className="space-y-8">
+        <div className="space-y-4">
           <Card className="overflow-hidden border-none bg-transparent">
             <VideoPlayer 
               videoId={videos.right} 
