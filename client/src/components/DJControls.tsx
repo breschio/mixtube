@@ -1,6 +1,7 @@
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Play, Pause } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DJControlsProps {
   onPlayAll: () => void;
@@ -39,7 +40,10 @@ export default function DJControls({
         size="lg"
         variant={isPlaying ? "destructive" : "default"}
         onClick={isPlaying ? onPauseAll : onPlayAll}
-        className="w-full h-16 text-lg font-bold transition-all duration-300 hover:scale-[1.02]"
+        className={cn(
+          "w-full h-16 text-lg font-bold transition-all duration-300 hover:scale-[1.02]",
+          !isPlaying && "animate-pulse"
+        )}
       >
         {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
       </Button>

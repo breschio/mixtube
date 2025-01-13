@@ -6,8 +6,8 @@ import { Card } from "@/components/ui/card";
 
 export default function Home() {
   const [videos, setVideos] = useState<{ left: string | null; right: string | null }>({
-    left: null,
-    right: null
+    left: 'xpvjPsme8_k',
+    right: 'OYXLVpyv0f4'
   });
 
   const [playing, setPlaying] = useState(false);
