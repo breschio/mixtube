@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import type { YouTubeVideo } from '@/lib/youtube';
 
 interface RecommendedVideosProps {
   videoId: string | null;
@@ -10,12 +11,12 @@ interface RecommendedVideosProps {
 }
 
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
-  const { data: videos, isLoading, error } = useQuery({
+  const { data: videos, isLoading, error } = useQuery<YouTubeVideo[]>({
     queryKey: [`/api/youtube/related?v=${videoId}`],
     enabled: !!videoId,
   });
 
-  if (!videoId || !videos?.length) {
+  if (!videoId) {
     return null;
   }
 
@@ -29,15 +30,21 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     );
   }
 
-  if (error) {
-    return null;
+  if (error || !videos?.length) {
+    return (
+      <div className="mt-4 p-4 text-center">
+        <p className="text-sm text-muted-foreground">
+          No related videos available
+        </p>
+      </div>
+    );
   }
 
   return (
     <div className="mt-4 space-y-2">
       <h3 className="text-xs font-bold text-primary/80">UP NEXT</h3>
       <div className="space-y-2">
-        {videos.map((video: any) => (
+        {videos.map((video) => (
           <Card 
             key={video.id}
             className={cn(

@@ -27,18 +27,24 @@ export function registerRoutes(app: Express): Server {
         `https://www.googleapis.com/youtube/v3/search?${searchParams}`
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to fetch related videos');
+        console.error('YouTube API error:', data);
+        throw new Error(data.error?.message || 'Failed to fetch related videos');
       }
 
-      const data = await response.json();
-      const videos = data.items?.map((item: any) => ({
+      if (!data.items) {
+        return res.json([]);
+      }
+
+      const videos = data.items.map((item: any) => ({
         id: item.id.videoId,
         title: item.snippet.title,
         thumbnail: item.snippet.thumbnails.medium.url,
       }));
 
-      res.json(videos || []);
+      res.json(videos);
     } catch (error) {
       console.error('YouTube related videos error:', error);
       res.status(500).json({ error: 'Failed to fetch related videos' });
