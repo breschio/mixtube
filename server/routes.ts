@@ -33,7 +33,6 @@ export function registerRoutes(app: Express): Server {
 
       if (!response.ok) {
         const error = await response.json();
-        console.error('YouTube API error:', error);
         return res.status(response.status).json({
           error: error.error?.message || 'Failed to fetch videos from YouTube API'
         });
@@ -73,45 +72,57 @@ export function registerRoutes(app: Express): Server {
         return res.status(500).json({ error: 'YouTube API key not configured' });
       }
 
-      console.log(`Fetching related videos for: ${videoId}`);
-
-      const searchParams = new URLSearchParams({
+      // First, get the video details to use as search terms
+      const videoParams = new URLSearchParams({
         part: 'snippet',
-        type: 'video',
-        maxResults: '10',
+        id: videoId,
         key: YOUTUBE_API_KEY,
-        relatedToVideoId: videoId,
       });
 
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
+      const videoResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?${videoParams.toString()}`
       );
 
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('YouTube API error:', error);
-        return res.status(response.status).json({
-          error: error.error?.message || 'Failed to fetch related videos'
-        });
+      if (!videoResponse.ok) {
+        throw new Error('Failed to fetch video details');
       }
 
-      const data = await response.json();
-      console.log('YouTube API response:', JSON.stringify(data, null, 2));
-
-      if (!data.items?.length) {
-        console.log('No related videos found for video ID:', videoId);
+      const videoData = await videoResponse.json();
+      if (!videoData.items?.[0]) {
         return res.json({ videos: [] });
       }
 
-      const videos = data.items
-        .filter((item: any) => item.id.videoId !== videoId)
+      // Use the video's title and channel as search terms
+      const videoDetails = videoData.items[0].snippet;
+      const searchQuery = `${videoDetails.channelTitle} ${videoDetails.tags?.slice(0, 2).join(' ') || ''}`.trim();
+
+      // Search for similar videos
+      const searchParams = new URLSearchParams({
+        part: 'snippet',
+        q: searchQuery,
+        type: 'video',
+        maxResults: '8',
+        videoCategoryId: videoDetails.categoryId,
+        key: YOUTUBE_API_KEY,
+      });
+
+      const searchResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
+      );
+
+      if (!searchResponse.ok) {
+        throw new Error('Failed to fetch related videos');
+      }
+
+      const searchData = await searchResponse.json();
+      const videos = searchData.items
+        .filter((item: any) => item.id.videoId !== videoId) // Remove the current video
         .map((item: any) => ({
           id: item.id.videoId,
           title: item.snippet.title,
           thumbnail: item.snippet.thumbnails.medium.url,
         }));
 
-      console.log(`Found ${videos.length} related videos`);
       res.json({ videos });
     } catch (error) {
       console.error('YouTube related videos error:', error);

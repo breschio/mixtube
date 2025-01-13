@@ -19,8 +19,6 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     retry: false,
   });
 
-  console.log('RecommendedVideos state:', { videoId, videos, isLoading, error });
-
   // Don't render anything if there's no video selected
   if (!videoId) {
     return null;
@@ -79,11 +77,11 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="w-fit"
+                  className="w-full"
                   onClick={() => onVideoSelect(video.id)}
                 >
-                  <Plus className="h-3 w-3 mr-1" />
-                  Add
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add to Player
                 </Button>
               </div>
             </div>
