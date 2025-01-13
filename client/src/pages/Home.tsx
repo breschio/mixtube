@@ -33,25 +33,33 @@ export default function Home() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="overflow-hidden">
-          <VideoPlayer 
-            videoId={videos.left} 
-            side="left" 
-            volume={calculateVolume(volumes.left, 'left')}
-            playing={playing}
-            onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-          />
-        </Card>
+        {/* Left Video */}
+        <div className="space-y-2">
+          <Card className="overflow-hidden">
+            <VideoPlayer 
+              videoId={videos.left} 
+              side="left" 
+              volume={calculateVolume(volumes.left, 'left')}
+              playing={playing}
+              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+            />
+          </Card>
+          <SearchBar onVideoSelect={(id) => handleVideoSelect(id, 'left')} />
+        </div>
 
-        <Card className="overflow-hidden">
-          <VideoPlayer 
-            videoId={videos.right} 
-            side="right"
-            volume={calculateVolume(volumes.right, 'right')}
-            playing={playing}
-            onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-          />
-        </Card>
+        {/* Right Video */}
+        <div className="space-y-2">
+          <Card className="overflow-hidden">
+            <VideoPlayer 
+              videoId={videos.right} 
+              side="right"
+              volume={calculateVolume(volumes.right, 'right')}
+              playing={playing}
+              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+            />
+          </Card>
+          <SearchBar onVideoSelect={(id) => handleVideoSelect(id, 'right')} />
+        </div>
       </div>
 
       <div className="max-w-2xl mx-auto">
@@ -66,15 +74,6 @@ export default function Home() {
           crossFader={crossFader}
           onCrossFaderChange={setCrossFader}
         />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        <div>
-          <SearchBar onVideoSelect={(id) => handleVideoSelect(id, 'left')} />
-        </div>
-        <div>
-          <SearchBar onVideoSelect={(id) => handleVideoSelect(id, 'right')} />
-        </div>
       </div>
     </div>
   );
