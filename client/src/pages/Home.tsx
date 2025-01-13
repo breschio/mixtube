@@ -27,12 +27,12 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] p-8 space-y-8">
+    <div className="min-h-screen bg-[#0A0A0B] p-4 md:p-8">
       <h1 className="mixtube-logo text-center text-primary mb-12">
         mixtube
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr,auto,1fr] gap-8 items-start">
         {/* Left Video */}
         <div className="space-y-4">
           <Card className="overflow-hidden border-none bg-transparent">
@@ -47,6 +47,17 @@ export default function Home() {
           <SearchBar 
             onVideoSelect={(id) => handleVideoSelect(id, 'left')} 
             videoId={videos.left}
+          />
+        </div>
+
+        {/* DJ Controls */}
+        <div className="w-full lg:w-[320px]">
+          <DJControls
+            isPlaying={playing}
+            onPlayAll={() => setPlaying(true)}
+            onPauseAll={() => setPlaying(false)}
+            crossFader={crossFader}
+            onCrossFaderChange={setCrossFader}
           />
         </div>
 
@@ -66,16 +77,6 @@ export default function Home() {
             videoId={videos.right}
           />
         </div>
-      </div>
-
-      <div className="max-w-2xl mx-auto mt-12">
-        <DJControls
-          isPlaying={playing}
-          onPlayAll={() => setPlaying(true)}
-          onPauseAll={() => setPlaying(false)}
-          crossFader={crossFader}
-          onCrossFaderChange={setCrossFader}
-        />
       </div>
     </div>
   );
