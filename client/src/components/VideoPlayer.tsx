@@ -24,7 +24,6 @@ export default function VideoPlayer({
   const playerRef = useRef<ReactPlayer>(null);
 
   const handlePlayerReady = useCallback(() => {
-    // Enable related videos when the player is ready
     if (playerRef.current) {
       const player = playerRef.current.getInternalPlayer();
       if (player?.loadModule) {
@@ -33,14 +32,13 @@ export default function VideoPlayer({
     }
   }, []);
 
-  const handleEnded = useCallback(() => {
-    if (playerRef.current) {
-      const player = playerRef.current.getInternalPlayer();
-      if (player?.loadModule) {
-        player.loadModule('related');
-      }
+  const handleRelatedVideo = useCallback((event: any) => {
+    // Extract videoId when a related video is selected
+    const videoData = event?.target?.getVideoData?.();
+    if (videoData?.video_id) {
+      onVideoSelect(videoData.video_id);
     }
-  }, []);
+  }, [onVideoSelect]);
 
   if (!videoId) {
     return (
@@ -62,7 +60,7 @@ export default function VideoPlayer({
           volume={volume}
           controls={true}
           onReady={handlePlayerReady}
-          onEnded={handleEnded}
+          onStateChange={handleRelatedVideo}
           config={{
             playerVars: {
               rel: 1,
@@ -71,7 +69,9 @@ export default function VideoPlayer({
               modestbranding: 1,
               enablejsapi: 1,
               origin: window.location.origin,
-            },
+              suggested_videos: 1,
+              show_related: 1
+            }
           }}
         />
       </div>

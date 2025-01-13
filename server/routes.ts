@@ -4,8 +4,8 @@ import { createServer, type Server } from "http";
 // Simple in-memory cache for API responses
 const cache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 5;
+const RATE_LIMIT_WINDOW = 5 * 60 * 1000; // 5 minutes
+const MAX_REQUESTS_PER_WINDOW = 20; // Increased limit
 
 // Simple rate limiter
 const rateLimiter = new Map<string, number[]>();
@@ -34,16 +34,20 @@ export function registerRoutes(app: Express): Server {
         return res.status(500).json({ error: 'YouTube API key not configured' });
       }
 
-      // Check rate limit
-      if (isRateLimited(videoId)) {
-        return res.status(429).json({ error: 'Too many requests. Please try again later.' });
-      }
-
-      // Check cache
+      // Check cache first
       const cacheKey = `related:${videoId}`;
       const cachedData = cache.get(cacheKey);
       if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
         return res.json(cachedData.data);
+      }
+
+      // Then check rate limit
+      if (isRateLimited(videoId)) {
+        // If rate limited but we have cached data, return it even if expired
+        if (cachedData) {
+          return res.json(cachedData.data);
+        }
+        return res.status(429).json({ error: 'Too many requests. Please try again later.' });
       }
 
       // Add to rate limiter
@@ -51,12 +55,12 @@ export function registerRoutes(app: Express): Server {
       requests.push(Date.now());
       rateLimiter.set(videoId, requests);
 
-      // Use the search endpoint with relatedToVideoId parameter
+      // Make API request
       const searchParams = new URLSearchParams({
         part: 'snippet',
         relatedToVideoId: videoId,
         type: 'video',
-        maxResults: '5',
+        maxResults: '10', // Increased to get more related videos
         key: YOUTUBE_API_KEY,
       });
 
