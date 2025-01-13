@@ -19,22 +19,25 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background p-4 space-y-4">
       <h1 className="text-2xl font-bold text-foreground text-center mb-6">
-        Dual YouTube Player
+        MixTube
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="overflow-hidden">
+          <VideoPlayer videoId={videos.left} side="left" />
+        </Card>
+
+        <Card className="overflow-hidden">
+          <VideoPlayer videoId={videos.right} side="right" />
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
           <SearchBar onVideoSelect={(id) => handleVideoSelect(id, 'left')} />
-          <Card className="mt-2">
-            <VideoPlayer videoId={videos.left} side="left" />
-          </Card>
         </div>
-        
         <div>
           <SearchBar onVideoSelect={(id) => handleVideoSelect(id, 'right')} />
-          <Card className="mt-2">
-            <VideoPlayer videoId={videos.right} side="right" />
-          </Card>
         </div>
       </div>
     </div>
