@@ -33,6 +33,7 @@ export function registerRoutes(app: Express): Server {
 
       if (!response.ok) {
         const error = await response.json();
+        console.error('YouTube API error:', error);
         return res.status(response.status).json({
           error: error.error?.message || 'Failed to fetch videos from YouTube API'
         });
@@ -72,25 +73,37 @@ export function registerRoutes(app: Express): Server {
         return res.status(500).json({ error: 'YouTube API key not configured' });
       }
 
-      // Search for similar videos using video ID as search term
+      console.log(`Fetching related videos for: ${videoId}`);
+
       const searchParams = new URLSearchParams({
         part: 'snippet',
-        maxResults: '8',
         type: 'video',
+        maxResults: '10',
         key: YOUTUBE_API_KEY,
-        q: videoId, // Use the video ID as a search term
+        relatedToVideoId: videoId,
       });
 
-      const searchResponse = await fetch(
+      const response = await fetch(
         `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
       );
 
-      if (!searchResponse.ok) {
-        throw new Error('Failed to fetch related videos');
+      if (!response.ok) {
+        const error = await response.json();
+        console.error('YouTube API error:', error);
+        return res.status(response.status).json({
+          error: error.error?.message || 'Failed to fetch related videos'
+        });
       }
 
-      const searchData = await searchResponse.json();
-      const videos = searchData.items
+      const data = await response.json();
+      console.log('YouTube API response:', JSON.stringify(data, null, 2));
+
+      if (!data.items?.length) {
+        console.log('No related videos found for video ID:', videoId);
+        return res.json({ videos: [] });
+      }
+
+      const videos = data.items
         .filter((item: any) => item.id.videoId !== videoId)
         .map((item: any) => ({
           id: item.id.videoId,
@@ -98,6 +111,7 @@ export function registerRoutes(app: Express): Server {
           thumbnail: item.snippet.thumbnails.medium.url,
         }));
 
+      console.log(`Found ${videos.length} related videos`);
       res.json({ videos });
     } catch (error) {
       console.error('YouTube related videos error:', error);

@@ -19,6 +19,8 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     retry: false,
   });
 
+  console.log('RecommendedVideos state:', { videoId, videos, isLoading, error });
+
   // Don't render anything if there's no video selected
   if (!videoId) {
     return null;
