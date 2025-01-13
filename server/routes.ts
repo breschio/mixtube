@@ -67,47 +67,61 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: 'Video ID required' });
       }
 
-      // Validate video ID format (11 characters, alphanumeric and dashes/underscores)
-      if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
-        return res.status(400).json({ error: 'Invalid video ID format' });
-      }
-
       const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
       if (!YOUTUBE_API_KEY) {
         return res.status(500).json({ error: 'YouTube API key not configured' });
       }
 
-      const searchParams = new URLSearchParams({
+      // First, get the video details to use as search terms
+      const videoParams = new URLSearchParams({
         part: 'snippet',
-        type: 'video',
-        maxResults: '10',
-        relatedToVideoId: videoId,
+        id: videoId,
         key: YOUTUBE_API_KEY,
       });
 
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
+      const videoResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?${videoParams.toString()}`
       );
 
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('YouTube API error:', error);
-        return res.status(response.status).json({
-          error: error.error?.message || 'Failed to fetch related videos'
-        });
+      if (!videoResponse.ok) {
+        throw new Error('Failed to fetch video details');
       }
 
-      const data = await response.json();
-
-      if (!data.items?.length) {
+      const videoData = await videoResponse.json();
+      if (!videoData.items?.[0]) {
         return res.json({ videos: [] });
       }
 
-      const videos = data.items.map((item: any) => ({
-        id: item.id.videoId,
-        title: item.snippet.title,
-        thumbnail: item.snippet.thumbnails.medium.url,
-      }));
+      // Use the video's title and channel as search terms
+      const videoDetails = videoData.items[0].snippet;
+      const searchQuery = `${videoDetails.channelTitle} ${videoDetails.tags?.slice(0, 2).join(' ') || ''}`.trim();
+
+      // Search for similar videos
+      const searchParams = new URLSearchParams({
+        part: 'snippet',
+        q: searchQuery,
+        type: 'video',
+        maxResults: '8',
+        videoCategoryId: videoDetails.categoryId,
+        key: YOUTUBE_API_KEY,
+      });
+
+      const searchResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
+      );
+
+      if (!searchResponse.ok) {
+        throw new Error('Failed to fetch related videos');
+      }
+
+      const searchData = await searchResponse.json();
+      const videos = searchData.items
+        .filter((item: any) => item.id.videoId !== videoId) // Remove the current video
+        .map((item: any) => ({
+          id: item.id.videoId,
+          title: item.snippet.title,
+          thumbnail: item.snippet.thumbnails.medium.url,
+        }));
 
       res.json({ videos });
     } catch (error) {
