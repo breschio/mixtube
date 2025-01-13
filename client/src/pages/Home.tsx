@@ -12,7 +12,7 @@ export default function Home() {
 
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
-  const [crossFader, setCrossFader] = useState(0.5); // 0 = full left, 1 = full right
+  const [crossFader, setCrossFader] = useState(0.5);
 
   const handleVideoSelect = (videoId: string, side: 'left' | 'right') => {
     setVideos(prev => ({
@@ -27,15 +27,15 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 space-y-4">
-      <h1 className="text-2xl font-bold text-foreground text-center mb-6">
-        MixTube
+    <div className="min-h-screen bg-[#0A0A0B] p-8 space-y-8">
+      <h1 className="mixtube-logo text-center text-primary mb-12">
+        MIXTUBE
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
         {/* Left Video */}
-        <div className="space-y-2">
-          <Card className="overflow-hidden">
+        <div className="space-y-4">
+          <Card className="overflow-hidden border-none bg-transparent">
             <VideoPlayer 
               videoId={videos.left} 
               side="left" 
@@ -47,8 +47,8 @@ export default function Home() {
         </div>
 
         {/* Right Video */}
-        <div className="space-y-2">
-          <Card className="overflow-hidden">
+        <div className="space-y-4">
+          <Card className="overflow-hidden border-none bg-transparent">
             <VideoPlayer 
               videoId={videos.right} 
               side="right"
@@ -60,7 +60,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto mt-12">
         <DJControls
           isPlaying={playing}
           onPlayAll={() => setPlaying(true)}
