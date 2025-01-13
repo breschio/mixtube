@@ -2,7 +2,6 @@ import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import DJControls from "@/components/DJControls";
-import RecommendedVideos from "@/components/RecommendedVideos";
 import { Card } from "@/components/ui/card";
 
 export default function Home() {
@@ -51,10 +50,6 @@ export default function Home() {
               onVideoSelect={(id) => handleVideoSelect(id, 'left')} 
               videoId={videos.left}
             />
-            <RecommendedVideos
-              videoId={videos.left}
-              onVideoSelect={(id) => handleVideoSelect(id, 'left')}
-            />
           </div>
 
           {/* DJ Controls - Only shown in large screens between videos */}
@@ -83,10 +78,6 @@ export default function Home() {
             <SearchBar 
               onVideoSelect={(id) => handleVideoSelect(id, 'right')} 
               videoId={videos.right}
-            />
-            <RecommendedVideos
-              videoId={videos.right}
-              onVideoSelect={(id) => handleVideoSelect(id, 'right')}
             />
           </div>
         </div>
