@@ -21,7 +21,12 @@ export default function Home() {
     }));
   };
 
-  const calculateVolume = (baseVolume: number, side: 'left' | 'right') => {
+  const calculateVolume = (baseVolume: number, side: 'left' | 'right', isMixPreview: boolean) => {
+    // If it's not the mix preview, return 0 to mute the bottom players
+    if (!isMixPreview) {
+      return 0;
+    }
+    // For mix preview, calculate volume based on crossfader
     const crossFaderValue = side === 'left' ? 1 - crossFader : crossFader;
     return baseVolume * crossFaderValue;
   };
@@ -42,7 +47,7 @@ export default function Home() {
               <VideoPlayer 
                 videoId={videos.left} 
                 side="primary-left"
-                volume={calculateVolume(volumes.left, 'left')}
+                volume={calculateVolume(volumes.left, 'left', true)}
                 playing={playing}
                 onVolumeChange={() => {}}
                 onVideoSelect={() => {}}
@@ -50,7 +55,7 @@ export default function Home() {
               <VideoPlayer 
                 videoId={videos.right} 
                 side="primary-right"
-                volume={calculateVolume(volumes.right, 'right')}
+                volume={calculateVolume(volumes.right, 'right', true)}
                 playing={playing}
                 onVolumeChange={() => {}}
                 onVideoSelect={() => {}}
@@ -69,7 +74,7 @@ export default function Home() {
               <VideoPlayer 
                 videoId={videos.left} 
                 side="left" 
-                volume={calculateVolume(volumes.left, 'left')}
+                volume={calculateVolume(volumes.left, 'left', false)}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
                 onVideoSelect={(id) => handleVideoSelect(id, 'left')}
@@ -98,7 +103,7 @@ export default function Home() {
               <VideoPlayer 
                 videoId={videos.right} 
                 side="right"
-                volume={calculateVolume(volumes.right, 'right')}
+                volume={calculateVolume(volumes.right, 'right', false)}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
                 onVideoSelect={(id) => handleVideoSelect(id, 'right')}
