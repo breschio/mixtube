@@ -64,14 +64,16 @@ export default function VideoPlayer({
           onReady={handlePlayerReady}
           onEnded={handleEnded}
           config={{
-            playerVars: {
-              rel: 0,
-              showinfo: 1,
-              iv_load_policy: 3,
-              modestbranding: 1,
-              enablejsapi: 1,
-              origin: window.location.origin,
-              playsinline: 1,
+            youtube: {
+              playerVars: {
+                rel: 0,
+                showinfo: 1,
+                iv_load_policy: 3,
+                modestbranding: 1,
+                enablejsapi: 1,
+                origin: window.location.origin,
+                playsinline: 1,
+              }
             }
           }}
         />
