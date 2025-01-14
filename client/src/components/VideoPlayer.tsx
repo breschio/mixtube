@@ -33,7 +33,6 @@ export default function VideoPlayer({
   }, []);
 
   const handleEnded = useCallback(() => {
-    // Handle video end event
     const player = playerRef.current?.getInternalPlayer();
     if (player?.getVideoData) {
       const videoData = player.getVideoData();
@@ -53,7 +52,7 @@ export default function VideoPlayer({
 
   return (
     <div className="space-y-4">
-      <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4">
+      <div className="aspect-video bg-black rounded-lg overflow-hidden">
         <ReactPlayer
           ref={playerRef}
           url={`https://www.youtube.com/watch?v=${videoId}`}
@@ -65,21 +64,19 @@ export default function VideoPlayer({
           onReady={handlePlayerReady}
           onEnded={handleEnded}
           config={{
-            youtube: {
-              playerVars: {
-                rel: 0,
-                showinfo: 1,
-                iv_load_policy: 3,
-                modestbranding: 1,
-                enablejsapi: 1,
-                origin: window.location.origin,
-                playsinline: 1,
-              }
+            playerVars: {
+              rel: 0,
+              showinfo: 1,
+              iv_load_policy: 3,
+              modestbranding: 1,
+              enablejsapi: 1,
+              origin: window.location.origin,
+              playsinline: 1,
             }
           }}
         />
       </div>
-      <div className="flex items-center gap-4 px-2 pb-2">
+      <div className="flex items-center gap-4 px-2">
         <Volume2 className="h-4 w-4 text-primary/80" />
         <Slider
           value={[volume]}
