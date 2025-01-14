@@ -3,10 +3,11 @@ import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import { Slider } from "@/components/ui/slider";
 import { Volume2 } from "lucide-react";
+import { cn } from '@/lib/utils';
 
 interface VideoPlayerProps {
   videoId: string | null;
-  side: 'left' | 'right';
+  side: 'primary' | 'left' | 'right';
   volume: number;
   playing: boolean;
   onVolumeChange: (value: number) => void;
@@ -33,7 +34,6 @@ export default function VideoPlayer({
   }, []);
 
   const handleEnded = useCallback(() => {
-    // Handle video end event
     const player = playerRef.current?.getInternalPlayer();
     if (player?.getVideoData) {
       const videoData = player.getVideoData();
@@ -53,7 +53,10 @@ export default function VideoPlayer({
 
   return (
     <div className="space-y-4">
-      <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4">
+      <div className={cn(
+        "aspect-video bg-black rounded-lg overflow-hidden",
+        side === 'primary' ? 'mb-6' : 'mb-4'
+      )}>
         <ReactPlayer
           ref={playerRef}
           url={`https://www.youtube.com/watch?v=${videoId}`}
@@ -65,16 +68,14 @@ export default function VideoPlayer({
           onReady={handlePlayerReady}
           onEnded={handleEnded}
           config={{
-            youtube: {
-              playerVars: {
-                rel: 0,
-                showinfo: 1,
-                iv_load_policy: 3,
-                modestbranding: 1,
-                enablejsapi: 1,
-                origin: window.location.origin,
-                playsinline: 1,
-              }
+            playerVars: {
+              rel: 0,
+              showinfo: 1,
+              iv_load_policy: 3,
+              modestbranding: 1,
+              enablejsapi: 1,
+              origin: window.location.origin,
+              playsinline: 1,
             }
           }}
         />

@@ -5,6 +5,7 @@ import DJControls from "@/components/DJControls";
 import { Card } from "@/components/ui/card";
 
 export default function Home() {
+  const [primaryVideo, setPrimaryVideo] = useState<string | null>('dQw4w9WgXcQ');
   const [videos, setVideos] = useState<{ left: string | null; right: string | null }>({
     left: 'xpvjPsme8_k',
     right: 'eR2FFb6Zg9Q'
@@ -13,12 +14,17 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.1, right: 0.25 });
   const [crossFader, setCrossFader] = useState(0.5);
+  const [primaryVolume, setPrimaryVolume] = useState(0.5);
 
-  const handleVideoSelect = (videoId: string, side: 'left' | 'right') => {
-    setVideos(prev => ({
-      ...prev,
-      [side]: videoId
-    }));
+  const handleVideoSelect = (videoId: string, target: 'primary' | 'left' | 'right') => {
+    if (target === 'primary') {
+      setPrimaryVideo(videoId);
+    } else {
+      setVideos(prev => ({
+        ...prev,
+        [target]: videoId
+      }));
+    }
   };
 
   const calculateVolume = (baseVolume: number, side: 'left' | 'right') => {
@@ -27,8 +33,29 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] p-4 md:p-8">
-      <div className="space-y-8 lg:space-y-0">
+    <div className="min-h-screen bg-[#0A0A0B] p-4 md:p-8 space-y-8">
+      {/* Primary Video Section */}
+      <section className="max-w-[1920px] mx-auto">
+        <div className="space-y-4">
+          <Card className="overflow-hidden border-none bg-transparent">
+            <VideoPlayer 
+              videoId={primaryVideo} 
+              side="primary"
+              volume={primaryVolume}
+              playing={playing}
+              onVolumeChange={setPrimaryVolume}
+              onVideoSelect={(id) => handleVideoSelect(id, 'primary')}
+            />
+          </Card>
+          <SearchBar 
+            onVideoSelect={(id) => handleVideoSelect(id, 'primary')} 
+            videoId={primaryVideo}
+          />
+        </div>
+      </section>
+
+      {/* Mixing Section */}
+      <section className="max-w-[1920px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr,1fr,2fr] gap-8 items-start">
           {/* Left Video */}
           <div className="space-y-4">
@@ -79,7 +106,7 @@ export default function Home() {
         </div>
 
         {/* DJ Controls - Shown below videos on medium and small screens */}
-        <div className="lg:hidden">
+        <div className="lg:hidden mt-8">
           <DJControls
             isPlaying={playing}
             onPlayAll={() => setPlaying(true)}
@@ -88,7 +115,7 @@ export default function Home() {
             onCrossFaderChange={setCrossFader}
           />
         </div>
-      </div>
+      </section>
     </div>
   );
 }
