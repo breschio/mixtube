@@ -5,7 +5,6 @@ import DJControls from "@/components/DJControls";
 import { Card } from "@/components/ui/card";
 
 export default function Home() {
-  const [primaryVideo, setPrimaryVideo] = useState<string | null>('dQw4w9WgXcQ');
   const [videos, setVideos] = useState<{ left: string | null; right: string | null }>({
     left: 'xpvjPsme8_k',
     right: 'eR2FFb6Zg9Q'
@@ -14,17 +13,12 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.1, right: 0.25 });
   const [crossFader, setCrossFader] = useState(0.5);
-  const [primaryVolume, setPrimaryVolume] = useState(0.5);
 
-  const handleVideoSelect = (videoId: string, target: 'primary' | 'left' | 'right') => {
-    if (target === 'primary') {
-      setPrimaryVideo(videoId);
-    } else {
-      setVideos(prev => ({
-        ...prev,
-        [target]: videoId
-      }));
-    }
+  const handleVideoSelect = (videoId: string, target: 'left' | 'right') => {
+    setVideos(prev => ({
+      ...prev,
+      [target]: videoId
+    }));
   };
 
   const calculateVolume = (baseVolume: number, side: 'left' | 'right') => {
@@ -34,23 +28,35 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] p-4 md:p-8 space-y-8">
-      {/* Primary Video Section */}
+      {/* Primary Video Section - Mix Preview */}
       <section className="max-w-[1920px] mx-auto">
         <div className="space-y-4">
-          <Card className="overflow-hidden border-none bg-transparent">
-            <VideoPlayer 
-              videoId={primaryVideo} 
-              side="primary"
-              volume={primaryVolume}
-              playing={playing}
-              onVolumeChange={setPrimaryVolume}
-              onVideoSelect={(id) => handleVideoSelect(id, 'primary')}
-            />
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-sm font-bold text-primary/80">MIX PREVIEW</h2>
+            <div className="text-xs text-muted-foreground">
+              {Math.round((1 - crossFader) * 100)}% L / {Math.round(crossFader * 100)}% R
+            </div>
+          </div>
+          <Card className="overflow-hidden border-none bg-transparent relative">
+            <div className="grid grid-cols-2 aspect-video">
+              <VideoPlayer 
+                videoId={videos.left} 
+                side="primary-left"
+                volume={calculateVolume(volumes.left, 'left')}
+                playing={playing}
+                onVolumeChange={() => {}}
+                onVideoSelect={() => {}}
+              />
+              <VideoPlayer 
+                videoId={videos.right} 
+                side="primary-right"
+                volume={calculateVolume(volumes.right, 'right')}
+                playing={playing}
+                onVolumeChange={() => {}}
+                onVideoSelect={() => {}}
+              />
+            </div>
           </Card>
-          <SearchBar 
-            onVideoSelect={(id) => handleVideoSelect(id, 'primary')} 
-            videoId={primaryVideo}
-          />
         </div>
       </section>
 

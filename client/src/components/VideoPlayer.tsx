@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 interface VideoPlayerProps {
   videoId: string | null;
-  side: 'primary' | 'left' | 'right';
+  side: 'primary-left' | 'primary-right' | 'left' | 'right';
   volume: number;
   playing: boolean;
   onVolumeChange: (value: number) => void;
@@ -51,11 +51,17 @@ export default function VideoPlayer({
     );
   }
 
+  const isPrimary = side.startsWith('primary');
+
   return (
-    <div className="space-y-4">
+    <div className={cn(
+      "space-y-4",
+      isPrimary && "h-full"
+    )}>
       <div className={cn(
-        "aspect-video bg-black rounded-lg overflow-hidden",
-        side === 'primary' ? 'mb-6' : 'mb-4'
+        "bg-black rounded-lg overflow-hidden",
+        !isPrimary && "aspect-video",
+        isPrimary && "h-full"
       )}>
         <ReactPlayer
           ref={playerRef}
@@ -64,32 +70,35 @@ export default function VideoPlayer({
           height="100%"
           playing={playing}
           volume={volume}
-          controls={true}
+          controls={!isPrimary}
           onReady={handlePlayerReady}
           onEnded={handleEnded}
           config={{
             playerVars: {
               rel: 0,
-              showinfo: 1,
+              showinfo: isPrimary ? 0 : 1,
               iv_load_policy: 3,
               modestbranding: 1,
               enablejsapi: 1,
               origin: window.location.origin,
               playsinline: 1,
+              controls: isPrimary ? 0 : 1,
             }
           }}
         />
       </div>
-      <div className="flex items-center gap-4 px-2 pb-2">
-        <Volume2 className="h-4 w-4 text-primary/80" />
-        <Slider
-          value={[volume]}
-          max={1}
-          step={0.01}
-          onValueChange={([value]) => onVolumeChange(value)}
-          className="flex-1"
-        />
-      </div>
+      {!isPrimary && (
+        <div className="flex items-center gap-4 px-2 pb-2">
+          <Volume2 className="h-4 w-4 text-primary/80" />
+          <Slider
+            value={[volume]}
+            max={1}
+            step={0.01}
+            onValueChange={([value]) => onVolumeChange(value)}
+            className="flex-1"
+          />
+        </div>
+      )}
     </div>
   );
 }
