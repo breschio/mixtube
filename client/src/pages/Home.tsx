@@ -2,6 +2,7 @@ import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import DJControls from "@/components/DJControls";
+import BlendedVideoPlayer from "@/components/BlendedVideoPlayer";
 import { Card } from "@/components/ui/card";
 
 export default function Home() {
@@ -22,13 +23,18 @@ export default function Home() {
   };
 
   const calculateVolume = (baseVolume: number, side: 'left' | 'right', isMixPreview: boolean) => {
-    // If it's not the mix preview, return 0 to mute the bottom players
     if (!isMixPreview) {
       return 0;
     }
-    // For mix preview, calculate volume based on crossfader
     const crossFaderValue = side === 'left' ? 1 - crossFader : crossFader;
     return baseVolume * crossFaderValue;
+  };
+
+  const handleVolumeChange = (value: number, side: 'left' | 'right') => {
+    setVolumes(prev => ({
+      ...prev,
+      [side]: value
+    }));
   };
 
   return (
@@ -43,24 +49,14 @@ export default function Home() {
             </div>
           </div>
           <Card className="overflow-hidden border-none bg-transparent relative">
-            <div className="grid grid-cols-2 aspect-video">
-              <VideoPlayer 
-                videoId={videos.left} 
-                side="primary-left"
-                volume={calculateVolume(volumes.left, 'left', true)}
-                playing={playing}
-                onVolumeChange={() => {}}
-                onVideoSelect={() => {}}
-              />
-              <VideoPlayer 
-                videoId={videos.right} 
-                side="primary-right"
-                volume={calculateVolume(volumes.right, 'right', true)}
-                playing={playing}
-                onVolumeChange={() => {}}
-                onVideoSelect={() => {}}
-              />
-            </div>
+            <BlendedVideoPlayer
+              leftVideo={videos.left}
+              rightVideo={videos.right}
+              crossFaderPosition={crossFader}
+              volumes={volumes}
+              playing={playing}
+              onVolumeChange={handleVolumeChange}
+            />
           </Card>
         </div>
       </section>
@@ -76,7 +72,7 @@ export default function Home() {
                 side="left" 
                 volume={calculateVolume(volumes.left, 'left', false)}
                 playing={playing}
-                onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                onVolumeChange={(value) => handleVolumeChange(value, 'left')}
                 onVideoSelect={(id) => handleVideoSelect(id, 'left')}
               />
             </Card>
@@ -105,7 +101,7 @@ export default function Home() {
                 side="right"
                 volume={calculateVolume(volumes.right, 'right', false)}
                 playing={playing}
-                onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                onVolumeChange={(value) => handleVolumeChange(value, 'right')}
                 onVideoSelect={(id) => handleVideoSelect(id, 'right')}
               />
             </Card>

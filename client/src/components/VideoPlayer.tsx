@@ -28,18 +28,26 @@ export default function VideoPlayer({
     if (playerRef.current) {
       const player = playerRef.current.getInternalPlayer();
       if (player?.loadModule) {
-        player.loadModule('captions');
+        try {
+          player.loadModule('captions');
+        } catch (error) {
+          console.warn('Failed to load captions module:', error);
+        }
       }
     }
   }, []);
 
   const handleEnded = useCallback(() => {
-    const player = playerRef.current?.getInternalPlayer();
-    if (player?.getVideoData) {
-      const videoData = player.getVideoData();
-      if (videoData?.video_id) {
-        onVideoSelect(videoData.video_id);
+    try {
+      const player = playerRef.current?.getInternalPlayer();
+      if (player?.getVideoData) {
+        const videoData = player.getVideoData();
+        if (videoData?.video_id) {
+          onVideoSelect(videoData.video_id);
+        }
       }
+    } catch (error) {
+      console.warn('Failed to handle video end:', error);
     }
   }, [onVideoSelect]);
 
@@ -69,20 +77,22 @@ export default function VideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={volume}
+          volume={Math.max(0, Math.min(1, volume))} // Ensure volume is between 0 and 1
           controls={!isPrimary}
           onReady={handlePlayerReady}
           onEnded={handleEnded}
           config={{
-            playerVars: {
-              rel: 0,
-              showinfo: isPrimary ? 0 : 1,
-              iv_load_policy: 3,
-              modestbranding: 1,
-              enablejsapi: 1,
-              origin: window.location.origin,
-              playsinline: 1,
-              controls: isPrimary ? 0 : 1,
+            youtube: {
+              playerVars: {
+                rel: 0,
+                showinfo: isPrimary ? 0 : 1,
+                iv_load_policy: 3,
+                modestbranding: 1,
+                enablejsapi: 1,
+                origin: window.location.origin,
+                playsinline: 1,
+                controls: isPrimary ? 0 : 1,
+              }
             }
           }}
         />
