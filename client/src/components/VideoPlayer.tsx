@@ -3,11 +3,10 @@ import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import { Slider } from "@/components/ui/slider";
 import { Volume2 } from "lucide-react";
-import { cn } from '@/lib/utils';
 
 interface VideoPlayerProps {
   videoId: string | null;
-  side: 'primary-left' | 'primary-right' | 'left' | 'right';
+  side: 'left' | 'right';
   volume: number;
   playing: boolean;
   onVolumeChange: (value: number) => void;
@@ -28,26 +27,19 @@ export default function VideoPlayer({
     if (playerRef.current) {
       const player = playerRef.current.getInternalPlayer();
       if (player?.loadModule) {
-        try {
-          player.loadModule('captions');
-        } catch (error) {
-          console.warn('Failed to load captions module:', error);
-        }
+        player.loadModule('captions');
       }
     }
   }, []);
 
   const handleEnded = useCallback(() => {
-    try {
-      const player = playerRef.current?.getInternalPlayer();
-      if (player?.getVideoData) {
-        const videoData = player.getVideoData();
-        if (videoData?.video_id) {
-          onVideoSelect(videoData.video_id);
-        }
+    // Handle video end event
+    const player = playerRef.current?.getInternalPlayer();
+    if (player?.getVideoData) {
+      const videoData = player.getVideoData();
+      if (videoData?.video_id) {
+        onVideoSelect(videoData.video_id);
       }
-    } catch (error) {
-      console.warn('Failed to handle video end:', error);
     }
   }, [onVideoSelect]);
 
@@ -59,56 +51,44 @@ export default function VideoPlayer({
     );
   }
 
-  const isPrimary = side.startsWith('primary');
-
   return (
-    <div className={cn(
-      "space-y-4",
-      isPrimary && "h-full"
-    )}>
-      <div className={cn(
-        "bg-black rounded-lg overflow-hidden",
-        !isPrimary && "aspect-video",
-        isPrimary && "h-full"
-      )}>
+    <div className="space-y-4">
+      <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4">
         <ReactPlayer
           ref={playerRef}
           url={`https://www.youtube.com/watch?v=${videoId}`}
           width="100%"
           height="100%"
           playing={playing}
-          volume={Math.max(0, Math.min(1, volume))} // Ensure volume is between 0 and 1
-          controls={!isPrimary}
+          volume={volume}
+          controls={true}
           onReady={handlePlayerReady}
           onEnded={handleEnded}
           config={{
             youtube: {
               playerVars: {
                 rel: 0,
-                showinfo: isPrimary ? 0 : 1,
+                showinfo: 1,
                 iv_load_policy: 3,
                 modestbranding: 1,
                 enablejsapi: 1,
                 origin: window.location.origin,
                 playsinline: 1,
-                controls: isPrimary ? 0 : 1,
               }
             }
           }}
         />
       </div>
-      {!isPrimary && (
-        <div className="flex items-center gap-4 px-2 pb-2">
-          <Volume2 className="h-4 w-4 text-primary/80" />
-          <Slider
-            value={[volume]}
-            max={1}
-            step={0.01}
-            onValueChange={([value]) => onVolumeChange(value)}
-            className="flex-1"
-          />
-        </div>
-      )}
+      <div className="flex items-center gap-4 px-2 pb-2">
+        <Volume2 className="h-4 w-4 text-primary/80" />
+        <Slider
+          value={[volume]}
+          max={1}
+          step={0.01}
+          onValueChange={([value]) => onVolumeChange(value)}
+          className="flex-1"
+        />
+      </div>
     </div>
   );
 }
