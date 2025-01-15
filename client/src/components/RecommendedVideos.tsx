@@ -5,6 +5,7 @@ import { Plus, Shuffle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getRelatedVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
+import { useEffect } from 'react';
 
 interface RecommendedVideosProps {
   videoId: string | null;
@@ -28,6 +29,15 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
       return failureCount < 1; // Max 1 retry to reduce API calls
     },
   });
+
+  // Effect to handle videoId changes
+  useEffect(() => {
+    if (videoId) {
+      // Invalidate and refetch when videoId changes
+      queryClient.invalidateQueries({ queryKey: [`/api/youtube/related`, videoId] });
+      refetch();
+    }
+  }, [videoId, queryClient, refetch]);
 
   const handleShuffle = async () => {
     // Invalidate the current query to force a refetch
