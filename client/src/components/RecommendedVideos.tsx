@@ -18,8 +18,8 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     queryKey: [`/api/youtube/related`, videoId],
     queryFn: () => getRelatedVideos(videoId!),
     enabled: !!videoId,
-    staleTime: 60 * 60 * 1000, // Consider data fresh for 1 hour to reduce API calls
-    gcTime: 2 * 60 * 60 * 1000, // Keep in cache for 2 hours
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
     retry: (failureCount, error) => {
       // Don't retry on quota exceeded or other known errors
       if (error.message?.includes('quota exceeded') || error.message?.includes('API key')) {

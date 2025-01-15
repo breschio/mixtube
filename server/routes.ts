@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 
 // Simple in-memory cache for API responses
 const cache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // Extended to 24 hours
+const CACHE_DURATION = 5 * 60 * 1000; // Reduced to 5 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const MAX_REQUESTS_PER_WINDOW = 10; // Reduced limit
 
@@ -50,23 +50,23 @@ export function registerRoutes(app: Express): Server {
         return res.status(500).json({ error: 'YouTube API key not configured' });
       }
 
-      // Check cache first
-      const cacheKey = `related:${videoId}`;
-      const cachedData = cache.get(cacheKey);
-      if (cachedData) {
-        // Return only 3 videos from cache
-        return res.json(cachedData.data.slice(0, 3));
+      // Check rate limit first
+      if (isRateLimited(videoId)) {
+        console.log('Rate limit exceeded for video:', videoId);
+        return res.json(FALLBACK_VIDEOS.slice(0, 3));
       }
 
-      // Check rate limit
-      if (isRateLimited(videoId)) {
-        // Return only 3 fallback videos
-        return res.json(FALLBACK_VIDEOS.slice(0, 3));
+      // Check cache with shorter duration
+      const cacheKey = `related:${videoId}`;
+      const cachedData = cache.get(cacheKey);
+      const now = Date.now();
+      if (cachedData && (now - cachedData.timestamp) < CACHE_DURATION) {
+        return res.json(cachedData.data.slice(0, 3));
       }
 
       // Add to rate limiter
       const requests = rateLimiter.get(videoId) || [];
-      requests.push(Date.now());
+      requests.push(now);
       rateLimiter.set(videoId, requests);
 
       // Make API request
@@ -74,7 +74,7 @@ export function registerRoutes(app: Express): Server {
         part: 'snippet',
         relatedToVideoId: videoId,
         type: 'video',
-        maxResults: '3', // Reduced to 3 to minimize quota usage
+        maxResults: '3',
         key: YOUTUBE_API_KEY,
       });
 
@@ -85,6 +85,7 @@ export function registerRoutes(app: Express): Server {
       const data = await response.json();
 
       if (!response.ok) {
+        console.error('YouTube API error:', data.error);
         if (data.error?.code === 403) {
           console.log('YouTube API quota exceeded, using fallback data');
           return res.json(FALLBACK_VIDEOS.slice(0, 3));
@@ -92,7 +93,8 @@ export function registerRoutes(app: Express): Server {
         throw new Error(data.error?.message || 'Failed to fetch related videos');
       }
 
-      if (!data.items) {
+      if (!data.items?.length) {
+        console.log('No related videos found for:', videoId);
         return res.json(FALLBACK_VIDEOS.slice(0, 3));
       }
 
@@ -102,13 +104,12 @@ export function registerRoutes(app: Express): Server {
         thumbnail: item.snippet.thumbnails.medium.url,
       }));
 
-      // Cache the successful response
-      cache.set(cacheKey, { data: videos, timestamp: Date.now() });
+      // Cache the successful response with new shorter duration
+      cache.set(cacheKey, { data: videos, timestamp: now });
 
       res.json(videos);
     } catch (error) {
       console.error('YouTube related videos error:', error);
-      // Return fallback data on any error, limited to 3
       res.json(FALLBACK_VIDEOS.slice(0, 3));
     }
   });
