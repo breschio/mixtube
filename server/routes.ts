@@ -22,7 +22,11 @@ const FALLBACK_VIDEOS = [
     title: 'Darude - Sandstorm',
     thumbnail: 'https://img.youtube.com/vi/y6120QOlsfU/mqdefault.jpg',
   },
-  // Add more fallback videos as needed
+  {
+    id: 'L_jWHffIx5E',
+    title: 'Smash Mouth - All Star',
+    thumbnail: 'https://img.youtube.com/vi/L_jWHffIx5E/mqdefault.jpg',
+  }
 ];
 
 function isRateLimited(videoId: string): boolean {
@@ -50,15 +54,14 @@ export function registerRoutes(app: Express): Server {
       const cacheKey = `related:${videoId}`;
       const cachedData = cache.get(cacheKey);
       if (cachedData) {
-        // Always return cached data if available, regardless of age
-        // This helps when API quota is exceeded
-        return res.json(cachedData.data);
+        // Return only 3 videos from cache
+        return res.json(cachedData.data.slice(0, 3));
       }
 
       // Check rate limit
       if (isRateLimited(videoId)) {
-        // Return fallback data when rate limited and no cache
-        return res.json(FALLBACK_VIDEOS);
+        // Return only 3 fallback videos
+        return res.json(FALLBACK_VIDEOS.slice(0, 3));
       }
 
       // Add to rate limiter
@@ -71,7 +74,7 @@ export function registerRoutes(app: Express): Server {
         part: 'snippet',
         relatedToVideoId: videoId,
         type: 'video',
-        maxResults: '5', // Reduced to minimize quota usage
+        maxResults: '3', // Reduced to 3 to minimize quota usage
         key: YOUTUBE_API_KEY,
       });
 
@@ -83,15 +86,14 @@ export function registerRoutes(app: Express): Server {
 
       if (!response.ok) {
         if (data.error?.code === 403) {
-          // Return fallback data when quota exceeded
           console.log('YouTube API quota exceeded, using fallback data');
-          return res.json(FALLBACK_VIDEOS);
+          return res.json(FALLBACK_VIDEOS.slice(0, 3));
         }
         throw new Error(data.error?.message || 'Failed to fetch related videos');
       }
 
       if (!data.items) {
-        return res.json(FALLBACK_VIDEOS);
+        return res.json(FALLBACK_VIDEOS.slice(0, 3));
       }
 
       const videos = data.items.map((item: any) => ({
@@ -106,8 +108,8 @@ export function registerRoutes(app: Express): Server {
       res.json(videos);
     } catch (error) {
       console.error('YouTube related videos error:', error);
-      // Return fallback data on any error
-      res.json(FALLBACK_VIDEOS);
+      // Return fallback data on any error, limited to 3
+      res.json(FALLBACK_VIDEOS.slice(0, 3));
     }
   });
 

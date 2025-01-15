@@ -16,14 +16,14 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     queryKey: [`/api/youtube/related`, videoId],
     queryFn: () => getRelatedVideos(videoId!),
     enabled: !!videoId,
-    staleTime: 30 * 60 * 1000, // Consider data fresh for 30 minutes
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+    staleTime: 60 * 60 * 1000, // Consider data fresh for 1 hour to reduce API calls
+    gcTime: 2 * 60 * 60 * 1000, // Keep in cache for 2 hours
     retry: (failureCount, error) => {
       // Don't retry on quota exceeded or other known errors
       if (error.message.includes('quota exceeded') || error.message.includes('API key')) {
         return false;
       }
-      return failureCount < 2; // Max 2 retries
+      return failureCount < 1; // Max 1 retry to reduce API calls
     },
   });
 
