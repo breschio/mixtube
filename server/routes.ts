@@ -38,7 +38,75 @@ function isRateLimited(videoId: string): boolean {
 }
 
 export function registerRoutes(app: Express): Server {
-  app.get('/api/youtube/test', async (req, res) => {
+  app.get('/api/youtube/debug-related', async (req, res) => {
+  try {
+    const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+    if (!YOUTUBE_API_KEY) {
+      return res.status(500).json({ error: 'YouTube API key not configured' });
+    }
+
+    const testVideoId = 'dQw4w9WgXcQ'; // Test with a known video ID
+    
+    // Test different parameter combinations
+    const testCases = [
+      {
+        params: {
+          part: 'snippet',
+          relatedToVideoId: testVideoId,
+          type: 'video',
+          maxResults: '3',
+          key: YOUTUBE_API_KEY
+        },
+        name: 'Basic params'
+      },
+      {
+        params: {
+          part: 'snippet,id',
+          relatedToVideoId: testVideoId,
+          type: 'video',
+          maxResults: '3',
+          key: YOUTUBE_API_KEY
+        },
+        name: 'With ID part'
+      },
+      {
+        params: {
+          part: 'snippet',
+          relatedToVideoId: testVideoId,
+          type: 'video',
+          maxResults: '3',
+          key: YOUTUBE_API_KEY,
+          safeSearch: 'moderate'
+        },
+        name: 'With safe search'
+      }
+    ];
+
+    const results = [];
+    
+    for (const testCase of testCases) {
+      const searchParams = new URLSearchParams(testCase.params);
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
+      );
+      const data = await response.json();
+      
+      results.push({
+        name: testCase.name,
+        success: response.ok,
+        status: response.status,
+        data: data
+      });
+    }
+
+    return res.json(results);
+  } catch (error) {
+    console.error('Debug test error:', error);
+    res.status(500).json({ error: 'Failed to run debug tests' });
+  }
+});
+
+app.get('/api/youtube/test', async (req, res) => {
   try {
     const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
     if (!YOUTUBE_API_KEY) {
