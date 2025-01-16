@@ -161,14 +161,31 @@ app.get('/api/youtube/related', async (req, res) => {
       requests.push(now);
       rateLimiter.set(videoId, requests);
 
-      // Make API request using search endpoint
+      // First get video details
+      const videoParams = new URLSearchParams({
+        part: 'snippet',
+        id: videoId,
+        key: YOUTUBE_API_KEY
+      });
+
+      const videoResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?${videoParams.toString()}`
+      );
+      
+      const videoData = await videoResponse.json();
+      
+      if (!videoResponse.ok) {
+        throw new Error(videoData.error?.message || 'Failed to fetch video details');
+      }
+
+      // Get channel videos from the same channel
+      const channelId = videoData.items?.[0]?.snippet?.channelId;
       const searchParams = new URLSearchParams({
         part: 'snippet',
-        q: videoId,
+        channelId: channelId,
         type: 'video',
         maxResults: '3',
-        key: YOUTUBE_API_KEY,
-        order: 'relevance'
+        key: YOUTUBE_API_KEY
       });
 
       const response = await fetch(
