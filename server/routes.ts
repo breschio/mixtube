@@ -161,11 +161,14 @@ app.get('/api/youtube/related', async (req, res) => {
       requests.push(now);
       rateLimiter.set(videoId, requests);
 
-      // Make API request
+      // Make API request using search endpoint
       const searchParams = new URLSearchParams({
         part: 'snippet',
-        relatedToVideoId: videoId,
-        key: YOUTUBE_API_KEY
+        q: videoId,
+        type: 'video',
+        maxResults: '3',
+        key: YOUTUBE_API_KEY,
+        order: 'relevance'
       });
 
       const response = await fetch(
