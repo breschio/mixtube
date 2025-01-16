@@ -95,13 +95,11 @@ app.get('/api/youtube/related', async (req, res) => {
 
       // Make API request
       const searchParams = new URLSearchParams({
-        part: 'snippet,id',
+        part: 'snippet',
         relatedToVideoId: videoId,
         type: 'video',
         maxResults: '3',
-        key: YOUTUBE_API_KEY,
-        regionCode: 'US',
-        videoCategoryId: '10' // Music category
+        key: YOUTUBE_API_KEY
       });
 
       const response = await fetch(
