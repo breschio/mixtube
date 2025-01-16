@@ -53,7 +53,7 @@ export function registerRoutes(app: Express): Server {
       // Check rate limit first
       if (isRateLimited(videoId)) {
         console.log('Rate limit exceeded for video:', videoId);
-        return res.json(FALLBACK_VIDEOS.slice(0, 3));
+        return res.status(429).json({ error: { code: 429, message: 'Rate limit exceeded' } });
       }
 
       // Check cache with shorter duration
