@@ -38,7 +38,31 @@ function isRateLimited(videoId: string): boolean {
 }
 
 export function registerRoutes(app: Express): Server {
-  app.get('/api/youtube/related', async (req, res) => {
+  app.get('/api/youtube/test', async (req, res) => {
+  try {
+    const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+    if (!YOUTUBE_API_KEY) {
+      return res.status(500).json({ error: 'YouTube API key not configured' });
+    }
+
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=1&key=${YOUTUBE_API_KEY}`
+    );
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      return res.status(response.status).json(data);
+    }
+
+    return res.json({ success: true, message: 'API key is valid' });
+  } catch (error) {
+    console.error('API test error:', error);
+    res.status(500).json({ error: 'Failed to test API key' });
+  }
+});
+
+app.get('/api/youtube/related', async (req, res) => {
     try {
       const videoId = req.query.v as string;
       if (!videoId) {
