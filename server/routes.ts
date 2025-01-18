@@ -1,23 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-
-// Initialize cache asynchronously
-const initCache = async () => {
-  const { createClient } = await import('ioredis');
-  return createClient({
-    host: process.env.REDIS_URL || '0.0.0.0',
-    port: 6379,
-    lazyConnect: true
-  }).on('error', err => console.error('Redis Client Error', err));
-};
-
-let cache; // Declare cache variable here
-
-(async () => {
-  cache = await initCache();
-  await cache.connect().catch(console.error);
-})();
-
+import { cache } from './cache'; // Import the in-memory cache
 
 const CACHE_DURATION = 5 * 60 * 1000; // Reduced to 5 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
@@ -166,10 +149,10 @@ app.get('/api/youtube/related', async (req, res) => {
 
       // Check cache with shorter duration
       const cacheKey = `related:${videoId}`;
-      const cachedData = await cache.get(cacheKey); //Use await here
+      const cachedData = await cache.get(cacheKey);
       const now = Date.now();
-      if (cachedData && (now - parseInt(cachedData)) < CACHE_DURATION) { //Parse cachedData as it's now a string
-        return res.json(JSON.parse(cachedData).slice(0,3)); //Parse the stringified JSON
+      if (cachedData && (now - cachedData.timestamp) < CACHE_DURATION) {
+        return res.json(cachedData.data.slice(0,3));
       }
 
       // Add to rate limiter
@@ -231,7 +214,7 @@ app.get('/api/youtube/related', async (req, res) => {
       }));
 
       // Cache the successful response with new shorter duration
-      await cache.set(cacheKey, JSON.stringify({data: videos, timestamp: now})); //Stringify before setting
+      await cache.set(cacheKey, {data: videos, timestamp: now});
 
       res.json(videos);
     } catch (error) {

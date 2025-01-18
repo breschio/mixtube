@@ -1,37 +1,30 @@
 
-import { writeFile, readFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+// Simple in-memory cache implementation
+class InMemoryCache {
+  private cache: Map<string, { data: any; timestamp: number }>;
+  private ttl: number;
 
-const CACHE_DIR = './.cache';
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-export class FileCache {
-  constructor() {
-    mkdir(CACHE_DIR).catch(() => {});
-  }
-
-  async set(key: string, value: any) {
-    const data = {
-      value,
-      timestamp: Date.now()
-    };
-    await writeFile(
-      join(CACHE_DIR, `${key}.json`),
-      JSON.stringify(data)
-    );
+  constructor(ttl = 300000) { // 5 minutes default TTL
+    this.cache = new Map();
+    this.ttl = ttl;
   }
 
   async get(key: string) {
-    try {
-      const data = JSON.parse(
-        await readFile(join(CACHE_DIR, `${key}.json`), 'utf8')
-      );
-      if (Date.now() - data.timestamp < CACHE_DURATION) {
-        return data.value;
-      }
-    } catch (e) {}
-    return null;
+    const item = this.cache.get(key);
+    if (!item) return null;
+    if (Date.now() - item.timestamp > this.ttl) {
+      this.cache.delete(key);
+      return null;
+    }
+    return item.data;
+  }
+
+  async set(key: string, value: any) {
+    this.cache.set(key, {
+      data: value,
+      timestamp: Date.now()
+    });
   }
 }
 
-export const cache = new FileCache();
+export const cache = new InMemoryCache();

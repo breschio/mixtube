@@ -1,12 +1,5 @@
 
-import { createClient } from 'ioredis';
-import algoliasearch from 'algoliasearch';
 import type { YouTubeVideo } from './youtube';
-
-const redis = createClient({
-  host: process.env.REDIS_URL || 'localhost',
-  port: 6379,
-});
 
 const algolia = algoliasearch(
   process.env.ALGOLIA_APP_ID || '',
