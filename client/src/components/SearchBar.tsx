@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { X } from 'lucide-react';
+
+import { useState, useEffect } from 'react';
+import { X, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -10,17 +11,29 @@ interface SearchBarProps {
 
 export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
   const [url, setUrl] = useState(videoId ? `https://www.youtube.com/watch?v=${videoId}` : '');
+  const [isValid, setIsValid] = useState(true);
+  const [searchHistory, setSearchHistory] = useState<string[]>(() => {
+    const saved = localStorage.getItem('searchHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  const extractVideoId = (url: string): string | null => {
-    const patterns = [
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
-      /^[a-zA-Z0-9_-]{11}$/
-    ];
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /^[a-zA-Z0-9_-]{11}$/
+  ];
 
+  const extractVideoId = (input: string): string | null => {
+    const trimmedInput = input.trim();
+    
     for (const pattern of patterns) {
-      const match = url.match(pattern);
-      if (match) return match[1];
+      const match = trimmedInput.match(pattern);
+      if (match) {
+        setIsValid(true);
+        return match[1];
+      }
     }
+    
+    setIsValid(false);
     return null;
   };
 
@@ -31,11 +44,19 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
     const videoId = extractVideoId(newUrl);
     if (videoId) {
       onVideoSelect(videoId);
+      addToHistory(newUrl);
     }
+  };
+
+  const addToHistory = (newUrl: string) => {
+    const updatedHistory = [newUrl, ...searchHistory.filter(item => item !== newUrl)].slice(0, 5);
+    setSearchHistory(updatedHistory);
+    localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
   };
 
   const handleClear = () => {
     setUrl('');
+    setIsValid(true);
     onVideoSelect('');
   };
 
@@ -47,7 +68,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
           placeholder="paste youtube url..."
           value={url}
           onChange={handleUrlChange}
-          className="pr-8 normal-case"
+          className={`pr-8 normal-case ${!isValid && url ? 'border-red-500' : ''}`}
         />
         {url && (
           <Button
@@ -60,6 +81,9 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
           </Button>
         )}
       </div>
+      {!isValid && url && (
+        <p className="text-xs text-red-500 mt-1">Please enter a valid YouTube URL or video ID</p>
+      )}
     </div>
   );
 }
