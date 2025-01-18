@@ -1,16 +1,24 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 
-// Simple in-memory cache for API responses
-import { createClient } from 'ioredis';
-const redis = createClient({
-  host: process.env.REDIS_URL || '0.0.0.0',
-  port: 6379,
-  lazyConnect: true
-}).on('error', err => console.error('Redis Client Error', err));
+// Initialize cache asynchronously
+const initCache = async () => {
+  const { createClient } = await import('ioredis');
+  return createClient({
+    host: process.env.REDIS_URL || '0.0.0.0',
+    port: 6379,
+    lazyConnect: true
+  }).on('error', err => console.error('Redis Client Error', err));
+};
 
-// Initialize Redis connection
-await redis.connect().catch(console.error);
+let cache; // Declare cache variable here
+
+(async () => {
+  cache = await initCache();
+  await cache.connect().catch(console.error);
+})();
+
+
 const CACHE_DURATION = 5 * 60 * 1000; // Reduced to 5 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const MAX_REQUESTS_PER_WINDOW = 10; // Reduced limit
@@ -54,7 +62,7 @@ export function registerRoutes(app: Express): Server {
     }
 
     const testVideoId = 'dQw4w9WgXcQ'; // Test with a known video ID
-    
+
     // Test different parameter combinations
     const testCases = [
       {
@@ -91,14 +99,14 @@ export function registerRoutes(app: Express): Server {
     ];
 
     const results = [];
-    
+
     for (const testCase of testCases) {
       const searchParams = new URLSearchParams(testCase.params);
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
       );
       const data = await response.json();
-      
+
       results.push({
         name: testCase.name,
         success: response.ok,
@@ -126,7 +134,7 @@ app.get('/api/youtube/test', async (req, res) => {
     );
 
     const data = await response.json();
-    
+
     if (!response.ok) {
       return res.status(response.status).json(data);
     }
@@ -158,10 +166,10 @@ app.get('/api/youtube/related', async (req, res) => {
 
       // Check cache with shorter duration
       const cacheKey = `related:${videoId}`;
-      const cachedData = cache.get(cacheKey);
+      const cachedData = await cache.get(cacheKey); //Use await here
       const now = Date.now();
-      if (cachedData && (now - cachedData.timestamp) < CACHE_DURATION) {
-        return res.json(cachedData.data.slice(0, 3));
+      if (cachedData && (now - parseInt(cachedData)) < CACHE_DURATION) { //Parse cachedData as it's now a string
+        return res.json(JSON.parse(cachedData).slice(0,3)); //Parse the stringified JSON
       }
 
       // Add to rate limiter
@@ -179,9 +187,9 @@ app.get('/api/youtube/related', async (req, res) => {
       const videoResponse = await fetch(
         `https://www.googleapis.com/youtube/v3/videos?${videoParams.toString()}`
       );
-      
+
       const videoData = await videoResponse.json();
-      
+
       if (!videoResponse.ok) {
         throw new Error(videoData.error?.message || 'Failed to fetch video details');
       }
@@ -223,7 +231,7 @@ app.get('/api/youtube/related', async (req, res) => {
       }));
 
       // Cache the successful response with new shorter duration
-      cache.set(cacheKey, { data: videos, timestamp: now });
+      await cache.set(cacheKey, JSON.stringify({data: videos, timestamp: now})); //Stringify before setting
 
       res.json(videos);
     } catch (error) {
