@@ -4,9 +4,13 @@ import { createServer, type Server } from "http";
 // Simple in-memory cache for API responses
 import { createClient } from 'ioredis';
 const redis = createClient({
-  host: process.env.REDIS_URL || 'localhost',
+  host: process.env.REDIS_URL || '0.0.0.0',
   port: 6379,
-});
+  lazyConnect: true
+}).on('error', err => console.error('Redis Client Error', err));
+
+// Initialize Redis connection
+await redis.connect().catch(console.error);
 const CACHE_DURATION = 5 * 60 * 1000; // Reduced to 5 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const MAX_REQUESTS_PER_WINDOW = 10; // Reduced limit
