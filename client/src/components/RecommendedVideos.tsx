@@ -43,8 +43,8 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     queryFn: () => {
       if (!videoId) return [];
       return selectedCategory === 'For You' ? 
-        getRelatedVideos(videoId) : 
-        searchVideos(`${selectedCategory} music`);
+        getRelatedVideos(videoId).then(videos => videos.slice(0, 3)) : 
+        searchVideos(`${selectedCategory} music`).then(videos => videos.slice(0, 3));
     },
     enabled: !!videoId,
     staleTime: 60 * 1000,

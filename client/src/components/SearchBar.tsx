@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Search } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -38,7 +38,6 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
   const [isValid, setIsValid] = useState(true);
   const [searchResults, setSearchResults] = useState<YouTubeVideo[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>(() => {
     const saved = localStorage.getItem('searchHistory');
     return saved ? JSON.parse(saved) : [];
@@ -125,36 +124,13 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     <div className="space-y-2 w-full">
       <div className="relative group">
         <div className="relative">
-          <div className="relative">
-            {isFocused && (
-              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            )}
-            <Input
-              type="text"
-              placeholder="Search YouTube..."
-              value={input}
-              onChange={handleInputChange}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              className={`${isFocused ? 'pl-8' : 'pl-3'} pr-8 normal-case transition-all animate-placeholder ${!isValid && input ? 'border-red-500' : ''}`}
-            />
-          </div>
-          <div className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}>
-            {searchResults.map((video) => (
-              <button
-                key={video.id}
-                className="w-full p-2 hover:bg-accent flex items-center gap-2 text-left"
-                onClick={() => handleVideoSelect(video)}
-              >
-                <img 
-                  src={video.thumbnail} 
-                  alt={video.title}
-                  className="w-16 aspect-video object-cover rounded"
-                />
-                <span className="text-sm line-clamp-2">{video.title}</span>
-              </button>
-            ))}
-          </div>
+          <Input
+            type="text"
+            placeholder="Search YouTube..."
+            value={input}
+            onChange={handleInputChange}
+            className={`normal-case transition-all ${!isValid && input ? 'border-red-500' : ''}`}
+          />
           {input && (
             <Button
               variant="ghost"
@@ -165,6 +141,22 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
               <X className="h-4 w-4" />
             </Button>
           )}
+        </div>
+        <div className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}>
+          {searchResults.map((video) => (
+            <button
+              key={video.id}
+              className="w-full p-2 hover:bg-accent flex items-center gap-2 text-left"
+              onClick={() => handleVideoSelect(video)}
+            >
+              <img 
+                src={video.thumbnail} 
+                alt={video.title}
+                className="w-16 aspect-video object-cover rounded"
+              />
+              <span className="text-sm line-clamp-2">{video.title}</span>
+            </button>
+          ))}
         </div>
       </div>
       {!isValid && input && (
