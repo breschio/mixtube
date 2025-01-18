@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Shuffle } from 'lucide-react';
+import { Plus, Shuffle, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getRelatedVideos, searchVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
@@ -95,6 +95,15 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     <div className="mt-4 space-y-2">
       <div className="overflow-x-auto no-scrollbar">
         <div className="flex gap-1 pb-2">
+          <Button
+            variant="outline"
+            onClick={() => setSelectedCategory('Search')}
+            className="text-xs px-3 whitespace-nowrap"
+            size="sm"
+          >
+            <Search className="h-3 w-3 mr-1" />
+            Filter
+          </Button>
           {VIDEO_CATEGORIES.map((category) => (
             <Button
               key={category}
