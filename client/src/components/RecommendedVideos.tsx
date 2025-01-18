@@ -80,9 +80,17 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     );
   }
 
-  const filteredVideos = videos.filter(video => 
-    selectedCategory === 'All' || video.title.includes(selectedCategory)
-  );
+  const { data: searchResults } = useQuery<YouTubeVideo[]>({
+    queryKey: ['youtube-search', selectedCategory],
+    queryFn: () => selectedCategory === 'All' ? 
+      getRelatedVideos(videoId!) : 
+      searchVideos(`${selectedCategory} music`),
+    enabled: !!videoId && !!selectedCategory,
+    staleTime: 60 * 1000,
+    gcTime: 2 * 60 * 1000,
+  });
+
+  const displayVideos = searchResults || videos || [];
 
   return (
     <div className="mt-4 space-y-2">
@@ -111,7 +119,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-4 mt-2">
-        {filteredVideos.map((video) => (
+        {displayVideos.map((video) => (
           <Card 
             key={video.id}
             className={cn(
