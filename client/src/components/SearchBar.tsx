@@ -14,6 +14,24 @@ interface SearchBarProps {
   videoId: string | null;
 }
 
+const defaultVideos: YouTubeVideo[] = [
+  {
+    id: "dQw4w9WgXcQ",
+    title: "Rick Astley - Never Gonna Give You Up",
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg"
+  },
+  {
+    id: "jNQXAC9IVRw",
+    title: "Me at the zoo",
+    thumbnail: "https://img.youtube.com/vi/jNQXAC9IVRw/mqdefault.jpg"
+  },
+  {
+    id: "9bZkp7q19f0",
+    title: "PSY - GANGNAM STYLE(강남스타일)",
+    thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg"
+  }
+];
+
 export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
   const [input, setInput] = useState(videoId ? `https://www.youtube.com/watch?v=${videoId}` : '');
   const [isValid, setIsValid] = useState(true);
@@ -31,7 +49,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
 
   const extractVideoId = (input: string): string | null => {
     const trimmedInput = input.trim();
-    
+
     for (const pattern of patterns) {
       const match = trimmedInput.match(pattern);
       if (match) {
@@ -39,7 +57,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
         return match[1];
       }
     }
-    
+
     setIsValid(false);
     return null;
   };
@@ -47,7 +65,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newInput = e.target.value;
     setInput(newInput);
-    
+
     const videoId = extractVideoId(newInput);
     if (videoId) {
       onVideoSelect(videoId);
@@ -55,17 +73,21 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
       setSearchResults([]);
       return;
     }
-    
+
     if (newInput.length > 2) {
       setIsSearching(true);
       try {
         const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(newInput)}`);
+        if (!response.ok) {
+          throw new Error('Search failed');
+        }
         const results = await response.json();
         setSearchResults(results);
         setIsValid(true);
       } catch (error) {
         console.error('Search failed:', error);
-        setIsValid(false);
+        setIsValid(true); 
+        setSearchResults(defaultVideos); 
       }
       setIsSearching(false);
     } else {
