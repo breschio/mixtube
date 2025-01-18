@@ -12,6 +12,7 @@ interface YouTubeVideo {
 interface SearchBarProps {
   onVideoSelect: (videoId: string) => void;
   videoId: string | null;
+  isRightColumn?: boolean;
 }
 
 const defaultVideos: YouTubeVideo[] = [
@@ -32,7 +33,7 @@ const defaultVideos: YouTubeVideo[] = [
   }
 ];
 
-export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
+export default function SearchBar({ onVideoSelect, videoId, isRightColumn = false }: SearchBarProps) {
   const [input, setInput] = useState(videoId ? `https://www.youtube.com/watch?v=${videoId}` : '');
   const [isValid, setIsValid] = useState(true);
   const [searchResults, setSearchResults] = useState<YouTubeVideo[]>([]);
@@ -86,8 +87,13 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
         setIsValid(true);
       } catch (error) {
         console.error('Search failed:', error);
-        setIsValid(true); 
-        setSearchResults(defaultVideos); 
+        if (isRightColumn) {
+          setIsValid(true);
+          setSearchResults(defaultVideos);
+        } else {
+          setIsValid(false);
+          setSearchResults([]);
+        }
       }
       setIsSearching(false);
     } else {
