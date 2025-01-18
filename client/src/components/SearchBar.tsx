@@ -1,8 +1,13 @@
-
-import { useState, useEffect } from 'react';
-import { X, Search } from 'lucide-react';
+import { useState } from 'react';
+import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+
+interface YouTubeVideo {
+  id: string;
+  title: string;
+  thumbnail: string;
+}
 
 interface SearchBarProps {
   onVideoSelect: (videoId: string) => void;
