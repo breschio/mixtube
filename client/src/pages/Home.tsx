@@ -4,6 +4,7 @@ import VideoPlayer from "@/components/VideoPlayer";
 import DJControls from "@/components/DJControls";
 import RecommendedVideos from "@/components/RecommendedVideos";
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Home() {
   const [videos, setVideos] = useState<{ left: string | null; right: string | null }>({
@@ -30,8 +31,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0A0A0B]">
       <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-8 py-4">
-        <div className="text-white font-mono text-lg">
-          mixtube
+        <div className="flex justify-between items-center">
+          <div className="text-white font-mono text-lg">
+            mixtube
+          </div>
+          <Avatar className="h-8 w-8">
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
         </div>
       </header>
       <div className="p-2 sm:p-4 md:p-6 lg:p-8">
