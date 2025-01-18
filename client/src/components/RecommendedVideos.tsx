@@ -1,12 +1,12 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Shuffle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Plus, Shuffle, Search } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { getRelatedVideos, searchVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
-
 interface RecommendedVideosProps {
   videoId: string | null;
   onVideoSelect: (videoId: string) => void;
@@ -21,27 +21,11 @@ const VIDEO_CATEGORIES = [
   'Sports'
 ];
 
-// Fallback data for when API fails
-const FALLBACK_VIDEOS: YouTubeVideo[] = [
-  {
-    id: "dQw4w9WgXcQ",
-    title: "Rick Astley - Never Gonna Give You Up (Official Music Video)",
-    thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg"
-  },
-  {
-    id: "y6120QOlsfU",
-    title: "Darude - Sandstorm (Official Music Video)",
-    thumbnail: "https://i.ytimg.com/vi/y6120QOlsfU/mqdefault.jpg"
-  },
-  {
-    id: "9bZkp7q19f0",
-    title: "PSY - GANGNAM STYLE(강남스타일) M/V",
-    thumbnail: "https://i.ytimg.com/vi/9bZkp7q19f0/mqdefault.jpg"
-  }
-];
-
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
   const queryClient = useQueryClient();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(() => {
     const saved = localStorage.getItem(`filter-${videoId}`);
     return saved || 'For You';
@@ -55,32 +39,19 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
 
   const { data: currentVideos, isLoading, error, isError, refetch } = useQuery<YouTubeVideo[]>({
     queryKey: ['videos', videoId, selectedCategory],
-    queryFn: async () => {
+    queryFn: () => {
       if (!videoId) return [];
-      try {
-        const videos = selectedCategory === 'For You' ? 
-          await getRelatedVideos(videoId) : 
-          await searchVideos(`${selectedCategory} music`);
-        return videos;
-      } catch (error) {
-        if (error instanceof Error && 
-            (error.message.includes('quota exceeded') || 
-             error.message.includes('API key') ||
-             error.message.includes('Rate limit exceeded'))) {
-          // Return fallback data if API quota is exceeded
-          return FALLBACK_VIDEOS;
-        }
-        throw error;
-      }
+      return selectedCategory === 'For You' ? 
+        getRelatedVideos(videoId) : 
+        searchVideos(`${selectedCategory} music`);
     },
     enabled: !!videoId,
     staleTime: 60 * 1000,
     gcTime: 2 * 60 * 1000,
     retry: (failureCount, error) => {
-      if (error instanceof Error &&
-          (error.message?.includes('quota exceeded') || 
-           error.message?.includes('API key') ||
-           error.message?.includes('Rate limit exceeded'))) {
+      if (error.message?.includes('quota exceeded') || 
+          error.message?.includes('API key') ||
+          error.message?.includes('Rate limit exceeded')) {
         return false;
       }
       return failureCount < 2;
@@ -113,22 +84,53 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     );
   }
 
-  if (isError && !currentVideos?.length) {
+  if (isError || !currentVideos?.length) {
     return (
       <div className="mt-4 p-4 text-center">
         <p className="text-sm text-muted-foreground">
-          Unable to load videos at the moment. Please try again later.
+          {error instanceof Error ? error.message : 'No videos available'}
         </p>
       </div>
     );
   }
 
-  const videos = currentVideos || FALLBACK_VIDEOS;
-
   return (
     <div className="mt-4 space-y-2">
       <div className="overflow-x-auto no-scrollbar">
         <div className="flex gap-1 pb-2">
+          {isSearchExpanded ? (
+            <div className="relative">
+              <Input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (e.target.value) {
+                    setSelectedCategory(`search:${e.target.value}`);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    setIsSearchExpanded(false);
+                    setSearchQuery('');
+                  }
+                }}
+                placeholder="Search YouTube"
+                className="w-48 h-7 text-xs animate-placeholder"
+                onBlur={() => !searchQuery && setIsSearchExpanded(false)}
+              />
+            </div>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => setIsSearchExpanded(true)}
+              className="text-xs px-3 whitespace-nowrap"
+              size="sm"
+            >
+              <Search className="h-3 w-3" />
+            </Button>
+          )}
           {VIDEO_CATEGORIES.map((category) => (
             <Button
               key={category}
@@ -155,7 +157,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-4 mt-2">
-        {videos.map((video) => (
+        {currentVideos.map((video) => (
           <Card 
             key={video.id}
             className={cn(
