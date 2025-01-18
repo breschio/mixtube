@@ -17,20 +17,21 @@ export default function Home() {
   const [volumes, setVolumes] = useState({ main: 0.5, left: 0.1, right: 0.25 });
   const [crossFader, setCrossFader] = useState(0.5);
 
-  const handleVideoSelect = (videoId: string, target: 'main' | 'left' | 'right') => {
-    if (target === 'main') {
-      setMainVideo(videoId);
-    } else {
-      setVideos(prev => ({
-        ...prev,
-        [target]: videoId
-      }));
-    }
+  const handleVideoSelect = (videoId: string, target: 'left' | 'right') => {
+    setVideos(prev => ({
+      ...prev,
+      [target]: videoId
+    }));
   };
 
   const calculateVolume = (baseVolume: number, side: 'left' | 'right') => {
     const crossFaderValue = side === 'left' ? 1 - crossFader : crossFader;
     return baseVolume * crossFaderValue;
+  };
+
+  const calculateOpacity = (side: 'left' | 'right') => {
+    const baseOpacity = side === 'left' ? 1 - crossFader : crossFader;
+    return Math.min(Math.max(baseOpacity * 1.5, 0.2), 1); // Ensures minimum visibility of 0.2
   };
 
   return (
@@ -47,34 +48,34 @@ export default function Home() {
         </div>
       </header>
       <div className="p-2 sm:p-4 md:p-6 lg:p-8">
-        {/* Main Video Section */}
-        <div className="mb-8 max-w-[1200px] mx-auto">
-          <Card className="overflow-hidden border-none bg-transparent">
+        {/* Video Mix Section */}
+        <div className="relative max-w-[1200px] mx-auto mb-8 aspect-video">
+          <div className="absolute inset-0 z-10" style={{ opacity: calculateOpacity('left') }}>
             <VideoPlayer 
-              videoId={mainVideo} 
-              side="main"
-              volume={volumes.main}
+              videoId={videos.left} 
+              side="left"
+              volume={calculateVolume(volumes.left, 'left')}
               playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, main: value }))}
-              onVideoSelect={(id) => handleVideoSelect(id, 'main')}
+              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+              onVideoSelect={(id) => handleVideoSelect(id, 'left')}
             />
-          </Card>
+          </div>
+          <div className="absolute inset-0 z-20" style={{ opacity: calculateOpacity('right') }}>
+            <VideoPlayer 
+              videoId={videos.right} 
+              side="right"
+              volume={calculateVolume(volumes.right, 'right')}
+              playing={playing}
+              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+              onVideoSelect={(id) => handleVideoSelect(id, 'right')}
+            />
+          </div>
         </div>
 
-        {/* DJ Mix Section */}
+        {/* Controls and Search Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(400px,2fr),minmax(200px,1fr),minmax(400px,2fr)] gap-4 sm:gap-6 lg:gap-8 items-start max-w-[2000px] mx-auto">
-          {/* Left Video Section */}
+          {/* Left Video Search and Recommendations */}
           <div className="space-y-4">
-            <Card className="overflow-hidden border-none bg-transparent">
-              <VideoPlayer 
-                videoId={videos.left} 
-                side="left" 
-                volume={calculateVolume(volumes.left, 'left')}
-                playing={playing}
-                onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-                onVideoSelect={(id) => handleVideoSelect(id, 'left')}
-              />
-            </Card>
             <SearchBar 
               onVideoSelect={(id) => handleVideoSelect(id, 'left')} 
               videoId={videos.left}
@@ -85,7 +86,7 @@ export default function Home() {
             />
           </div>
 
-          {/* DJ Controls - Only shown in large screens between videos */}
+          {/* DJ Controls */}
           <div className="hidden lg:flex items-stretch">
             <DJControls
               isPlaying={playing}
@@ -96,18 +97,8 @@ export default function Home() {
             />
           </div>
 
-          {/* Right Video Section */}
+          {/* Right Video Search and Recommendations */}
           <div className="space-y-4">
-            <Card className="overflow-hidden border-none bg-transparent">
-              <VideoPlayer 
-                videoId={videos.right} 
-                side="right"
-                volume={calculateVolume(volumes.right, 'right')}
-                playing={playing}
-                onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-                onVideoSelect={(id) => handleVideoSelect(id, 'right')}
-              />
-            </Card>
             <SearchBar 
               onVideoSelect={(id) => handleVideoSelect(id, 'right')} 
               videoId={videos.right}
@@ -119,7 +110,7 @@ export default function Home() {
             />
           </div>
 
-          {/* DJ Controls - Shown below videos on medium and small screens */}
+          {/* Mobile DJ Controls */}
           <div className="lg:hidden col-span-full">
             <DJControls
               isPlaying={playing}
