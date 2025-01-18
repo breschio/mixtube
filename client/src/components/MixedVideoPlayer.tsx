@@ -41,8 +41,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={leftOpacity}
-          muted={crossFaderValue === 1}
+          volume={leftOpacity} // Volume follows opacity
+          muted={crossFaderValue === 1} // Mute when faded out completely
           config={{
             youtube: {
               playerVars: {
@@ -58,7 +58,7 @@ export default function MixedVideoPlayer({
           }}
         />
       </div>
-      
+
       {/* Right Video Layer */}
       <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: rightOpacity }}>
         <ReactPlayer
@@ -67,8 +67,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={rightOpacity}
-          muted={crossFaderValue === 0}
+          volume={rightOpacity} // Volume follows opacity
+          muted={crossFaderValue === 0} // Mute when faded out completely
           config={{
             youtube: {
               playerVars: {

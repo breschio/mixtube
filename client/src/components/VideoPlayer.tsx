@@ -59,7 +59,8 @@ export default function VideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={volume}
+          volume={0} // Always mute source videos
+          muted={true} // Ensure source videos are muted
           controls={true}
           onReady={handlePlayerReady}
           onEnded={handleEnded}
