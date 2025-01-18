@@ -1,31 +1,27 @@
 import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
+import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import DJControls from "@/components/DJControls";
 import RecommendedVideos from "@/components/RecommendedVideos";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Home() {
-  const [mainVideo, setMainVideo] = useState<string | null>(null);
   const [videos, setVideos] = useState<{ left: string | null; right: string | null }>({
     left: 'xpvjPsme8_k',
     right: 'eR2FFb6Zg9Q'
   });
 
   const [playing, setPlaying] = useState(false);
-  const [volumes, setVolumes] = useState({ main: 0.5, left: 0.1, right: 0.25 });
+  const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
 
-  const handleVideoSelect = (videoId: string, target: 'main' | 'left' | 'right') => {
-    if (target === 'main') {
-      setMainVideo(videoId);
-    } else {
-      setVideos(prev => ({
-        ...prev,
-        [target]: videoId
-      }));
-    }
+  const handleVideoSelect = (videoId: string, target: 'left' | 'right') => {
+    setVideos(prev => ({
+      ...prev,
+      [target]: videoId
+    }));
   };
 
   const calculateVolume = (baseVolume: number, side: 'left' | 'right') => {
@@ -47,16 +43,14 @@ export default function Home() {
         </div>
       </header>
       <div className="p-2 sm:p-4 md:p-6 lg:p-8">
-        {/* Main Video Section */}
+        {/* Mixed Video Section */}
         <div className="mb-8 max-w-[1200px] mx-auto">
           <Card className="overflow-hidden border-none bg-transparent">
-            <VideoPlayer 
-              videoId={mainVideo} 
-              side="main"
-              volume={volumes.main}
+            <MixedVideoPlayer 
+              leftVideoId={videos.left}
+              rightVideoId={videos.right}
+              crossFaderValue={crossFader}
               playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, main: value }))}
-              onVideoSelect={(id) => handleVideoSelect(id, 'main')}
             />
           </Card>
         </div>
@@ -69,7 +63,7 @@ export default function Home() {
               <VideoPlayer 
                 videoId={videos.left} 
                 side="left" 
-                volume={calculateVolume(volumes.left, 'left')}
+                volume={volumes.left}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
                 onVideoSelect={(id) => handleVideoSelect(id, 'left')}
@@ -102,7 +96,7 @@ export default function Home() {
               <VideoPlayer 
                 videoId={videos.right} 
                 side="right"
-                volume={calculateVolume(volumes.right, 'right')}
+                volume={volumes.right}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
                 onVideoSelect={(id) => handleVideoSelect(id, 'right')}
@@ -111,7 +105,6 @@ export default function Home() {
             <SearchBar 
               onVideoSelect={(id) => handleVideoSelect(id, 'right')} 
               videoId={videos.right}
-              isRightColumn
             />
             <RecommendedVideos
               videoId={videos.right}
