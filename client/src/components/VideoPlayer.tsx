@@ -68,34 +68,38 @@ export default function VideoPlayer({
             config={{
               youtube: {
                 playerVars: {
-                  rel: 0,
-                  showinfo: 1,
-                  iv_load_policy: 3,
+                  controls: 0,
                   modestbranding: 1,
-                  enablejsapi: 1,
-                  origin: window.location.origin,
                   playsinline: 1,
+                  rel: 0,
+                  showinfo: 0,
+                  iv_load_policy: 3,
+                  origin: window.location.origin,
                 }
               }
             }}
           />
         </div>
-        <div className="flex-1 min-w-0 space-y-2">
+        <div className="flex-1 min-w-0">
           <h3 className="text-sm font-medium line-clamp-2">
-            {/* We'll get video title from YouTube API later */}
-            Now Playing ({side} deck)
+            {/* We'll fetch this from YouTube API */}
+            The Best Music Mix 2024 🎧 EDM Remixes of Popular Songs
           </h3>
-          <div className="flex items-center gap-4">
-            <Volume2 className="h-4 w-4 text-primary/80" />
-            <Slider
-              value={[volume]}
-              max={1}
-              step={0.01}
-              onValueChange={([value]) => onVolumeChange(value)}
-              className="flex-1"
-            />
-          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {/* We'll fetch this from YouTube API */}
+            Music Mix
+          </p>
         </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <Volume2 className="h-4 w-4 text-primary/80" />
+        <Slider
+          value={[volume]}
+          max={1}
+          step={0.01}
+          onValueChange={([value]) => onVolumeChange(value)}
+          className="flex-1"
+        />
       </div>
     </div>
   );
