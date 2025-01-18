@@ -90,16 +90,17 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
 
   return (
     <div className="space-y-2 w-full">
-      <div className="relative">
-        <Input
-          type="text"
-          placeholder="Search or paste YouTube URL..."
-          value={input}
-          onChange={handleInputChange}
-          className={`pr-8 normal-case ${!isValid && input ? 'border-red-500' : ''}`}
-        />
-        {searchResults.length > 0 && (
-          <div className="absolute z-50 mt-1 w-full bg-background border rounded-md shadow-lg">
+      <div className="relative group">
+        <div className="relative">
+          <Search className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${input ? 'text-primary' : 'text-muted-foreground'}`} />
+          <Input
+            type="text"
+            placeholder="Search YouTube..."
+            value={input}
+            onChange={handleInputChange}
+            className={`pl-9 pr-8 normal-case transition-all animate-placeholder ${!isValid && input ? 'border-red-500' : ''}`}
+          />
+        <div className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}>
             {searchResults.map((video) => (
               <button
                 key={video.id}

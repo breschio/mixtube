@@ -1,10 +1,15 @@
 @keyframes placeholderBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.4; }
 }
 
 .animate-placeholder::placeholder {
-  animation: placeholderBlink 2s ease-in-out infinite;
+  animation: placeholderBlink 1.5s ease-in-out infinite;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.animate-placeholder:focus::placeholder {
+  opacity: 0.4;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:wght@400;700&display=swap');
