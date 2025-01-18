@@ -29,7 +29,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B]">
-      <header className="w-full bg-card/90 border-b border-primary/20 px-8 py-4">
+      <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-8 py-4">
         <div className="text-white font-mono text-lg">
           mixtube
         </div>
