@@ -5,15 +5,25 @@ import { Plus, Shuffle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getRelatedVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface RecommendedVideosProps {
   videoId: string | null;
   onVideoSelect: (videoId: string) => void;
 }
 
+const VIDEO_CATEGORIES = [
+  'All',
+  'Music',
+  'Gaming',
+  'Entertainment',
+  'Education',
+  'Sports'
+];
+
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
   const queryClient = useQueryClient();
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   const { data: videos, isLoading, error, isError, refetch } = useQuery<YouTubeVideo[]>({
     queryKey: [`/api/youtube/related`, videoId],
@@ -70,9 +80,25 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     );
   }
 
+  const filteredVideos = videos.filter(video => 
+    selectedCategory === 'All' || video.title.includes(selectedCategory)
+  );
+
   return (
     <div className="mt-4 space-y-2">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap gap-2">
+        {VIDEO_CATEGORIES.map((category) => (
+          <Button
+            key={category}
+            variant={selectedCategory === category ? "default" : "outline"}
+            onClick={() => setSelectedCategory(category)}
+            className="text-sm"
+          >
+            {category}
+          </Button>
+        ))}
+      </div>
+      <div className="flex items-center justify-between mt-2">
         <h3 className="text-xs font-bold text-primary/80">UP NEXT</h3>
         <Button
           size="sm"
@@ -84,8 +110,8 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
           Shuffle
         </Button>
       </div>
-      <div className="space-y-2">
-        {videos.map((video) => (
+      <div className="grid grid-cols-1 gap-4 mt-2">
+        {filteredVideos.map((video) => (
           <Card 
             key={video.id}
             className={cn(
