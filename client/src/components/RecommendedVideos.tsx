@@ -23,9 +23,21 @@ const VIDEO_CATEGORIES = [
 
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
   const queryClient = useQueryClient();
-  const [selectedCategory, setSelectedCategory] = useState('For You');
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    const saved = localStorage.getItem(`filter-${videoId}`);
+    return saved || 'For You';
+  });
+
+  useEffect(() => {
+    if (videoId && selectedCategory) {
+      localStorage.setItem(`filter-${videoId}`, selectedCategory);
+    }
+  }, [videoId, selectedCategory]);
 
   const { data: currentVideos, isLoading, error, isError, refetch } = useQuery<YouTubeVideo[]>({
+    ...
+    staleTime: Infinity,
+    cacheTime: Infinity,
     queryKey: ['videos', videoId, selectedCategory],
     queryFn: () => {
       if (!videoId) return [];
