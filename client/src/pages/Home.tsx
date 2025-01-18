@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0A0A0B]">
       <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-8 py-4">
-        <div className="flex justify-between items-center">
+        <div className="max-w-[2000px] w-4/5 mx-auto flex justify-between items-center">
           <div className="text-white font-mono text-lg">
             mixtube
           </div>
@@ -42,9 +42,9 @@ export default function Home() {
           </Avatar>
         </div>
       </header>
-      <div className="p-2 sm:p-4 md:p-6 lg:p-8">
+      <main className="w-4/5 max-w-[2000px] mx-auto p-8">
         {/* Mixed Video Section */}
-        <div className="mb-8 max-w-[1200px] mx-auto">
+        <div className="mb-8">
           <Card className="overflow-hidden border-none bg-transparent">
             <MixedVideoPlayer 
               leftVideoId={videos.left}
@@ -56,7 +56,7 @@ export default function Home() {
         </div>
 
         {/* DJ Mix Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(400px,2fr),minmax(200px,1fr),minmax(400px,2fr)] gap-4 sm:gap-6 lg:gap-8 items-start max-w-[2000px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(400px,2fr),minmax(200px,1fr),minmax(400px,2fr)] gap-4 sm:gap-6 lg:gap-8 items-start">
           {/* Left Video Section */}
           <div className="space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
@@ -123,7 +123,7 @@ export default function Home() {
             />
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
