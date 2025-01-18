@@ -7,20 +7,25 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Home() {
+  const [mainVideo, setMainVideo] = useState<string | null>(null);
   const [videos, setVideos] = useState<{ left: string | null; right: string | null }>({
     left: 'xpvjPsme8_k',
     right: 'eR2FFb6Zg9Q'
   });
 
   const [playing, setPlaying] = useState(false);
-  const [volumes, setVolumes] = useState({ left: 0.1, right: 0.25 });
+  const [volumes, setVolumes] = useState({ main: 0.5, left: 0.1, right: 0.25 });
   const [crossFader, setCrossFader] = useState(0.5);
 
-  const handleVideoSelect = (videoId: string, side: 'left' | 'right') => {
-    setVideos(prev => ({
-      ...prev,
-      [side]: videoId
-    }));
+  const handleVideoSelect = (videoId: string, target: 'main' | 'left' | 'right') => {
+    if (target === 'main') {
+      setMainVideo(videoId);
+    } else {
+      setVideos(prev => ({
+        ...prev,
+        [target]: videoId
+      }));
+    }
   };
 
   const calculateVolume = (baseVolume: number, side: 'left' | 'right') => {
@@ -42,73 +47,95 @@ export default function Home() {
         </div>
       </header>
       <div className="p-2 sm:p-4 md:p-6 lg:p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(400px,2fr),minmax(200px,1fr),minmax(400px,2fr)] gap-4 sm:gap-6 lg:gap-8 items-start max-w-[2000px] mx-auto">
-        {/* Left Video Section */}
-        <div className="space-y-4">
+        {/* Main Video Section */}
+        <div className="mb-8 max-w-[1200px] mx-auto">
           <Card className="overflow-hidden border-none bg-transparent">
             <VideoPlayer 
-              videoId={videos.left} 
-              side="left" 
-              volume={calculateVolume(volumes.left, 'left')}
+              videoId={mainVideo} 
+              side="main"
+              volume={volumes.main}
               playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, main: value }))}
+              onVideoSelect={(id) => handleVideoSelect(id, 'main')}
+            />
+          </Card>
+          <div className="mt-4">
+            <SearchBar 
+              onVideoSelect={(id) => handleVideoSelect(id, 'main')} 
+              videoId={mainVideo}
+            />
+          </div>
+        </div>
+
+        {/* DJ Mix Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(400px,2fr),minmax(200px,1fr),minmax(400px,2fr)] gap-4 sm:gap-6 lg:gap-8 items-start max-w-[2000px] mx-auto">
+          {/* Left Video Section */}
+          <div className="space-y-4">
+            <Card className="overflow-hidden border-none bg-transparent">
+              <VideoPlayer 
+                videoId={videos.left} 
+                side="left" 
+                volume={calculateVolume(volumes.left, 'left')}
+                playing={playing}
+                onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                onVideoSelect={(id) => handleVideoSelect(id, 'left')}
+              />
+            </Card>
+            <SearchBar 
+              onVideoSelect={(id) => handleVideoSelect(id, 'left')} 
+              videoId={videos.left}
+            />
+            <RecommendedVideos
+              videoId={videos.left}
               onVideoSelect={(id) => handleVideoSelect(id, 'left')}
             />
-          </Card>
-          <SearchBar 
-            onVideoSelect={(id) => handleVideoSelect(id, 'left')} 
-            videoId={videos.left}
-          />
-          <RecommendedVideos
-            videoId={videos.left}
-            onVideoSelect={(id) => handleVideoSelect(id, 'left')}
-          />
-        </div>
+          </div>
 
-        {/* DJ Controls - Only shown in large screens between videos */}
-        <div className="hidden lg:flex items-stretch">
-          <DJControls
-            isPlaying={playing}
-            onPlayAll={() => setPlaying(true)}
-            onPauseAll={() => setPlaying(false)}
-            crossFader={crossFader}
-            onCrossFaderChange={setCrossFader}
-          />
-        </div>
+          {/* DJ Controls - Only shown in large screens between videos */}
+          <div className="hidden lg:flex items-stretch">
+            <DJControls
+              isPlaying={playing}
+              onPlayAll={() => setPlaying(true)}
+              onPauseAll={() => setPlaying(false)}
+              crossFader={crossFader}
+              onCrossFaderChange={setCrossFader}
+            />
+          </div>
 
-        {/* Right Video Section */}
-        <div className="space-y-4">
-          <Card className="overflow-hidden border-none bg-transparent">
-            <VideoPlayer 
-              videoId={videos.right} 
-              side="right"
-              volume={calculateVolume(volumes.right, 'right')}
-              playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+          {/* Right Video Section */}
+          <div className="space-y-4">
+            <Card className="overflow-hidden border-none bg-transparent">
+              <VideoPlayer 
+                videoId={videos.right} 
+                side="right"
+                volume={calculateVolume(volumes.right, 'right')}
+                playing={playing}
+                onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                onVideoSelect={(id) => handleVideoSelect(id, 'right')}
+              />
+            </Card>
+            <SearchBar 
+              onVideoSelect={(id) => handleVideoSelect(id, 'right')} 
+              videoId={videos.right}
+              isRightColumn
+            />
+            <RecommendedVideos
+              videoId={videos.right}
               onVideoSelect={(id) => handleVideoSelect(id, 'right')}
             />
-          </Card>
-          <SearchBar 
-            onVideoSelect={(id) => handleVideoSelect(id, 'right')} 
-            videoId={videos.right}
-          />
-          <RecommendedVideos
-            videoId={videos.right}
-            onVideoSelect={(id) => handleVideoSelect(id, 'right')}
-          />
-        </div>
+          </div>
 
-        {/* DJ Controls - Shown below videos on medium and small screens */}
-        <div className="lg:hidden col-span-full">
-          <DJControls
-            isPlaying={playing}
-            onPlayAll={() => setPlaying(true)}
-            onPauseAll={() => setPlaying(false)}
-            crossFader={crossFader}
-            onCrossFaderChange={setCrossFader}
-          />
+          {/* DJ Controls - Shown below videos on medium and small screens */}
+          <div className="lg:hidden col-span-full">
+            <DJControls
+              isPlaying={playing}
+              onPlayAll={() => setPlaying(true)}
+              onPauseAll={() => setPlaying(false)}
+              crossFader={crossFader}
+              onCrossFaderChange={setCrossFader}
+            />
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );
