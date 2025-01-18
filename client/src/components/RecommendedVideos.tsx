@@ -1,12 +1,12 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Shuffle, Search } from 'lucide-react';
-import { useRef, useEffect, useState } from 'react';
+import { Plus, Shuffle } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { getRelatedVideos, searchVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
+
 interface RecommendedVideosProps {
   videoId: string | null;
   onVideoSelect: (videoId: string) => void;
@@ -23,9 +23,6 @@ const VIDEO_CATEGORIES = [
 
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
   const queryClient = useQueryClient();
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(() => {
     const saved = localStorage.getItem(`filter-${videoId}`);
     return saved || 'For You';
@@ -98,39 +95,6 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     <div className="mt-4 space-y-2">
       <div className="overflow-x-auto no-scrollbar">
         <div className="flex gap-1 pb-2">
-          {isSearchExpanded ? (
-            <div className="relative">
-              <Input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  if (e.target.value) {
-                    setSelectedCategory(`search:${e.target.value}`);
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    setIsSearchExpanded(false);
-                    setSearchQuery('');
-                  }
-                }}
-                placeholder="Search YouTube"
-                className="w-48 h-7 text-xs animate-placeholder"
-                onBlur={() => !searchQuery && setIsSearchExpanded(false)}
-              />
-            </div>
-          ) : (
-            <Button
-              variant="outline"
-              onClick={() => setIsSearchExpanded(true)}
-              className="text-xs px-3 whitespace-nowrap"
-              size="sm"
-            >
-              <Search className="h-3 w-3" />
-            </Button>
-          )}
           {VIDEO_CATEGORIES.map((category) => (
             <Button
               key={category}
