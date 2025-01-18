@@ -106,7 +106,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
                 <Button
                   size="sm"
                   variant="default"
-                  className="mt-1 ml-auto hover:bg-primary/80 transition-colors"
+                  className="mt-1 ml-auto bg-primary/80 hover:bg-primary transition-colors"
                   onClick={() => onVideoSelect(video.id)}
                 >
                   <Plus className="h-4 w-4 mr-1" />
