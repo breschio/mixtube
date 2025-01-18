@@ -53,7 +53,7 @@ export default function VideoPlayer({
   return (
     <div className="space-y-4">
       <div className="flex gap-4 items-start">
-        <div className="w-1/3 bg-black rounded-lg overflow-hidden">
+        <div className="w-32 aspect-video bg-black rounded-lg overflow-hidden">
           <ReactPlayer
             ref={playerRef}
             url={`https://www.youtube.com/watch?v=${videoId}`}
