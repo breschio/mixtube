@@ -1,3 +1,10 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @keyframes placeholderBlink {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 0.4; }
@@ -12,12 +19,6 @@
   opacity: 0.4;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:wght@400;700&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -30,11 +31,11 @@
 
 @layer base {
   * {
-    @apply border-border uppercase;
+    @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground font-mono antialiased;
+    @apply bg-background text-foreground antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -65,5 +66,5 @@
 
 .mixtube-logo {
   font-family: 'Space Grotesk', sans-serif;
-  @apply text-2xl font-bold tracking-tight normal-case;
+  @apply text-2xl font-bold tracking-tight;
 }
