@@ -25,12 +25,17 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
   const queryClient = useQueryClient();
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const { data: videos, isLoading, error, isError, refetch } = useQuery<YouTubeVideo[]>({
-    queryKey: [`/api/youtube/related`, videoId],
-    queryFn: () => getRelatedVideos(videoId!),
+  const { data: currentVideos, isLoading, error, isError, refetch } = useQuery<YouTubeVideo[]>({
+    queryKey: ['videos', videoId, selectedCategory],
+    queryFn: () => {
+      if (!videoId) return [];
+      return selectedCategory === 'All' ? 
+        getRelatedVideos(videoId) : 
+        searchVideos(`${selectedCategory} music`);
+    },
     enabled: !!videoId,
-    staleTime: 60 * 1000, // Consider data fresh for 1 minute
-    gcTime: 2 * 60 * 1000, // Keep in cache for 2 minutes
+    staleTime: 60 * 1000,
+    gcTime: 2 * 60 * 1000,
     retry: (failureCount, error) => {
       if (error.message?.includes('quota exceeded') || 
           error.message?.includes('API key') ||
@@ -41,18 +46,15 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     },
   });
 
-  // Effect to handle videoId changes
   useEffect(() => {
     if (videoId) {
-      // Invalidate and refetch when videoId changes
-      queryClient.invalidateQueries({ queryKey: [`/api/youtube/related`, videoId] });
+      queryClient.invalidateQueries({ queryKey: ['videos', videoId, selectedCategory] });
       refetch();
     }
-  }, [videoId, queryClient, refetch]);
+  }, [videoId, selectedCategory, queryClient, refetch]);
 
   const handleShuffle = async () => {
-    // Invalidate the current query to force a refetch
-    await queryClient.invalidateQueries({ queryKey: [`/api/youtube/related`, videoId] });
+    await queryClient.invalidateQueries({ queryKey: ['videos', videoId, selectedCategory] });
     refetch();
   };
 
@@ -70,27 +72,15 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     );
   }
 
-  if (isError || !videos?.length) {
+  if (isError || !currentVideos?.length) {
     return (
       <div className="mt-4 p-4 text-center">
         <p className="text-sm text-muted-foreground">
-          {error instanceof Error ? error.message : 'No related videos available'}
+          {error instanceof Error ? error.message : 'No videos available'}
         </p>
       </div>
     );
   }
-
-  const { data: searchResults } = useQuery<YouTubeVideo[]>({
-    queryKey: ['youtube-search', selectedCategory],
-    queryFn: () => selectedCategory === 'All' ? 
-      getRelatedVideos(videoId!) : 
-      searchVideos(`${selectedCategory} music`),
-    enabled: !!videoId && !!selectedCategory,
-    staleTime: 60 * 1000,
-    gcTime: 2 * 60 * 1000,
-  });
-
-  const displayVideos = searchResults || videos || [];
 
   return (
     <div className="mt-4 space-y-2">
@@ -119,7 +109,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-4 mt-2">
-        {displayVideos.map((video) => (
+        {currentVideos.map((video) => (
           <Card 
             key={video.id}
             className={cn(
