@@ -59,12 +59,6 @@ export default function Home() {
               onVideoSelect={(id) => handleVideoSelect(id, 'main')}
             />
           </Card>
-          <div className="mt-4">
-            <SearchBar 
-              onVideoSelect={(id) => handleVideoSelect(id, 'main')} 
-              videoId={mainVideo}
-            />
-          </div>
         </div>
 
         {/* DJ Mix Section */}
