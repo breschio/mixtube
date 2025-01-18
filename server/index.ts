@@ -1,10 +1,23 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from 'express-session';
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { authRoutes } from "./auth";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: true }
+}));
+
+// Auth routes
+app.get('/auth/login', authRoutes.login);
+app.get('/auth/callback', authRoutes.callback);
+app.get('/auth/logout', authRoutes.logout);
 
 app.use((req, res, next) => {
   const start = Date.now();
