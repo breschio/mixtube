@@ -7,10 +7,11 @@ interface YouTubeVideo {
   id: string;
   title: string;
   thumbnail: string;
+  channelTitle: string;
 }
 
 interface SearchBarProps {
-  onVideoSelect: (videoId: string) => void;
+  onVideoSelect: (video: YouTubeVideo) => void;
   videoId: string | null;
   isRightColumn?: boolean;
 }
@@ -19,17 +20,20 @@ const defaultVideos: YouTubeVideo[] = [
   {
     id: "dQw4w9WgXcQ",
     title: "Rick Astley - Never Gonna Give You Up",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg"
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+    channelTitle: "Rick Astley"
   },
   {
     id: "jNQXAC9IVRw",
     title: "Me at the zoo",
-    thumbnail: "https://img.youtube.com/vi/jNQXAC9IVRw/mqdefault.jpg"
+    thumbnail: "https://img.youtube.com/vi/jNQXAC9IVRw/mqdefault.jpg",
+    channelTitle: "jawed"
   },
   {
     id: "9bZkp7q19f0",
     title: "PSY - GANGNAM STYLE(강남스타일)",
-    thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg"
+    thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg",
+    channelTitle: "PSY"
   }
 ];
 
@@ -69,8 +73,23 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
 
     const videoId = extractVideoId(newInput);
     if (videoId) {
-      onVideoSelect(videoId);
-      addToHistory(newInput);
+      // Fetch video details from API
+      try {
+        const response = await fetch(`/api/youtube/videos/${videoId}`);
+        if (!response.ok) throw new Error('Failed to fetch video details');
+        const videoDetails = await response.json();
+        onVideoSelect(videoDetails);
+        addToHistory(newInput);
+      } catch (error) {
+        console.error('Error fetching video details:', error);
+        // Fallback to basic video info
+        onVideoSelect({
+          id: videoId,
+          title: 'Video Title Unavailable',
+          thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+          channelTitle: 'Channel Unavailable'
+        });
+      }
       setSearchResults([]);
       return;
     }
@@ -104,7 +123,7 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
   const handleVideoSelect = (video: YouTubeVideo) => {
     const url = `https://www.youtube.com/watch?v=${video.id}`;
     setInput(url);
-    onVideoSelect(video.id);
+    onVideoSelect(video);
     addToHistory(url);
     setSearchResults([]);
   };
@@ -154,7 +173,10 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
                 alt={video.title}
                 className="w-16 aspect-video object-cover rounded"
               />
-              <span className="text-sm line-clamp-2">{video.title}</span>
+              <div className="flex-1 min-w-0">
+                <span className="text-sm line-clamp-2">{video.title}</span>
+                <span className="text-xs text-muted-foreground">{video.channelTitle}</span>
+              </div>
             </button>
           ))}
         </div>

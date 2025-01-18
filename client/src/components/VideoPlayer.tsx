@@ -11,6 +11,8 @@ interface VideoPlayerProps {
   playing: boolean;
   onVolumeChange: (value: number) => void;
   onVideoSelect: (videoId: string) => void;
+  videoTitle?: string;
+  channelTitle?: string;
 }
 
 export default function VideoPlayer({ 
@@ -20,6 +22,8 @@ export default function VideoPlayer({
   playing,
   onVolumeChange,
   onVideoSelect,
+  videoTitle = '',
+  channelTitle = '',
 }: VideoPlayerProps) {
   const playerRef = useRef<ReactPlayer>(null);
 
@@ -82,12 +86,10 @@ export default function VideoPlayer({
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-medium line-clamp-2">
-            {/* We'll fetch this from YouTube API */}
-            The Best Music Mix 2024 🎧 EDM Remixes of Popular Songs
+            {videoTitle}
           </h3>
           <p className="text-xs text-muted-foreground mt-1">
-            {/* We'll fetch this from YouTube API */}
-            Music Mix
+            {channelTitle}
           </p>
         </div>
       </div>

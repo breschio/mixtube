@@ -7,20 +7,37 @@ import RecommendedVideos from "@/components/RecommendedVideos";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
+interface VideoInfo {
+  id: string;
+  title: string;
+  channelTitle: string;
+}
+
 export default function Home() {
-  const [videos, setVideos] = useState<{ left: string | null; right: string | null }>({
-    left: 'xpvjPsme8_k',
-    right: 'eR2FFb6Zg9Q'
+  const [videos, setVideos] = useState<{ 
+    left: VideoInfo | null; 
+    right: VideoInfo | null;
+  }>({
+    left: {
+      id: 'xpvjPsme8_k',
+      title: 'Default Left Video',
+      channelTitle: 'Default Channel'
+    },
+    right: {
+      id: 'eR2FFb6Zg9Q',
+      title: 'Default Right Video',
+      channelTitle: 'Default Channel'
+    }
   });
 
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
 
-  const handleVideoSelect = (videoId: string, target: 'left' | 'right') => {
+  const handleVideoSelect = (video: VideoInfo, target: 'left' | 'right') => {
     setVideos(prev => ({
       ...prev,
-      [target]: videoId
+      [target]: video
     }));
   };
 
@@ -47,8 +64,8 @@ export default function Home() {
         <div className="mb-8">
           <Card className="overflow-hidden border-none bg-transparent">
             <MixedVideoPlayer 
-              leftVideoId={videos.left}
-              rightVideoId={videos.right}
+              leftVideoId={videos.left?.id || null}
+              rightVideoId={videos.right?.id || null}
               crossFaderValue={crossFader}
               playing={playing}
             />
@@ -61,21 +78,23 @@ export default function Home() {
           <div className="space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
               <VideoPlayer 
-                videoId={videos.left} 
+                videoId={videos.left?.id || null}
+                videoTitle={videos.left?.title}
+                channelTitle={videos.left?.channelTitle}
                 side="left" 
                 volume={volumes.left}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-                onVideoSelect={(id) => handleVideoSelect(id, 'left')}
+                onVideoSelect={(id) => handleVideoSelect({ id, title: 'New Video', channelTitle: 'Channel' }, 'left')}
               />
             </Card>
             <SearchBar 
-              onVideoSelect={(id) => handleVideoSelect(id, 'left')} 
-              videoId={videos.left}
+              onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
+              videoId={videos.left?.id || null}
             />
             <RecommendedVideos
-              videoId={videos.left}
-              onVideoSelect={(id) => handleVideoSelect(id, 'left')}
+              videoId={videos.left?.id || null}
+              onVideoSelect={(id) => handleVideoSelect({ id, title: 'New Video', channelTitle: 'Channel' }, 'left')}
             />
           </div>
 
@@ -94,21 +113,23 @@ export default function Home() {
           <div className="space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
               <VideoPlayer 
-                videoId={videos.right} 
+                videoId={videos.right?.id || null}
+                videoTitle={videos.right?.title}
+                channelTitle={videos.right?.channelTitle}
                 side="right"
                 volume={volumes.right}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-                onVideoSelect={(id) => handleVideoSelect(id, 'right')}
+                onVideoSelect={(id) => handleVideoSelect({ id, title: 'New Video', channelTitle: 'Channel' }, 'right')}
               />
             </Card>
             <SearchBar 
-              onVideoSelect={(id) => handleVideoSelect(id, 'right')} 
-              videoId={videos.right}
+              onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
+              videoId={videos.right?.id || null}
             />
             <RecommendedVideos
-              videoId={videos.right}
-              onVideoSelect={(id) => handleVideoSelect(id, 'right')}
+              videoId={videos.right?.id || null}
+              onVideoSelect={(id) => handleVideoSelect({ id, title: 'New Video', channelTitle: 'Channel' }, 'right')}
             />
           </div>
 
