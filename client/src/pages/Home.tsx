@@ -29,6 +29,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] p-2 sm:p-4 md:p-6 lg:p-8">
+      <div className="absolute top-4 left-4 text-white font-mono text-xl">
+        mixtube
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(400px,2fr),minmax(200px,1fr),minmax(400px,2fr)] gap-4 sm:gap-6 lg:gap-8 items-start max-w-[2000px] mx-auto">
         {/* Left Video Section */}
         <div className="space-y-4">
