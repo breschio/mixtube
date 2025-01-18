@@ -84,17 +84,20 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
 
   return (
     <div className="mt-4 space-y-2">
-      <div className="flex flex-wrap gap-2">
-        {VIDEO_CATEGORIES.map((category) => (
-          <Button
-            key={category}
-            variant={selectedCategory === category ? "default" : "outline"}
-            onClick={() => setSelectedCategory(category)}
-            className="text-sm"
-          >
-            {category}
-          </Button>
-        ))}
+      <div className="overflow-x-auto no-scrollbar">
+        <div className="flex gap-1 pb-2">
+          {VIDEO_CATEGORIES.map((category) => (
+            <Button
+              key={category}
+              variant={selectedCategory === category ? "default" : "outline"}
+              onClick={() => setSelectedCategory(category)}
+              className="text-xs px-3 whitespace-nowrap"
+              size="sm"
+            >
+              {category}
+            </Button>
+          ))}
+        </div>
       </div>
       <div className="flex items-center justify-between mt-2">
         <h3 className="text-xs font-bold text-primary/80">UP NEXT</h3>
