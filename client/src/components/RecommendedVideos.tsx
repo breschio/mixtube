@@ -7,8 +7,6 @@ import { useRef, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { getRelatedVideos, searchVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
-import { useEffect, useState } from 'react';
-
 interface RecommendedVideosProps {
   videoId: string | null;
   onVideoSelect: (videoId: string) => void;
