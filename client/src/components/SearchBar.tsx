@@ -118,7 +118,6 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
   const handleClear = () => {
     setInput('');
     setIsValid(true);
-    onVideoSelect('');
   };
 
   return (
