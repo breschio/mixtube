@@ -83,7 +83,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
   };
 
   const handleClear = () => {
-    setUrl('');
+    setInput('');
     setIsValid(true);
     onVideoSelect('');
   };
@@ -116,7 +116,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
             ))}
           </div>
         )}
-        {url && (
+        {input && (
           <Button
             variant="ghost"
             size="icon"
@@ -127,7 +127,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
           </Button>
         )}
       </div>
-      {!isValid && url && (
+      {!isValid && input && (
         <p className="text-xs text-red-500 mt-1">Please enter a valid YouTube URL or video ID</p>
       )}
     </div>
