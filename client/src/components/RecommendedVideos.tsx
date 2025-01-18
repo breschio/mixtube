@@ -78,9 +78,9 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
           size="sm"
           variant="ghost"
           onClick={handleShuffle}
-          className="text-xs"
+          className="text-xs hover:bg-primary/10"
         >
-          <Shuffle className="h-3 w-3 mr-1" />
+          <Shuffle className="h-3 w-3" />
           Shuffle
         </Button>
       </div>
@@ -106,10 +106,10 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="w-full mt-1"
+                  className="w-full mt-1 hover:bg-primary/10 transition-colors"
                   onClick={() => onVideoSelect(video.id)}
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-4 w-4" />
                   Load
                 </Button>
               </div>
