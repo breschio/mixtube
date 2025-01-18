@@ -100,7 +100,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
             onChange={handleInputChange}
             className={`pl-9 pr-8 normal-case transition-all animate-placeholder ${!isValid && input ? 'border-red-500' : ''}`}
           />
-        <div className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}>
+          <div className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}>
             {searchResults.map((video) => (
               <button
                 key={video.id}
@@ -116,17 +116,17 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
               </button>
             ))}
           </div>
-        )}
-        {input && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
-            onClick={handleClear}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        )}
+          {input && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+              onClick={handleClear}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
       {!isValid && input && (
         <p className="text-xs text-red-500 mt-1">Please enter a valid YouTube URL or video ID</p>
