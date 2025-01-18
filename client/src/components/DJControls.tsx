@@ -20,13 +20,6 @@ export default function DJControls({
 }: DJControlsProps) {
   return (
     <div className="bg-card/90 p-8 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col justify-between">
-      {/* Logo Section */}
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-medium text-primary/80 tracking-tight">
-          mixtube
-        </h1>
-      </div>
-
       {/* Cross-fader Section */}
       <div className="relative flex-1 flex flex-col justify-center">
         <div className="flex justify-between mb-2">
