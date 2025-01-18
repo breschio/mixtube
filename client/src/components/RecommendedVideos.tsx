@@ -13,7 +13,7 @@ interface RecommendedVideosProps {
 }
 
 const VIDEO_CATEGORIES = [
-  'Suggested',
+  'For You',
   'Music',
   'Gaming',
   'Entertainment',
@@ -23,13 +23,13 @@ const VIDEO_CATEGORIES = [
 
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
   const queryClient = useQueryClient();
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('For You');
 
   const { data: currentVideos, isLoading, error, isError, refetch } = useQuery<YouTubeVideo[]>({
     queryKey: ['videos', videoId, selectedCategory],
     queryFn: () => {
       if (!videoId) return [];
-      return selectedCategory === 'Suggested' ? 
+      return selectedCategory === 'For You' ? 
         getRelatedVideos(videoId) : 
         searchVideos(`${selectedCategory} music`);
     },
