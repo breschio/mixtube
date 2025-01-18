@@ -35,24 +35,6 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
   }, [videoId, selectedCategory]);
 
   const { data: currentVideos, isLoading, error, isError, refetch } = useQuery<YouTubeVideo[]>({
-    staleTime: Infinity,
-    gcTime: Infinity,
-    queryKey: ['videos', videoId, selectedCategory],
-    queryFn: () => {
-      if (!videoId) return [];
-      return selectedCategory === 'For You' ? 
-        getRelatedVideos(videoId) : 
-        searchVideos(`${selectedCategory} music`);
-    },
-    enabled: !!videoId,
-    retry: (failureCount, error) => {
-      if (error.message?.includes('quota exceeded') || 
-          error.message?.includes('API key') ||
-          error.message?.includes('Rate limit exceeded')) {
-        return false;
-      }
-      return failureCount < 2;
-    }
     queryKey: ['videos', videoId, selectedCategory],
     queryFn: () => {
       if (!videoId) return [];
@@ -70,7 +52,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
         return false;
       }
       return failureCount < 2;
-    },
+    }
   });
 
   useEffect(() => {
