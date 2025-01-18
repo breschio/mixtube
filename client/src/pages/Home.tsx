@@ -28,11 +28,14 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] p-2 sm:p-4 md:p-6 lg:p-8">
-      <div className="fixed top-6 left-8 text-white font-mono text-lg">
-        mixtube
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(400px,2fr),minmax(200px,1fr),minmax(400px,2fr)] gap-4 sm:gap-6 lg:gap-8 items-start max-w-[2000px] mx-auto">
+    <div className="min-h-screen bg-[#0A0A0B]">
+      <header className="w-full bg-card/90 border-b border-primary/20 px-8 py-4">
+        <div className="text-white font-mono text-lg">
+          mixtube
+        </div>
+      </header>
+      <div className="p-2 sm:p-4 md:p-6 lg:p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(400px,2fr),minmax(200px,1fr),minmax(400px,2fr)] gap-4 sm:gap-6 lg:gap-8 items-start max-w-[2000px] mx-auto">
         {/* Left Video Section */}
         <div className="space-y-4">
           <Card className="overflow-hidden border-none bg-transparent">
@@ -98,6 +101,7 @@ export default function Home() {
             onCrossFaderChange={setCrossFader}
           />
         </div>
+      </div>
       </div>
     </div>
   );
