@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Shuffle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getRelatedVideos } from '@/lib/youtube';
+import { getRelatedVideos, searchVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
 import { useEffect, useState } from 'react';
 
