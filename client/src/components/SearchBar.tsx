@@ -124,13 +124,16 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     <div className="space-y-2 w-full">
       <div className="relative group">
         <div className="relative">
-          <Input
-            type="text"
-            placeholder="Search YouTube..."
-            value={input}
-            onChange={handleInputChange}
-            className={`pr-8 normal-case transition-all animate-placeholder ${!isValid && input ? 'border-red-500' : ''}`}
-          />
+          <div className="relative">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search YouTube..."
+              value={input}
+              onChange={handleInputChange}
+              className={`pl-8 pr-8 normal-case transition-all animate-placeholder ${!isValid && input ? 'border-red-500' : ''}`}
+            />
+          </div>
           <div className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}>
             {searchResults.map((video) => (
               <button
