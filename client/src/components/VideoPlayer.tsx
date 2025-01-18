@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import { Slider } from "@/components/ui/slider";
@@ -44,15 +44,15 @@ export default function VideoPlayer({
 
   if (!videoId) {
     return (
-      <Card className="w-full h-full bg-muted/50 flex items-center justify-center">
+      <Card className="aspect-video bg-muted/50 flex items-center justify-center transition-colors hover:bg-muted">
         <p className="text-muted-foreground">Select a video to play</p>
       </Card>
     );
   }
 
   return (
-    <>
-      <div className="w-full h-full bg-black rounded-lg overflow-hidden">
+    <div className="space-y-4">
+      <div className="aspect-video bg-black rounded-lg overflow-hidden">
         <ReactPlayer
           ref={playerRef}
           url={`https://www.youtube.com/watch?v=${videoId}`}
@@ -60,7 +60,7 @@ export default function VideoPlayer({
           height="100%"
           playing={playing}
           volume={volume}
-          controls={false}
+          controls={true}
           onReady={handlePlayerReady}
           onEnded={handleEnded}
           config={{
@@ -78,8 +78,8 @@ export default function VideoPlayer({
           }}
         />
       </div>
-      <div className="absolute bottom-4 left-4 right-4 flex items-center gap-4 px-2 bg-black/50 rounded-lg p-2 z-30">
-        <Volume2 className="h-4 w-4 text-white opacity-80" />
+      <div className="flex items-center gap-4 px-2">
+        <Volume2 className="h-4 w-4 text-primary/80" />
         <Slider
           value={[volume]}
           max={1}
@@ -88,6 +88,6 @@ export default function VideoPlayer({
           className="flex-1"
         />
       </div>
-    </>
+    </div>
   );
 }
