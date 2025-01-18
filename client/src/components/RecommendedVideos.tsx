@@ -13,7 +13,7 @@ interface RecommendedVideosProps {
 }
 
 const VIDEO_CATEGORIES = [
-  'All',
+  'Suggested',
   'Music',
   'Gaming',
   'Entertainment',
@@ -29,7 +29,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     queryKey: ['videos', videoId, selectedCategory],
     queryFn: () => {
       if (!videoId) return [];
-      return selectedCategory === 'All' ? 
+      return selectedCategory === 'Suggested' ? 
         getRelatedVideos(videoId) : 
         searchVideos(`${selectedCategory} music`);
     },
