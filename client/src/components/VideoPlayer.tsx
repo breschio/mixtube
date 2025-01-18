@@ -52,42 +52,50 @@ export default function VideoPlayer({
 
   return (
     <div className="space-y-4">
-      <div className="aspect-video bg-black rounded-lg overflow-hidden">
-        <ReactPlayer
-          ref={playerRef}
-          url={`https://www.youtube.com/watch?v=${videoId}`}
-          width="100%"
-          height="100%"
-          playing={playing}
-          volume={0} // Always mute source videos
-          muted={true} // Ensure source videos are muted
-          controls={true}
-          onReady={handlePlayerReady}
-          onEnded={handleEnded}
-          config={{
-            youtube: {
-              playerVars: {
-                rel: 0,
-                showinfo: 1,
-                iv_load_policy: 3,
-                modestbranding: 1,
-                enablejsapi: 1,
-                origin: window.location.origin,
-                playsinline: 1,
+      <div className="flex gap-4 items-start">
+        <div className="w-1/3 bg-black rounded-lg overflow-hidden">
+          <ReactPlayer
+            ref={playerRef}
+            url={`https://www.youtube.com/watch?v=${videoId}`}
+            width="100%"
+            height="100%"
+            playing={playing}
+            volume={0} // Always mute source videos
+            muted={true} // Ensure source videos are muted
+            controls={true}
+            onReady={handlePlayerReady}
+            onEnded={handleEnded}
+            config={{
+              youtube: {
+                playerVars: {
+                  rel: 0,
+                  showinfo: 1,
+                  iv_load_policy: 3,
+                  modestbranding: 1,
+                  enablejsapi: 1,
+                  origin: window.location.origin,
+                  playsinline: 1,
+                }
               }
-            }
-          }}
-        />
-      </div>
-      <div className="flex items-center gap-4 px-2">
-        <Volume2 className="h-4 w-4 text-primary/80" />
-        <Slider
-          value={[volume]}
-          max={1}
-          step={0.01}
-          onValueChange={([value]) => onVolumeChange(value)}
-          className="flex-1"
-        />
+            }}
+          />
+        </div>
+        <div className="flex-1 min-w-0 space-y-2">
+          <h3 className="text-sm font-medium line-clamp-2">
+            {/* We'll get video title from YouTube API later */}
+            Now Playing ({side} deck)
+          </h3>
+          <div className="flex items-center gap-4">
+            <Volume2 className="h-4 w-4 text-primary/80" />
+            <Slider
+              value={[volume]}
+              max={1}
+              step={0.01}
+              onValueChange={([value]) => onVolumeChange(value)}
+              className="flex-1"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
