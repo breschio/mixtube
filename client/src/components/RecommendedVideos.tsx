@@ -10,7 +10,7 @@ import type { YouTubeVideo } from '@/lib/youtube';
 
 interface RecommendedVideosProps {
   videoId: string | null;
-  onVideoSelect: (videoId: string) => void;
+  onVideoSelect: (video: YouTubeVideo) => void;
 }
 
 const VIDEO_CATEGORIES = [
@@ -24,19 +24,10 @@ const VIDEO_CATEGORIES = [
 
 export default function RecommendedVideos({ videoId, onVideoSelect }: RecommendedVideosProps) {
   const queryClient = useQueryClient();
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(() => {
     const saved = localStorage.getItem(`filter-${videoId}`);
     return saved || 'For You';
   });
-
-  useEffect(() => {
-    if (videoId && selectedCategory) {
-      localStorage.setItem(`filter-${videoId}`, selectedCategory);
-    }
-  }, [videoId, selectedCategory]);
 
   const { data: currentVideos, isLoading, error, isError, refetch } = useQuery<YouTubeVideo[]>({
     queryKey: ['videos', videoId, selectedCategory],
@@ -49,22 +40,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     enabled: !!videoId,
     staleTime: 60 * 1000,
     gcTime: 2 * 60 * 1000,
-    retry: (failureCount, error) => {
-      if (error.message?.includes('quota exceeded') || 
-          error.message?.includes('API key') ||
-          error.message?.includes('Rate limit exceeded')) {
-        return false;
-      }
-      return failureCount < 2;
-    }
   });
-
-  useEffect(() => {
-    if (videoId) {
-      queryClient.invalidateQueries({ queryKey: ['videos', videoId, selectedCategory] });
-      refetch();
-    }
-  }, [videoId, selectedCategory, queryClient, refetch]);
 
   const handleShuffle = async () => {
     await queryClient.invalidateQueries({ queryKey: ['videos', videoId, selectedCategory] });
@@ -95,46 +71,12 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     );
   }
 
-  // Take only the first 3 videos
   const displayVideos = currentVideos.slice(0, 3);
 
   return (
     <div className="mt-4 space-y-2">
       <div className="overflow-x-auto no-scrollbar">
         <div className="flex gap-1 pb-2">
-          {isSearchExpanded ? (
-            <div className="relative">
-              <Input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  if (e.target.value) {
-                    setSelectedCategory(`search:${e.target.value}`);
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    setIsSearchExpanded(false);
-                    setSearchQuery('');
-                  }
-                }}
-                placeholder="Search YouTube"
-                className="w-48 h-7 text-xs animate-placeholder"
-                onBlur={() => !searchQuery && setIsSearchExpanded(false)}
-              />
-            </div>
-          ) : (
-            <Button
-              variant="outline"
-              onClick={() => setIsSearchExpanded(true)}
-              className="text-xs px-3 whitespace-nowrap"
-              size="sm"
-            >
-              <Search className="h-3 w-3" />
-            </Button>
-          )}
           {VIDEO_CATEGORIES.map((category) => (
             <Button
               key={category}
@@ -183,7 +125,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
                   size="sm"
                   variant="default"
                   className="mt-1 ml-auto bg-primary/80 hover:bg-primary transition-colors"
-                  onClick={() => onVideoSelect(video.id)}
+                  onClick={() => onVideoSelect(video)}
                 >
                   <Plus className="h-4 w-4 mr-1" />
                   Load

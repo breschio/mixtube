@@ -41,11 +41,6 @@ export default function Home() {
     }));
   };
 
-  const calculateVolume = (baseVolume: number, side: 'left' | 'right') => {
-    const crossFaderValue = side === 'left' ? 1 - crossFader : crossFader;
-    return baseVolume * crossFaderValue;
-  };
-
   return (
     <div className="min-h-screen bg-[#0A0A0B]">
       <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-8 py-4">
@@ -85,7 +80,7 @@ export default function Home() {
                 volume={volumes.left}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-                onVideoSelect={(id) => handleVideoSelect({ id, title: 'New Video', channelTitle: 'Channel' }, 'left')}
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
               />
             </Card>
             <SearchBar 
@@ -94,7 +89,7 @@ export default function Home() {
             />
             <RecommendedVideos
               videoId={videos.left?.id || null}
-              onVideoSelect={(id) => handleVideoSelect({ id, title: 'New Video', channelTitle: 'Channel' }, 'left')}
+              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
             />
           </div>
 
@@ -120,7 +115,7 @@ export default function Home() {
                 volume={volumes.right}
                 playing={playing}
                 onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-                onVideoSelect={(id) => handleVideoSelect({ id, title: 'New Video', channelTitle: 'Channel' }, 'right')}
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
               />
             </Card>
             <SearchBar 
@@ -129,7 +124,7 @@ export default function Home() {
             />
             <RecommendedVideos
               videoId={videos.right?.id || null}
-              onVideoSelect={(id) => handleVideoSelect({ id, title: 'New Video', channelTitle: 'Channel' }, 'right')}
+              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
             />
           </div>
 
