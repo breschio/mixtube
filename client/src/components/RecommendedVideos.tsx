@@ -7,6 +7,7 @@ import { useRef, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { getRelatedVideos, searchVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
+
 interface RecommendedVideosProps {
   videoId: string | null;
   onVideoSelect: (videoId: string) => void;
@@ -94,6 +95,9 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     );
   }
 
+  // Take only the first 3 videos
+  const displayVideos = currentVideos.slice(0, 3);
+
   return (
     <div className="mt-4 space-y-2">
       <div className="overflow-x-auto no-scrollbar">
@@ -157,7 +161,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-4 mt-2">
-        {currentVideos.map((video) => (
+        {displayVideos.map((video) => (
           <Card 
             key={video.id}
             className={cn(
