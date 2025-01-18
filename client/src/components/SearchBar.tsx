@@ -65,7 +65,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
       <div className="relative">
         <Input
           type="text"
-          placeholder="paste youtube url..."
+          placeholder={url || "paste youtube url..."}
           value={url}
           onChange={handleUrlChange}
           className={`pr-8 normal-case ${!isValid && url ? 'border-red-500' : ''}`}
