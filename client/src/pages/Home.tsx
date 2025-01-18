@@ -54,9 +54,9 @@ export default function Home() {
           </Avatar>
         </div>
       </header>
-      <main className="w-4/5 max-w-[2000px] mx-auto p-8">
+      <main className="w-4/5 max-w-[2000px] mx-auto p-8 space-y-8">
         {/* Mixed Video Section */}
-        <div className="mb-8">
+        <div>
           <Card className="overflow-hidden border-none bg-transparent">
             <MixedVideoPlayer 
               leftVideoId={videos.left?.id || null}
@@ -67,8 +67,19 @@ export default function Home() {
           </Card>
         </div>
 
-        {/* DJ Mix Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(400px,2fr),minmax(200px,1fr),minmax(400px,2fr)] gap-4 sm:gap-6 lg:gap-8 items-start">
+        {/* DJ Controls - Centered between video and columns */}
+        <div className="flex justify-center">
+          <DJControls
+            isPlaying={playing}
+            onPlayAll={() => setPlaying(true)}
+            onPauseAll={() => setPlaying(false)}
+            crossFader={crossFader}
+            onCrossFaderChange={setCrossFader}
+          />
+        </div>
+
+        {/* Video Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start">
           {/* Left Video Section */}
           <div className="space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
@@ -93,17 +104,6 @@ export default function Home() {
             />
           </div>
 
-          {/* DJ Controls - Only shown in large screens between videos */}
-          <div className="hidden lg:flex items-stretch">
-            <DJControls
-              isPlaying={playing}
-              onPlayAll={() => setPlaying(true)}
-              onPauseAll={() => setPlaying(false)}
-              crossFader={crossFader}
-              onCrossFaderChange={setCrossFader}
-            />
-          </div>
-
           {/* Right Video Section */}
           <div className="space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
@@ -125,17 +125,6 @@ export default function Home() {
             <RecommendedVideos
               videoId={videos.right?.id || null}
               onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            />
-          </div>
-
-          {/* DJ Controls - Shown below videos on medium and small screens */}
-          <div className="lg:hidden col-span-full">
-            <DJControls
-              isPlaying={playing}
-              onPlayAll={() => setPlaying(true)}
-              onPauseAll={() => setPlaying(false)}
-              crossFader={crossFader}
-              onCrossFaderChange={setCrossFader}
             />
           </div>
         </div>
