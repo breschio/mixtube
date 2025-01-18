@@ -2,7 +2,11 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 
 // Simple in-memory cache for API responses
-const cache = new Map<string, { data: any; timestamp: number }>();
+import { createClient } from 'ioredis';
+const redis = createClient({
+  host: process.env.REDIS_URL || 'localhost',
+  port: 6379,
+});
 const CACHE_DURATION = 5 * 60 * 1000; // Reduced to 5 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
 const MAX_REQUESTS_PER_WINDOW = 10; // Reduced limit
