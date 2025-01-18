@@ -53,7 +53,7 @@ export function registerRoutes(app: Express): Server {
           part: 'snippet',
           relatedToVideoId: testVideoId,
           type: 'video',
-          maxResults: '3',
+          maxResults: '50', //Increased maxResults
           key: YOUTUBE_API_KEY
         },
         name: 'Basic params'
@@ -63,7 +63,7 @@ export function registerRoutes(app: Express): Server {
           part: 'snippet,id',
           relatedToVideoId: testVideoId,
           type: 'video',
-          maxResults: '3',
+          maxResults: '50', //Increased maxResults
           key: YOUTUBE_API_KEY
         },
         name: 'With ID part'
@@ -73,7 +73,7 @@ export function registerRoutes(app: Express): Server {
           part: 'snippet',
           relatedToVideoId: testVideoId,
           type: 'video',
-          maxResults: '3',
+          maxResults: '50', //Increased maxResults
           key: YOUTUBE_API_KEY,
           safeSearch: 'moderate'
         },
@@ -121,7 +121,7 @@ app.get('/api/youtube/search', async (req, res) => {
       part: 'snippet',
       q: query,
       type: 'video',
-      maxResults: '5',
+      maxResults: '50', //Increased maxResults
       key: YOUTUBE_API_KEY
     });
 
@@ -194,7 +194,7 @@ app.get('/api/youtube/related', async (req, res) => {
       const cachedData = await cache.get(cacheKey);
       const now = Date.now();
       if (cachedData && (now - cachedData.timestamp) < CACHE_DURATION) {
-        return res.json(cachedData.data.slice(0,3));
+        return res.json(cachedData.data.slice(0,50)); //Increased slice to 50
       }
 
       // Add to rate limiter
@@ -225,7 +225,7 @@ app.get('/api/youtube/related', async (req, res) => {
         part: 'snippet',
         channelId: channelId,
         type: 'video',
-        maxResults: '3',
+        maxResults: '50', //Increased maxResults
         key: YOUTUBE_API_KEY
       });
 
@@ -239,14 +239,14 @@ app.get('/api/youtube/related', async (req, res) => {
         console.error('YouTube API error:', data.error);
         if (data.error?.code === 403) {
           console.log('YouTube API quota exceeded, using fallback data');
-          return res.json(FALLBACK_VIDEOS.slice(0, 3));
+          return res.json(FALLBACK_VIDEOS.slice(0, 50)); //Increased slice to 50
         }
         throw new Error(data.error?.message || 'Failed to fetch related videos');
       }
 
       if (!data.items?.length) {
         console.log('No related videos found for:', videoId);
-        return res.json(FALLBACK_VIDEOS.slice(0, 3));
+        return res.json(FALLBACK_VIDEOS.slice(0, 50)); //Increased slice to 50
       }
 
       const videos = data.items.map((item: any) => ({
@@ -261,7 +261,7 @@ app.get('/api/youtube/related', async (req, res) => {
       res.json(videos);
     } catch (error) {
       console.error('YouTube related videos error:', error);
-      res.json(FALLBACK_VIDEOS.slice(0, 3));
+      res.json(FALLBACK_VIDEOS.slice(0, 50)); //Increased slice to 50
     }
   });
 
