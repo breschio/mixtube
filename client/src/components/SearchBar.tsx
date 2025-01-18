@@ -10,8 +10,10 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
-  const [url, setUrl] = useState(videoId ? `https://www.youtube.com/watch?v=${videoId}` : '');
+  const [input, setInput] = useState(videoId ? `https://www.youtube.com/watch?v=${videoId}` : '');
   const [isValid, setIsValid] = useState(true);
+  const [searchResults, setSearchResults] = useState<YouTubeVideo[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>(() => {
     const saved = localStorage.getItem('searchHistory');
     return saved ? JSON.parse(saved) : [];
@@ -37,15 +39,41 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
     return null;
   };
 
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUrl = e.target.value;
-    setUrl(newUrl);
-
-    const videoId = extractVideoId(newUrl);
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newInput = e.target.value;
+    setInput(newInput);
+    
+    const videoId = extractVideoId(newInput);
     if (videoId) {
       onVideoSelect(videoId);
-      addToHistory(newUrl);
+      addToHistory(newInput);
+      setSearchResults([]);
+      return;
     }
+    
+    if (newInput.length > 2) {
+      setIsSearching(true);
+      try {
+        const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(newInput)}`);
+        const results = await response.json();
+        setSearchResults(results);
+        setIsValid(true);
+      } catch (error) {
+        console.error('Search failed:', error);
+        setIsValid(false);
+      }
+      setIsSearching(false);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleVideoSelect = (video: YouTubeVideo) => {
+    const url = `https://www.youtube.com/watch?v=${video.id}`;
+    setInput(url);
+    onVideoSelect(video.id);
+    addToHistory(url);
+    setSearchResults([]);
   };
 
   const addToHistory = (newUrl: string) => {
@@ -65,11 +93,29 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
       <div className="relative">
         <Input
           type="text"
-          placeholder={url || "paste youtube url..."}
-          value={url}
-          onChange={handleUrlChange}
-          className={`pr-8 normal-case ${!isValid && url ? 'border-red-500' : ''}`}
+          placeholder="Search or paste YouTube URL..."
+          value={input}
+          onChange={handleInputChange}
+          className={`pr-8 normal-case ${!isValid && input ? 'border-red-500' : ''}`}
         />
+        {searchResults.length > 0 && (
+          <div className="absolute z-50 mt-1 w-full bg-background border rounded-md shadow-lg">
+            {searchResults.map((video) => (
+              <button
+                key={video.id}
+                className="w-full p-2 hover:bg-accent flex items-center gap-2 text-left"
+                onClick={() => handleVideoSelect(video)}
+              >
+                <img 
+                  src={video.thumbnail} 
+                  alt={video.title}
+                  className="w-16 aspect-video object-cover rounded"
+                />
+                <span className="text-sm line-clamp-2">{video.title}</span>
+              </button>
+            ))}
+          </div>
+        )}
         {url && (
           <Button
             variant="ghost"

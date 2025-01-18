@@ -105,6 +105,48 @@ export function registerRoutes(app: Express): Server {
   }
 });
 
+app.get('/api/youtube/search', async (req, res) => {
+  try {
+    const query = req.query.q as string;
+    if (!query) {
+      return res.status(400).json({ error: 'Search query required' });
+    }
+
+    const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+    if (!YOUTUBE_API_KEY) {
+      return res.status(500).json({ error: 'YouTube API key not configured' });
+    }
+
+    const searchParams = new URLSearchParams({
+      part: 'snippet',
+      q: query,
+      type: 'video',
+      maxResults: '5',
+      key: YOUTUBE_API_KEY
+    });
+
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
+    );
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'Failed to search videos');
+    }
+
+    const videos = data.items.map((item: any) => ({
+      id: item.id.videoId,
+      title: item.snippet.title,
+      thumbnail: item.snippet.thumbnails.medium.url,
+    }));
+
+    res.json(videos);
+  } catch (error) {
+    console.error('YouTube search error:', error);
+    res.status(500).json({ error: 'Failed to search videos' });
+  }
+});
+
 app.get('/api/youtube/test', async (req, res) => {
   try {
     const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
