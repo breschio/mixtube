@@ -43,18 +43,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B]">
-      <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-8 py-4">
-        <div className="max-w-[2000px] w-4/5 mx-auto flex justify-between items-center">
-          <div className="text-white font-mono text-lg">
+      <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 sm:px-8 py-2 sm:py-4">
+        <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-between items-center">
+          <div className="text-white font-mono text-base sm:text-lg">
             mixtube
           </div>
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </div>
       </header>
-      <main className="w-4/5 max-w-[2000px] mx-auto p-8 space-y-8">
+      <main className="w-full sm:w-4/5 max-w-[2000px] mx-auto p-4 sm:p-8 space-y-4 sm:space-y-8">
         {/* Mixed Video Section */}
         <div>
           <Card className="overflow-hidden border-none bg-transparent">

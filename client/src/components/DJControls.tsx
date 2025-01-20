@@ -19,19 +19,19 @@ export default function DJControls({
   onCrossFaderChange,
 }: DJControlsProps) {
   return (
-    <div className="bg-card/90 p-8 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col justify-between">
+    <div className="bg-card/90 p-4 sm:p-8 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col justify-between">
       {/* Cross-fader Section */}
       <div className="relative flex-1 flex flex-col justify-center">
-        <div className="flex justify-between mb-2">
-          <span className="text-sm font-bold text-primary">LEFT</span>
-          <span className="text-sm font-bold text-primary">RIGHT</span>
+        <div className="flex justify-between mb-1 sm:mb-2">
+          <span className="text-xs sm:text-sm font-bold text-primary">LEFT</span>
+          <span className="text-xs sm:text-sm font-bold text-primary">RIGHT</span>
         </div>
         <Slider
           value={[crossFader]}
           max={1}
           step={0.01}
           onValueChange={([value]) => onCrossFaderChange(value)}
-          className="w-full h-8"
+          className="w-full h-6 sm:h-8"
         />
       </div>
 
@@ -41,7 +41,7 @@ export default function DJControls({
         variant="default"
         onClick={isPlaying ? onPauseAll : onPlayAll}
         className={cn(
-          "w-full h-16 text-lg font-bold transition-all duration-300 hover:scale-[1.02] mt-8",
+          "w-full h-12 sm:h-16 text-base sm:text-lg font-bold transition-all duration-300 hover:scale-[1.02] mt-4 sm:mt-8",
           !isPlaying && "animate-slow-pulse",
           isPlaying && "bg-primary/90 hover:bg-primary"
         )}
