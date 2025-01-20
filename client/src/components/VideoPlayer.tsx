@@ -66,7 +66,7 @@ export default function VideoPlayer({
             playing={playing}
             volume={0} // Always mute source videos
             muted={true} // Ensure source videos are muted
-            controls={true}
+            controls={false}
             onReady={handlePlayerReady}
             onEnded={handleEnded}
             config={{
