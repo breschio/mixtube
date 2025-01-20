@@ -43,6 +43,7 @@ export default function MixedVideoPlayer({
           playing={playing}
           volume={leftOpacity} // Volume follows opacity
           muted={crossFaderValue === 1} // Mute when faded out completely
+          playIcon={false}
           config={{
             youtube: {
               playerVars: {
