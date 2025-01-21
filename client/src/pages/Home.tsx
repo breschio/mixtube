@@ -57,7 +57,7 @@ export default function Home() {
           </Avatar>
         </div>
       </header>
-      <main className="w-full sm:w-4/5 max-w-[2000px] mx-auto p-4 sm:p-8 space-y-4 sm:space-y-8">
+      <main className="w-full sm:w-4/5 max-w-[2000px] mx-auto p-4 sm:p-8 pb-20 sm:pb-8 space-y-4 sm:space-y-8">
         {/* Mixed Video Section */}
         <div>
           <Card className="overflow-hidden border-none bg-transparent">
