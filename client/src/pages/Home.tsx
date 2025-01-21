@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useIsMobile } from "@/hooks/use-mobile";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
@@ -79,9 +81,13 @@ export default function Home() {
         </div>
 
         {/* Video Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start">
-          {/* Left Video Section */}
-          <div className="space-y-4">
+        {isMobile ? (
+          <Tabs defaultValue="left" className="w-full">
+            <TabsList className="w-full mb-4">
+              <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
+              <TabsTrigger value="right" className="flex-1">Right Video</TabsTrigger>
+            </TabsList>
+            <TabsContent value="left" className="space-y-4 mt-0">
             <Card className="overflow-hidden border-none bg-transparent">
               <VideoPlayer 
                 videoId={videos.left?.id || null}
@@ -102,10 +108,8 @@ export default function Home() {
               videoId={videos.left?.id || null}
               onVideoSelect={(video) => handleVideoSelect(video, 'left')}
             />
-          </div>
-
-          {/* Right Video Section */}
-          <div className="space-y-4">
+          </TabsContent>
+            <TabsContent value="right" className="space-y-4 mt-0">
             <Card className="overflow-hidden border-none bg-transparent">
               <VideoPlayer 
                 videoId={videos.right?.id || null}
@@ -126,8 +130,56 @@ export default function Home() {
               videoId={videos.right?.id || null}
               onVideoSelect={(video) => handleVideoSelect(video, 'right')}
             />
+          </TabsContent>
+          </Tabs>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start">
+            <div className="space-y-4">
+              <Card className="overflow-hidden border-none bg-transparent">
+                <VideoPlayer 
+                  videoId={videos.left?.id || null}
+                  videoTitle={videos.left?.title}
+                  channelTitle={videos.left?.channelTitle}
+                  side="left" 
+                  volume={volumes.left}
+                  playing={playing}
+                  onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                />
+              </Card>
+              <SearchBar 
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
+                videoId={videos.left?.id || null}
+              />
+              <RecommendedVideos
+                videoId={videos.left?.id || null}
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+              />
+            </div>
+            <div className="space-y-4">
+              <Card className="overflow-hidden border-none bg-transparent">
+                <VideoPlayer 
+                  videoId={videos.right?.id || null}
+                  videoTitle={videos.right?.title}
+                  channelTitle={videos.right?.channelTitle}
+                  side="right"
+                  volume={volumes.right}
+                  playing={playing}
+                  onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                />
+              </Card>
+              <SearchBar 
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
+                videoId={videos.right?.id || null}
+              />
+              <RecommendedVideos
+                videoId={videos.right?.id || null}
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </div>
   );
