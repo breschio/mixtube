@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "../hooks/use-mobile";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
