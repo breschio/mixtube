@@ -18,6 +18,11 @@ export default function MixedVideoPlayer({
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
 
+  const handleReady = () => {
+    //This function is intentionally left empty.  Further logic could be added here if needed.
+  };
+
+
   // If either video is missing, show placeholder
   if (!leftVideoId || !rightVideoId) {
     return (
@@ -51,6 +56,7 @@ export default function MixedVideoPlayer({
           volume={Math.max(0, 1 - crossFaderValue)} // Adjust volume curve
           muted={crossFaderValue === 1} // Mute when faded out completely
           playIcon={false}
+          onReady={handleReady}
           config={{
             youtube: {
               playerVars: {
@@ -78,6 +84,7 @@ export default function MixedVideoPlayer({
           volume={Math.max(0, crossFaderValue)} // Adjust volume curve
           muted={crossFaderValue === 0} // Mute when faded out completely
           playIcon={false}
+          onReady={handleReady}
           config={{
             youtube: {
               playerVars: {
