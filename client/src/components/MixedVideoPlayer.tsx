@@ -25,22 +25,36 @@ export default function MixedVideoPlayer({
   };
 
   useEffect(() => {
-    const syncPlayers = () => {
+    const syncPlayers = async () => {
       if (playersReady.left && playersReady.right) {
         const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
         const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
         
         if (leftPlayer && rightPlayer) {
           if (playing) {
-            Promise.all([
-              leftPlayer.playVideo(),
-              rightPlayer.playVideo()
-            ]);
+            try {
+              await Promise.all([
+                new Promise((resolve) => {
+                  leftPlayer.playVideo();
+                  resolve(true);
+                }),
+                new Promise((resolve) => {
+                  rightPlayer.playVideo();
+                  resolve(true);
+                })
+              ]);
+            } catch (error) {
+              console.error('Error syncing videos:', error);
+            }
           } else {
-            Promise.all([
-              leftPlayer.pauseVideo(),
-              rightPlayer.pauseVideo()
-            ]);
+            try {
+              await Promise.all([
+                leftPlayer.pauseVideo(),
+                rightPlayer.pauseVideo()
+              ]);
+            } catch (error) {
+              console.error('Error pausing videos:', error);
+            }
           }
         }
       }
