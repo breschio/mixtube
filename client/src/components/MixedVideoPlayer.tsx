@@ -1,3 +1,4 @@
+
 import { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
@@ -18,18 +19,27 @@ export default function MixedVideoPlayer({
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
   const [playersReady, setPlayersReady] = useState({ left: false, right: false });
+  const [playbackState, setPlaybackState] = useState({ left: false, right: false });
 
   const handleReady = (player: 'left' | 'right') => {
     setPlayersReady(prev => ({ ...prev, [player]: true }));
   };
 
-  useEffect(() => {
-    if (playersReady.left && playersReady.right && playing) {
-      leftPlayerRef.current?.getInternalPlayer()?.playVideo();
-      rightPlayerRef.current?.getInternalPlayer()?.playVideo();
-    }
-  }, [playersReady, playing]);
+  const handleStateChange = (player: 'left' | 'right', state: { playing: boolean }) => {
+    setPlaybackState(prev => ({ ...prev, [player]: state.playing }));
+  };
 
+  useEffect(() => {
+    if (playersReady.left && playersReady.right) {
+      if (playing) {
+        leftPlayerRef.current?.getInternalPlayer()?.playVideo();
+        rightPlayerRef.current?.getInternalPlayer()?.playVideo();
+      } else {
+        leftPlayerRef.current?.getInternalPlayer()?.pauseVideo();
+        rightPlayerRef.current?.getInternalPlayer()?.pauseVideo();
+      }
+    }
+  }, [playing, playersReady]);
 
   // If either video is missing, show placeholder
   if (!leftVideoId || !rightVideoId) {
@@ -47,7 +57,7 @@ export default function MixedVideoPlayer({
     );
   }
 
-  // Calculate opacity and volume based on cross-fader
+  // Calculate opacity based on cross-fader
   const leftOpacity = 1 - crossFaderValue;
   const rightOpacity = crossFaderValue;
 
@@ -61,10 +71,12 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={Math.max(0, 1 - crossFaderValue)} // Adjust volume curve
-          muted={crossFaderValue === 1} // Mute when faded out completely
+          volume={Math.max(0, 1 - crossFaderValue)}
+          muted={crossFaderValue === 1}
           playIcon={false}
           onReady={() => handleReady('left')}
+          onPlay={() => handleStateChange('left', { playing: true })}
+          onPause={() => handleStateChange('left', { playing: false })}
           config={{
             youtube: {
               playerVars: {
@@ -75,7 +87,6 @@ export default function MixedVideoPlayer({
                 showinfo: 0,
                 iv_load_policy: 3,
                 origin: window.location.origin,
-                autoplay: 1,
                 enablejsapi: 1
               }
             }
@@ -91,10 +102,12 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={Math.max(0, crossFaderValue)} // Adjust volume curve
-          muted={crossFaderValue === 0} // Mute when faded out completely
+          volume={Math.max(0, crossFaderValue)}
+          muted={crossFaderValue === 0}
           playIcon={false}
           onReady={() => handleReady('right')}
+          onPlay={() => handleStateChange('right', { playing: true })}
+          onPause={() => handleStateChange('right', { playing: false })}
           config={{
             youtube: {
               playerVars: {
@@ -105,7 +118,6 @@ export default function MixedVideoPlayer({
                 showinfo: 0,
                 iv_load_policy: 3,
                 origin: window.location.origin,
-                autoplay: 1,
                 enablejsapi: 1
               }
             }
