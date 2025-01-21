@@ -78,10 +78,10 @@ export default function VideoPlayer({
                   showinfo: 0,
                   rel: 0,
                   playsinline: 1,
-                  rel: 0,
-                  showinfo: 0,
                   iv_load_policy: 3,
                   origin: window.location.origin,
+                  disablekb: 1,
+                  fs: 0
                 }
               }
             }}
