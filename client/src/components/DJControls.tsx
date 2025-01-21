@@ -37,7 +37,7 @@ export default function DJControls({
 
       {/* Play/Pause Button */}
       <Button
-        size="lg"
+        size="default"
         variant="default"
         onClick={isPlaying ? onPauseAll : onPlayAll}
         className={cn(
@@ -46,7 +46,7 @@ export default function DJControls({
           isPlaying && "bg-primary/90 hover:bg-primary"
         )}
       >
-        {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
+        {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
       </Button>
     </div>
   );
