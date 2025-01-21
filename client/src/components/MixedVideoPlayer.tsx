@@ -19,51 +19,49 @@ export default function MixedVideoPlayer({
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
   const [playersReady, setPlayersReady] = useState({ left: false, right: false });
-  const [playbackState, setPlaybackState] = useState({ left: false, right: false });
 
   const handleReady = (player: 'left' | 'right') => {
     setPlayersReady(prev => ({ ...prev, [player]: true }));
   };
 
-  const handleStateChange = (player: 'left' | 'right', state: { playing: boolean }) => {
-    setPlaybackState(prev => ({ ...prev, [player]: state.playing }));
-  };
-
   useEffect(() => {
-    if (playersReady.left && playersReady.right) {
-      if (playing) {
-        leftPlayerRef.current?.getInternalPlayer()?.playVideo();
-        rightPlayerRef.current?.getInternalPlayer()?.playVideo();
-      } else {
-        leftPlayerRef.current?.getInternalPlayer()?.pauseVideo();
-        rightPlayerRef.current?.getInternalPlayer()?.pauseVideo();
+    const syncPlayers = () => {
+      if (playersReady.left && playersReady.right) {
+        const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
+        const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
+        
+        if (leftPlayer && rightPlayer) {
+          if (playing) {
+            Promise.all([
+              leftPlayer.playVideo(),
+              rightPlayer.playVideo()
+            ]);
+          } else {
+            Promise.all([
+              leftPlayer.pauseVideo(),
+              rightPlayer.pauseVideo()
+            ]);
+          }
+        }
       }
-    }
+    };
+
+    syncPlayers();
   }, [playing, playersReady]);
 
-  // If either video is missing, show placeholder
   if (!leftVideoId || !rightVideoId) {
     return (
       <Card className="aspect-video bg-muted/50 flex items-center justify-center relative">
         <p className="text-muted-foreground">Load videos in both players to start mixing</p>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <button className="bg-primary/80 hover:bg-primary text-white rounded-full p-2 transition-colors">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 5v14l11-7z" fill="currentColor"/>
-            </svg>
-          </button>
-        </div>
       </Card>
     );
   }
 
-  // Calculate opacity based on cross-fader
   const leftOpacity = 1 - crossFaderValue;
   const rightOpacity = crossFaderValue;
 
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-      {/* Left Video Layer */}
       <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: leftOpacity }}>
         <ReactPlayer
           ref={leftPlayerRef}
@@ -75,8 +73,6 @@ export default function MixedVideoPlayer({
           muted={crossFaderValue === 1}
           playIcon={false}
           onReady={() => handleReady('left')}
-          onPlay={() => handleStateChange('left', { playing: true })}
-          onPause={() => handleStateChange('left', { playing: false })}
           config={{
             youtube: {
               playerVars: {
@@ -94,7 +90,6 @@ export default function MixedVideoPlayer({
         />
       </div>
 
-      {/* Right Video Layer */}
       <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: rightOpacity }}>
         <ReactPlayer
           ref={rightPlayerRef}
@@ -106,8 +101,6 @@ export default function MixedVideoPlayer({
           muted={crossFaderValue === 0}
           playIcon={false}
           onReady={() => handleReady('right')}
-          onPlay={() => handleStateChange('right', { playing: true })}
-          onPause={() => handleStateChange('right', { playing: false })}
           config={{
             youtube: {
               playerVars: {
