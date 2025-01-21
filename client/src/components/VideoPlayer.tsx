@@ -48,8 +48,15 @@ export default function VideoPlayer({
 
   if (!videoId) {
     return (
-      <Card className="aspect-video bg-muted/50 flex items-center justify-center transition-colors hover:bg-muted">
+      <Card className="aspect-video bg-muted/50 flex items-center justify-center transition-colors hover:bg-muted relative">
         <p className="text-muted-foreground">Select a video to play</p>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <button className="bg-primary/80 hover:bg-primary text-white rounded-full p-2 transition-colors">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
       </Card>
     );
   }
