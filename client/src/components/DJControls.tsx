@@ -19,11 +19,23 @@ export default function DJControls({
   onCrossFaderChange,
 }: DJControlsProps) {
   return (
-    <div className="bg-card/90 p-4 sm:p-8 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col justify-between">
+    <div className="bg-card/90 p-4 sm:p-6 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col">
       {/* Cross-fader Section */}
-      <div className="relative flex-1 flex flex-col justify-center">
-        <div className="flex justify-between mb-1 sm:mb-2">
+      <div className="relative flex-1 flex flex-col">
+        <div className="flex justify-between items-center mb-1 sm:mb-2">
           <span className="text-xs sm:text-sm font-bold text-primary">LEFT</span>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={isPlaying ? onPauseAll : onPlayAll}
+            className={cn(
+              "h-8 w-8 transition-colors",
+              !isPlaying && "animate-slow-pulse text-primary",
+              isPlaying && "bg-primary/10 text-primary hover:bg-primary/20"
+            )}
+          >
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          </Button>
           <span className="text-xs sm:text-sm font-bold text-primary">RIGHT</span>
         </div>
         <Slider
@@ -34,20 +46,6 @@ export default function DJControls({
           className="w-full h-6 sm:h-8"
         />
       </div>
-
-      {/* Play/Pause Button */}
-      <Button
-        size="default"
-        variant="default"
-        onClick={isPlaying ? onPauseAll : onPlayAll}
-        className={cn(
-          "w-full h-12 sm:h-16 text-base sm:text-lg font-bold transition-all duration-300 hover:scale-[1.02] mt-4 sm:mt-8",
-          !isPlaying && "animate-slow-pulse",
-          isPlaying && "bg-primary/90 hover:bg-primary"
-        )}
-      >
-        {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
-      </Button>
     </div>
   );
 }
