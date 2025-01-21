@@ -48,7 +48,7 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={leftOpacity} // Volume follows opacity
+          volume={Math.max(0, 1 - crossFaderValue)} // Adjust volume curve
           muted={crossFaderValue === 1} // Mute when faded out completely
           playIcon={false}
           config={{
@@ -75,7 +75,7 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={rightOpacity} // Volume follows opacity
+          volume={Math.max(0, crossFaderValue)} // Adjust volume curve
           muted={crossFaderValue === 0} // Mute when faded out completely
           playIcon={false}
           config={{
