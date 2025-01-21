@@ -35,6 +35,7 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
+  const isMobile = useIsMobile();
 
   const handleVideoSelect = (video: VideoInfo, target: 'left' | 'right') => {
     setVideos(prev => ({
