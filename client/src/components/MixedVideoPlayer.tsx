@@ -22,10 +22,17 @@ export default function MixedVideoPlayer({
 
   const handleReady = (player: 'left' | 'right') => {
     setPlayersReady(prev => ({ ...prev, [player]: true }));
+    
+    // Force sync state when player becomes ready
+    const currentPlayer = player === 'left' ? leftPlayerRef.current?.getInternalPlayer() : rightPlayerRef.current?.getInternalPlayer();
+    if (currentPlayer && playing) {
+      currentPlayer.playVideo();
+    }
   };
 
   useEffect(() => {
     const syncPlayers = async () => {
+      const forceSync = () => {
       if (playersReady.left && playersReady.right) {
         const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
         const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
@@ -75,6 +82,7 @@ export default function MixedVideoPlayer({
   const rightOpacity = crossFaderValue;
 
   return (
+    <>
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
       <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: leftOpacity }}>
         <ReactPlayer
@@ -132,5 +140,7 @@ export default function MixedVideoPlayer({
         />
       </div>
     </div>
+    <VideoDebugMonitor leftPlayerRef={leftPlayerRef} rightPlayerRef={rightPlayerRef} />
+    </>
   );
 }
