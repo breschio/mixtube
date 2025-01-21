@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 
@@ -17,10 +17,18 @@ export default function MixedVideoPlayer({
 }: MixedVideoPlayerProps) {
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
+  const [playersReady, setPlayersReady] = useState({ left: false, right: false });
 
-  const handleReady = () => {
-    //This function is intentionally left empty.  Further logic could be added here if needed.
+  const handleReady = (player: 'left' | 'right') => {
+    setPlayersReady(prev => ({ ...prev, [player]: true }));
   };
+
+  useEffect(() => {
+    if (playersReady.left && playersReady.right && playing) {
+      leftPlayerRef.current?.getInternalPlayer()?.playVideo();
+      rightPlayerRef.current?.getInternalPlayer()?.playVideo();
+    }
+  }, [playersReady, playing]);
 
 
   // If either video is missing, show placeholder
@@ -56,7 +64,7 @@ export default function MixedVideoPlayer({
           volume={Math.max(0, 1 - crossFaderValue)} // Adjust volume curve
           muted={crossFaderValue === 1} // Mute when faded out completely
           playIcon={false}
-          onReady={handleReady}
+          onReady={() => handleReady('left')}
           config={{
             youtube: {
               playerVars: {
@@ -67,6 +75,8 @@ export default function MixedVideoPlayer({
                 showinfo: 0,
                 iv_load_policy: 3,
                 origin: window.location.origin,
+                autoplay: 1,
+                enablejsapi: 1
               }
             }
           }}
@@ -84,7 +94,7 @@ export default function MixedVideoPlayer({
           volume={Math.max(0, crossFaderValue)} // Adjust volume curve
           muted={crossFaderValue === 0} // Mute when faded out completely
           playIcon={false}
-          onReady={handleReady}
+          onReady={() => handleReady('right')}
           config={{
             youtube: {
               playerVars: {
@@ -95,6 +105,8 @@ export default function MixedVideoPlayer({
                 showinfo: 0,
                 iv_load_policy: 3,
                 origin: window.location.origin,
+                autoplay: 1,
+                enablejsapi: 1
               }
             }
           }}
