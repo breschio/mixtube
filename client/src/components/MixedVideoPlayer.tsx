@@ -31,8 +31,7 @@ export default function MixedVideoPlayer({
   };
 
   useEffect(() => {
-    const syncPlayers = async () => {
-      const forceSync = () => {
+    const syncPlayers = () => {
       if (playersReady.left && playersReady.right) {
         const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
         const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
@@ -40,16 +39,12 @@ export default function MixedVideoPlayer({
         if (leftPlayer && rightPlayer) {
           if (playing) {
             try {
-              await Promise.all([
-                new Promise((resolve) => {
-                  leftPlayer.playVideo();
-                  resolve(true);
-                }),
-                new Promise((resolve) => {
-                  rightPlayer.playVideo();
-                  resolve(true);
-                })
-              ]);
+              Promise.all([
+                leftPlayer.playVideo(),
+                rightPlayer.playVideo()
+              ]).catch(error => {
+                console.error('Error syncing videos:', error);
+              });
             } catch (error) {
               console.error('Error syncing videos:', error);
             }
