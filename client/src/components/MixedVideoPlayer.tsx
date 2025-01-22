@@ -1,4 +1,3 @@
-
 import { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
@@ -22,7 +21,7 @@ export default function MixedVideoPlayer({
 
   const handleReady = (player: 'left' | 'right') => {
     setPlayersReady(prev => ({ ...prev, [player]: true }));
-    
+
     // Force sync state when player becomes ready
     const currentPlayer = player === 'left' ? leftPlayerRef.current?.getInternalPlayer() : rightPlayerRef.current?.getInternalPlayer();
     if (currentPlayer && playing) {
@@ -31,20 +30,18 @@ export default function MixedVideoPlayer({
   };
 
   useEffect(() => {
-    const syncPlayers = () => {
+    const syncPlayers = async () => {
       if (playersReady.left && playersReady.right) {
         const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
         const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
-        
+
         if (leftPlayer && rightPlayer) {
           if (playing) {
             try {
-              Promise.all([
+              await Promise.all([
                 leftPlayer.playVideo(),
                 rightPlayer.playVideo()
-              ]).catch(error => {
-                console.error('Error syncing videos:', error);
-              });
+              ]);
             } catch (error) {
               console.error('Error syncing videos:', error);
             }
@@ -77,7 +74,6 @@ export default function MixedVideoPlayer({
   const rightOpacity = crossFaderValue;
 
   return (
-    <>
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
       <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: leftOpacity }}>
         <ReactPlayer
@@ -135,7 +131,5 @@ export default function MixedVideoPlayer({
         />
       </div>
     </div>
-    <VideoDebugMonitor leftPlayerRef={leftPlayerRef} rightPlayerRef={rightPlayerRef} />
-    </>
   );
 }
