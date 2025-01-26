@@ -1,39 +1,8 @@
-
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, Music } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-interface DJControlsProps {
-  playing: boolean;
-  onPlayPause: () => void;
-  crossFaderValue: number;
-  onCrossFaderChange: (value: number[]) => void;
-}
-
-export default function DJControls({ playing, onPlayPause, crossFaderValue, onCrossFaderChange }: DJControlsProps) {
-  return (
-    <div className="flex items-center gap-4 p-4">
-      <Button 
-        variant="outline" 
-        size="icon"
-        onClick={onPlayPause}
-        className="w-12 h-12"
-      >
-        {playing ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
-      </Button>
-      <Slider
-        defaultValue={[0.5]}
-        max={1}
-        step={0.01}
-        value={[crossFaderValue]}
-        onValueChange={onCrossFaderChange}
-        className="flex-1"
-      />
-    </div>
-  );
-}
 
 interface DJControlsProps {
   onPlayAll: () => void;
@@ -59,7 +28,7 @@ export default function DJControls({
           <Button size="icon" variant="ghost" className="shrink-0">
             <Music className="h-4 w-4" />
           </Button>
-          
+
           <div className="flex-1">
             <Slider
               value={[crossFader]}
