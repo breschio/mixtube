@@ -156,7 +156,7 @@ export default function Home() {
             onCrossFaderChange={setCrossFader}
           />
           
-          <Tabs defaultValue="left" className="w-full">
+          <Tabs value={crossFader < 0.5 ? "left" : "right"} className="w-full">
             <TabsList className="w-full">
               <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
               <TabsTrigger value="right" className="flex-1">Right Video</TabsTrigger>
