@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Sidebar, SidebarContent, SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -72,10 +71,10 @@ export default function Home() {
             </div>
           </div>
         </header>
-        <main className="w-full sm:w-4/5 max-w-[2000px] mx-auto p-4 sm:p-8 pb-20 sm:pb-8 space-y-4 sm:space-y-8">
+        <main className="w-full h-screen flex flex-col items-center justify-center p-4 sm:p-8">
           {/* Mixed Video Section */}
           {mode === 'performance' && (
-            <div>
+            <div className="w-full max-w-[1200px] mx-auto">
               <Card className="overflow-hidden border-none bg-transparent">
                 <MixedVideoPlayer 
                   leftVideoId={videos.left?.id || null}
