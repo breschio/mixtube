@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Toggle } from "@/components/ui/toggle";
@@ -39,7 +38,7 @@ export default function Home() {
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  
+
   const handleVideoSelect = (video: VideoInfo, target: 'left' | 'right') => {
     setVideos(prev => ({
       ...prev,
@@ -89,13 +88,7 @@ export default function Home() {
                       />
                     </div>
                     <div className="flex items-center justify-center">
-                      <DJControls
-                        isPlaying={playing}
-                        onPlayAll={() => setPlaying(true)}
-                        onPauseAll={() => setPlaying(false)}
-                        crossFader={crossFader}
-                        onCrossFaderChange={setCrossFader}
-                      />
+                      <div className="h-full w-full bg-card/50 rounded-lg border border-border/50" />
                     </div>
                     <div className="space-y-4">
                       <Card className="overflow-hidden bg-card/50 border-border/50">
