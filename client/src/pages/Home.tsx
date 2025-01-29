@@ -1,16 +1,11 @@
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Toggle } from "@/components/ui/toggle";
-import { ChevronRight, ChevronLeft, Play, Pause, MonitorPlay, Volume2, Expand } from "lucide-react";
+import { Play, Pause, Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
-import MixedVideoPlayer from "@/components/MixedVideoPlayer";
-import RecommendedVideos from "@/components/RecommendedVideos";
 
 interface VideoInfo {
   id: string;
@@ -35,11 +30,9 @@ export default function Home() {
     }
   });
 
-  const [mode, setMode] = useState<'preview' | 'mix'>('preview');
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
-  const isMobile = useIsMobile();
 
   const handleVideoSelect = (video: VideoInfo, target: 'left' | 'right') => {
     setVideos(prev => ({
@@ -49,124 +42,57 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 space-y-4">
+    <div className="min-h-screen bg-background p-4">
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-primary">mixtube</h1>
-        <Toggle
+        <Button
           variant="outline"
-          pressed={mode === 'mix'}
-          onPressedChange={(pressed) => setMode(pressed ? 'mix' : 'preview')}
-          aria-label="Toggle mix mode"
+          size="icon"
+          onClick={() => setPlaying(!playing)}
         >
-          <MonitorPlay className="h-4 w-4" />
-        </Toggle>
+          {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+        </Button>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-4">
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Left Deck</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setPlaying(!playing)}
-              >
-                {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-              </Button>
-            </div>
-            <VideoPlayer
-              videoId={videos.left?.id || null}
-              videoTitle={videos.left?.title}
-              channelTitle={videos.left?.channelTitle}
-              side="left"
-              volume={volumes.left}
-              playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-            />
-            <div className="mt-4 flex items-center gap-2">
-              <Volume2 className="h-4 w-4" />
-              <Slider
-                value={[volumes.left]}
-                max={1}
-                step={0.01}
-                onValueChange={([value]) => setVolumes(prev => ({ ...prev, left: value }))}
-              />
-            </div>
-          </Card>
-
-          <SearchBar 
-            onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+          <VideoPlayer
             videoId={videos.left?.id || null}
+            videoTitle={videos.left?.title}
+            channelTitle={videos.left?.channelTitle}
+            side="left"
+            volume={volumes.left * (1 - crossFader)}
+            playing={playing}
+            onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
           />
+          <SearchBar onVideoSelect={(video) => handleVideoSelect(video, 'left')} />
         </div>
 
         <div className="space-y-4">
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Right Deck</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setPlaying(!playing)}
-              >
-                {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-              </Button>
-            </div>
-            <VideoPlayer
-              videoId={videos.right?.id || null}
-              videoTitle={videos.right?.title}
-              channelTitle={videos.right?.channelTitle}
-              side="right"
-              volume={volumes.right}
-              playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            />
-            <div className="mt-4 flex items-center gap-2">
-              <Volume2 className="h-4 w-4" />
-              <Slider
-                value={[volumes.right]}
-                max={1}
-                step={0.01}
-                onValueChange={([value]) => setVolumes(prev => ({ ...prev, right: value }))}
-              />
-            </div>
-          </Card>
-
-          <SearchBar 
-            onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+          <VideoPlayer
             videoId={videos.right?.id || null}
+            videoTitle={videos.right?.title}
+            channelTitle={videos.right?.channelTitle}
+            side="right"
+            volume={volumes.right * crossFader}
+            playing={playing}
+            onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
           />
+          <SearchBar onVideoSelect={(video) => handleVideoSelect(video, 'right')} />
         </div>
       </div>
 
       <Card className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur border-t">
-        <div className="max-w-2xl mx-auto space-y-4">
-          <div className="flex items-center gap-4">
-            <ChevronLeft className={cn("h-4 w-4", crossFader < 0.5 && "text-primary")} />
-            <Slider
-              value={[crossFader]}
-              max={1}
-              step={0.01}
-              onValueChange={([value]) => setCrossFader(value)}
-              className="flex-1"
-            />
-            <ChevronRight className={cn("h-4 w-4", crossFader > 0.5 && "text-primary")} />
-          </div>
-
-          {mode === 'mix' && (
-            <div className="aspect-video w-full max-w-md mx-auto">
-              <MixedVideoPlayer
-                leftVideo={videos.left}
-                rightVideo={videos.right}
-                crossFader={crossFader}
-                playing={playing}
-                volumes={volumes}
-              />
-            </div>
-          )}
+        <div className="max-w-md mx-auto flex items-center gap-4">
+          <Volume2 className={cn("h-4 w-4", crossFader < 0.5 && "text-primary")} />
+          <Slider
+            value={[crossFader]}
+            max={1}
+            step={0.01}
+            onValueChange={([value]) => setCrossFader(value)}
+            className="flex-1"
+          />
+          <Volume2 className={cn("h-4 w-4", crossFader >= 0.5 && "text-primary")} />
         </div>
       </Card>
     </div>
