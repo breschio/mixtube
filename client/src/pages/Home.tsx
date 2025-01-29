@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toggle } from "@/components/ui/toggle";
 import { useIsMobile } from "../hooks/use-mobile";
@@ -48,10 +49,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
-      <div className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 sm:px-8 py-2 sm:py-4">
-        <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-end">
-          <div className="flex items-center gap-4">
-            <Toggle
+      <SidebarProvider>
+        <div className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 sm:px-8 py-2 sm:py-4">
+          <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-between items-center">
+            <div className="mixtube-logo text-white">mixtube</div>
+            <div className="flex items-center gap-4">
+              <Toggle
               variant="outline"
               pressed={mode === 'listening'}
               onPressedChange={(pressed) => setMode(pressed ? 'listening' : 'performance')}
