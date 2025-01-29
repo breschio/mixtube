@@ -54,6 +54,18 @@ export default function Home() {
         </Button>
       </header>
 
+      <div className="mb-4 w-full flex justify-center">
+        <div className="w-1/3 aspect-video bg-background/95 rounded-lg overflow-hidden">
+          <MixedVideoPlayer
+            leftVideo={videos.left}
+            rightVideo={videos.right}
+            crossFader={crossFader}
+            playing={playing}
+            volumes={volumes}
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-4">
           <VideoPlayer
