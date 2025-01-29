@@ -120,51 +120,37 @@ export default function Home() {
       </div>
 
       <main className="flex-1 flex flex-col h-[calc(100vh-64px)]">
-        <div className="grid grid-cols-2 gap-4 p-4">
-          <div className="space-y-4">
-            <Card className="h-[400px] overflow-hidden bg-card/50 border-border/50">
-              <VideoPlayer 
+        <div className="max-w-4xl mx-auto w-full p-4 space-y-4">
+          <Card className="aspect-video overflow-hidden bg-card/50 border-border/50">
+            <MixedVideoPlayer
+              leftVideo={videos.left}
+              rightVideo={videos.right}
+              crossFader={crossFader}
+              playing={playing}
+              volumes={volumes}
+            />
+          </Card>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
+              <SearchBar 
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
                 videoId={videos.left?.id || null}
-                videoTitle={videos.left?.title}
-                channelTitle={videos.left?.channelTitle}
-                side="left" 
-                volume={volumes.left}
-                playing={playing}
-                onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+              />
+              <RecommendedVideos
+                videoId={videos.left?.id || null}
                 onVideoSelect={(video) => handleVideoSelect(video, 'left')}
               />
-            </Card>
-            <SearchBar 
-              onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
-              videoId={videos.left?.id || null}
-            />
-            <RecommendedVideos
-              videoId={videos.left?.id || null}
-              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-            />
-          </div>
-
-          <div className="space-y-4">
-            <Card className="h-[400px] overflow-hidden bg-card/50 border-border/50">
-              <VideoPlayer 
+            </div>
+            <div className="space-y-4">
+              <SearchBar 
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
                 videoId={videos.right?.id || null}
-                videoTitle={videos.right?.title}
-                channelTitle={videos.right?.channelTitle}
-                side="right"
-                volume={volumes.right}
-                playing={playing}
-                onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+              />
+              <RecommendedVideos
+                videoId={videos.right?.id || null}
                 onVideoSelect={(video) => handleVideoSelect(video, 'right')}
               />
-            </Card>
-            <SearchBar 
-              onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
-              videoId={videos.right?.id || null}
-            />
-            <RecommendedVideos
-              videoId={videos.right?.id || null}
-              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            />
+            </div>
           </div>
         </div>
       </main>
