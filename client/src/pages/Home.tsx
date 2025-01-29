@@ -151,8 +151,8 @@ export default function Home() {
           </Tabs>
         ) : (
           <div className="flex w-full gap-4">
-            <Sidebar side="left" collapsible="icon">
-              <SidebarContent className="w-[320px]">
+            <Sidebar side="left" collapsible="icon" className="bg-[#0A1525]">
+              <SidebarContent className="w-[320px] p-4">
                 <div className="space-y-4">
                   <Card className="overflow-hidden border-none bg-transparent">
                 <VideoPlayer 
@@ -181,8 +181,8 @@ export default function Home() {
             {/* Center content for mixed video */}
             <div className="flex-1" />
 
-            <Sidebar side="right" collapsible="icon">
-              <SidebarContent className="w-[320px]">
+            <Sidebar side="right" collapsible="icon" className="bg-[#0A1525]">
+              <SidebarContent className="w-[320px] p-4">
                 <div className="space-y-4">
                   <Card className="overflow-hidden border-none bg-transparent">
                 <VideoPlayer 
