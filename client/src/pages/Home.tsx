@@ -9,6 +9,7 @@ import DJControls from "@/components/DJControls";
 import RecommendedVideos from "@/components/RecommendedVideos";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
 
 interface VideoInfo {
   id: string;
@@ -148,9 +149,11 @@ export default function Home() {
           </TabsContent>
           </Tabs>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start">
-            <div className="space-y-4">
-              <Card className="overflow-hidden border-none bg-transparent">
+          <div className="flex w-full gap-4">
+            <Sidebar side="left" collapsible="icon">
+              <SidebarContent className="w-[320px]">
+                <div className="space-y-4">
+                  <Card className="overflow-hidden border-none bg-transparent">
                 <VideoPlayer 
                   videoId={videos.left?.id || null}
                   videoTitle={videos.left?.title}
@@ -167,12 +170,20 @@ export default function Home() {
                 videoId={videos.left?.id || null}
               />
               <RecommendedVideos
-                videoId={videos.left?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-              />
-            </div>
-            <div className="space-y-4">
-              <Card className="overflow-hidden border-none bg-transparent">
+                    videoId={videos.left?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                  />
+                </div>
+              </SidebarContent>
+            </Sidebar>
+
+            {/* Center content for mixed video */}
+            <div className="flex-1" />
+
+            <Sidebar side="right" collapsible="icon">
+              <SidebarContent className="w-[320px]">
+                <div className="space-y-4">
+                  <Card className="overflow-hidden border-none bg-transparent">
                 <VideoPlayer 
                   videoId={videos.right?.id || null}
                   videoTitle={videos.right?.title}
@@ -189,10 +200,12 @@ export default function Home() {
                 videoId={videos.right?.id || null}
               />
               <RecommendedVideos
-                videoId={videos.right?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-              />
-            </div>
+                    videoId={videos.right?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                  />
+                </div>
+              </SidebarContent>
+            </Sidebar>
           </div>
         )}
       </main>
