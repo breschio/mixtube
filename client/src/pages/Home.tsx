@@ -57,7 +57,7 @@ export default function Home() {
           <div className="flex-1">
             <Toggle pressed={leftSheetOpen} className="text-xs">←</Toggle>
           </div>
-          <div className="font-bold text-xl text-primary flex-1 text-center">mixtube</div>
+          <div className="font-bold text-lg text-primary flex-1 text-center">mixtube</div>
           <div className="flex items-center gap-4 flex-1 justify-end">
             <Sheet open={leftSheetOpen} onOpenChange={setLeftSheetOpen}>
               <SheetTrigger asChild>
