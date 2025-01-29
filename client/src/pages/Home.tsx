@@ -70,29 +70,37 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 flex h-[calc(100vh-64px)]">
-        {/* Performance View */}
-        <div className="w-2/3 p-4">
-          {mode === 'performance' && (
-            <Card className="h-full overflow-hidden border-none bg-transparent">
-              <MixedVideoPlayer 
-                leftVideoId={videos.left?.id || null}
-                rightVideoId={videos.right?.id || null}
-                crossFaderValue={crossFader}
-                playing={playing}
+      <main className="flex-1 flex flex-col h-[calc(100vh-64px)]">
+        {/* DJ Controls */}
+        {mode === 'performance' && (
+          <div className="px-4 pt-4">
+            <Card className="border-none bg-transparent">
+              <DJControls
+                isPlaying={playing}
+                onPlayAll={() => setPlaying(true)}
+                onPauseAll={() => setPlaying(false)}
+                crossFader={crossFader}
+                onCrossFaderChange={setCrossFader}
               />
-              <div className="mt-4">
-                <DJControls
-                  isPlaying={playing}
-                  onPlayAll={() => setPlaying(true)}
-                  onPauseAll={() => setPlaying(false)}
-                  crossFader={crossFader}
-                  onCrossFaderChange={setCrossFader}
-                />
-              </div>
             </Card>
-          )}
-        </div>
+          </div>
+        )}
+        
+        {/* Main Content */}
+        <div className="flex flex-1">
+          {/* Performance View */}
+          <div className="w-2/3 p-4">
+            {mode === 'performance' && (
+              <Card className="h-full overflow-hidden border-none bg-transparent">
+                <MixedVideoPlayer 
+                  leftVideoId={videos.left?.id || null}
+                  rightVideoId={videos.right?.id || null}
+                  crossFaderValue={crossFader}
+                  playing={playing}
+                />
+              </Card>
+            )}
+          </div>
 
         {/* Right Column with Tabs */}
         <div className="w-1/3 p-4 border-l border-primary/20">
