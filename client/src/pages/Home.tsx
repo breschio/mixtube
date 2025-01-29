@@ -71,10 +71,10 @@ export default function Home() {
             </div>
           </div>
         </header>
-        <main className="w-full h-screen flex flex-col items-center justify-center p-4 sm:p-8">
+        <main className="w-full h-screen flex items-center justify-center p-4 sm:p-8">
           {/* Mixed Video Section */}
           {mode === 'performance' && (
-            <div className="w-full max-w-[1200px] mx-auto">
+            <div className="w-2/3 pr-4">
               <Card className="overflow-hidden border-none bg-transparent">
                 <MixedVideoPlayer 
                   leftVideoId={videos.left?.id || null}
@@ -99,7 +99,7 @@ export default function Home() {
 
           {/* Video Columns in Sidebar */}
           <Sidebar side="right" collapsible="icon" className="bg-[#0A1525]">
-            <SidebarContent className="w-[320px] p-4">
+            <SidebarContent className="w-1/3 min-w-[320px] p-4">
               <Tabs defaultValue="left" className="w-full">
                 <TabsList className="w-full mb-4">
                   <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
