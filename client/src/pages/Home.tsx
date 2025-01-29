@@ -1,9 +1,11 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Toggle } from "@/components/ui/toggle";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
@@ -38,6 +40,8 @@ export default function Home() {
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [leftSheetOpen, setLeftSheetOpen] = useState(false);
+  const [rightSheetOpen, setRightSheetOpen] = useState(false);
 
   const handleVideoSelect = (video: VideoInfo, target: 'left' | 'right') => {
     setVideos(prev => ({
@@ -52,18 +56,42 @@ export default function Home() {
         <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-between items-center">
           <div className="font-bold text-xl text-primary">mixtube</div>
           <div className="flex items-center gap-4">
+            <Sheet open={leftSheetOpen} onOpenChange={setLeftSheetOpen}>
+              <SheetTrigger asChild>
+                <Toggle pressed={leftSheetOpen} className="text-xs">←</Toggle>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[400px]">
+                <div className="space-y-4">
+                  <Card className="overflow-hidden bg-card/50 border-border/50">
+                    <VideoPlayer 
+                      videoId={videos.left?.id || null}
+                      videoTitle={videos.left?.title}
+                      channelTitle={videos.left?.channelTitle}
+                      side="left" 
+                      volume={volumes.left}
+                      playing={playing}
+                      onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                    />
+                  </Card>
+                  <SearchBar 
+                    onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
+                    videoId={videos.left?.id || null}
+                  />
+                  <RecommendedVideos
+                    videoId={videos.left?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
+
             <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
               <DrawerTrigger asChild>
-                <Toggle
-                  variant="outline"
-                  pressed={drawerOpen}
-                  className="text-xs"
-                >
-                  🎛️
-                </Toggle>
+                <Toggle pressed={drawerOpen} className="text-xs">🎛️</Toggle>
               </DrawerTrigger>
-              <DrawerContent className="h-[400px]">
-                <div className="p-4 space-y-4">
+              <DrawerContent>
+                <div className="p-4">
                   <DJControls
                     isPlaying={playing}
                     onPlayAll={() => setPlaying(true)}
@@ -71,58 +99,40 @@ export default function Home() {
                     crossFader={crossFader}
                     onCrossFaderChange={setCrossFader}
                   />
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-4">
-                      <Card className="overflow-hidden bg-card/50 border-border/50">
-                        <VideoPlayer 
-                          videoId={videos.left?.id || null}
-                          videoTitle={videos.left?.title}
-                          channelTitle={videos.left?.channelTitle}
-                          side="left" 
-                          volume={volumes.left}
-                          playing={playing}
-                          onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-                          onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                        />
-                      </Card>
-                      <SearchBar 
-                        onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
-                        videoId={videos.left?.id || null}
-                      />
-                      <RecommendedVideos
-                        videoId={videos.left?.id || null}
-                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                      />
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <div className="h-full w-full bg-card/50 rounded-lg border border-border/50" />
-                    </div>
-                    <div className="space-y-4">
-                      <Card className="overflow-hidden bg-card/50 border-border/50">
-                        <VideoPlayer 
-                          videoId={videos.right?.id || null}
-                          videoTitle={videos.right?.title}
-                          channelTitle={videos.right?.channelTitle}
-                          side="right"
-                          volume={volumes.right}
-                          playing={playing}
-                          onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-                          onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                        />
-                      </Card>
-                      <SearchBar 
-                        onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
-                        videoId={videos.right?.id || null}
-                      />
-                      <RecommendedVideos
-                        videoId={videos.right?.id || null}
-                        onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                      />
-                    </div>
-                  </div>
                 </div>
               </DrawerContent>
             </Drawer>
+
+            <Sheet open={rightSheetOpen} onOpenChange={setRightSheetOpen}>
+              <SheetTrigger asChild>
+                <Toggle pressed={rightSheetOpen} className="text-xs">→</Toggle>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[400px]">
+                <div className="space-y-4">
+                  <Card className="overflow-hidden bg-card/50 border-border/50">
+                    <VideoPlayer 
+                      videoId={videos.right?.id || null}
+                      videoTitle={videos.right?.title}
+                      channelTitle={videos.right?.channelTitle}
+                      side="right"
+                      volume={volumes.right}
+                      playing={playing}
+                      onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                    />
+                  </Card>
+                  <SearchBar 
+                    onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
+                    videoId={videos.right?.id || null}
+                  />
+                  <RecommendedVideos
+                    videoId={videos.right?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
+
             <Toggle
               variant="outline"
               pressed={mode === 'listening'}
