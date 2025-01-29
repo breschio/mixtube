@@ -6,6 +6,12 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { 
+  Sidebar, 
+  SidebarContent,
+  SidebarTrigger,
+  SidebarProvider
+} from "@/components/ui/sidebar";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
@@ -51,15 +57,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="w-full border-b border-border/20 px-4 sm:px-8 py-2 sm:py-4">
-        <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-between items-center">
-          <div className="flex-1">
-            <Toggle pressed={leftSheetOpen} className="text-xs">←</Toggle>
-          </div>
-          <div className="font-bold text-lg text-primary flex-1 text-center">mixtube</div>
-          <div className="flex items-center gap-4 flex-1 justify-end">
-            <Sheet open={leftSheetOpen} onOpenChange={setLeftSheetOpen}>
+    <SidebarProvider defaultOpen={false}>
+      <div className="min-h-screen bg-background">
+        <div className="w-full border-b border-border/20 px-4 sm:px-8 py-2 sm:py-4">
+          <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-between items-center">
+            <div className="flex-1">
+              <SidebarTrigger />
+            </div>
+            <div className="font-bold text-lg text-primary flex-1 text-center">mixtube</div>
+            <div className="flex items-center gap-4 flex-1 justify-end">
+              <Sidebar side="left" variant="floating" collapsible="offcanvas">
               <SheetTrigger asChild>
                 <Toggle pressed={leftSheetOpen} className="text-xs">←</Toggle>
               </SheetTrigger>
