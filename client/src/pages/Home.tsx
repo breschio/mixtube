@@ -134,7 +134,7 @@ export default function Home() {
       </div>
 
       <main className="flex-1 flex flex-col h-[calc(100vh-64px)]">
-        <div className="max-w-[66.666667%] mx-auto w-full p-4 space-y-4">
+        <div className="w-[66.666667%] pl-4 space-y-4">
           <Card className="aspect-video overflow-hidden bg-card/50 border-border/50">
             <MixedVideoPlayer
               leftVideo={videos.left}
