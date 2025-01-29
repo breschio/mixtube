@@ -145,6 +145,9 @@ export default function Home() {
               volumes={volumes}
             />
           </Card>
+        </div>
+        
+        <div className="w-1/3 p-4 space-y-4">
           <Card className="p-4">
             <DJControls
               isPlaying={playing}
@@ -154,9 +157,7 @@ export default function Home() {
               onCrossFaderChange={setCrossFader}
             />
           </Card>
-        </div>
-        
-        <div className="w-1/3 p-4">
+          
           <Tabs defaultValue="left" className="w-full">
             <TabsList className="w-full">
               <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
