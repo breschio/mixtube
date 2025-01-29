@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Toggle } from "@/components/ui/toggle";
@@ -60,7 +59,7 @@ export default function Home() {
               <SheetTrigger asChild>
                 <Toggle pressed={leftSheetOpen} className="text-xs">←</Toggle>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[400px]">
+              <SheetContent side="right" className="w-[400px]"> {/* Moved to right */}
                 <div className="space-y-4">
                   <Card className="overflow-hidden bg-card/50 border-border/50">
                     <VideoPlayer 
@@ -86,13 +85,13 @@ export default function Home() {
               </SheetContent>
             </Sheet>
 
-            
+
 
             <Sheet open={rightSheetOpen} onOpenChange={setRightSheetOpen}>
               <SheetTrigger asChild>
                 <Toggle pressed={rightSheetOpen} className="text-xs">→</Toggle>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[400px]">
+              <SheetContent side="right" className="w-[400px]"> {/* Moved to right */}
                 <div className="space-y-4">
                   <Card className="overflow-hidden bg-card/50 border-border/50">
                     <VideoPlayer 
