@@ -48,11 +48,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
-      <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 sm:px-8 py-2 sm:py-4">
-        <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-between items-center">
-          <div className="text-white font-mono text-base sm:text-lg">
-            mixtube
-          </div>
+      <div className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 sm:px-8 py-2 sm:py-4">
+        <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-end">
           <div className="flex items-center gap-4">
             <Toggle
               variant="outline"
@@ -68,7 +65,7 @@ export default function Home() {
             </Avatar>
           </div>
         </div>
-      </header>
+      </div>
 
       <main className="flex-1 flex flex-col h-[calc(100vh-64px)]">
         <div className="flex flex-1">
