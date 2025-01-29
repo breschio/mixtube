@@ -63,10 +63,10 @@ export default function Home() {
               {mode === 'listening' ? '🎧' : '🎭'}
             </Toggle>
             <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
           </div>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
         </div>
       </header>
       <main className="w-full sm:w-4/5 max-w-[2000px] mx-auto p-4 sm:p-8 pb-20 sm:pb-8 space-y-4 sm:space-y-8">
