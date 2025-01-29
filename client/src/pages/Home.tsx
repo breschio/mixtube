@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
@@ -133,8 +134,8 @@ export default function Home() {
         </div>
       </div>
 
-      <main className="flex-1 flex flex-col h-[calc(100vh-64px)]">
-        <div className="w-[66.666667%] pl-4 space-y-4">
+      <main className="flex-1 flex h-[calc(100vh-64px)]">
+        <div className="w-2/3 pl-4 space-y-4">
           <Card className="aspect-video overflow-hidden bg-card/50 border-border/50">
             <MixedVideoPlayer
               leftVideo={videos.left}
@@ -153,6 +154,59 @@ export default function Home() {
               onCrossFaderChange={setCrossFader}
             />
           </Card>
+        </div>
+        
+        <div className="w-1/3 p-4">
+          <Tabs defaultValue="left" className="w-full">
+            <TabsList className="w-full">
+              <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
+              <TabsTrigger value="right" className="flex-1">Right Video</TabsTrigger>
+            </TabsList>
+            <TabsContent value="left" className="space-y-4 mt-4">
+              <Card className="overflow-hidden bg-card/50 border-border/50">
+                <VideoPlayer 
+                  videoId={videos.left?.id || null}
+                  videoTitle={videos.left?.title}
+                  channelTitle={videos.left?.channelTitle}
+                  side="left" 
+                  volume={volumes.left}
+                  playing={playing}
+                  onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                />
+              </Card>
+              <SearchBar 
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
+                videoId={videos.left?.id || null}
+              />
+              <RecommendedVideos
+                videoId={videos.left?.id || null}
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+              />
+            </TabsContent>
+            <TabsContent value="right" className="space-y-4 mt-4">
+              <Card className="overflow-hidden bg-card/50 border-border/50">
+                <VideoPlayer 
+                  videoId={videos.right?.id || null}
+                  videoTitle={videos.right?.title}
+                  channelTitle={videos.right?.channelTitle}
+                  side="right"
+                  volume={volumes.right}
+                  playing={playing}
+                  onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                />
+              </Card>
+              <SearchBar 
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
+                videoId={videos.right?.id || null}
+              />
+              <RecommendedVideos
+                videoId={videos.right?.id || null}
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
     </div>
