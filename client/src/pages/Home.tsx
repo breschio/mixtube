@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Toggle } from "@/components/ui/toggle";
 import { useIsMobile } from "../hooks/use-mobile";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
@@ -32,6 +33,7 @@ export default function Home() {
     }
   });
 
+  const [mode, setMode] = useState<'performance' | 'listening'>('performance');
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
@@ -51,7 +53,17 @@ export default function Home() {
           <div className="text-white font-mono text-base sm:text-lg">
             mixtube
           </div>
-          <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
+          <div className="flex items-center gap-4">
+            <Toggle
+              variant="outline"
+              pressed={mode === 'listening'}
+              onPressedChange={(pressed) => setMode(pressed ? 'listening' : 'performance')}
+              className="text-xs"
+            >
+              {mode === 'listening' ? '🎧' : '🎭'}
+            </Toggle>
+            <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
+          </div>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
@@ -59,16 +71,18 @@ export default function Home() {
       </header>
       <main className="w-full sm:w-4/5 max-w-[2000px] mx-auto p-4 sm:p-8 pb-20 sm:pb-8 space-y-4 sm:space-y-8">
         {/* Mixed Video Section */}
-        <div>
-          <Card className="overflow-hidden border-none bg-transparent">
-            <MixedVideoPlayer 
-              leftVideoId={videos.left?.id || null}
-              rightVideoId={videos.right?.id || null}
-              crossFaderValue={crossFader}
-              playing={playing}
-            />
-          </Card>
-        </div>
+        {mode === 'performance' && (
+          <div>
+            <Card className="overflow-hidden border-none bg-transparent">
+              <MixedVideoPlayer 
+                leftVideoId={videos.left?.id || null}
+                rightVideoId={videos.right?.id || null}
+                crossFaderValue={crossFader}
+                playing={playing}
+              />
+            </Card>
+          </div>
+        )}
 
         {/* DJ Controls - Centered between video and columns */}
         <div className="flex justify-center">
