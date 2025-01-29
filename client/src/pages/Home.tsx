@@ -38,8 +38,7 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
-  const isMobile = useIsMobile();
-
+  
   const handleVideoSelect = (video: VideoInfo, target: 'left' | 'right') => {
     setVideos(prev => ({
       ...prev,
@@ -72,82 +71,88 @@ export default function Home() {
       </header>
 
       <main className="flex-1 flex h-[calc(100vh-64px)]">
-        {/* Left Column */}
-        <div className="w-1/3 p-4 border-r border-primary/20">
-          <Card className="h-full bg-transparent">
-            <VideoPlayer 
-              videoId={videos.left?.id || null}
-              videoTitle={videos.left?.title}
-              channelTitle={videos.left?.channelTitle}
-              side="left" 
-              volume={volumes.left}
-              playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-            />
-            <div className="mt-4">
-              <SearchBar 
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
-                videoId={videos.left?.id || null}
-              />
-            </div>
-            <div className="mt-4">
-              <RecommendedVideos
-                videoId={videos.left?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-              />
-            </div>
-          </Card>
-        </div>
-
-        {/* Middle Column */}
-        <div className="w-1/3 p-4 flex flex-col">
+        {/* Performance View */}
+        <div className="w-2/3 p-4">
           {mode === 'performance' && (
-            <Card className="flex-1 overflow-hidden border-none bg-transparent">
+            <Card className="h-full overflow-hidden border-none bg-transparent">
               <MixedVideoPlayer 
                 leftVideoId={videos.left?.id || null}
                 rightVideoId={videos.right?.id || null}
                 crossFaderValue={crossFader}
                 playing={playing}
               />
+              <div className="mt-4">
+                <DJControls
+                  isPlaying={playing}
+                  onPlayAll={() => setPlaying(true)}
+                  onPauseAll={() => setPlaying(false)}
+                  crossFader={crossFader}
+                  onCrossFaderChange={setCrossFader}
+                />
+              </div>
             </Card>
           )}
-          <div className="mt-4">
-            <DJControls
-              isPlaying={playing}
-              onPlayAll={() => setPlaying(true)}
-              onPauseAll={() => setPlaying(false)}
-              crossFader={crossFader}
-              onCrossFaderChange={setCrossFader}
-            />
-          </div>
         </div>
 
-        {/* Right Column */}
+        {/* Right Column with Tabs */}
         <div className="w-1/3 p-4 border-l border-primary/20">
           <Card className="h-full bg-transparent">
-            <VideoPlayer 
-              videoId={videos.right?.id || null}
-              videoTitle={videos.right?.title}
-              channelTitle={videos.right?.channelTitle}
-              side="right"
-              volume={volumes.right}
-              playing={playing}
-              onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            />
-            <div className="mt-4">
-              <SearchBar 
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
-                videoId={videos.right?.id || null}
-              />
-            </div>
-            <div className="mt-4">
-              <RecommendedVideos
-                videoId={videos.right?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-              />
-            </div>
+            <Tabs defaultValue="left" className="w-full h-full">
+              <TabsList className="w-full mb-4">
+                <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
+                <TabsTrigger value="right" className="flex-1">Right Video</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="left" className="h-[calc(100%-60px)]">
+                <VideoPlayer 
+                  videoId={videos.left?.id || null}
+                  videoTitle={videos.left?.title}
+                  channelTitle={videos.left?.channelTitle}
+                  side="left" 
+                  volume={volumes.left}
+                  playing={playing}
+                  onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                />
+                <div className="mt-4">
+                  <SearchBar 
+                    onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
+                    videoId={videos.left?.id || null}
+                  />
+                </div>
+                <div className="mt-4">
+                  <RecommendedVideos
+                    videoId={videos.left?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="right" className="h-[calc(100%-60px)]">
+                <VideoPlayer 
+                  videoId={videos.right?.id || null}
+                  videoTitle={videos.right?.title}
+                  channelTitle={videos.right?.channelTitle}
+                  side="right"
+                  volume={volumes.right}
+                  playing={playing}
+                  onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                />
+                <div className="mt-4">
+                  <SearchBar 
+                    onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
+                    videoId={videos.right?.id || null}
+                  />
+                </div>
+                <div className="mt-4">
+                  <RecommendedVideos
+                    videoId={videos.right?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
           </Card>
         </div>
       </main>
