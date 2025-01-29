@@ -63,7 +63,14 @@ export default function Home() {
                 </Toggle>
               </DrawerTrigger>
               <DrawerContent className="h-[400px]">
-                <div className="p-4">
+                <div className="p-4 space-y-4">
+                  <DJControls
+                    isPlaying={playing}
+                    onPlayAll={() => setPlaying(true)}
+                    onPauseAll={() => setPlaying(false)}
+                    crossFader={crossFader}
+                    onCrossFaderChange={setCrossFader}
+                  />
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-4">
                       <Card className="overflow-hidden bg-card/50 border-border/50">
@@ -114,6 +121,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+              </div>
               </DrawerContent>
             </Drawer>
             <Toggle
