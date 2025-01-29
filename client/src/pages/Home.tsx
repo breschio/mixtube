@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Sidebar, SidebarContent, SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toggle } from "@/components/ui/toggle";
 import { useIsMobile } from "../hooks/use-mobile";
@@ -17,6 +18,8 @@ interface VideoInfo {
 }
 
 export default function Home() {
+  return (
+    <SidebarProvider>
   const [videos, setVideos] = useState<{ 
     left: VideoInfo | null; 
     right: VideoInfo | null;
@@ -152,5 +155,7 @@ export default function Home() {
         </Sidebar>
       </main>
     </div>
+  );
+  </SidebarProvider>
   );
 }
