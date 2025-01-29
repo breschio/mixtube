@@ -86,22 +86,7 @@ export default function Home() {
               </SheetContent>
             </Sheet>
 
-            <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-              <DrawerTrigger asChild>
-                <Toggle pressed={drawerOpen} className="text-xs">🎛️</Toggle>
-              </DrawerTrigger>
-              <DrawerContent>
-                <div className="p-4">
-                  <DJControls
-                    isPlaying={playing}
-                    onPlayAll={() => setPlaying(true)}
-                    onPauseAll={() => setPlaying(false)}
-                    crossFader={crossFader}
-                    onCrossFaderChange={setCrossFader}
-                  />
-                </div>
-              </DrawerContent>
-            </Drawer>
+            
 
             <Sheet open={rightSheetOpen} onOpenChange={setRightSheetOpen}>
               <SheetTrigger asChild>
@@ -158,6 +143,15 @@ export default function Home() {
               crossFader={crossFader}
               playing={playing}
               volumes={volumes}
+            />
+          </Card>
+          <Card className="p-4">
+            <DJControls
+              isPlaying={playing}
+              onPlayAll={() => setPlaying(true)}
+              onPauseAll={() => setPlaying(false)}
+              crossFader={crossFader}
+              onCrossFaderChange={setCrossFader}
             />
           </Card>
         </div>
