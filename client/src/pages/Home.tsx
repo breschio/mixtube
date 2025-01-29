@@ -66,18 +66,28 @@ export default function Home() {
               <DrawerContent className="h-[400px]">
                 <div className="p-4">
                   <div className="grid grid-cols-3 gap-4">
-                    <Card className="overflow-hidden bg-card/50 border-border/50">
-                      <VideoPlayer 
+                    <div className="space-y-4">
+                      <Card className="overflow-hidden bg-card/50 border-border/50">
+                        <VideoPlayer 
+                          videoId={videos.left?.id || null}
+                          videoTitle={videos.left?.title}
+                          channelTitle={videos.left?.channelTitle}
+                          side="left" 
+                          volume={volumes.left}
+                          playing={playing}
+                          onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                          onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                        />
+                      </Card>
+                      <SearchBar 
+                        onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
                         videoId={videos.left?.id || null}
-                        videoTitle={videos.left?.title}
-                        channelTitle={videos.left?.channelTitle}
-                        side="left" 
-                        volume={volumes.left}
-                        playing={playing}
-                        onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                      />
+                      <RecommendedVideos
+                        videoId={videos.left?.id || null}
                         onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                       />
-                    </Card>
+                    </div>
                     <div className="flex items-center justify-center">
                       <DJControls
                         isPlaying={playing}
@@ -87,18 +97,28 @@ export default function Home() {
                         onCrossFaderChange={setCrossFader}
                       />
                     </div>
-                    <Card className="overflow-hidden bg-card/50 border-border/50">
-                      <VideoPlayer 
+                    <div className="space-y-4">
+                      <Card className="overflow-hidden bg-card/50 border-border/50">
+                        <VideoPlayer 
+                          videoId={videos.right?.id || null}
+                          videoTitle={videos.right?.title}
+                          channelTitle={videos.right?.channelTitle}
+                          side="right"
+                          volume={volumes.right}
+                          playing={playing}
+                          onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                          onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                        />
+                      </Card>
+                      <SearchBar 
+                        onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
                         videoId={videos.right?.id || null}
-                        videoTitle={videos.right?.title}
-                        channelTitle={videos.right?.channelTitle}
-                        side="right"
-                        volume={volumes.right}
-                        playing={playing}
-                        onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                      />
+                      <RecommendedVideos
+                        videoId={videos.right?.id || null}
                         onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                       />
-                    </Card>
+                    </div>
                   </div>
                 </div>
               </DrawerContent>
@@ -130,28 +150,6 @@ export default function Home() {
               volumes={volumes}
             />
           </Card>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-4">
-              <SearchBar 
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
-                videoId={videos.left?.id || null}
-              />
-              <RecommendedVideos
-                videoId={videos.left?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-              />
-            </div>
-            <div className="space-y-4">
-              <SearchBar 
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
-                videoId={videos.right?.id || null}
-              />
-              <RecommendedVideos
-                videoId={videos.right?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-              />
-            </div>
-          </div>
         </div>
       </main>
     </div>
