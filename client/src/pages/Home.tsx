@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, Volume2 } from "lucide-react";
+import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import { cn } from "@/lib/utils";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
