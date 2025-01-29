@@ -54,7 +54,8 @@ export default function Home() {
         </Button>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-1/3">
         <div className="space-y-4">
           <VideoPlayer
             videoId={videos.left?.id || null}
@@ -80,6 +81,7 @@ export default function Home() {
           />
           <SearchBar onVideoSelect={(video) => handleVideoSelect(video, 'right')} />
         </div>
+      </div>
       </div>
 
       <Card className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur border-t">
