@@ -54,7 +54,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <div className="w-full border-b border-border/20 px-4 sm:px-8 py-2 sm:py-4">
         <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-between items-center">
-          <div className="font-bold text-xl text-primary">mixtube</div>
+          <div className="font-bold text-xl text-primary ml-0">mixtube</div>
           <div className="flex items-center gap-4">
             <Sheet open={leftSheetOpen} onOpenChange={setLeftSheetOpen}>
               <SheetTrigger asChild>
