@@ -66,7 +66,7 @@ export default function Home() {
             </div>
             <div className="font-bold text-lg text-primary flex-1 text-center">mixtube</div>
             <div className="flex items-center gap-4 flex-1 justify-end">
-              <Sidebar side="left" variant="floating" collapsible="offcanvas">
+              <Sheet>
               <SheetTrigger asChild>
                 <Toggle pressed={leftSheetOpen} className="text-xs">←</Toggle>
               </SheetTrigger>
