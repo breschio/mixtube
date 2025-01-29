@@ -71,6 +71,7 @@ export default function Home() {
         </div>
       </header>
       <main className="w-full sm:w-4/5 max-w-[2000px] mx-auto p-4 sm:p-8 pb-20 sm:pb-8 space-y-4 sm:space-y-8">
+        <SidebarProvider>
         {/* Mixed Video Section */}
         {mode === 'performance' && (
           <div>
@@ -208,6 +209,7 @@ export default function Home() {
             </Sidebar>
           </div>
         )}
+        </SidebarProvider>
       </main>
     </div>
   );
