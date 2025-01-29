@@ -148,15 +148,13 @@ export default function Home() {
         </div>
         
         <div className="w-1/3 p-4 space-y-4">
-          <Card className="p-4">
-            <DJControls
-              isPlaying={playing}
-              onPlayAll={() => setPlaying(true)}
-              onPauseAll={() => setPlaying(false)}
-              crossFader={crossFader}
-              onCrossFaderChange={setCrossFader}
-            />
-          </Card>
+          <DJControls
+            isPlaying={playing}
+            onPlayAll={() => setPlaying(true)}
+            onPauseAll={() => setPlaying(false)}
+            crossFader={crossFader}
+            onCrossFaderChange={setCrossFader}
+          />
           
           <Tabs defaultValue="left" className="w-full">
             <TabsList className="w-full">
