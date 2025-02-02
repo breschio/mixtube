@@ -82,15 +82,15 @@ export default function Home() {
                     crossFaderValue={crossFader}
                     playing={playing}
                   />
-                </Card>
-                <Card className="border-none bg-transparent">
-                  <DJControls
-                    isPlaying={playing}
-                    onPlayAll={() => setPlaying(true)}
-                    onPauseAll={() => setPlaying(false)}
-                    crossFader={crossFader}
-                    onCrossFaderChange={setCrossFader}
-                  />
+                  <div className="py-1">
+                    <DJControls
+                      isPlaying={playing}
+                      onPlayAll={() => setPlaying(true)}
+                      onPauseAll={() => setPlaying(false)}
+                      crossFader={crossFader}
+                      onCrossFaderChange={setCrossFader}
+                    />
+                  </div>
                 </Card>
               </div>
             )}
