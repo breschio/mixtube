@@ -1,4 +1,3 @@
-
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, Music } from "lucide-react";
@@ -65,7 +64,8 @@ export default function DJControls({
   return (
     <div className="bg-card/90 p-4 sm:p-6 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col">
       <div className="relative flex-1 flex flex-col">
-        <div className="flex justify-center mb-1 sm:mb-2">
+        <div className="flex justify-between mb-1 sm:mb-2"> {/* Added justify-between */}
+          <div className="text-sm font-medium text-primary">Left</div> {/* Added Left label */}
           <Button
             size="icon"
             variant="ghost"
@@ -78,6 +78,7 @@ export default function DJControls({
           >
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
+          <div className="text-sm font-medium text-primary">Right</div> {/* Added Right label */}
         </div>
         <Slider
           value={[crossFader]}
