@@ -74,8 +74,8 @@ export default function Home() {
         <div className="flex flex-1">
           <div className="w-2/3 p-4">
             {mode === 'performance' && (
-              <>
-                <Card className="h-full overflow-hidden border-none bg-transparent">
+              <div className="flex flex-col">
+                <Card className="overflow-hidden border-none bg-transparent">
                   <MixedVideoPlayer 
                     leftVideoId={videos.left?.id || null}
                     rightVideoId={videos.right?.id || null}
@@ -83,16 +83,14 @@ export default function Home() {
                     playing={playing}
                   />
                 </Card>
-                <div className="mt-4">
-                  <DJControls
-                    isPlaying={playing}
-                    onPlayAll={() => setPlaying(true)}
-                    onPauseAll={() => setPlaying(false)}
-                    crossFader={crossFader}
-                    onCrossFaderChange={setCrossFader}
-                  />
-                </div>
-              </>
+                <DJControls
+                  isPlaying={playing}
+                  onPlayAll={() => setPlaying(true)}
+                  onPauseAll={() => setPlaying(false)}
+                  crossFader={crossFader}
+                  onCrossFaderChange={setCrossFader}
+                />
+              </div>
             )}
           </div>
 
