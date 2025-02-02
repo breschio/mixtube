@@ -27,6 +27,7 @@ export default function DJControls({
   onCrossFaderChange,
   leftVideoId,
   rightVideoId,
+  videos,
 }: DJControlsProps) {
   const isMobile = useIsMobile();
 
