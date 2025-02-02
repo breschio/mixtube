@@ -99,7 +99,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="w-1/3 p-4 border-l border-primary/20">
+          <div className="w-1/3 p-4">
             <Card className="h-full bg-transparent">
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
