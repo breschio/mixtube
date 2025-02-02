@@ -13,6 +13,10 @@ interface DJControlsProps {
   onCrossFaderChange: (value: number) => void;
   leftVideoId?: string | null;
   rightVideoId?: string | null;
+  videos?: {
+    left: { channelTitle: string; title: string; } | null;
+    right: { channelTitle: string; title: string; } | null;
+  };
 }
 
 export default function DJControls({
@@ -61,18 +65,24 @@ export default function DJControls({
     <div className="bg-card/90 p-4 sm:p-6 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col">
       <div className="relative flex-1 flex flex-col">
         <div className="flex justify-between mb-1 sm:mb-2">
-          <div className="w-16 h-9 rounded overflow-hidden">
-            {leftVideoId ? (
-              <img 
-                src={`https://img.youtube.com/vi/${leftVideoId}/default.jpg`}
-                alt="Left video thumbnail"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-muted flex items-center justify-center">
-                <Music className="w-4 h-4 text-muted-foreground" />
-              </div>
-            )}
+          <div className="flex flex-col items-start">
+            <div className="w-16 h-9 rounded overflow-hidden">
+              {leftVideoId ? (
+                <img 
+                  src={`https://img.youtube.com/vi/${leftVideoId}/default.jpg`}
+                  alt="Left video thumbnail"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-muted flex items-center justify-center">
+                  <Music className="w-4 h-4 text-muted-foreground" />
+                </div>
+              )}
+            </div>
+            <div className="w-16 mt-1">
+              <p className="text-[10px] leading-tight text-muted-foreground truncate">{videos?.left?.channelTitle}</p>
+              <p className="text-[10px] leading-tight truncate">{videos?.left?.title}</p>
+            </div>
           </div>
           <Button
             size="icon"
@@ -86,18 +96,24 @@ export default function DJControls({
           >
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
-          <div className="w-16 h-9 rounded overflow-hidden">
-            {rightVideoId ? (
-              <img 
-                src={`https://img.youtube.com/vi/${rightVideoId}/default.jpg`}
-                alt="Right video thumbnail"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-muted flex items-center justify-center">
-                <Music className="w-4 h-4 text-muted-foreground" />
-              </div>
-            )}
+          <div className="flex flex-col items-end">
+            <div className="w-16 h-9 rounded overflow-hidden">
+              {rightVideoId ? (
+                <img 
+                  src={`https://img.youtube.com/vi/${rightVideoId}/default.jpg`}
+                  alt="Right video thumbnail"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-muted flex items-center justify-center">
+                  <Music className="w-4 h-4 text-muted-foreground" />
+                </div>
+              )}
+            </div>
+            <div className="w-16 mt-1 text-right">
+              <p className="text-[10px] leading-tight text-muted-foreground truncate">{videos?.right?.channelTitle}</p>
+              <p className="text-[10px] leading-tight truncate">{videos?.right?.title}</p>
+            </div>
           </div>
         </div>
         <Slider

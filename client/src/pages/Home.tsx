@@ -91,6 +91,7 @@ export default function Home() {
                       onCrossFaderChange={setCrossFader}
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
+                      videos={videos}
                     />
                   </div>
                 </Card>
