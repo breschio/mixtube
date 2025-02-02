@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -38,7 +37,7 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
-  
+
   const handleVideoSelect = (video: VideoInfo, target: 'left' | 'right') => {
     setVideos(prev => ({
       ...prev,
