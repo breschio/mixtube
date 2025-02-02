@@ -74,21 +74,16 @@ export default function Home() {
         <div className="flex flex-1">
           <div className="w-2/3 p-4">
             {mode === 'performance' && (
-              <Card className="h-full overflow-hidden border-none bg-transparent">
-                <MixedVideoPlayer 
-                  leftVideoId={videos.left?.id || null}
-                  rightVideoId={videos.right?.id || null}
-                  crossFaderValue={crossFader}
-                  playing={playing}
-                />
-              </Card>
-            )}
-          </div>
-
-          <div className="w-1/3 p-4 border-l border-primary/20">
-            <Card className="h-full bg-transparent">
-              {mode === 'performance' && (
-                <div className="mb-4">
+              <>
+                <Card className="h-full overflow-hidden border-none bg-transparent">
+                  <MixedVideoPlayer 
+                    leftVideoId={videos.left?.id || null}
+                    rightVideoId={videos.right?.id || null}
+                    crossFaderValue={crossFader}
+                    playing={playing}
+                  />
+                </Card>
+                <div className="mt-4">
                   <DJControls
                     isPlaying={playing}
                     onPlayAll={() => setPlaying(true)}
@@ -97,7 +92,12 @@ export default function Home() {
                     onCrossFaderChange={setCrossFader}
                   />
                 </div>
-              )}
+              </>
+            )}
+          </div>
+
+          <div className="w-1/3 p-4 border-l border-primary/20">
+            <Card className="h-full bg-transparent">
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
                   <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
