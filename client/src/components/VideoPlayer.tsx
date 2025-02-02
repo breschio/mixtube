@@ -70,63 +70,35 @@ export default function VideoPlayer({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-2">
-        <div className="relative">
-          <HoverCard openDelay={200}>
-            <HoverCardTrigger asChild>
-              <div className="w-full aspect-video bg-black rounded-lg overflow-hidden relative">
-                <ReactPlayer
-                  ref={playerRef}
-                  url={`https://www.youtube.com/watch?v=${videoId}`}
-                  width="100%"
-                  height="100%"
-                  playing={playing}
-                  volume={0}
-                  muted={true}
-                  controls={false}
-                  playIcon={false}
-                  onReady={handlePlayerReady}
-                  onEnded={handleEnded}
-                  config={{
-                    youtube: {
-                      playerVars: {
-                        controls: 0,
-                        modestbranding: 1,
-                        showinfo: 0,
-                        rel: 0,
-                        playsinline: 1,
-                        iv_load_policy: 3,
-                        origin: window.location.origin,
-                        disablekb: 1,
-                        fs: 0
-                      }
-                    }
-                  }}
-                />
-              </div>
-            </HoverCardTrigger>
-            <HoverCardContent side="bottom" align="start" className="w-80">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <h4 className="text-sm font-semibold">{videoTitle}</h4>
-                  <p className="text-sm text-muted-foreground">{channelTitle}</p>
-                </div>
-                <Button 
-                  size="icon" 
-                  variant="ghost" 
-                  onClick={() => onVideoSelect('')}
-                  className="h-8 w-8"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
-        </div>
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium line-clamp-1">{videoTitle}</h3>
-          <p className="text-xs text-muted-foreground">{channelTitle}</p>
-        </div>
+      <div className="w-full aspect-video bg-black rounded-lg overflow-hidden relative">
+        <ReactPlayer
+          ref={playerRef}
+          url={`https://www.youtube.com/watch?v=${videoId}`}
+          width="100%"
+          height="100%"
+          playing={playing}
+          volume={0}
+          muted={true}
+          controls={false}
+          playIcon={false}
+          onReady={handlePlayerReady}
+          onEnded={handleEnded}
+          config={{
+            youtube: {
+              playerVars: {
+                controls: 0,
+                modestbranding: 1,
+                showinfo: 0,
+                rel: 0,
+                playsinline: 1,
+                iv_load_policy: 3,
+                origin: window.location.origin,
+                disablekb: 1,
+                fs: 0
+              }
+            }
+          }}
+        />
       </div>
       <div className="flex items-center gap-4">
         <Volume2 className="h-4 w-4 text-primary/80" />
