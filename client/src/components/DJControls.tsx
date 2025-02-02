@@ -11,6 +11,8 @@ interface DJControlsProps {
   isPlaying: boolean;
   crossFader: number;
   onCrossFaderChange: (value: number) => void;
+  leftVideoId?: string | null;
+  rightVideoId?: string | null;
 }
 
 export default function DJControls({
@@ -57,7 +59,19 @@ export default function DJControls({
     <div className="bg-card/90 p-4 sm:p-6 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col">
       <div className="relative flex-1 flex flex-col">
         <div className="flex justify-between mb-1 sm:mb-2">
-          <span className="text-xs sm:text-sm font-bold text-primary">LEFT</span>
+          <div className="w-16 h-9 rounded overflow-hidden">
+            {leftVideoId ? (
+              <img 
+                src={`https://img.youtube.com/vi/${leftVideoId}/default.jpg`}
+                alt="Left video thumbnail"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-muted flex items-center justify-center">
+                <Music className="w-4 h-4 text-muted-foreground" />
+              </div>
+            )}
+          </div>
           <Button
             size="icon"
             variant="ghost"
@@ -70,7 +84,19 @@ export default function DJControls({
           >
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
-          <span className="text-xs sm:text-sm font-bold text-primary">RIGHT</span>
+          <div className="w-16 h-9 rounded overflow-hidden">
+            {rightVideoId ? (
+              <img 
+                src={`https://img.youtube.com/vi/${rightVideoId}/default.jpg`}
+                alt="Right video thumbnail"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-muted flex items-center justify-center">
+                <Music className="w-4 h-4 text-muted-foreground" />
+              </div>
+            )}
+          </div>
         </div>
         <Slider
           value={[crossFader]}

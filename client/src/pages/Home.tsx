@@ -89,6 +89,8 @@ export default function Home() {
                       onPauseAll={() => setPlaying(false)}
                       crossFader={crossFader}
                       onCrossFaderChange={setCrossFader}
+                      leftVideoId={videos.left?.id}
+                      rightVideoId={videos.right?.id}
                     />
                   </div>
                 </Card>
