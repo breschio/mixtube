@@ -17,8 +17,8 @@ interface VideoInfo {
 }
 
 export default function Home() {
-  const [videos, setVideos] = useState<{ 
-    left: VideoInfo | null; 
+  const [videos, setVideos] = useState<{
+    left: VideoInfo | null;
     right: VideoInfo | null;
   }>({
     left: {
@@ -47,7 +47,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
-      <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 sm:px-8 py-2 sm:py-4">
+      <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 sm:px-4 py-2 sm:py-4">
         <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-between items-center">
           <div className="text-white font-mono text-base sm:text-lg">
             mixtube
@@ -69,13 +69,13 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col h-[calc(100vh-64px)]">
+      <main className="w-4/5 max-w-[2000px] mx-auto p-8 space-y-8">
         <div className="flex flex-1">
           <div className="w-2/3 p-4">
             {mode === 'performance' && (
               <div className="flex flex-col space-y-2">
                 <Card className="overflow-hidden border-none bg-transparent">
-                  <MixedVideoPlayer 
+                  <MixedVideoPlayer
                     leftVideoId={videos.left?.id || null}
                     rightVideoId={videos.right?.id || null}
                     crossFaderValue={crossFader}
@@ -107,19 +107,19 @@ export default function Home() {
                 </TabsList>
 
                 <TabsContent value="left" className="h-[calc(100%-60px)]">
-                  <VideoPlayer 
+                  <VideoPlayer
                     videoId={videos.left?.id || null}
                     videoTitle={videos.left?.title}
                     channelTitle={videos.left?.channelTitle}
-                    side="left" 
+                    side="left"
                     volume={volumes.left}
                     playing={playing}
                     onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
                     onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                   />
                   <div className="mt-4">
-                    <SearchBar 
-                      onVideoSelect={(video) => handleVideoSelect(video, 'left')} 
+                    <SearchBar
+                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                       videoId={videos.left?.id || null}
                     />
                   </div>
@@ -132,7 +132,7 @@ export default function Home() {
                 </TabsContent>
 
                 <TabsContent value="right" className="h-[calc(100%-60px)]">
-                  <VideoPlayer 
+                  <VideoPlayer
                     videoId={videos.right?.id || null}
                     videoTitle={videos.right?.title}
                     channelTitle={videos.right?.channelTitle}
@@ -143,8 +143,8 @@ export default function Home() {
                     onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                   />
                   <div className="mt-4">
-                    <SearchBar 
-                      onVideoSelect={(video) => handleVideoSelect(video, 'right')} 
+                    <SearchBar
+                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                       videoId={videos.right?.id || null}
                     />
                   </div>
