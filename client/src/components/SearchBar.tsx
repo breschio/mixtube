@@ -17,7 +17,7 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onVideoSelect, videoId, isRightColumn = false }: SearchBarProps) {
-  const [input, setInput] = useState(videoId ? `https://www.youtube.com/watch?v=${videoId}` : '');
+  const [input, setInput] = useState('');
   const [isValid, setIsValid] = useState(true);
   const [searchResults, setSearchResults] = useState<YouTubeVideo[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -52,7 +52,6 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
 
     const videoId = extractVideoId(newInput);
     if (videoId) {
-      // Fetch video details from API
       try {
         const response = await fetch(`/api/youtube/videos/${videoId}`);
         if (!response.ok) throw new Error('Failed to fetch video details');
@@ -61,7 +60,6 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
         addToHistory(newInput);
       } catch (error) {
         console.error('Error fetching video details:', error);
-        // Fallback to basic video info
         onVideoSelect({
           id: videoId,
           title: 'Video Title Unavailable',
@@ -101,7 +99,7 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
 
   const handleVideoSelect = (video: YouTubeVideo) => {
     const url = `https://www.youtube.com/watch?v=${video.id}`;
-    setInput(url);
+    setInput('');
     onVideoSelect(video);
     addToHistory(url);
     setSearchResults([]);
@@ -146,7 +144,7 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
           <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search YouTube for another video"
+            placeholder="Search YouTube or paste a URL"
             value={input}
             onChange={handleInputChange}
             className={`pl-9 normal-case transition-all ${!isValid && input ? 'border-red-500' : ''}`}
