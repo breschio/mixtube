@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { X, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { debounce } from '@/lib/utils';
 
 interface YouTubeVideo {
   id: string;
@@ -16,15 +18,33 @@ interface SearchBarProps {
   isRightColumn?: boolean;
 }
 
+const FALLBACK_VIDEOS: YouTubeVideo[] = [
+  {
+    id: "dQw4w9WgXcQ",
+    title: "Rick Astley - Never Gonna Give You Up",
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+    channelTitle: "Rick Astley"
+  },
+  {
+    id: "jNQXAC9IVRw",
+    title: "Me at the zoo",
+    thumbnail: "https://img.youtube.com/vi/jNQXAC9IVRw/mqdefault.jpg",
+    channelTitle: "jawed"
+  },
+  {
+    id: "9bZkp7q19f0",
+    title: "PSY - GANGNAM STYLE(강남스타일)",
+    thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg",
+    channelTitle: "PSY"
+  }
+];
+
 export default function SearchBar({ onVideoSelect, videoId, isRightColumn = false }: SearchBarProps) {
   const [input, setInput] = useState('');
   const [isValid, setIsValid] = useState(true);
   const [searchResults, setSearchResults] = useState<YouTubeVideo[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchHistory, setSearchHistory] = useState<string[]>(() => {
-    const saved = localStorage.getItem('searchHistory');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const { toast } = useToast();
 
   const patterns = [
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
@@ -46,6 +66,38 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     return null;
   };
 
+  // Debounced search function to prevent API quota exhaustion
+  const debouncedSearch = useCallback(
+    debounce(async (searchTerm: string) => {
+      if (searchTerm.length > 2) {
+        setIsSearching(true);
+        try {
+          const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(searchTerm)}`);
+          if (!response.ok) {
+            throw new Error('Search failed');
+          }
+          const results = await response.json();
+          setSearchResults(results);
+          setIsValid(true);
+        } catch (error) {
+          console.error('Search failed:', error);
+          // Show fallback results and a friendly message
+          setSearchResults(FALLBACK_VIDEOS);
+          toast({
+            title: "YouTube API Limit Reached",
+            description: "Showing popular videos instead. Please try again later.",
+            variant: "default"
+          });
+        } finally {
+          setIsSearching(false);
+        }
+      } else {
+        setSearchResults([]);
+      }
+    }, 500),
+    []
+  );
+
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newInput = e.target.value;
     setInput(newInput);
@@ -57,85 +109,40 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
         if (!response.ok) throw new Error('Failed to fetch video details');
         const videoDetails = await response.json();
         onVideoSelect(videoDetails);
-        addToHistory(newInput);
       } catch (error) {
         console.error('Error fetching video details:', error);
+        // Fallback to basic video info with a toast notification
         onVideoSelect({
           id: videoId,
           title: 'Video Title Unavailable',
           thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
           channelTitle: 'Channel Unavailable'
         });
+        toast({
+          title: "Limited Video Details",
+          description: "Some video details couldn't be loaded. Basic playback will still work.",
+          variant: "default"
+        });
       }
       setSearchResults([]);
       return;
     }
 
-    if (newInput.length > 2) {
-      setIsSearching(true);
-      try {
-        const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(newInput)}`);
-        if (!response.ok) {
-          throw new Error('Search failed');
-        }
-        const results = await response.json();
-        setSearchResults(results);
-        setIsValid(true);
-      } catch (error) {
-        console.error('Search failed:', error);
-        if (isRightColumn) {
-          setIsValid(true);
-          setSearchResults(defaultVideos);
-        } else {
-          setIsValid(false);
-          setSearchResults([]);
-        }
-      }
-      setIsSearching(false);
-    } else {
-      setSearchResults([]);
-    }
+    // Trigger debounced search for non-URL inputs
+    debouncedSearch(newInput);
   };
 
   const handleVideoSelect = (video: YouTubeVideo) => {
-    const url = `https://www.youtube.com/watch?v=${video.id}`;
     setInput('');
     onVideoSelect(video);
-    addToHistory(url);
     setSearchResults([]);
-  };
-
-  const addToHistory = (newUrl: string) => {
-    const updatedHistory = [newUrl, ...searchHistory.filter(item => item !== newUrl)].slice(0, 5);
-    setSearchHistory(updatedHistory);
-    localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
   };
 
   const handleClear = () => {
     setInput('');
     setIsValid(true);
+    setSearchResults([]);
   };
-
-  const defaultVideos: YouTubeVideo[] = [
-    {
-      id: "dQw4w9WgXcQ",
-      title: "Rick Astley - Never Gonna Give You Up",
-      thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
-      channelTitle: "Rick Astley"
-    },
-    {
-      id: "jNQXAC9IVRw",
-      title: "Me at the zoo",
-      thumbnail: "https://img.youtube.com/vi/jNQXAC9IVRw/mqdefault.jpg",
-      channelTitle: "jawed"
-    },
-    {
-      id: "9bZkp7q19f0",
-      title: "PSY - GANGNAM STYLE(강남스타일)",
-      thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg",
-      channelTitle: "PSY"
-    }
-  ];
 
   return (
     <div className="space-y-2 w-full">
