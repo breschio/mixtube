@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -15,27 +15,6 @@ interface SearchBarProps {
   videoId: string | null;
   isRightColumn?: boolean;
 }
-
-const defaultVideos: YouTubeVideo[] = [
-  {
-    id: "dQw4w9WgXcQ",
-    title: "Rick Astley - Never Gonna Give You Up",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
-    channelTitle: "Rick Astley"
-  },
-  {
-    id: "jNQXAC9IVRw",
-    title: "Me at the zoo",
-    thumbnail: "https://img.youtube.com/vi/jNQXAC9IVRw/mqdefault.jpg",
-    channelTitle: "jawed"
-  },
-  {
-    id: "9bZkp7q19f0",
-    title: "PSY - GANGNAM STYLE(강남스타일)",
-    thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg",
-    channelTitle: "PSY"
-  }
-];
 
 export default function SearchBar({ onVideoSelect, videoId, isRightColumn = false }: SearchBarProps) {
   const [input, setInput] = useState(videoId ? `https://www.youtube.com/watch?v=${videoId}` : '');
@@ -139,16 +118,38 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     setIsValid(true);
   };
 
+  const defaultVideos: YouTubeVideo[] = [
+    {
+      id: "dQw4w9WgXcQ",
+      title: "Rick Astley - Never Gonna Give You Up",
+      thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+      channelTitle: "Rick Astley"
+    },
+    {
+      id: "jNQXAC9IVRw",
+      title: "Me at the zoo",
+      thumbnail: "https://img.youtube.com/vi/jNQXAC9IVRw/mqdefault.jpg",
+      channelTitle: "jawed"
+    },
+    {
+      id: "9bZkp7q19f0",
+      title: "PSY - GANGNAM STYLE(강남스타일)",
+      thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg",
+      channelTitle: "PSY"
+    }
+  ];
+
   return (
     <div className="space-y-2 w-full">
       <div className="relative group">
-        <div className="relative">
+        <div className="relative flex items-center">
+          <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search YouTube..."
+            placeholder="Search YouTube for another video"
             value={input}
             onChange={handleInputChange}
-            className={`normal-case transition-all ${!isValid && input ? 'border-red-500' : ''}`}
+            className={`pl-9 normal-case transition-all ${!isValid && input ? 'border-red-500' : ''}`}
           />
           {input && (
             <Button
