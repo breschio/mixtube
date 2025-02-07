@@ -5,13 +5,8 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-
-interface YouTubeVideo {
-  id: string;
-  title: string;
-  thumbnail: string;
-  channelTitle: string;
-}
+import type { YouTubeVideo } from '@/lib/youtube';
+import { getRelatedVideos, searchVideos } from '@/lib/youtube';
 
 interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
@@ -69,7 +64,7 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     return null;
   };
 
-  const { data: searchResults = [], isLoading: isSearching } = useQuery({
+  const { data: searchResults = [], isLoading } = useQuery({
     queryKey: ['youtube-search', input],
     queryFn: async () => {
       if (input.length < MIN_SEARCH_LENGTH) return [];
@@ -92,49 +87,41 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
       }
     },
     enabled: input.length >= MIN_SEARCH_LENGTH && !extractVideoId(input),
-    staleTime: 5 * 60 * 1000, // Cache results for 5 minutes
-    cacheTime: 10 * 60 * 1000, // Keep cache for 10 minutes
-    retry: false
+    staleTime: 60 * 1000,
+    gcTime: 2 * 60 * 1000,
   });
 
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      if (value.length >= MIN_SEARCH_LENGTH) {
-        queryClient.invalidateQueries({ queryKey: ['youtube-search', value] });
-      }
-    }, DEBOUNCE_MS),
-    [queryClient]
-  );
-
-  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newInput = e.target.value;
     setInput(newInput);
 
     const videoId = extractVideoId(newInput);
     if (videoId) {
-      try {
-        const response = await fetch(`/api/youtube/videos/${videoId}`);
-        if (!response.ok) throw new Error('Failed to fetch video details');
-        const videoDetails = await response.json();
-        onVideoSelect(videoDetails);
-      } catch (error) {
-        console.error('Error fetching video details:', error);
-        onVideoSelect({
-          id: videoId,
-          title: 'Video Title Unavailable',
-          thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
-          channelTitle: 'Channel Unavailable'
-        });
-        toast({
-          title: "Limited Video Details",
-          description: "Some video details couldn't be loaded. Basic playback will still work.",
-          variant: "default"
-        });
-      }
+      handleVideoIdInput(videoId);
       return;
     }
+  };
 
-    debouncedSearch(newInput);
+  const handleVideoIdInput = async (videoId: string) => {
+    try {
+      const response = await fetch(`/api/youtube/videos/${videoId}`);
+      if (!response.ok) throw new Error('Failed to fetch video details');
+      const videoDetails = await response.json();
+      onVideoSelect(videoDetails);
+    } catch (error) {
+      console.error('Error fetching video details:', error);
+      onVideoSelect({
+        id: videoId,
+        title: 'Video Title Unavailable',
+        thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+        channelTitle: 'Channel Unavailable'
+      });
+      toast({
+        title: "Limited Video Details",
+        description: "Some video details couldn't be loaded. Basic playback will still work.",
+        variant: "default"
+      });
+    }
   };
 
   const handleVideoSelect = (video: YouTubeVideo) => {
@@ -183,7 +170,9 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
                 className="w-16 aspect-video object-cover rounded"
               />
               <div className="flex-1 min-w-0">
-                <span className="text-sm line-clamp-2">{video.title}</span>
+                <p className="text-xs line-clamp-2 normal-case font-medium">
+                  {video.title}
+                </p>
                 <span className="text-xs text-muted-foreground">{video.channelTitle}</span>
               </div>
             </button>
