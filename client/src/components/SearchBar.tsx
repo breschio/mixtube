@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface YouTubeVideo {
   id: string;
@@ -39,12 +40,14 @@ const FALLBACK_VIDEOS: YouTubeVideo[] = [
   }
 ];
 
+const MIN_SEARCH_LENGTH = 3;
+const DEBOUNCE_MS = 800;
+
 export default function SearchBar({ onVideoSelect, videoId, isRightColumn = false }: SearchBarProps) {
   const [input, setInput] = useState('');
   const [isValid, setIsValid] = useState(true);
-  const [searchResults, setSearchResults] = useState<YouTubeVideo[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const patterns = [
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
@@ -66,36 +69,41 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     return null;
   };
 
-  // Debounced search function to prevent API quota exhaustion
-  const debouncedSearch = useCallback(
-    debounce(async (searchTerm: string) => {
-      if (searchTerm.length > 2) {
-        setIsSearching(true);
-        try {
-          const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(searchTerm)}`);
-          if (!response.ok) {
-            throw new Error('Search failed');
-          }
-          const results = await response.json();
-          setSearchResults(results);
-          setIsValid(true);
-        } catch (error) {
-          console.error('Search failed:', error);
-          // Show fallback results and a friendly message
-          setSearchResults(FALLBACK_VIDEOS);
-          toast({
-            title: "YouTube API Limit Reached",
-            description: "Showing popular videos instead. Please try again later.",
-            variant: "default"
-          });
-        } finally {
-          setIsSearching(false);
+  const { data: searchResults = [], isLoading: isSearching } = useQuery({
+    queryKey: ['youtube-search', input],
+    queryFn: async () => {
+      if (input.length < MIN_SEARCH_LENGTH) return [];
+
+      try {
+        const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(input)}`);
+        if (!response.ok) {
+          throw new Error('Search failed');
         }
-      } else {
-        setSearchResults([]);
+        const results = await response.json();
+        return results;
+      } catch (error) {
+        console.error('Search failed:', error);
+        toast({
+          title: "YouTube API Limit Reached",
+          description: "Showing popular videos instead. Please try again later.",
+          variant: "default"
+        });
+        return FALLBACK_VIDEOS;
       }
-    }, 500),
-    []
+    },
+    enabled: input.length >= MIN_SEARCH_LENGTH && !extractVideoId(input),
+    staleTime: 5 * 60 * 1000, // Cache results for 5 minutes
+    cacheTime: 10 * 60 * 1000, // Keep cache for 10 minutes
+    retry: false
+  });
+
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      if (value.length >= MIN_SEARCH_LENGTH) {
+        queryClient.invalidateQueries({ queryKey: ['youtube-search', value] });
+      }
+    }, DEBOUNCE_MS),
+    [queryClient]
   );
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +119,6 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
         onVideoSelect(videoDetails);
       } catch (error) {
         console.error('Error fetching video details:', error);
-        // Fallback to basic video info with a toast notification
         onVideoSelect({
           id: videoId,
           title: 'Video Title Unavailable',
@@ -124,24 +131,20 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
           variant: "default"
         });
       }
-      setSearchResults([]);
       return;
     }
 
-    // Trigger debounced search for non-URL inputs
     debouncedSearch(newInput);
   };
 
   const handleVideoSelect = (video: YouTubeVideo) => {
     setInput('');
     onVideoSelect(video);
-    setSearchResults([]);
   };
 
   const handleClear = () => {
     setInput('');
     setIsValid(true);
-    setSearchResults([]);
   };
 
   return (
