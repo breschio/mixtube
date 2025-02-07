@@ -47,8 +47,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
-      <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 sm:px-4 py-2 sm:py-4">
-        <div className="max-w-[2000px] w-full sm:w-4/5 mx-auto flex justify-between items-center">
+      {/* Header */}
+      <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 py-2">
+        <div className="max-w-[2000px] mx-auto flex justify-between items-center">
           <div className="text-white font-mono text-base sm:text-lg">
             mixtube
           </div>
@@ -69,11 +70,13 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="w-4/5 max-w-[2000px] mx-auto p-8 space-y-8">
-        <div className="flex flex-1">
-          <div className="w-2/3 p-4">
+      {/* Main Content */}
+      <main className="flex-1 container mx-auto px-4 py-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Main Video Section (2/3) */}
+          <div className="lg:w-2/3 space-y-4">
             {mode === 'performance' && (
-              <div className="flex flex-col space-y-2">
+              <>
                 <Card className="overflow-hidden border-none bg-transparent">
                   <MixedVideoPlayer
                     leftVideoId={videos.left?.id || null}
@@ -81,24 +84,25 @@ export default function Home() {
                     crossFaderValue={crossFader}
                     playing={playing}
                   />
-                  <div className="py-1">
-                    <DJControls
-                      isPlaying={playing}
-                      onPlayAll={() => setPlaying(true)}
-                      onPauseAll={() => setPlaying(false)}
-                      crossFader={crossFader}
-                      onCrossFaderChange={setCrossFader}
-                      leftVideoId={videos.left?.id}
-                      rightVideoId={videos.right?.id}
-                      videos={videos}
-                    />
-                  </div>
                 </Card>
-              </div>
+                <div className="py-4">
+                  <DJControls
+                    isPlaying={playing}
+                    onPlayAll={() => setPlaying(true)}
+                    onPauseAll={() => setPlaying(false)}
+                    crossFader={crossFader}
+                    onCrossFaderChange={setCrossFader}
+                    leftVideoId={videos.left?.id}
+                    rightVideoId={videos.right?.id}
+                    videos={videos}
+                  />
+                </div>
+              </>
             )}
           </div>
 
-          <div className="w-1/3 p-4">
+          {/* Sidebar (1/3) */}
+          <div className="lg:w-1/3">
             <Card className="h-full bg-transparent">
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
