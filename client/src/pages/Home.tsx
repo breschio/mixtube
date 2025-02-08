@@ -49,10 +49,10 @@ export default function Home() {
       {/* Header - Made more compact */}
       <header className="w-full bg-[#0A0A0B] border-b border-primary/20">
         <div className="container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
-          <div className="text-white font-mono text-base">
+          <div className="text-white font-mono text-xl">
             mixtube
           </div>
-          <Avatar className="h-6 w-6">
+          <Avatar className="h-9 w-9">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
