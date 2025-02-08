@@ -1,5 +1,4 @@
 import { Slider } from "@/components/ui/slider";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface DJControlsProps {
@@ -16,15 +15,11 @@ export default function DJControls({
   rightVideoId,
 }: DJControlsProps) {
   return (
-    <Card className={cn(
-      "p-4 sm:p-6",
-      "transition-all duration-200",
-      "border border-border/50"
-    )}>
-      <div className="space-y-2">
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <div>Left</div>
-          <div>Right</div>
+    <div className="bg-card/90 p-4 sm:p-6 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col">
+      <div className="relative flex-1 flex flex-col">
+        <div className="flex justify-between mb-1 sm:mb-2">
+          <div className="text-sm font-medium text-primary">Left</div>
+          <div className="text-sm font-medium text-primary">Right</div>
         </div>
         <Slider
           value={[crossFader]}
@@ -34,6 +29,6 @@ export default function DJControls({
           className="w-full h-6 sm:h-8"
         />
       </div>
-    </Card>
+    </div>
   );
 }

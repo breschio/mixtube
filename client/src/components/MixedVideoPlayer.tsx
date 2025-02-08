@@ -21,6 +21,8 @@ export default function MixedVideoPlayer({
 
   const handleReady = (player: 'left' | 'right') => {
     setPlayersReady(prev => ({ ...prev, [player]: true }));
+
+    // Force sync state when player becomes ready
     const currentPlayer = player === 'left' ? leftPlayerRef.current?.getInternalPlayer() : rightPlayerRef.current?.getInternalPlayer();
     if (currentPlayer && playing) {
       currentPlayer.playVideo();
@@ -62,7 +64,7 @@ export default function MixedVideoPlayer({
 
   if (!leftVideoId || !rightVideoId) {
     return (
-      <Card className="aspect-video flex items-center justify-center">
+      <Card className="aspect-video bg-muted/50 flex items-center justify-center relative">
         <p className="text-muted-foreground">Load videos in both players to start mixing</p>
       </Card>
     );
@@ -72,7 +74,7 @@ export default function MixedVideoPlayer({
   const rightOpacity = crossFaderValue;
 
   return (
-    <div className="aspect-video bg-background rounded-lg overflow-hidden relative">
+    <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
       <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: leftOpacity }}>
         <ReactPlayer
           ref={leftPlayerRef}
