@@ -4,9 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { YouTubeVideo } from '@/lib/youtube';
-import { getRelatedVideos, searchVideos } from '@/lib/youtube';
+import { useYoutubeSearch } from '@/hooks/use-youtube-search';
 
 interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
@@ -14,35 +13,10 @@ interface SearchBarProps {
   isRightColumn?: boolean;
 }
 
-const FALLBACK_VIDEOS: YouTubeVideo[] = [
-  {
-    id: "dQw4w9WgXcQ",
-    title: "Rick Astley - Never Gonna Give You Up",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
-    channelTitle: "Rick Astley"
-  },
-  {
-    id: "jNQXAC9IVRw",
-    title: "Me at the zoo",
-    thumbnail: "https://img.youtube.com/vi/jNQXAC9IVRw/mqdefault.jpg",
-    channelTitle: "jawed"
-  },
-  {
-    id: "9bZkp7q19f0",
-    title: "PSY - GANGNAM STYLE(강남스타일)",
-    thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg",
-    channelTitle: "PSY"
-  }
-];
-
-const MIN_SEARCH_LENGTH = 3;
-const DEBOUNCE_MS = 800;
-
 export default function SearchBar({ onVideoSelect, videoId, isRightColumn = false }: SearchBarProps) {
   const [input, setInput] = useState('');
   const [isValid, setIsValid] = useState(true);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const patterns = [
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
@@ -64,42 +38,26 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     return null;
   };
 
-  const { data: searchResults = [], isLoading } = useQuery({
-    queryKey: ['youtube-search', input],
-    queryFn: async () => {
-      if (input.length < MIN_SEARCH_LENGTH) return [];
+  const debouncedSetInput = useCallback(
+    debounce((value: string) => {
+      setInput(value);
+    }, 500),
+    []
+  );
 
-      try {
-        const response = await fetch(`/api/youtube/search?q=${encodeURIComponent(input)}`);
-        if (!response.ok) {
-          throw new Error('Search failed');
-        }
-        const results = await response.json();
-        return results;
-      } catch (error) {
-        console.error('Search failed:', error);
-        toast({
-          title: "YouTube API Limit Reached",
-          description: "Showing popular videos instead. Please try again later.",
-          variant: "default"
-        });
-        return FALLBACK_VIDEOS;
-      }
-    },
-    enabled: input.length >= MIN_SEARCH_LENGTH && !extractVideoId(input),
-    staleTime: 60 * 1000,
-    gcTime: 2 * 60 * 1000,
-  });
+  const { data: searchResults = [], isLoading } = useYoutubeSearch(input);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newInput = e.target.value;
-    setInput(newInput);
 
     const videoId = extractVideoId(newInput);
     if (videoId) {
       handleVideoIdInput(videoId);
       return;
     }
+
+    debouncedSetInput(newInput);
+    e.target.value = newInput; // Keep the input value in sync
   };
 
   const handleVideoIdInput = async (videoId: string) => {
@@ -157,7 +115,11 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
             </Button>
           )}
         </div>
-        <div className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'}`}>
+        <div 
+          className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${
+            searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+          }`}
+        >
           {searchResults.map((video) => (
             <button
               key={video.id}
