@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Toggle } from "@/components/ui/toggle";
-import { useIsMobile } from "../hooks/use-mobile";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
@@ -35,7 +33,6 @@ export default function Home() {
     }
   });
 
-  const [mode, setMode] = useState<'performance' | 'listening'>('performance');
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
@@ -55,20 +52,10 @@ export default function Home() {
           <div className="text-white font-mono text-base">
             mixtube
           </div>
-          <div className="flex items-center gap-4">
-            <Toggle
-              variant="outline"
-              pressed={mode === 'listening'}
-              onPressedChange={(pressed) => setMode(pressed ? 'listening' : 'performance')}
-              className="text-xs"
-            >
-              {mode === 'listening' ? '🎧' : '🎭'}
-            </Toggle>
-            <Avatar className="h-6 w-6">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </div>
+          <Avatar className="h-6 w-6">
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
         </div>
       </header>
 
@@ -77,26 +64,22 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
           {/* Main Video Section - Maintains ~70% on non-mobile */}
           <div className="w-full sm:w-[70%] space-y-4">
-            {mode === 'performance' && (
-              <>
-                <Card className="overflow-hidden border-none bg-transparent">
-                  <MixedVideoPlayer
-                    leftVideoId={videos.left?.id || null}
-                    rightVideoId={videos.right?.id || null}
-                    crossFaderValue={crossFader}
-                    playing={playing}
-                  />
-                </Card>
-                <div className="py-4">
-                  <DJControls
-                    crossFader={crossFader}
-                    onCrossFaderChange={setCrossFader}
-                    leftVideoId={videos.left?.id}
-                    rightVideoId={videos.right?.id}
-                  />
-                </div>
-              </>
-            )}
+            <Card className="overflow-hidden border-none bg-transparent">
+              <MixedVideoPlayer
+                leftVideoId={videos.left?.id || null}
+                rightVideoId={videos.right?.id || null}
+                crossFaderValue={crossFader}
+                playing={playing}
+              />
+            </Card>
+            <div className="py-4">
+              <DJControls
+                crossFader={crossFader}
+                onCrossFaderChange={setCrossFader}
+                leftVideoId={videos.left?.id}
+                rightVideoId={videos.right?.id}
+              />
+            </div>
           </div>
 
           {/* Sidebar - Maintains ~30% on non-mobile */}
