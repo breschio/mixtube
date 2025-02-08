@@ -1,4 +1,3 @@
-
 import { useRef, useCallback, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
@@ -56,10 +55,10 @@ export default function VideoPlayer({
   if (!videoId) {
     return (
       <Card className="aspect-video bg-muted/50 flex items-center justify-center transition-colors hover:bg-muted relative">
-        <p className="text-muted-foreground">Select a video to play</p>
+        <p className="text-muted-foreground text-sm">Select a video to play</p>
         <div className="absolute inset-0 flex items-center justify-center">
-          <button className="bg-primary/80 hover:bg-primary text-white rounded-full p-2 transition-colors">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <button className="bg-primary/80 hover:bg-primary text-white rounded-full p-1.5 transition-colors">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 5v14l11-7z" fill="currentColor"/>
             </svg>
           </button>
@@ -69,7 +68,7 @@ export default function VideoPlayer({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="w-full aspect-video bg-black rounded-lg overflow-hidden relative">
         <ReactPlayer
           ref={playerRef}
@@ -100,8 +99,8 @@ export default function VideoPlayer({
           }}
         />
       </div>
-      <div className="flex items-center gap-4">
-        <Volume2 className="h-4 w-4 text-primary/80" />
+      <div className="flex items-center gap-2">
+        <Volume2 className="h-3 w-3 text-primary/80" />
         <Slider
           value={[volume]}
           max={1}
