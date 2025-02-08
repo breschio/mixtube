@@ -1,14 +1,7 @@
 import { useRef, useCallback, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
-import { Slider } from "@/components/ui/slider";
 import { Volume2, X } from "lucide-react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
-import { Button } from './ui/button';
 
 interface VideoPlayerProps {
   videoId: string | null;
@@ -76,8 +69,8 @@ export default function VideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={volume}
-          muted={false}
+          volume={0}
+          muted={true}
           controls={false}
           playIcon={false}
           onReady={handlePlayerReady}
