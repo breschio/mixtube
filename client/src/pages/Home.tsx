@@ -9,6 +9,7 @@ import { Play, Pause } from "lucide-react";
 import RecommendedVideos from "@/components/RecommendedVideos";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DJControls from "@/components/DJControls";
+import { RetroGrid } from "@/components/ui/retro-grid";
 
 interface VideoInfo {
   id: string;
@@ -45,9 +46,11 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
-      {/* Header - Made more compact */}
-      <header className="w-full bg-[#0A0A0B]">
+    <div className="min-h-screen bg-[#0A0A0B] flex flex-col relative">
+      <div className="absolute bottom-0 left-0 right-0 h-[30vh] pointer-events-none">
+        <RetroGrid className="opacity-30" angle={55} />
+      </div>
+      <header className="w-full bg-[#0A0A0B] relative z-10">
         <div className="container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
           <div className="text-white font-mono text-xl">
             mixtube
@@ -59,10 +62,8 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content - Updated layout proportions */}
-      <main className="flex-1 container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-4">
+      <main className="flex-1 container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-4 relative z-10">
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-          {/* Main Video Section - Maintains ~70% on non-mobile */}
           <div className="w-full sm:w-[70%] space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
               <MixedVideoPlayer
@@ -100,7 +101,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Sidebar - Maintains ~30% on non-mobile */}
           <div className="w-full sm:w-[30%]">
             <Card className="h-full bg-transparent border-none">
               <Tabs defaultValue="left" className="w-full h-full">
