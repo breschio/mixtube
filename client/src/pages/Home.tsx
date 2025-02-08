@@ -102,7 +102,7 @@ export default function Home() {
           {/* Sidebar - Maintains ~30% on non-mobile */}
           <div className="w-full sm:w-[30%]">
             <Card className="h-full bg-transparent border-none">
-              <div className="mb-4 flex justify-center px-2">
+              <div className="mb-4">
                 <Button
                   variant="outline"
                   size="lg"
