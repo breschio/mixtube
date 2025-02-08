@@ -72,9 +72,9 @@ export default function Home() {
 
       {/* Main Content - Modified layout */}
       <main className="flex-1 container mx-auto px-4 py-6">
-        <div className="flex flex-col lg:flex-row gap-6 justify-center items-center">
+        <div className="flex flex-col lg:flex-row gap-x-8 lg:justify-between items-start">
           {/* Main Video Section - Reduced to ~75% size */}
-          <div className="lg:w-1/2 xl:w-[55%] max-w-4xl mx-auto lg:mx-0 space-y-4">
+          <div className="lg:w-1/2 xl:w-[55%] max-w-4xl w-full space-y-4">
             {mode === 'performance' && (
               <>
                 <Card className="overflow-hidden border-none bg-transparent">
@@ -102,7 +102,7 @@ export default function Home() {
           </div>
 
           {/* Sidebar - Adjusted to maintain proportion */}
-          <div className="lg:w-[35%] xl:w-[30%]">
+          <div className="lg:w-[38%] xl:w-[35%] w-full">
             <Card className="h-full bg-transparent">
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
