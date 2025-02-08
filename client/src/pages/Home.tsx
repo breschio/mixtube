@@ -52,7 +52,7 @@ export default function Home() {
           <div className="text-white font-mono text-xl">
             mixtube
           </div>
-          <Avatar className="h-9 w-9">
+          <Avatar className="h-8 w-8">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
