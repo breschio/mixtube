@@ -107,8 +107,12 @@ export default function Home() {
               </div>
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
-                  <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
-                  <TabsTrigger value="right" className="flex-1">Right Video</TabsTrigger>
+                  <TabsTrigger value="left" className="flex-1">
+                    Left<span className="hidden sm:inline"> Video</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="right" className="flex-1">
+                    Right<span className="hidden sm:inline"> Video</span>
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="left" className="h-[calc(100%-60px)]">
