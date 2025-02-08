@@ -103,7 +103,7 @@ export default function Home() {
 
           {/* Sidebar - Adjusted to maintain proportion */}
           <div className="lg:w-[38%] xl:w-[35%] w-full">
-            <Card className="h-full bg-transparent">
+            <Card className="h-full bg-transparent border-none">
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
                   <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
