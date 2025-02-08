@@ -76,8 +76,8 @@ export default function VideoPlayer({
           width="100%"
           height="100%"
           playing={playing}
-          volume={0}
-          muted={true}
+          volume={volume}
+          muted={false}
           controls={false}
           playIcon={false}
           onReady={handlePlayerReady}
@@ -97,16 +97,6 @@ export default function VideoPlayer({
               }
             }
           }}
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        <Volume2 className="h-3 w-3 text-primary/80" />
-        <Slider
-          value={[volume]}
-          max={1}
-          step={0.01}
-          onValueChange={([value]) => onVolumeChange(value)}
-          className="flex-1"
         />
       </div>
     </div>
