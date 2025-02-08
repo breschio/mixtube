@@ -9,6 +9,7 @@ import { Play, Pause } from "lucide-react";
 import RecommendedVideos from "@/components/RecommendedVideos";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DJControls from "@/components/DJControls";
+import { RetroGrid } from "@/components/ui/retro-grid";
 
 interface VideoInfo {
   id: string;
@@ -45,128 +46,134 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
-      {/* Header - Made more compact */}
-      <header className="w-full bg-[#0A0A0B]">
-        <div className="container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
-          <div className="text-white font-mono text-xl">
-            mixtube
-          </div>
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background/95 flex flex-col relative">
+      {/* Retro Grid Background */}
+      <RetroGrid className="fixed inset-0" />
 
-      {/* Main Content - Updated layout proportions */}
-      <main className="flex-1 container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-4">
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-          {/* Main Video Section - Maintains ~70% on non-mobile */}
-          <div className="w-full sm:w-[70%] space-y-4">
-            <Card className="overflow-hidden border-none bg-transparent">
-              <MixedVideoPlayer
-                leftVideoId={videos.left?.id || null}
-                rightVideoId={videos.right?.id || null}
-                crossFaderValue={crossFader}
-                playing={playing}
-              />
-            </Card>
-            <div className="py-4 flex gap-4">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-[120px]"
-                onClick={() => setPlaying(!playing)}
-              >
-                {playing ? (
-                  <>
-                    <Pause className="h-4 w-4 mr-2" />
-                    Pause
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-4 w-4 mr-2" />
-                    Play
-                  </>
-                )}
-              </Button>
-              <DJControls
-                crossFader={crossFader}
-                onCrossFaderChange={setCrossFader}
-                leftVideoId={videos.left?.id}
-                rightVideoId={videos.right?.id}
-              />
+      {/* Main Content - Overlay on top of grid */}
+      <div className="relative z-10 flex-1 flex flex-col">
+        {/* Header - Made more compact */}
+        <header className="w-full bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
+            <div className="text-primary font-mono text-xl">
+              mixtube
+            </div>
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="flex-1 container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-4">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+            {/* Main Video Section */}
+            <div className="w-full sm:w-[70%] space-y-4">
+              <Card className="overflow-hidden border-none bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <MixedVideoPlayer
+                  leftVideoId={videos.left?.id || null}
+                  rightVideoId={videos.right?.id || null}
+                  crossFaderValue={crossFader}
+                  playing={playing}
+                />
+              </Card>
+              <div className="py-4 flex gap-4">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-[120px]"
+                  onClick={() => setPlaying(!playing)}
+                >
+                  {playing ? (
+                    <>
+                      <Pause className="h-4 w-4 mr-2" />
+                      Pause
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-4 w-4 mr-2" />
+                      Play
+                    </>
+                  )}
+                </Button>
+                <DJControls
+                  crossFader={crossFader}
+                  onCrossFaderChange={setCrossFader}
+                  leftVideoId={videos.left?.id}
+                  rightVideoId={videos.right?.id}
+                />
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="w-full sm:w-[30%]">
+              <Card className="h-full bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-none">
+                <Tabs defaultValue="left" className="w-full h-full">
+                  <TabsList className="w-full mb-4">
+                    <TabsTrigger value="left" className="flex-1">
+                      Left
+                    </TabsTrigger>
+                    <TabsTrigger value="right" className="flex-1">
+                      Right
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="left" className="h-[calc(100%-60px)]">
+                    <VideoPlayer
+                      videoId={videos.left?.id || null}
+                      videoTitle={videos.left?.title}
+                      channelTitle={videos.left?.channelTitle}
+                      side="left"
+                      volume={volumes.left}
+                      playing={playing}
+                      onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                    />
+                    <div className="mt-4">
+                      <SearchBar
+                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                        videoId={videos.left?.id || null}
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <RecommendedVideos
+                        videoId={videos.left?.id || null}
+                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                      />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="right" className="h-[calc(100%-60px)]">
+                    <VideoPlayer
+                      videoId={videos.right?.id || null}
+                      videoTitle={videos.right?.title}
+                      channelTitle={videos.right?.channelTitle}
+                      side="right"
+                      volume={volumes.right}
+                      playing={playing}
+                      onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                    />
+                    <div className="mt-4">
+                      <SearchBar
+                        onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                        videoId={videos.right?.id || null}
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <RecommendedVideos
+                        videoId={videos.right?.id || null}
+                        onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </Card>
             </div>
           </div>
-
-          {/* Sidebar - Maintains ~30% on non-mobile */}
-          <div className="w-full sm:w-[30%]">
-            <Card className="h-full bg-transparent border-none">
-              <Tabs defaultValue="left" className="w-full h-full">
-                <TabsList className="w-full mb-4">
-                  <TabsTrigger value="left" className="flex-1">
-                    Left
-                  </TabsTrigger>
-                  <TabsTrigger value="right" className="flex-1">
-                    Right
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="left" className="h-[calc(100%-60px)]">
-                  <VideoPlayer
-                    videoId={videos.left?.id || null}
-                    videoTitle={videos.left?.title}
-                    channelTitle={videos.left?.channelTitle}
-                    side="left"
-                    volume={volumes.left}
-                    playing={playing}
-                    onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                  />
-                  <div className="mt-4">
-                    <SearchBar
-                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                      videoId={videos.left?.id || null}
-                    />
-                  </div>
-                  <div className="mt-4">
-                    <RecommendedVideos
-                      videoId={videos.left?.id || null}
-                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                    />
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="right" className="h-[calc(100%-60px)]">
-                  <VideoPlayer
-                    videoId={videos.right?.id || null}
-                    videoTitle={videos.right?.title}
-                    channelTitle={videos.right?.channelTitle}
-                    side="right"
-                    volume={volumes.right}
-                    playing={playing}
-                    onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                  />
-                  <div className="mt-4">
-                    <SearchBar
-                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                      videoId={videos.right?.id || null}
-                    />
-                  </div>
-                  <div className="mt-4">
-                    <RecommendedVideos
-                      videoId={videos.right?.id || null}
-                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                    />
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </Card>
-          </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
