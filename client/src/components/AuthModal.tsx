@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { signInWithEmail, signUpWithEmail } from "@/lib/supabase";
 
 interface AuthModalProps {
   trigger?: React.ReactNode;
@@ -21,18 +22,39 @@ export default function AuthModal({ trigger }: AuthModalProps) {
   const [isRegister, setIsRegister] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual auth logic
-    toast({
-      title: "Coming Soon",
-      description: "Authentication will be implemented in a future update.",
-    });
-    setIsOpen(false);
+    setIsLoading(true);
+
+    try {
+      if (isRegister) {
+        await signUpWithEmail(formData.email, formData.password);
+        toast({
+          title: "Account created",
+          description: "Please check your email to verify your account.",
+        });
+      } else {
+        await signInWithEmail(formData.email, formData.password);
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully signed in.",
+        });
+      }
+      setIsOpen(false);
+    } catch (error) {
+      toast({
+        title: isRegister ? "Registration failed" : "Sign in failed",
+        description: error instanceof Error ? error.message : "An error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -51,12 +73,13 @@ export default function AuthModal({ trigger }: AuthModalProps) {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="username"
-              value={formData.username}
+              id="email"
+              type="email"
+              value={formData.email}
               onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
+                setFormData({ ...formData, email: e.target.value })
               }
               required
             />
@@ -78,11 +101,12 @@ export default function AuthModal({ trigger }: AuthModalProps) {
               type="button"
               variant="ghost"
               onClick={() => setIsRegister(!isRegister)}
+              disabled={isLoading}
             >
               {isRegister ? "Have an account?" : "Need an account?"}
             </Button>
-            <Button type="submit">
-              {isRegister ? "Create Account" : "Sign In"}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Loading..." : isRegister ? "Create Account" : "Sign In"}
             </Button>
           </div>
         </form>
