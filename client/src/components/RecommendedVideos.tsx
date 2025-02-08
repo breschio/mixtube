@@ -29,7 +29,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     return saved || 'For You';
   });
 
-  const { data: currentVideos, isLoading, error, isError, refetch } = useQuery<YouTubeVideo[]>({
+  const { data: currentVideos, isLoading, error, isError } = useQuery<YouTubeVideo[]>({
     queryKey: ['videos', videoId, selectedCategory],
     queryFn: () => {
       if (!videoId) return [];
@@ -48,7 +48,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
 
   if (isLoading) {
     return (
-      <div className="mt-4 space-y-2 animate-pulse">
+      <div className="flex-1 space-y-2 animate-pulse">
         {[...Array(3)].map((_, i) => (
           <Card key={i} className="h-24" />
         ))}
@@ -58,7 +58,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
 
   if (isError || !currentVideos?.length) {
     return (
-      <div className="mt-4 p-4 text-center">
+      <div className="flex-1 p-4 text-center">
         <p className="text-sm text-muted-foreground">
           {error instanceof Error ? error.message : 'No videos available'}
         </p>
@@ -69,8 +69,8 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
   const displayVideos = currentVideos.slice(0, 3);
 
   return (
-    <div className="mt-4 min-h-[400px]">
-      <div className="h-12 overflow-x-auto no-scrollbar">
+    <div className="flex flex-col h-full">
+      <div className="h-12 shrink-0 overflow-x-auto no-scrollbar">
         <div className="flex gap-1">
           {VIDEO_CATEGORIES.map((category) => (
             <Button
@@ -85,16 +85,17 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-3 mt-2">
+      <div className="flex-1 grid grid-rows-3 gap-3 mt-2">
         {displayVideos.map((video) => (
           <Card 
             key={video.id}
             className={cn(
+              "w-full",
               "overflow-hidden transition-all duration-300",
               "hover:ring-1 hover:ring-primary/50"
             )}
           >
-            <div className="flex gap-2 p-1.5">
+            <div className="flex gap-2 p-1.5 h-full">
               <img 
                 src={video.thumbnail} 
                 alt={video.title}
