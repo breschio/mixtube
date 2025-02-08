@@ -1,32 +1,19 @@
 import { Slider } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button";
-import { Play, Pause, Music } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DJControlsProps {
-  onPlayAll: () => void;
-  onPauseAll: () => void;
-  isPlaying: boolean;
   crossFader: number;
   onCrossFaderChange: (value: number) => void;
   leftVideoId?: string | null;
   rightVideoId?: string | null;
-  videos?: {
-    left: { channelTitle: string; title: string; } | null;
-    right: { channelTitle: string; title: string; } | null;
-  };
 }
 
 export default function DJControls({
-  onPlayAll,
-  onPauseAll,
-  isPlaying,
   crossFader,
   onCrossFaderChange,
   leftVideoId,
   rightVideoId,
-  videos,
 }: DJControlsProps) {
   const isMobile = useIsMobile();
 
@@ -43,19 +30,6 @@ export default function DJControls({
               className="w-full h-4"
             />
           </div>
-
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={isPlaying ? onPauseAll : onPlayAll}
-            className={cn(
-              "shrink-0 transition-colors",
-              !isPlaying && "text-primary",
-              isPlaying && "bg-primary/10 text-primary hover:bg-primary/20"
-            )}
-          >
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          </Button>
         </div>
       </div>
     );
@@ -64,21 +38,9 @@ export default function DJControls({
   return (
     <div className="bg-card/90 p-4 sm:p-6 rounded-lg shadow-xl border border-primary/20 flex-1 flex flex-col">
       <div className="relative flex-1 flex flex-col">
-        <div className="flex justify-between mb-1 sm:mb-2"> {/* Added justify-between */}
-          <div className="text-sm font-medium text-primary">Left</div> {/* Added Left label */}
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={isPlaying ? onPauseAll : onPlayAll}
-            className={cn(
-              "shrink-0 transition-colors",
-              !isPlaying && "text-primary",
-              isPlaying && "bg-primary/10 text-primary hover:bg-primary/20"
-            )}
-          >
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          </Button>
-          <div className="text-sm font-medium text-primary">Right</div> {/* Added Right label */}
+        <div className="flex justify-between mb-1 sm:mb-2">
+          <div className="text-sm font-medium text-primary">Left</div>
+          <div className="text-sm font-medium text-primary">Right</div>
         </div>
         <Slider
           value={[crossFader]}

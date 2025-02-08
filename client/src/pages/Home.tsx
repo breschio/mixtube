@@ -6,9 +6,11 @@ import { useIsMobile } from "../hooks/use-mobile";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
-import DJControls from "@/components/DJControls";
+import { Button } from "@/components/ui/button"; // Assuming Button component exists
+import { Play, Pause } from "lucide-react";
 import RecommendedVideos from "@/components/RecommendedVideos";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import DJControls from "@/components/DJControls"; // Assuming DJControls component exists
 
 interface VideoInfo {
   id: string;
@@ -87,14 +89,10 @@ export default function Home() {
                 </Card>
                 <div className="py-4">
                   <DJControls
-                    isPlaying={playing}
-                    onPlayAll={() => setPlaying(true)}
-                    onPauseAll={() => setPlaying(false)}
                     crossFader={crossFader}
                     onCrossFaderChange={setCrossFader}
                     leftVideoId={videos.left?.id}
                     rightVideoId={videos.right?.id}
-                    videos={videos}
                   />
                 </div>
               </>
@@ -104,6 +102,26 @@ export default function Home() {
           {/* Sidebar - Adjusted to maintain proportion */}
           <div className="lg:w-[38%] xl:w-[35%] w-full">
             <Card className="h-full bg-transparent border-none">
+              <div className="mb-4 flex justify-center">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-32"
+                  onClick={() => setPlaying(!playing)}
+                >
+                  {playing ? (
+                    <>
+                      <Pause className="h-4 w-4 mr-2" />
+                      Pause
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-4 w-4 mr-2" />
+                      Play
+                    </>
+                  )}
+                </Button>
+              </div>
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
                   <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
