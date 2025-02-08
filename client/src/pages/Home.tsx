@@ -72,7 +72,7 @@ export default function Home() {
 
       {/* Main Content - Modified layout */}
       <main className="flex-1 container mx-auto px-4 py-6">
-        <div className="flex flex-col lg:flex-row gap-6 justify-center">
+        <div className="flex flex-col lg:flex-row gap-6 justify-center items-center">
           {/* Main Video Section - Reduced to ~75% size */}
           <div className="lg:w-1/2 xl:w-[55%] max-w-4xl mx-auto lg:mx-0 space-y-4">
             {mode === 'performance' && (
