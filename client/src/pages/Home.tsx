@@ -6,11 +6,11 @@ import { useIsMobile } from "../hooks/use-mobile";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
-import { Button } from "@/components/ui/button"; // Assuming Button component exists
+import { Button } from "@/components/ui/button";
 import { Play, Pause } from "lucide-react";
 import RecommendedVideos from "@/components/RecommendedVideos";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import DJControls from "@/components/DJControls"; // Assuming DJControls component exists
+import DJControls from "@/components/DJControls";
 
 interface VideoInfo {
   id: string;
@@ -49,10 +49,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
-      {/* Header */}
+      {/* Header - Made more compact */}
       <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 py-2">
         <div className="max-w-[2000px] mx-auto flex justify-between items-center">
-          <div className="text-white font-mono text-base sm:text-lg">
+          <div className="text-white font-mono text-base">
             mixtube
           </div>
           <div className="flex items-center gap-4">
@@ -64,7 +64,7 @@ export default function Home() {
             >
               {mode === 'listening' ? '🎧' : '🎭'}
             </Toggle>
-            <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
+            <Avatar className="h-6 w-6">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
@@ -72,11 +72,11 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content - Modified layout */}
-      <main className="flex-1 container mx-auto px-4 py-6">
-        <div className="flex flex-col lg:flex-row gap-x-8 lg:justify-between items-start">
-          {/* Main Video Section - Reduced to ~75% size */}
-          <div className="lg:w-1/2 xl:w-[55%] max-w-4xl w-full space-y-4">
+      {/* Main Content - Updated layout proportions */}
+      <main className="flex-1 container max-w-[1800px] mx-auto px-6 py-4">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Main Video Section - Increased to ~70% */}
+          <div className="lg:w-[70%] w-full space-y-4">
             {mode === 'performance' && (
               <>
                 <Card className="overflow-hidden border-none bg-transparent">
@@ -99,8 +99,8 @@ export default function Home() {
             )}
           </div>
 
-          {/* Sidebar - Adjusted to maintain proportion */}
-          <div className="lg:w-[38%] xl:w-[35%] w-full">
+          {/* Sidebar - Reduced to ~30% */}
+          <div className="lg:w-[30%] w-full">
             <Card className="h-full bg-transparent border-none">
               <div className="mb-4 flex justify-center">
                 <Button
