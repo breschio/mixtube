@@ -108,10 +108,10 @@ export default function Home() {
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
                   <TabsTrigger value="left" className="flex-1">
-                    Left<span className="hidden sm:inline"> Video</span>
+                    Left
                   </TabsTrigger>
                   <TabsTrigger value="right" className="flex-1">
-                    Right<span className="hidden sm:inline"> Video</span>
+                    Right
                   </TabsTrigger>
                 </TabsList>
 
