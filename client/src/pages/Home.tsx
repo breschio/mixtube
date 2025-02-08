@@ -72,7 +72,25 @@ export default function Home() {
                 playing={playing}
               />
             </Card>
-            <div className="py-4">
+            <div className="py-4 flex gap-4">
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-[120px]"
+                onClick={() => setPlaying(!playing)}
+              >
+                {playing ? (
+                  <>
+                    <Pause className="h-4 w-4 mr-2" />
+                    Pause
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-4 w-4 mr-2" />
+                    Play
+                  </>
+                )}
+              </Button>
               <DJControls
                 crossFader={crossFader}
                 onCrossFaderChange={setCrossFader}
@@ -85,26 +103,6 @@ export default function Home() {
           {/* Sidebar - Maintains ~30% on non-mobile */}
           <div className="w-full sm:w-[30%]">
             <Card className="h-full bg-transparent border-none">
-              <div className="mb-4">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full"
-                  onClick={() => setPlaying(!playing)}
-                >
-                  {playing ? (
-                    <>
-                      <Pause className="h-4 w-4 mr-2" />
-                      Pause
-                    </>
-                  ) : (
-                    <>
-                      <Play className="h-4 w-4 mr-2" />
-                      Play
-                    </>
-                  )}
-                </Button>
-              </div>
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
                   <TabsTrigger value="left" className="flex-1">
