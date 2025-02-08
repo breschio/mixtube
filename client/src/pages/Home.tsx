@@ -73,10 +73,10 @@ export default function Home() {
       </header>
 
       {/* Main Content - Updated layout proportions */}
-      <main className="flex-1 container max-w-[1800px] mx-auto px-6 py-4">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Main Video Section - Increased to ~70% */}
-          <div className="lg:w-[70%] w-full space-y-4">
+      <main className="flex-1 container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-4">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+          {/* Main Video Section - Maintains ~70% on non-mobile */}
+          <div className="w-full sm:w-[70%] space-y-4">
             {mode === 'performance' && (
               <>
                 <Card className="overflow-hidden border-none bg-transparent">
@@ -99,8 +99,8 @@ export default function Home() {
             )}
           </div>
 
-          {/* Sidebar - Reduced to ~30% */}
-          <div className="lg:w-[30%] w-full">
+          {/* Sidebar - Maintains ~30% on non-mobile */}
+          <div className="w-full sm:w-[30%]">
             <Card className="h-full bg-transparent border-none">
               <div className="mb-4 flex justify-center">
                 <Button
