@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { X, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
 import type { YouTubeVideo } from '@/lib/youtube';
@@ -57,7 +58,7 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     }
 
     debouncedSetInput(newInput);
-    e.target.value = newInput; // Keep the input value in sync
+    e.target.value = newInput;
   };
 
   const handleVideoIdInput = async (videoId: string) => {
@@ -94,7 +95,7 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
 
   return (
     <div className="space-y-2 w-full">
-      <div className="relative group">
+      <div className="relative">
         <div className="relative flex items-center">
           <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -102,47 +103,45 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
             placeholder="Search YouTube or paste a URL"
             value={input}
             onChange={handleInputChange}
-            className={`pl-9 normal-case transition-all ${!isValid && input ? 'border-red-500' : ''}`}
+            className={`pl-9 ${!isValid && input ? 'border-destructive' : ''}`}
           />
           {input && (
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+              className="absolute right-1 h-7 w-7"
               onClick={handleClear}
             >
               <X className="h-4 w-4" />
             </Button>
           )}
         </div>
-        <div 
-          className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${
-            searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
-          }`}
-        >
-          {searchResults.map((video) => (
-            <button
-              key={video.id}
-              className="w-full p-2 hover:bg-accent flex items-center gap-2 text-left"
-              onClick={() => handleVideoSelect(video)}
-            >
-              <img 
-                src={video.thumbnail} 
-                alt={video.title}
-                className="w-16 aspect-video object-cover rounded"
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs line-clamp-2 normal-case font-medium">
-                  {video.title}
-                </p>
-                <span className="text-xs text-muted-foreground">{video.channelTitle}</span>
-              </div>
-            </button>
-          ))}
-        </div>
+        {searchResults.length > 0 && (
+          <Card className="absolute z-50 w-full mt-1 divide-y divide-border">
+            {searchResults.map((video) => (
+              <button
+                key={video.id}
+                className="w-full p-2 hover:bg-accent flex items-center gap-2 text-left"
+                onClick={() => handleVideoSelect(video)}
+              >
+                <img 
+                  src={video.thumbnail} 
+                  alt={video.title}
+                  className="w-16 aspect-video object-cover rounded"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium line-clamp-2">
+                    {video.title}
+                  </p>
+                  <p className="text-sm text-muted-foreground">{video.channelTitle}</p>
+                </div>
+              </button>
+            ))}
+          </Card>
+        )}
       </div>
       {!isValid && input && (
-        <p className="text-xs text-red-500 mt-1">Please enter a valid YouTube URL or video ID</p>
+        <p className="text-sm text-destructive">Please enter a valid YouTube URL or video ID</p>
       )}
     </div>
   );

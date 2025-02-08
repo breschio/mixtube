@@ -1,9 +1,8 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Shuffle, Search } from 'lucide-react';
-import { useRef, useEffect, useState } from 'react';
+import { Plus, Shuffle } from 'lucide-react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { getRelatedVideos, searchVideos } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
@@ -53,9 +52,9 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
 
   if (isLoading) {
     return (
-      <div className="mt-4 space-y-2 animate-pulse">
+      <div className="space-y-2">
         {[...Array(3)].map((_, i) => (
-          <Card key={i} className="h-24" />
+          <Card key={i} className="h-24 animate-pulse" />
         ))}
       </div>
     );
@@ -63,71 +62,66 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
 
   if (isError || !currentVideos?.length) {
     return (
-      <div className="mt-4 p-4 text-center">
-        <p className="text-sm text-muted-foreground">
+      <Card className="p-4">
+        <p className="text-sm text-muted-foreground text-center">
           {error instanceof Error ? error.message : 'No videos available'}
         </p>
-      </div>
+      </Card>
     );
   }
 
   const displayVideos = currentVideos.slice(0, 3);
 
   return (
-    <div className="mt-4 space-y-2">
-      <div className="overflow-x-auto no-scrollbar">
-        <div className="flex gap-1 pb-2">
+    <div className="space-y-4">
+      <div className="overflow-x-auto pb-2 -mx-2 px-2">
+        <div className="flex gap-2">
           {VIDEO_CATEGORIES.map((category) => (
             <Button
               key={category}
               variant={selectedCategory === category ? "default" : "outline"}
-              onClick={() => setSelectedCategory(category)}
-              className="text-xs px-3 whitespace-nowrap"
               size="sm"
+              onClick={() => setSelectedCategory(category)}
+              className="whitespace-nowrap"
             >
               {category}
             </Button>
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between mt-2">
-        <h3 className="text-xs font-bold text-primary/80">UP NEXT</h3>
+
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold">Up Next</h3>
         <Button
-          size="sm"
           variant="ghost"
+          size="sm"
           onClick={handleShuffle}
-          className="text-xs hover:bg-primary/10"
+          className="gap-2"
         >
-          <Shuffle className="h-3 w-3" />
+          <Shuffle className="h-4 w-4" />
           Shuffle
         </Button>
       </div>
-      <div className="grid grid-cols-1 gap-3 mt-2">
+
+      <div className="space-y-2">
         {displayVideos.map((video) => (
-          <Card 
-            key={video.id}
-            className={cn(
-              "overflow-hidden transition-all duration-300",
-              "hover:ring-1 hover:ring-primary/50"
-            )}
-          >
-            <div className="flex gap-2 p-1.5">
+          <Card key={video.id} className="p-2">
+            <div className="flex gap-3">
               <img 
                 src={video.thumbnail} 
                 alt={video.title}
                 className="w-24 aspect-video object-cover rounded"
               />
-              <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
-                <p className="text-xs line-clamp-2 normal-case font-medium">
+              <div className="flex-1 min-w-0 space-y-1">
+                <p className="text-sm font-medium line-clamp-2">
                   {video.title}
                 </p>
                 <Button
                   size="sm"
-                  variant="default"
-                  className="mt-1 ml-auto bg-primary/80 hover:bg-primary transition-colors"
+                  className="gap-2"
                   onClick={() => onVideoSelect(video)}
                 >
-                  <Plus className="h-3 w-3 mr-1" />
+                  <Plus className="h-4 w-4" />
                   Load
                 </Button>
               </div>
