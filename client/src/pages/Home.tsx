@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toggle } from "@/components/ui/toggle";
-import { useIsMobile } from "../hooks/use-mobile";
 import SearchBar from "@/components/SearchBar";
 import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
@@ -48,14 +47,18 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
-      {/* Header - Made more compact */}
-      <header className="w-full bg-[#0A0A0B] border-b border-primary/20 px-4 py-2">
-        <div className="max-w-[2000px] mx-auto flex justify-between items-center">
-          <div className="text-white font-mono text-base">
-            mixtube
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 max-w-screen-2xl items-center">
+          <div className="mr-4 flex">
+            <a className="mr-6 flex items-center space-x-2" href="/">
+              <span className="font-bold sm:inline-block">
+                mixtube
+              </span>
+            </a>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <Toggle
               variant="outline"
               pressed={mode === 'listening'}
@@ -64,7 +67,7 @@ export default function Home() {
             >
               {mode === 'listening' ? '🎧' : '🎭'}
             </Toggle>
-            <Avatar className="h-6 w-6">
+            <Avatar className="h-8 w-8">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
@@ -72,14 +75,14 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content - Updated layout proportions */}
-      <main className="flex-1 container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-4">
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-          {/* Main Video Section - Maintains ~70% on non-mobile */}
-          <div className="w-full sm:w-[70%] space-y-4">
+      {/* Main Content */}
+      <main className="container max-w-[1800px] mx-auto p-4 sm:p-6 space-y-6">
+        <div className="flex flex-col sm:flex-row gap-6">
+          {/* Main Video Section */}
+          <div className="w-full sm:w-[70%] space-y-6">
             {mode === 'performance' && (
               <>
-                <Card className="overflow-hidden border-none bg-transparent">
+                <Card className="overflow-hidden">
                   <MixedVideoPlayer
                     leftVideoId={videos.left?.id || null}
                     rightVideoId={videos.right?.id || null}
@@ -99,9 +102,9 @@ export default function Home() {
             )}
           </div>
 
-          {/* Sidebar - Maintains ~30% on non-mobile */}
+          {/* Sidebar */}
           <div className="w-full sm:w-[30%]">
-            <Card className="h-full bg-transparent border-none">
+            <Card className="h-full">
               <div className="mb-4">
                 <Button
                   variant="outline"
@@ -122,30 +125,29 @@ export default function Home() {
                   )}
                 </Button>
               </div>
+
               <Tabs defaultValue="left" className="w-full h-full">
-                <TabsList className="w-full mb-4">
-                  <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
-                  <TabsTrigger value="right" className="flex-1">Right Video</TabsTrigger>
+                <TabsList className="w-full grid grid-cols-2 mb-4">
+                  <TabsTrigger value="left">Left Video</TabsTrigger>
+                  <TabsTrigger value="right">Right Video</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="left" className="h-[calc(100%-60px)]">
-                  <VideoPlayer
-                    videoId={videos.left?.id || null}
-                    videoTitle={videos.left?.title}
-                    channelTitle={videos.left?.channelTitle}
-                    side="left"
-                    volume={volumes.left}
-                    playing={playing}
-                    onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                  />
-                  <div className="mt-4">
+                  <div className="space-y-4">
+                    <VideoPlayer
+                      videoId={videos.left?.id || null}
+                      videoTitle={videos.left?.title}
+                      channelTitle={videos.left?.channelTitle}
+                      side="left"
+                      volume={volumes.left}
+                      playing={playing}
+                      onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                    />
                     <SearchBar
                       onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                       videoId={videos.left?.id || null}
                     />
-                  </div>
-                  <div className="mt-4">
                     <RecommendedVideos
                       videoId={videos.left?.id || null}
                       onVideoSelect={(video) => handleVideoSelect(video, 'left')}
@@ -154,23 +156,21 @@ export default function Home() {
                 </TabsContent>
 
                 <TabsContent value="right" className="h-[calc(100%-60px)]">
-                  <VideoPlayer
-                    videoId={videos.right?.id || null}
-                    videoTitle={videos.right?.title}
-                    channelTitle={videos.right?.channelTitle}
-                    side="right"
-                    volume={volumes.right}
-                    playing={playing}
-                    onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                  />
-                  <div className="mt-4">
+                  <div className="space-y-4">
+                    <VideoPlayer
+                      videoId={videos.right?.id || null}
+                      videoTitle={videos.right?.title}
+                      channelTitle={videos.right?.channelTitle}
+                      side="right"
+                      volume={volumes.right}
+                      playing={playing}
+                      onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                    />
                     <SearchBar
                       onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                       videoId={videos.right?.id || null}
                     />
-                  </div>
-                  <div className="mt-4">
                     <RecommendedVideos
                       videoId={videos.right?.id || null}
                       onVideoSelect={(video) => handleVideoSelect(video, 'right')}
