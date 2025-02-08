@@ -69,9 +69,9 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
   const displayVideos = currentVideos.slice(0, 3);
 
   return (
-    <div className="mt-4 space-y-2">
-      <div className="overflow-x-auto no-scrollbar">
-        <div className="flex gap-1 pb-2">
+    <div className="mt-4 min-h-[400px]">
+      <div className="h-12 overflow-x-auto no-scrollbar">
+        <div className="flex gap-1">
           {VIDEO_CATEGORIES.map((category) => (
             <Button
               key={category}
@@ -85,7 +85,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-3 mt-2">
         {displayVideos.map((video) => (
           <Card 
             key={video.id}
