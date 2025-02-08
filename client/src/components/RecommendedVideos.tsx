@@ -102,7 +102,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
           Shuffle
         </Button>
       </div>
-      <div className="grid grid-cols-1 gap-4 mt-2">
+      <div className="grid grid-cols-1 gap-3 mt-2">
         {displayVideos.map((video) => (
           <Card 
             key={video.id}
@@ -111,11 +111,11 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
               "hover:ring-1 hover:ring-primary/50"
             )}
           >
-            <div className="flex gap-3 p-2">
+            <div className="flex gap-2 p-1.5">
               <img 
                 src={video.thumbnail} 
                 alt={video.title}
-                className="w-32 aspect-video object-cover rounded"
+                className="w-24 aspect-video object-cover rounded"
               />
               <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
                 <p className="text-xs line-clamp-2 normal-case font-medium">
@@ -127,7 +127,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
                   className="mt-1 ml-auto bg-primary/80 hover:bg-primary transition-colors"
                   onClick={() => onVideoSelect(video)}
                 >
-                  <Plus className="h-4 w-4 mr-1" />
+                  <Plus className="h-3 w-3 mr-1" />
                   Load
                 </Button>
               </div>
