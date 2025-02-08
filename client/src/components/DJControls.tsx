@@ -23,7 +23,7 @@ export default function DJControls({
           max={1}
           step={0.01}
           onValueChange={([value]) => onCrossFaderChange(value)}
-          className="flex-1"
+          className="flex-1 h-full"
         />
         <div className="text-sm font-medium text-primary min-w-[40px]">Right</div>
       </div>
