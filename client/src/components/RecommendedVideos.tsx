@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Shuffle, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { getRelatedVideos, searchVideos } from '@/lib/youtube';
@@ -41,11 +41,6 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
     staleTime: 60 * 1000,
     gcTime: 2 * 60 * 1000,
   });
-
-  const handleShuffle = async () => {
-    await queryClient.invalidateQueries({ queryKey: ['videos', videoId, selectedCategory] });
-    refetch();
-  };
 
   if (!videoId) {
     return null;
@@ -90,19 +85,7 @@ export default function RecommendedVideos({ videoId, onVideoSelect }: Recommende
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between mt-2">
-        <h3 className="text-xs font-bold text-primary/80">UP NEXT</h3>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={handleShuffle}
-          className="text-xs hover:bg-primary/10"
-        >
-          <Shuffle className="h-3 w-3" />
-          Shuffle
-        </Button>
-      </div>
-      <div className="grid grid-cols-1 gap-3 mt-2">
+      <div className="grid grid-cols-1 gap-3">
         {displayVideos.map((video) => (
           <Card 
             key={video.id}
