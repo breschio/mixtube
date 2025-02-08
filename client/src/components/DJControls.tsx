@@ -15,8 +15,8 @@ export default function DJControls({
   rightVideoId,
 }: DJControlsProps) {
   return (
-    <div className="bg-card/90 p-4 sm:p-6 rounded-lg shadow-xl border border-primary/20 flex-1">
-      <div className="flex items-center gap-4">
+    <div className="bg-card/90 px-4 py-2 rounded-lg shadow-xl border border-primary/20 flex-1">
+      <div className="flex items-center gap-4 h-10">
         <div className="text-sm font-medium text-primary min-w-[40px]">Left</div>
         <Slider
           value={[crossFader]}
