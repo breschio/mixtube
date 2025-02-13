@@ -46,10 +46,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] flex flex-col">
-      <header className="w-full bg-[#0A0A0B]">
+    <div className="min-h-screen bg-background flex flex-col">
+      <header className="w-full bg-background border-b">
         <div className="container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
-          <div className="text-white font-mono text-xl">
+          <div className="text-foreground font-mono text-xl">
             mixtube
           </div>
           <div className="flex items-center gap-4">
