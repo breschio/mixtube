@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { signInWithEmail, signUpWithEmail } from "@/lib/supabase";
 
@@ -24,6 +25,7 @@ export default function AuthModal({ trigger }: AuthModalProps) {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    newsletter: false,
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,7 +38,9 @@ export default function AuthModal({ trigger }: AuthModalProps) {
         await signUpWithEmail(formData.email, formData.password);
         toast({
           title: "Account created",
-          description: "Please check your email to verify your account.",
+          description: formData.newsletter
+            ? "Thanks for subscribing! Please check your email to verify your account."
+            : "Please check your email to verify your account.",
         });
       } else {
         await signInWithEmail(formData.email, formData.password);
@@ -95,6 +99,21 @@ export default function AuthModal({ trigger }: AuthModalProps) {
               }
               required
             />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="newsletter"
+              checked={formData.newsletter}
+              onCheckedChange={(checked) =>
+                setFormData({ ...formData, newsletter: checked })
+              }
+            />
+            <Label
+              htmlFor="newsletter"
+              className="text-sm text-muted-foreground leading-none cursor-pointer"
+            >
+              Keep me updated with news and updates from MixTube
+            </Label>
           </div>
           <div className="flex justify-between items-center pt-4">
             <Button
