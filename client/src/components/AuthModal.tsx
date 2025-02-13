@@ -105,14 +105,14 @@ export default function AuthModal({ trigger }: AuthModalProps) {
               id="newsletter"
               checked={formData.newsletter}
               onCheckedChange={(checked) =>
-                setFormData({ ...formData, newsletter: checked })
+                setFormData({ ...formData, newsletter: checked as boolean })
               }
             />
             <Label
               htmlFor="newsletter"
               className="text-sm text-muted-foreground leading-none cursor-pointer"
             >
-              Keep me updated with news and updates from MixTube
+              Send me news about Mixtube. No spam.
             </Label>
           </div>
           <div className="flex justify-between items-center pt-4">
