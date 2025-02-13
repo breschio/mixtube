@@ -10,6 +10,7 @@ import RecommendedVideos from "@/components/RecommendedVideos";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DJControls from "@/components/DJControls";
 import AuthModal from "@/components/AuthModal";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface VideoInfo {
   id: string;
@@ -53,6 +54,7 @@ export default function Home() {
             mixtube
           </div>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <AuthModal trigger={
               <Button variant="outline" size="sm">
                 Sign In

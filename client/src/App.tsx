@@ -7,6 +7,7 @@ import Home from "@/pages/Home";
 import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { useEffect, useState } from 'react';
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 function Router() {
   return (
@@ -53,12 +54,14 @@ function App() {
   }
 
   return (
-    <SessionContextProvider supabaseClient={supabaseClient}>
-      <QueryClientProvider client={queryClient}>
-        <Router />
-        <Toaster />
-      </QueryClientProvider>
-    </SessionContextProvider>
+    <ThemeProvider defaultTheme="light" storageKey="mixtube-ui-theme">
+      <SessionContextProvider supabaseClient={supabaseClient}>
+        <QueryClientProvider client={queryClient}>
+          <Router />
+          <Toaster />
+        </QueryClientProvider>
+      </SessionContextProvider>
+    </ThemeProvider>
   );
 }
 
