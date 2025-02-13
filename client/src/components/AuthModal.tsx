@@ -11,8 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { signInWithEmail, signUpWithEmail, signInWithGoogle } from "@/lib/supabase";
-import { SiGoogle } from "react-icons/si";
+import { signInWithEmail, signUpWithEmail } from "@/lib/supabase";
 
 interface AuthModalProps {
   trigger?: React.ReactNode;
@@ -58,19 +57,6 @@ export default function AuthModal({ trigger }: AuthModalProps) {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-      setIsOpen(false);
-    } catch (error) {
-      toast({
-        title: "Google sign in failed",
-        description: error instanceof Error ? error.message : "An error occurred",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -85,67 +71,45 @@ export default function AuthModal({ trigger }: AuthModalProps) {
               : "Sign in to access your saved mixes"}
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 pt-4">
-          <Button 
-            variant="outline" 
-            className="w-full" 
-            onClick={handleGoogleSignIn}
-          >
-            <SiGoogle className="mr-2 h-4 w-4" />
-            Continue with Google
-          </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with email
-              </span>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              required
+            />
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="flex justify-between items-center pt-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setIsRegister(!isRegister)}
-                disabled={isLoading}
-              >
-                {isRegister ? "Have an account?" : "Need an account?"}
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Loading..." : isRegister ? "Create Account" : "Sign In"}
-              </Button>
-            </div>
-          </form>
-        </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div className="flex justify-between items-center pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsRegister(!isRegister)}
+              disabled={isLoading}
+            >
+              {isRegister ? "Have an account?" : "Need an account?"}
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Loading..." : isRegister ? "Create Account" : "Sign In"}
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
