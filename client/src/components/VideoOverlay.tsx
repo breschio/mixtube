@@ -17,8 +17,8 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({ isPlaying, onPlayPause }) =
         onPlayPause();
       }}
     >
-      <div className="transform transition-transform hover:scale-110">
-        <div className="rounded-full bg-gradient-to-r from-primary to-primary/80 p-4 shadow-lg ring-1 ring-white/10 cursor-pointer">
+      <div className="transform transition-all duration-500 hover:scale-110 animate-[spin_3s_linear_infinite] hover:animate-[spin_1.5s_linear_infinite] perspective-1000">
+        <div className="rounded-xl bg-gradient-to-r from-primary to-primary/80 p-4 shadow-lg ring-1 ring-white/10 cursor-pointer transform-style-3d rotate-y-[-45deg] hover:rotate-y-[-30deg]">
           <Play className="h-12 w-12 text-primary-foreground" />
         </div>
       </div>
