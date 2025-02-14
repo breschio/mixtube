@@ -5,16 +5,15 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
 import type { YouTubeVideo } from '@/lib/youtube';
-import { useYoutubeSearch } from '@/hooks/use-youtube-search';
 
 interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
+  onSearch: (query: string) => void;
   videoId: string | null;
   isRightColumn?: boolean;
 }
 
-export default function SearchBar({ onVideoSelect, videoId, isRightColumn = false }: SearchBarProps) {
-  const [input, setInput] = useState('');
+export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightColumn = false }: SearchBarProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
   const { toast } = useToast();
@@ -26,7 +25,6 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
 
   const extractVideoId = (input: string): string | null => {
     const trimmedInput = input.trim();
-    // Only validate if it looks like a URL or video ID
     if (trimmedInput.includes('youtube.com') || trimmedInput.includes('youtu.be') || trimmedInput.length === 11) {
       for (const pattern of patterns) {
         const match = trimmedInput.match(pattern);
@@ -42,22 +40,16 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     return null;
   };
 
-  // Debounce the actual search query
-  const debouncedSetInput = useCallback(
+  const debouncedSearch = useCallback(
     debounce((value: string) => {
-      setInput(value);
+      onSearch(value);
     }, 800),
-    []
+    [onSearch]
   );
-
-  const { data: searchResults = [], isLoading } = useYoutubeSearch(input);
-
-  // Limit to 5 results
-  const limitedResults = searchResults.slice(0, 5);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setDisplayValue(newValue); // Update display immediately for smooth typing
+    setDisplayValue(newValue);
 
     const videoId = extractVideoId(newValue);
     if (videoId) {
@@ -65,7 +57,7 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
       return;
     }
 
-    debouncedSetInput(newValue);
+    debouncedSearch(newValue);
   };
 
   const handleVideoIdInput = async (videoId: string) => {
@@ -89,15 +81,9 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     }
   };
 
-  const handleVideoSelect = (video: YouTubeVideo) => {
-    setDisplayValue('');
-    setInput('');
-    onVideoSelect(video);
-  };
-
   const handleClear = () => {
     setDisplayValue('');
-    setInput('');
+    onSearch('');
     setIsValid(true);
   };
 
@@ -124,30 +110,6 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
             </Button>
           )}
         </div>
-        {/* Results dropdown with improved positioning */}
-        {limitedResults.length > 0 && (
-          <div className="absolute z-50 left-0 right-0 mt-1 bg-background/95 backdrop-blur border rounded-md shadow-lg">
-            {limitedResults.map((video: YouTubeVideo) => (
-              <button
-                key={video.id}
-                className="w-full p-2 hover:bg-accent flex items-center gap-2 text-left"
-                onClick={() => handleVideoSelect(video)}
-              >
-                <img 
-                  src={video.thumbnail} 
-                  alt={video.title}
-                  className="w-16 aspect-video object-cover rounded"
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs line-clamp-2 normal-case font-medium">
-                    {video.title}
-                  </p>
-                  <span className="text-xs text-muted-foreground">{video.channelTitle}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
       </div>
       {!isValid && displayValue && (
         <p className="text-xs text-red-500 mt-1">Please enter a valid YouTube URL or video ID</p>

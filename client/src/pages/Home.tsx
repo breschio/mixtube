@@ -11,6 +11,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DJControls from "@/components/DJControls";
 import AuthModal from "@/components/AuthModal";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useYoutubeSearch } from '@/hooks/use-youtube-search';
 
 interface VideoInfo {
   id: string;
@@ -38,11 +39,26 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
+  const [searchQueries, setSearchQueries] = useState({ left: '', right: '' });
+
+  const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left);
+  const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right);
 
   const handleVideoSelect = (video: VideoInfo, target: 'left' | 'right') => {
     setVideos(prev => ({
       ...prev,
       [target]: video
+    }));
+    setSearchQueries(prev => ({
+      ...prev,
+      [target]: ''
+    }));
+  };
+
+  const handleSearch = (query: string, target: 'left' | 'right') => {
+    setSearchQueries(prev => ({
+      ...prev,
+      [target]: query
     }));
   };
 
@@ -134,6 +150,7 @@ export default function Home() {
                   <div className="mt-4">
                     <SearchBar
                       onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                      onSearch={(query) => handleSearch(query, 'left')}
                       videoId={videos.left?.id || null}
                     />
                   </div>
@@ -141,6 +158,8 @@ export default function Home() {
                     <RecommendedVideos
                       videoId={videos.left?.id || null}
                       onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                      searchResults={leftSearchResults}
+                      isSearching={!!searchQueries.left}
                     />
                   </div>
                 </TabsContent>
@@ -159,6 +178,7 @@ export default function Home() {
                   <div className="mt-4">
                     <SearchBar
                       onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                      onSearch={(query) => handleSearch(query, 'right')}
                       videoId={videos.right?.id || null}
                     />
                   </div>
@@ -166,6 +186,8 @@ export default function Home() {
                     <RecommendedVideos
                       videoId={videos.right?.id || null}
                       onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                      searchResults={rightSearchResults}
+                      isSearching={!!searchQueries.right}
                     />
                   </div>
                 </TabsContent>
