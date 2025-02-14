@@ -69,8 +69,39 @@ export default function Home() {
       </header>
 
       <main className="flex-1 container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-4">
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-          <div className="w-full sm:w-[70%] space-y-4">
+        <div className="flex flex-col xl:flex-row gap-4 sm:gap-6">
+          {/* Left Tab Panel - Only visible on 1920px+ screens */}
+          <div className="hidden 2xl:block w-[30%]">
+            <Card className="h-full bg-transparent border-none">
+              <div className="h-full">
+                <VideoPlayer
+                  videoId={videos.left?.id || null}
+                  videoTitle={videos.left?.title}
+                  channelTitle={videos.left?.channelTitle}
+                  side="left"
+                  volume={volumes.left}
+                  playing={playing}
+                  onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
+                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                />
+                <div className="mt-4">
+                  <SearchBar
+                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                    videoId={videos.left?.id || null}
+                  />
+                </div>
+                <div className="mt-4">
+                  <RecommendedVideos
+                    videoId={videos.left?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                  />
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Center Video Player */}
+          <div className="w-full 2xl:w-[40%] space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
               <MixedVideoPlayer
                 leftVideoId={videos.left?.id || null}
@@ -107,9 +138,10 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="w-full sm:w-[30%]">
+          {/* Tabbed Interface for smaller screens / Right Tab Panel for 1920px+ */}
+          <div className="w-full xl:w-[30%] 2xl:block">
             <Card className="h-full bg-transparent border-none">
-              <Tabs defaultValue="left" className="w-full h-full">
+              <Tabs defaultValue="left" className="w-full h-full 2xl:hidden">
                 <TabsList className="w-full mb-4">
                   <TabsTrigger value="left" className="flex-1">
                     Left
@@ -169,6 +201,32 @@ export default function Home() {
                   </div>
                 </TabsContent>
               </Tabs>
+
+              {/* Right Video Panel - Only visible on 1920px+ screens */}
+              <div className="hidden 2xl:block h-full">
+                <VideoPlayer
+                  videoId={videos.right?.id || null}
+                  videoTitle={videos.right?.title}
+                  channelTitle={videos.right?.channelTitle}
+                  side="right"
+                  volume={volumes.right}
+                  playing={playing}
+                  onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
+                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                />
+                <div className="mt-4">
+                  <SearchBar
+                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                    videoId={videos.right?.id || null}
+                  />
+                </div>
+                <div className="mt-4">
+                  <RecommendedVideos
+                    videoId={videos.right?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                  />
+                </div>
+              </div>
             </Card>
           </div>
         </div>
