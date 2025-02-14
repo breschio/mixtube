@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import type { YouTubeVideo } from '@/lib/youtube';
@@ -26,17 +25,6 @@ const FALLBACK_VIDEOS: YouTubeVideo[] = [
 
 export function useYoutubeSearch(searchTerm: string) {
   const { toast } = useToast();
-  const [shouldSearch, setShouldSearch] = useState(false);
-
-  // Reset search flag when search term changes
-  if (searchTerm.length < 3 && shouldSearch) {
-    setShouldSearch(false);
-  }
-
-  // Enable search when term is long enough
-  if (searchTerm.length >= 3 && !shouldSearch) {
-    setShouldSearch(true);
-  }
 
   return useQuery({
     queryKey: ['youtube-search', searchTerm],
@@ -46,7 +34,8 @@ export function useYoutubeSearch(searchTerm: string) {
         if (!response.ok) {
           throw new Error('Search failed');
         }
-        return await response.json();
+        const data = await response.json();
+        return data as YouTubeVideo[];
       } catch (error) {
         console.error('Search failed:', error);
         toast({
@@ -57,7 +46,7 @@ export function useYoutubeSearch(searchTerm: string) {
         return FALLBACK_VIDEOS;
       }
     },
-    enabled: shouldSearch,
+    enabled: searchTerm.length >= 2,
     staleTime: 60 * 1000,
     gcTime: 2 * 60 * 1000,
   });
