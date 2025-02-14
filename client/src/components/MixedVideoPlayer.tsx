@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
+import VideoOverlay from './VideoOverlay';
 
 interface MixedVideoPlayerProps {
   leftVideoId: string | null;
@@ -84,20 +85,18 @@ export default function MixedVideoPlayer({
           playing={playing}
           volume={Math.max(0, 1 - crossFaderValue)}
           muted={crossFaderValue === 1}
-          playIcon={false}
+          playIcon={<div />}
           onReady={() => handleReady('left')}
           config={{
-            youtube: {
-              playerVars: {
-                controls: 0,
-                modestbranding: 1,
-                playsinline: 1,
-                rel: 0,
-                showinfo: 0,
-                iv_load_policy: 3,
-                origin: window.location.origin,
-                enablejsapi: 1
-              }
+            playerVars: {
+              controls: 0,
+              modestbranding: 1,
+              playsinline: 1,
+              rel: 0,
+              showinfo: 0,
+              iv_load_policy: 3,
+              origin: window.location.origin,
+              enablejsapi: 1
             }
           }}
         />
@@ -112,24 +111,24 @@ export default function MixedVideoPlayer({
           playing={playing}
           volume={Math.max(0, crossFaderValue)}
           muted={crossFaderValue === 0}
-          playIcon={false}
+          playIcon={<div />}
           onReady={() => handleReady('right')}
           config={{
-            youtube: {
-              playerVars: {
-                controls: 0,
-                modestbranding: 1,
-                playsinline: 1,
-                rel: 0,
-                showinfo: 0,
-                iv_load_policy: 3,
-                origin: window.location.origin,
-                enablejsapi: 1
-              }
+            playerVars: {
+              controls: 0,
+              modestbranding: 1,
+              playsinline: 1,
+              rel: 0,
+              showinfo: 0,
+              iv_load_policy: 3,
+              origin: window.location.origin,
+              enablejsapi: 1
             }
           }}
         />
       </div>
+
+      <VideoOverlay isPlaying={playing} onPlayPause={() => {playing = !playing} }/>
     </div>
   );
 }
