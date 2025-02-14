@@ -26,14 +26,19 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
 
   const extractVideoId = (input: string): string | null => {
     const trimmedInput = input.trim();
-    for (const pattern of patterns) {
-      const match = trimmedInput.match(pattern);
-      if (match) {
-        setIsValid(true);
-        return match[1];
+    // Only validate if it looks like a URL or video ID
+    if (trimmedInput.includes('youtube.com') || trimmedInput.includes('youtu.be') || trimmedInput.length === 11) {
+      for (const pattern of patterns) {
+        const match = trimmedInput.match(pattern);
+        if (match) {
+          setIsValid(true);
+          return match[1];
+        }
       }
+      setIsValid(false);
+      return null;
     }
-    setIsValid(false);
+    setIsValid(true);
     return null;
   };
 
@@ -46,6 +51,9 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
   );
 
   const { data: searchResults = [], isLoading } = useYoutubeSearch(input);
+
+  // Limit to 5 results
+  const limitedResults = searchResults.slice(0, 5);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -117,9 +125,9 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
           )}
         </div>
         {/* Results dropdown with improved positioning */}
-        {searchResults.length > 0 && (
+        {limitedResults.length > 0 && (
           <div className="absolute z-50 left-0 right-0 mt-1 bg-background/95 backdrop-blur border rounded-md shadow-lg">
-            {searchResults.map((video: YouTubeVideo) => (
+            {limitedResults.map((video: YouTubeVideo) => (
               <button
                 key={video.id}
                 className="w-full p-2 hover:bg-accent flex items-center gap-2 text-left"
