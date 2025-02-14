@@ -8,24 +8,24 @@ interface MixedVideoPlayerProps {
   rightVideoId: string | null;
   crossFaderValue: number;
   playing: boolean;
+  onPlayPause: () => void;  
 }
 
 export default function MixedVideoPlayer({ 
   leftVideoId, 
   rightVideoId, 
   crossFaderValue,
-  playing
+  playing: isPlaying,
+  onPlayPause
 }: MixedVideoPlayerProps) {
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
   const [playersReady, setPlayersReady] = useState({ left: false, right: false });
-
+  const [playing, setPlaying] = useState(isPlaying); 
   const handleReady = (player: 'left' | 'right') => {
     setPlayersReady(prev => ({ ...prev, [player]: true }));
-
-    // Force sync state when player becomes ready
     const currentPlayer = player === 'left' ? leftPlayerRef.current?.getInternalPlayer() : rightPlayerRef.current?.getInternalPlayer();
-    if (currentPlayer && playing) {
+    if (currentPlayer && isPlaying) {
       currentPlayer.playVideo();
     }
   };
@@ -62,6 +62,10 @@ export default function MixedVideoPlayer({
 
     syncPlayers();
   }, [playing, playersReady]);
+
+  useEffect(() => {
+    setPlaying(isPlaying); 
+  }, [isPlaying]);
 
   if (!leftVideoId || !rightVideoId) {
     return (
@@ -128,7 +132,7 @@ export default function MixedVideoPlayer({
         />
       </div>
 
-      <VideoOverlay isPlaying={playing} onPlayPause={() => {playing = !playing} }/>
+      <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
     </div>
   );
 }

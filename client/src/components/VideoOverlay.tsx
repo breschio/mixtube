@@ -14,6 +14,7 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({ isPlaying, onPlayPause }) =
       className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-transparent backdrop-blur-sm transition-opacity duration-300"
       onClick={(e) => {
         e.preventDefault();
+        e.stopPropagation();
         onPlayPause();
       }}
     >

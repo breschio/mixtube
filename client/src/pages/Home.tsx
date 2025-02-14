@@ -46,6 +46,10 @@ export default function Home() {
     }));
   };
 
+  const handlePlayPause = () => {
+    setPlaying(!playing);
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background border-b">
@@ -70,7 +74,6 @@ export default function Home() {
 
       <main className="flex-1 container mx-auto max-w-[1024px] w-full px-3 sm:px-4 md:px-6 py-4">
         <div className="flex flex-col xl:flex-row gap-4 sm:gap-6">
-          {/* Main Video Player */}
           <div className="w-full xl:w-[70%] space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
               <MixedVideoPlayer
@@ -78,6 +81,7 @@ export default function Home() {
                 rightVideoId={videos.right?.id || null}
                 crossFaderValue={crossFader}
                 playing={playing}
+                onPlayPause={handlePlayPause}
               />
             </Card>
             <div className="py-4 flex gap-4">
@@ -85,7 +89,7 @@ export default function Home() {
                 variant="outline"
                 size="lg"
                 className="w-[120px]"
-                onClick={() => setPlaying(!playing)}
+                onClick={handlePlayPause}
               >
                 {playing ? (
                   <>
@@ -108,7 +112,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Video Panels Container */}
           <div className="w-full xl:w-[30%]">
             <Card className="h-full bg-transparent border-none">
               <Tabs defaultValue="left" className="w-full h-full">
