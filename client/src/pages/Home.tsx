@@ -110,73 +110,14 @@ export default function Home() {
 
           {/* Video Panels Container */}
           <div className="w-full 2xl:w-[60%]">
-            {/* Tabbed Interface for smaller screens */}
-            <div className="2xl:hidden">
-              <Card className="h-full bg-transparent border-none">
-                <Tabs defaultValue="left" className="w-full h-full">
-                  <TabsList className="w-full mb-4">
-                    <TabsTrigger value="left" className="flex-1">Left</TabsTrigger>
-                    <TabsTrigger value="right" className="flex-1">Right</TabsTrigger>
-                  </TabsList>
+            <Card className="h-full bg-transparent border-none">
+              <Tabs defaultValue="left" className="w-full h-full">
+                <TabsList className="w-full mb-4">
+                  <TabsTrigger value="left" className="flex-1">Left</TabsTrigger>
+                  <TabsTrigger value="right" className="flex-1">Right</TabsTrigger>
+                </TabsList>
 
-                  <TabsContent value="left">
-                    <VideoPlayer
-                      videoId={videos.left?.id || null}
-                      videoTitle={videos.left?.title}
-                      channelTitle={videos.left?.channelTitle}
-                      side="left"
-                      volume={volumes.left}
-                      playing={playing}
-                      onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                    />
-                    <div className="mt-4">
-                      <SearchBar
-                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                        videoId={videos.left?.id || null}
-                      />
-                    </div>
-                    <div className="mt-4">
-                      <RecommendedVideos
-                        videoId={videos.left?.id || null}
-                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                      />
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="right">
-                    <VideoPlayer
-                      videoId={videos.right?.id || null}
-                      videoTitle={videos.right?.title}
-                      channelTitle={videos.right?.channelTitle}
-                      side="right"
-                      volume={volumes.right}
-                      playing={playing}
-                      onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                    />
-                    <div className="mt-4">
-                      <SearchBar
-                        onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                        videoId={videos.right?.id || null}
-                      />
-                    </div>
-                    <div className="mt-4">
-                      <RecommendedVideos
-                        videoId={videos.right?.id || null}
-                        onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                      />
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </Card>
-            </div>
-
-            {/* Side-by-side Video Panels for 1920px+ screens */}
-            <div className="hidden 2xl:flex gap-4">
-              {/* Left Video Panel */}
-              <div className="w-1/2">
-                <Card className="h-full bg-transparent border-none">
+                <TabsContent value="left">
                   <VideoPlayer
                     videoId={videos.left?.id || null}
                     videoTitle={videos.left?.title}
@@ -199,12 +140,9 @@ export default function Home() {
                       onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                     />
                   </div>
-                </Card>
-              </div>
+                </TabsContent>
 
-              {/* Right Video Panel */}
-              <div className="w-1/2">
-                <Card className="h-full bg-transparent border-none">
+                <TabsContent value="right">
                   <VideoPlayer
                     videoId={videos.right?.id || null}
                     videoTitle={videos.right?.title}
@@ -227,9 +165,9 @@ export default function Home() {
                       onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                     />
                   </div>
-                </Card>
-              </div>
-            </div>
+                </TabsContent>
+              </Tabs>
+            </Card>
           </div>
         </div>
       </main>
