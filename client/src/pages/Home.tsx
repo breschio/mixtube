@@ -49,7 +49,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background border-b">
-        <div className="container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
           <div className="text-foreground font-mono text-xl">
             mixtube
           </div>
@@ -68,10 +68,10 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 container max-w-[1800px] mx-auto px-3 sm:px-4 md:px-6 py-4">
+      <main className="flex-1 container mx-auto w-full 2xl:w-[75%] px-3 sm:px-4 md:px-6 py-4">
         <div className="flex flex-col xl:flex-row gap-4 sm:gap-6">
           {/* Main Video Player */}
-          <div className="w-full 2xl:w-[40%] space-y-4">
+          <div className="w-full 2xl:w-[50%] 2xl:mx-auto space-y-4">
             <Card className="overflow-hidden border-none bg-transparent">
               <MixedVideoPlayer
                 leftVideoId={videos.left?.id || null}
@@ -109,7 +109,7 @@ export default function Home() {
           </div>
 
           {/* Video Panels Container */}
-          <div className="w-full 2xl:w-[60%]">
+          <div className="w-full 2xl:w-[25%]">
             <Card className="h-full bg-transparent border-none">
               <Tabs defaultValue="left" className="w-full h-full">
                 <TabsList className="w-full mb-4">
