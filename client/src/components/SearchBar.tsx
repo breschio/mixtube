@@ -15,6 +15,7 @@ interface SearchBarProps {
 
 export default function SearchBar({ onVideoSelect, videoId, isRightColumn = false }: SearchBarProps) {
   const [input, setInput] = useState('');
+  const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
   const { toast } = useToast();
 
@@ -25,7 +26,6 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
 
   const extractVideoId = (input: string): string | null => {
     const trimmedInput = input.trim();
-
     for (const pattern of patterns) {
       const match = trimmedInput.match(pattern);
       if (match) {
@@ -33,31 +33,31 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
         return match[1];
       }
     }
-
     setIsValid(false);
     return null;
   };
 
+  // Debounce the actual search query
   const debouncedSetInput = useCallback(
     debounce((value: string) => {
       setInput(value);
-    }, 500),
+    }, 800),
     []
   );
 
   const { data: searchResults = [], isLoading } = useYoutubeSearch(input);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newInput = e.target.value;
+    const newValue = e.target.value;
+    setDisplayValue(newValue); // Update display immediately for smooth typing
 
-    const videoId = extractVideoId(newInput);
+    const videoId = extractVideoId(newValue);
     if (videoId) {
       handleVideoIdInput(videoId);
       return;
     }
 
-    debouncedSetInput(newInput);
-    e.target.value = newInput;
+    debouncedSetInput(newValue);
   };
 
   const handleVideoIdInput = async (videoId: string) => {
@@ -72,7 +72,6 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
         id: videoId,
         title: 'Video Title Unavailable',
         thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
-        channelTitle: 'Channel Unavailable'
       });
       toast({
         title: "Limited Video Details",
@@ -83,11 +82,13 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
   };
 
   const handleVideoSelect = (video: YouTubeVideo) => {
+    setDisplayValue('');
     setInput('');
     onVideoSelect(video);
   };
 
   const handleClear = () => {
+    setDisplayValue('');
     setInput('');
     setIsValid(true);
   };
@@ -100,11 +101,11 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
           <Input
             type="text"
             placeholder="Search YouTube"
-            value={input}
+            value={displayValue}
             onChange={handleInputChange}
-            className={`pl-9 normal-case transition-all ${!isValid && input ? 'border-red-500' : ''}`}
+            className={`pl-9 normal-case transition-all ${!isValid && displayValue ? 'border-red-500' : ''}`}
           />
-          {input && (
+          {displayValue && (
             <Button
               variant="ghost"
               size="icon"
@@ -115,33 +116,32 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
             </Button>
           )}
         </div>
-        <div 
-          className={`absolute z-50 mt-1 w-full bg-background/95 backdrop-blur border rounded-md shadow-lg transition-all duration-200 ${
-            searchResults.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
-          }`}
-        >
-          {searchResults.map((video) => (
-            <button
-              key={video.id}
-              className="w-full p-2 hover:bg-accent flex items-center gap-2 text-left"
-              onClick={() => handleVideoSelect(video)}
-            >
-              <img 
-                src={video.thumbnail} 
-                alt={video.title}
-                className="w-16 aspect-video object-cover rounded"
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs line-clamp-2 normal-case font-medium">
-                  {video.title}
-                </p>
-                <span className="text-xs text-muted-foreground">{video.channelTitle}</span>
-              </div>
-            </button>
-          ))}
-        </div>
+        {/* Results dropdown with improved positioning */}
+        {searchResults.length > 0 && (
+          <div className="absolute z-50 left-0 right-0 mt-1 bg-background/95 backdrop-blur border rounded-md shadow-lg">
+            {searchResults.map((video: YouTubeVideo) => (
+              <button
+                key={video.id}
+                className="w-full p-2 hover:bg-accent flex items-center gap-2 text-left"
+                onClick={() => handleVideoSelect(video)}
+              >
+                <img 
+                  src={video.thumbnail} 
+                  alt={video.title}
+                  className="w-16 aspect-video object-cover rounded"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs line-clamp-2 normal-case font-medium">
+                    {video.title}
+                  </p>
+                  <span className="text-xs text-muted-foreground">{video.channelTitle}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-      {!isValid && input && (
+      {!isValid && displayValue && (
         <p className="text-xs text-red-500 mt-1">Please enter a valid YouTube URL or video ID</p>
       )}
     </div>
