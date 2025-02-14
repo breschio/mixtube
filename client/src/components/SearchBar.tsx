@@ -57,7 +57,7 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
     }
 
     debouncedSetInput(newInput);
-    e.target.value = newInput; // Keep the input value in sync
+    e.target.value = newInput;
   };
 
   const handleVideoIdInput = async (videoId: string) => {
@@ -99,7 +99,7 @@ export default function SearchBar({ onVideoSelect, videoId, isRightColumn = fals
           <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search YouTube or paste a URL"
+            placeholder="Search YouTube"
             value={input}
             onChange={handleInputChange}
             className={`pl-9 normal-case transition-all ${!isValid && input ? 'border-red-500' : ''}`}
