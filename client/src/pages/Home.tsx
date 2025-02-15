@@ -102,10 +102,10 @@ export default function Home() {
 
           <div className="py-2">
             <Tabs defaultValue="mix" className="w-full">
-              <TabsList className="w-full grid grid-cols-3 mb-6">
-                <TabsTrigger value="left" className="text-base py-3">Left</TabsTrigger>
-                <TabsTrigger value="mix" className="text-base py-3">Mix</TabsTrigger>
-                <TabsTrigger value="right" className="text-base py-3">Right</TabsTrigger>
+              <TabsList className="w-full grid grid-cols-3 mb-4">
+                <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
+                <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
+                <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
               </TabsList>
 
               <TabsContent value="mix" className="mt-0">
