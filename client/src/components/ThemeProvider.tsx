@@ -20,48 +20,93 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
+function getSystemTheme(): "light" | "dark" {
+  if (typeof window === "undefined") return "light";
+
+  // Try different methods to detect system theme
+  if (window.matchMedia) {
+    // Standard method
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
+    // iOS/Safari specific
+    if (window.matchMedia("(-apple-system-dark-mode)").matches) return "dark";
+  }
+
+  // Fallback for older browsers
+  return "light";
+}
+
 export function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "mixtube-ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return defaultTheme;
+    try {
+      const stored = localStorage.getItem(storageKey) as Theme | null;
+      return stored || defaultTheme;
+    } catch {
+      return defaultTheme;
+    }
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
 
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-      root.classList.add(systemTheme);
-    } else {
-      root.classList.add(theme);
-    }
+    const effectiveTheme = theme === "system" ? getSystemTheme() : theme;
+    root.classList.add(effectiveTheme);
+
+    // Force a repaint to ensure the theme is applied
+    document.body.style.display = 'none';
+    document.body.offsetHeight;
+    document.body.style.display = '';
   }, [theme]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const mediaQueries = [
+      window.matchMedia("(prefers-color-scheme: dark)"),
+      window.matchMedia("(-apple-system-dark-mode)")
+    ];
 
-    // Update theme when system preference changes
     const handleChange = () => {
       if (theme === "system") {
         const root = window.document.documentElement;
         root.classList.remove("light", "dark");
-        root.classList.add(mediaQuery.matches ? "dark" : "light");
+        root.classList.add(getSystemTheme());
       }
     };
 
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
+    mediaQueries.forEach(mediaQuery => {
+      // Modern API
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener("change", handleChange);
+      }
+      // Legacy API (for older browsers)
+      else if ('addListener' in mediaQuery) {
+        (mediaQuery as any).addListener(handleChange);
+      }
+    });
+
+    return () => {
+      mediaQueries.forEach(mediaQuery => {
+        if (mediaQuery.removeEventListener) {
+          mediaQuery.removeEventListener("change", handleChange);
+        }
+        else if ('removeListener' in mediaQuery) {
+          (mediaQuery as any).removeListener(handleChange);
+        }
+      });
+    };
   }, [theme]);
 
   useEffect(() => {
-    localStorage.setItem(storageKey, theme);
+    try {
+      localStorage.setItem(storageKey, theme);
+    } catch (e) {
+      console.warn('Failed to save theme preference:', e);
+    }
   }, [theme, storageKey]);
 
   const value = {
