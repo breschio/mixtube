@@ -23,40 +23,76 @@ export default function MixedVideoPlayer({
   const [playersReady, setPlayersReady] = useState({ left: false, right: false });
   const [playing, setPlaying] = useState(isPlaying);
 
+  // Handle player ready state
   const handleReady = (player: 'left' | 'right') => {
-    setPlayersReady(prev => ({ ...prev, [player]: true }));
+    console.log(`${player} player ready`);
+    setPlayersReady(prev => {
+      const newState = { ...prev, [player]: true };
+      console.log('Players ready state:', newState);
+      return newState;
+    });
   };
 
   // Sync players when play state changes
   useEffect(() => {
     const syncPlayers = async () => {
-      if (playersReady.left && playersReady.right) {
-        const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
-        const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
+      if (!playersReady.left || !playersReady.right) {
+        console.log('Both players not ready yet');
+        return;
+      }
 
-        if (leftPlayer && rightPlayer) {
-          if (playing) {
-            try {
-              // Start both videos simultaneously
-              await Promise.all([
-                leftPlayer.playVideo(),
-                rightPlayer.playVideo()
-              ]);
-            } catch (error) {
-              console.error('Error playing videos:', error);
-            }
-          } else {
-            try {
-              // Pause both videos simultaneously
-              await Promise.all([
-                leftPlayer.pauseVideo(),
-                rightPlayer.pauseVideo()
-              ]);
-            } catch (error) {
-              console.error('Error pausing videos:', error);
-            }
-          }
+      const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
+      const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
+
+      if (!leftPlayer || !rightPlayer) {
+        console.log('Players not initialized');
+        return;
+      }
+
+      try {
+        if (playing) {
+          console.log('Playing both videos');
+          await Promise.all([
+            new Promise((resolve, reject) => {
+              try {
+                leftPlayer.playVideo();
+                resolve(true);
+              } catch (e) {
+                reject(e);
+              }
+            }),
+            new Promise((resolve, reject) => {
+              try {
+                rightPlayer.playVideo();
+                resolve(true);
+              } catch (e) {
+                reject(e);
+              }
+            })
+          ]);
+        } else {
+          console.log('Pausing both videos');
+          await Promise.all([
+            new Promise((resolve, reject) => {
+              try {
+                leftPlayer.pauseVideo();
+                resolve(true);
+              } catch (e) {
+                reject(e);
+              }
+            }),
+            new Promise((resolve, reject) => {
+              try {
+                rightPlayer.pauseVideo();
+                resolve(true);
+              } catch (e) {
+                reject(e);
+              }
+            })
+          ]);
         }
+      } catch (error) {
+        console.error('Error controlling videos:', error);
       }
     };
 
