@@ -142,10 +142,6 @@ export default function Home() {
                     videoTitle={videos.left?.title}
                     channelTitle={videos.left?.channelTitle}
                     side="left"
-                    volume={volumes.left}
-                    playing={playing}
-                    onVolumeChange={(value) => setVolumes(prev => ({ ...prev, left: value }))}
-                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                   />
                   <div className="mt-4">
                     <SearchBar
@@ -170,10 +166,6 @@ export default function Home() {
                     videoTitle={videos.right?.title}
                     channelTitle={videos.right?.channelTitle}
                     side="right"
-                    volume={volumes.right}
-                    playing={playing}
-                    onVolumeChange={(value) => setVolumes(prev => ({ ...prev, right: value }))}
-                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                   />
                   <div className="mt-4">
                     <SearchBar
