@@ -106,15 +106,15 @@ export default function Home() {
             />
           </Card>
 
-          <div className="py-2">
+          <div className="py-0">
             <Tabs defaultValue="mix" className="w-full">
-              <TabsList className="w-full grid grid-cols-3 mb-4">
+              <TabsList className="w-full grid grid-cols-3">
                 <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
                 <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
                 <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="mix" className="mt-0">
+              <TabsContent value="mix" className="mt-2">
                 <div className="space-y-4">
                   <DJControls
                     crossFader={crossFader}
@@ -125,7 +125,7 @@ export default function Home() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="left" className="mt-0">
+              <TabsContent value="left" className="mt-2">
                 <div className="space-y-4">
                   <VideoPlayer
                     videoId={videos.left?.id || null}
@@ -151,7 +151,7 @@ export default function Home() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="right" className="mt-0">
+              <TabsContent value="right" className="mt-2">
                 <div className="space-y-4">
                   <VideoPlayer
                     videoId={videos.right?.id || null}
