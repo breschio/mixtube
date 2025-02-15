@@ -21,15 +21,13 @@ export default function MixedVideoPlayer({
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
   const [playersReady, setPlayersReady] = useState({ left: false, right: false });
-  const [playing, setPlaying] = useState(isPlaying); 
+  const [playing, setPlaying] = useState(isPlaying);
+
   const handleReady = (player: 'left' | 'right') => {
     setPlayersReady(prev => ({ ...prev, [player]: true }));
-    const currentPlayer = player === 'left' ? leftPlayerRef.current?.getInternalPlayer() : rightPlayerRef.current?.getInternalPlayer();
-    if (currentPlayer && isPlaying) {
-      currentPlayer.playVideo();
-    }
   };
 
+  // Sync players when play state changes
   useEffect(() => {
     const syncPlayers = async () => {
       if (playersReady.left && playersReady.right) {
@@ -39,15 +37,17 @@ export default function MixedVideoPlayer({
         if (leftPlayer && rightPlayer) {
           if (playing) {
             try {
+              // Start both videos simultaneously
               await Promise.all([
                 leftPlayer.playVideo(),
                 rightPlayer.playVideo()
               ]);
             } catch (error) {
-              console.error('Error syncing videos:', error);
+              console.error('Error playing videos:', error);
             }
           } else {
             try {
+              // Pause both videos simultaneously
               await Promise.all([
                 leftPlayer.pauseVideo(),
                 rightPlayer.pauseVideo()
@@ -63,8 +63,9 @@ export default function MixedVideoPlayer({
     syncPlayers();
   }, [playing, playersReady]);
 
+  // Update local playing state when prop changes
   useEffect(() => {
-    setPlaying(isPlaying); 
+    setPlaying(isPlaying);
   }, [isPlaying]);
 
   if (!leftVideoId || !rightVideoId) {
@@ -132,7 +133,7 @@ export default function MixedVideoPlayer({
         />
       </div>
 
-      <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+      <VideoOverlay isPlaying={playing} onPlayPause={onPlayPause} />
     </div>
   );
 }
