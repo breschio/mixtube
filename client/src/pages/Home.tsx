@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ interface VideoInfo extends YouTubeVideo {
 }
 
 export default function Home() {
+  const user = useUser();
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
@@ -75,15 +77,19 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <AuthModal trigger={
-              <Button variant="outline" size="sm">
-                Sign In
-              </Button>
-            } />
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            {!user && (
+              <AuthModal trigger={
+                <Button variant="outline" size="sm">
+                  Sign In
+                </Button>
+              } />
+            )}
+            {user && (
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user.user_metadata.avatar_url || ''} />
+                <AvatarFallback>{user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
+              </Avatar>
+            )}
           </div>
         </div>
       </header>
