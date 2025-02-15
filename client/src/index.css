@@ -68,19 +68,25 @@
   @apply text-2xl font-bold tracking-tight;
 }
 
-/* Add explicit styles for tabs */
+/* Enhanced tab styles */
 [role="tab"] {
-  @apply relative px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  @apply relative w-full px-3 py-3 text-sm font-medium transition-all duration-200 ease-out;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  @apply disabled:pointer-events-none disabled:opacity-50;
 }
 
 [role="tab"][data-state="active"] {
   @apply bg-primary text-primary-foreground shadow-sm;
+  @apply after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-primary;
+  @apply transition-all duration-200 ease-out;
 }
 
 [role="tab"][data-state="inactive"] {
   @apply text-muted-foreground hover:text-foreground;
+  @apply transition-colors duration-200 ease-out;
 }
 
 [role="tablist"] {
-  @apply inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground;
+  @apply inline-flex w-full h-12 items-center justify-center rounded-lg bg-muted p-1;
+  @apply grid grid-cols-3 gap-1;
 }
