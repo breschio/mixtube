@@ -13,6 +13,7 @@ import AuthModal from "@/components/AuthModal";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useYoutubeSearch } from '@/hooks/use-youtube-search';
 import type { YouTubeVideo } from '@/lib/youtube';
+import MixControls from "@/components/MixControls";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
@@ -42,6 +43,7 @@ export default function Home() {
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
   const [searchQueries, setSearchQueries] = useState({ left: '', right: '' });
+  const [speeds, setSpeeds] = useState({ left: 1, right: 1 });
 
   const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left);
   const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right);
@@ -66,6 +68,13 @@ export default function Home() {
 
   const handlePlayPause = () => {
     setPlaying(!playing);
+  };
+
+  const handleSpeedChange = (player: 'left' | 'right', speed: number) => {
+    setSpeeds(prev => ({
+      ...prev,
+      [player]: speed
+    }));
   };
 
   return (
@@ -103,6 +112,8 @@ export default function Home() {
               crossFaderValue={crossFader}
               playing={playing}
               onPlayPause={handlePlayPause}
+              leftSpeed={speeds.left}
+              rightSpeed={speeds.right}
             />
           </Card>
 
@@ -116,11 +127,14 @@ export default function Home() {
 
               <TabsContent value="mix" className="mt-2">
                 <div className="space-y-4">
-                  <DJControls
+                  <MixControls
                     crossFader={crossFader}
                     onCrossFaderChange={setCrossFader}
-                    leftVideoId={videos.left?.id}
-                    rightVideoId={videos.right?.id}
+                    onSpeedChange={handleSpeedChange}
+                    leftSpeed={speeds.left}
+                    rightSpeed={speeds.right}
+                    isPlaying={playing}
+                    onPlayPause={handlePlayPause}
                   />
                 </div>
               </TabsContent>

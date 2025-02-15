@@ -8,7 +8,9 @@ interface MixedVideoPlayerProps {
   rightVideoId: string | null;
   crossFaderValue: number;
   playing: boolean;
-  onPlayPause: () => void;  
+  onPlayPause: () => void;
+  leftSpeed?: number;
+  rightSpeed?: number;
 }
 
 export default function MixedVideoPlayer({ 
@@ -16,7 +18,9 @@ export default function MixedVideoPlayer({
   rightVideoId, 
   crossFaderValue,
   playing: isPlaying,
-  onPlayPause
+  onPlayPause,
+  leftSpeed = 1,
+  rightSpeed = 1
 }: MixedVideoPlayerProps) {
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
@@ -43,6 +47,7 @@ export default function MixedVideoPlayer({
           playing={isPlaying}
           volume={Math.max(0, 1 - crossFaderValue)}
           muted={crossFaderValue === 1}
+          playbackRate={leftSpeed}
           config={{
             playerVars: {
               controls: 0,
@@ -67,6 +72,7 @@ export default function MixedVideoPlayer({
           playing={isPlaying}
           volume={Math.max(0, crossFaderValue)}
           muted={crossFaderValue === 0}
+          playbackRate={rightSpeed}
           config={{
             playerVars: {
               controls: 0,
