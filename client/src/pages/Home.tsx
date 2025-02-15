@@ -100,25 +100,7 @@ export default function Home() {
                 onPlayPause={handlePlayPause}
               />
             </Card>
-            <div className="py-4 flex gap-4">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-[120px]"
-                onClick={handlePlayPause}
-              >
-                {playing ? (
-                  <>
-                    <Pause className="h-4 w-4 mr-2" />
-                    Pause
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-4 w-4 mr-2" />
-                    Play
-                  </>
-                )}
-              </Button>
+            <div className="py-4">
               <DJControls
                 crossFader={crossFader}
                 onCrossFaderChange={setCrossFader}
