@@ -89,85 +89,88 @@ export default function Home() {
       </header>
 
       <main className="flex-1 container mx-auto max-w-[1024px] w-full px-3 sm:px-4 md:px-6 py-4">
-        <Tabs defaultValue="mix" className="w-full space-y-6">
-          <TabsList className="w-full grid grid-cols-3">
-            <TabsTrigger value="left">Left</TabsTrigger>
-            <TabsTrigger value="mix">Mix</TabsTrigger>
-            <TabsTrigger value="right">Right</TabsTrigger>
-          </TabsList>
+        <div className="space-y-6">
+          <Card className="overflow-hidden border-none bg-transparent">
+            <MixedVideoPlayer
+              leftVideoId={videos.left?.id || null}
+              rightVideoId={videos.right?.id || null}
+              crossFaderValue={crossFader}
+              playing={playing}
+              onPlayPause={handlePlayPause}
+            />
+          </Card>
 
-          <TabsContent value="mix" className="space-y-4">
-            <Card className="overflow-hidden border-none bg-transparent">
-              <MixedVideoPlayer
-                leftVideoId={videos.left?.id || null}
-                rightVideoId={videos.right?.id || null}
-                crossFaderValue={crossFader}
-                playing={playing}
-                onPlayPause={handlePlayPause}
-              />
-            </Card>
-            <div className="py-4">
-              <DJControls
-                crossFader={crossFader}
-                onCrossFaderChange={setCrossFader}
-                leftVideoId={videos.left?.id}
-                rightVideoId={videos.right?.id}
-              />
-            </div>
-          </TabsContent>
+          <div className="py-4">
+            <DJControls
+              crossFader={crossFader}
+              onCrossFaderChange={setCrossFader}
+              leftVideoId={videos.left?.id}
+              rightVideoId={videos.right?.id}
+            />
+          </div>
 
-          <TabsContent value="left">
-            <div className="space-y-4">
-              <VideoPlayer
-                videoId={videos.left?.id || null}
-                videoTitle={videos.left?.title}
-                channelTitle={videos.left?.channelTitle}
-                side="left"
-              />
-              <div className="mt-4">
-                <SearchBar
-                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                  onSearch={(query) => handleSearch(query, 'left')}
+          <Tabs defaultValue="mix" className="w-full">
+            <TabsList className="w-full grid grid-cols-3 mb-6">
+              <TabsTrigger value="left" className="text-base py-3">Left</TabsTrigger>
+              <TabsTrigger value="mix" className="text-base py-3">Mix</TabsTrigger>
+              <TabsTrigger value="right" className="text-base py-3">Right</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="mix" className="mt-0" />
+
+            <TabsContent value="left" className="mt-0">
+              <div className="space-y-4">
+                <VideoPlayer
                   videoId={videos.left?.id || null}
+                  videoTitle={videos.left?.title}
+                  channelTitle={videos.left?.channelTitle}
+                  side="left"
                 />
+                <div className="mt-4">
+                  <SearchBar
+                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                    onSearch={(query) => handleSearch(query, 'left')}
+                    videoId={videos.left?.id || null}
+                  />
+                </div>
+                <div className="mt-4">
+                  <RecommendedVideos
+                    videoId={videos.left?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                    searchResults={leftSearchResults}
+                    isSearching={!!searchQueries.left}
+                  />
+                </div>
               </div>
-              <div className="mt-4">
-                <RecommendedVideos
-                  videoId={videos.left?.id || null}
-                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                  searchResults={leftSearchResults}
-                  isSearching={!!searchQueries.left}
-                />
-              </div>
-            </div>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="right">
-            <div className="space-y-4">
-              <VideoPlayer
-                videoId={videos.right?.id || null}
-                videoTitle={videos.right?.title}
-                channelTitle={videos.right?.channelTitle}
-                side="right"
-              />
-              <div className="mt-4">
-                <SearchBar
-                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                  onSearch={(query) => handleSearch(query, 'right')}
+            <TabsContent value="right" className="mt-0">
+              <div className="space-y-4">
+                <VideoPlayer
                   videoId={videos.right?.id || null}
+                  videoTitle={videos.right?.title}
+                  channelTitle={videos.right?.channelTitle}
+                  side="right"
                 />
+                <div className="mt-4">
+                  <SearchBar
+                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                    onSearch={(query) => handleSearch(query, 'right')}
+                    videoId={videos.right?.id || null}
+                  />
+                </div>
+                <div className="mt-4">
+                  <RecommendedVideos
+                    videoId={videos.right?.id || null}
+                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                    searchResults={rightSearchResults}
+                    isSearching={!!searchQueries.right}
+                  />
+                </div>
               </div>
-              <div className="mt-4">
-                <RecommendedVideos
-                  videoId={videos.right?.id || null}
-                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                  searchResults={rightSearchResults}
-                  isSearching={!!searchQueries.right}
-                />
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
+        </div>
       </main>
     </div>
   );
