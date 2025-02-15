@@ -14,7 +14,7 @@ type ThemeProviderState = {
 };
 
 const initialState: ThemeProviderState = {
-  theme: "system",
+  theme: "dark",
   setTheme: () => null,
 };
 
@@ -37,7 +37,7 @@ function getSystemTheme(): "light" | "dark" {
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "dark",
   storageKey = "mixtube-ui-theme",
   ...props
 }: ThemeProviderProps) {
@@ -45,6 +45,9 @@ export function ThemeProvider({
     if (typeof window === "undefined") return defaultTheme;
     try {
       const stored = localStorage.getItem(storageKey) as Theme | null;
+      if (stored === "system") {
+        return "system"; // Keep system preference if explicitly set
+      }
       return stored || defaultTheme;
     } catch {
       return defaultTheme;
