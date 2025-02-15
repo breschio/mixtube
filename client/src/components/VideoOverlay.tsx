@@ -1,6 +1,5 @@
 import React from "react";
-import { Play, Pause } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Play } from "lucide-react";
 
 interface VideoOverlayProps {
   isPlaying: boolean;
@@ -8,32 +7,22 @@ interface VideoOverlayProps {
 }
 
 const VideoOverlay: React.FC<VideoOverlayProps> = ({ isPlaying, onPlayPause }) => {
+  if (isPlaying) return null;
+
   return (
     <div 
-      className={cn(
-        "absolute inset-0 z-10 group/player",
-        "transition-opacity duration-300",
-        "hover:bg-gradient-to-t hover:from-black/50 hover:via-transparent hover:to-transparent",
-      )}
+      className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-transparent backdrop-blur-sm transition-opacity duration-300"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
         onPlayPause();
       }}
     >
-      <div 
-        className={cn(
-          "absolute bottom-4 left-1/2 -translate-x-1/2",
-          "opacity-0 group-hover/player:opacity-100",
-          "transition-all duration-200 ease-in-out",
-        )}
-      >
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/70 text-white backdrop-blur-sm">
-          {isPlaying ? (
-            <Pause className="h-5 w-5" />
-          ) : (
-            <Play className="h-5 w-5" />
-          )}
+      <div className="transform transition-all duration-500 hover:scale-110 perspective-1000">
+        <div className="rounded-xl bg-gradient-to-r from-primary to-primary/80 p-4 shadow-lg ring-1 ring-white/10 cursor-pointer transform-style-3d rotate-y-[-45deg] hover:rotate-y-[-30deg]">
+          <div className="relative transform-none">
+            <Play className="h-12 w-12 text-primary-foreground" />
+          </div>
         </div>
       </div>
     </div>
