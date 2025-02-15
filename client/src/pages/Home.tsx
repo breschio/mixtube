@@ -100,7 +100,7 @@ export default function Home() {
             />
           </Card>
 
-          <div className="py-4">
+          <div className="py-2">
             <Tabs defaultValue="mix" className="w-full">
               <TabsList className="w-full grid grid-cols-3 mb-6">
                 <TabsTrigger value="left" className="text-base py-3">Left</TabsTrigger>
