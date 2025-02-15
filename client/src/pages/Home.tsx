@@ -101,75 +101,77 @@ export default function Home() {
           </Card>
 
           <div className="py-4">
-            <DJControls
-              crossFader={crossFader}
-              onCrossFaderChange={setCrossFader}
-              leftVideoId={videos.left?.id}
-              rightVideoId={videos.right?.id}
-            />
+            <Tabs defaultValue="mix" className="w-full">
+              <TabsList className="w-full grid grid-cols-3 mb-6">
+                <TabsTrigger value="left" className="text-base py-3">Left</TabsTrigger>
+                <TabsTrigger value="mix" className="text-base py-3">Mix</TabsTrigger>
+                <TabsTrigger value="right" className="text-base py-3">Right</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="mix" className="mt-0">
+                <div className="space-y-4">
+                  <DJControls
+                    crossFader={crossFader}
+                    onCrossFaderChange={setCrossFader}
+                    leftVideoId={videos.left?.id}
+                    rightVideoId={videos.right?.id}
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="left" className="mt-0">
+                <div className="space-y-4">
+                  <VideoPlayer
+                    videoId={videos.left?.id || null}
+                    videoTitle={videos.left?.title}
+                    channelTitle={videos.left?.channelTitle}
+                    side="left"
+                  />
+                  <div className="mt-4">
+                    <SearchBar
+                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                      onSearch={(query) => handleSearch(query, 'left')}
+                      videoId={videos.left?.id || null}
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <RecommendedVideos
+                      videoId={videos.left?.id || null}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                      searchResults={leftSearchResults}
+                      isSearching={!!searchQueries.left}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="right" className="mt-0">
+                <div className="space-y-4">
+                  <VideoPlayer
+                    videoId={videos.right?.id || null}
+                    videoTitle={videos.right?.title}
+                    channelTitle={videos.right?.channelTitle}
+                    side="right"
+                  />
+                  <div className="mt-4">
+                    <SearchBar
+                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                      onSearch={(query) => handleSearch(query, 'right')}
+                      videoId={videos.right?.id || null}
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <RecommendedVideos
+                      videoId={videos.right?.id || null}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                      searchResults={rightSearchResults}
+                      isSearching={!!searchQueries.right}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
-
-          <Tabs defaultValue="mix" className="w-full">
-            <TabsList className="w-full grid grid-cols-3 mb-6">
-              <TabsTrigger value="left" className="text-base py-3">Left</TabsTrigger>
-              <TabsTrigger value="mix" className="text-base py-3">Mix</TabsTrigger>
-              <TabsTrigger value="right" className="text-base py-3">Right</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="mix" className="mt-0" />
-
-            <TabsContent value="left" className="mt-0">
-              <div className="space-y-4">
-                <VideoPlayer
-                  videoId={videos.left?.id || null}
-                  videoTitle={videos.left?.title}
-                  channelTitle={videos.left?.channelTitle}
-                  side="left"
-                />
-                <div className="mt-4">
-                  <SearchBar
-                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                    onSearch={(query) => handleSearch(query, 'left')}
-                    videoId={videos.left?.id || null}
-                  />
-                </div>
-                <div className="mt-4">
-                  <RecommendedVideos
-                    videoId={videos.left?.id || null}
-                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                    searchResults={leftSearchResults}
-                    isSearching={!!searchQueries.left}
-                  />
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="right" className="mt-0">
-              <div className="space-y-4">
-                <VideoPlayer
-                  videoId={videos.right?.id || null}
-                  videoTitle={videos.right?.title}
-                  channelTitle={videos.right?.channelTitle}
-                  side="right"
-                />
-                <div className="mt-4">
-                  <SearchBar
-                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                    onSearch={(query) => handleSearch(query, 'right')}
-                    videoId={videos.right?.id || null}
-                  />
-                </div>
-                <div className="mt-4">
-                  <RecommendedVideos
-                    videoId={videos.right?.id || null}
-                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                    searchResults={rightSearchResults}
-                    isSearching={!!searchQueries.right}
-                  />
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
         </div>
       </main>
     </div>
