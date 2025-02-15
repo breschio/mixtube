@@ -1,7 +1,8 @@
-import { useRef, useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
+import { useVideoSync } from '@/hooks/use-video-sync';
 
 interface MixedVideoPlayerProps {
   leftVideoId: string | null;
@@ -18,91 +19,19 @@ export default function MixedVideoPlayer({
   playing: isPlaying,
   onPlayPause
 }: MixedVideoPlayerProps) {
-  const leftPlayerRef = useRef<ReactPlayer>(null);
-  const rightPlayerRef = useRef<ReactPlayer>(null);
-  const [playersReady, setPlayersReady] = useState({ left: false, right: false });
-  const [playing, setPlaying] = useState(isPlaying);
-
-  // Handle player ready state
-  const handleReady = (player: 'left' | 'right') => {
-    console.log(`${player} player ready`);
-    setPlayersReady(prev => {
-      const newState = { ...prev, [player]: true };
-      console.log('Players ready state:', newState);
-      return newState;
-    });
-  };
+  const {
+    syncState,
+    leftPlayerRef,
+    rightPlayerRef,
+    handleStateChange,
+    handleReady,
+    syncPlay
+  } = useVideoSync();
 
   // Sync players when play state changes
   useEffect(() => {
-    const syncPlayers = async () => {
-      if (!playersReady.left || !playersReady.right) {
-        console.log('Both players not ready yet');
-        return;
-      }
-
-      const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
-      const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
-
-      if (!leftPlayer || !rightPlayer) {
-        console.log('Players not initialized');
-        return;
-      }
-
-      try {
-        if (playing) {
-          console.log('Playing both videos');
-          await Promise.all([
-            new Promise((resolve, reject) => {
-              try {
-                leftPlayer.playVideo();
-                resolve(true);
-              } catch (e) {
-                reject(e);
-              }
-            }),
-            new Promise((resolve, reject) => {
-              try {
-                rightPlayer.playVideo();
-                resolve(true);
-              } catch (e) {
-                reject(e);
-              }
-            })
-          ]);
-        } else {
-          console.log('Pausing both videos');
-          await Promise.all([
-            new Promise((resolve, reject) => {
-              try {
-                leftPlayer.pauseVideo();
-                resolve(true);
-              } catch (e) {
-                reject(e);
-              }
-            }),
-            new Promise((resolve, reject) => {
-              try {
-                rightPlayer.pauseVideo();
-                resolve(true);
-              } catch (e) {
-                reject(e);
-              }
-            })
-          ]);
-        }
-      } catch (error) {
-        console.error('Error controlling videos:', error);
-      }
-    };
-
-    syncPlayers();
-  }, [playing, playersReady]);
-
-  // Update local playing state when prop changes
-  useEffect(() => {
-    setPlaying(isPlaying);
-  }, [isPlaying]);
+    syncPlay(isPlaying);
+  }, [isPlaying, syncState.leftReady, syncState.rightReady]);
 
   if (!leftVideoId || !rightVideoId) {
     return (
@@ -123,11 +52,11 @@ export default function MixedVideoPlayer({
           url={`https://www.youtube.com/watch?v=${leftVideoId}`}
           width="100%"
           height="100%"
-          playing={playing}
+          playing={isPlaying}
           volume={Math.max(0, 1 - crossFaderValue)}
           muted={crossFaderValue === 1}
-          playIcon={<div />}
           onReady={() => handleReady('left')}
+          onStateChange={(state) => handleStateChange('left', state)}
           config={{
             playerVars: {
               controls: 0,
@@ -149,11 +78,11 @@ export default function MixedVideoPlayer({
           url={`https://www.youtube.com/watch?v=${rightVideoId}`}
           width="100%"
           height="100%"
-          playing={playing}
+          playing={isPlaying}
           volume={Math.max(0, crossFaderValue)}
           muted={crossFaderValue === 0}
-          playIcon={<div />}
           onReady={() => handleReady('right')}
+          onStateChange={(state) => handleStateChange('right', state)}
           config={{
             playerVars: {
               controls: 0,
@@ -169,7 +98,7 @@ export default function MixedVideoPlayer({
         />
       </div>
 
-      <VideoOverlay isPlaying={playing} onPlayPause={onPlayPause} />
+      <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
     </div>
   );
 }
