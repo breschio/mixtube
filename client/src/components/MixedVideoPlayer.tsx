@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
-import { useVideoSync } from '@/hooks/use-video-sync';
 
 interface MixedVideoPlayerProps {
   leftVideoId: string | null;
@@ -19,19 +18,8 @@ export default function MixedVideoPlayer({
   playing: isPlaying,
   onPlayPause
 }: MixedVideoPlayerProps) {
-  const {
-    syncState,
-    leftPlayerRef,
-    rightPlayerRef,
-    handleStateChange,
-    handleReady,
-    syncPlay
-  } = useVideoSync();
-
-  // Sync players when play state changes
-  useEffect(() => {
-    syncPlay(isPlaying);
-  }, [isPlaying, syncState.leftReady, syncState.rightReady]);
+  const leftPlayerRef = useRef<ReactPlayer>(null);
+  const rightPlayerRef = useRef<ReactPlayer>(null);
 
   if (!leftVideoId || !rightVideoId) {
     return (
@@ -55,8 +43,6 @@ export default function MixedVideoPlayer({
           playing={isPlaying}
           volume={Math.max(0, 1 - crossFaderValue)}
           muted={crossFaderValue === 1}
-          onReady={() => handleReady('left')}
-          onStateChange={(state) => handleStateChange('left', state)}
           config={{
             playerVars: {
               controls: 0,
@@ -81,8 +67,6 @@ export default function MixedVideoPlayer({
           playing={isPlaying}
           volume={Math.max(0, crossFaderValue)}
           muted={crossFaderValue === 0}
-          onReady={() => handleReady('right')}
-          onStateChange={(state) => handleStateChange('right', state)}
           config={{
             playerVars: {
               controls: 0,
