@@ -16,7 +16,7 @@ export default function VideoPlayer({
 }: VideoPlayerProps) {
   if (!videoId) {
     return (
-      <Card className="aspect-video bg-muted/50 flex items-center justify-center">
+      <Card className="bg-muted/50 flex items-center justify-center p-4">
         <p className="text-muted-foreground text-sm">Select a video to play</p>
       </Card>
     );
@@ -24,25 +24,26 @@ export default function VideoPlayer({
 
   return (
     <Card className="overflow-hidden border border-border/50">
-      <div className="aspect-video relative">
+      <div className="flex gap-2 p-1.5">
         <img 
           src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
           alt={videoTitle}
-          className="w-full h-full object-cover"
+          className="w-24 aspect-video object-cover rounded"
         />
-      </div>
-      <div className="p-4 space-y-2">
-        <div className="flex items-start gap-3">
-          <div className="shrink-0 rounded-full bg-muted p-2">
-            <Music2 className="h-4 w-4" />
-          </div>
-          <div className="min-w-0">
-            <h3 className="font-medium leading-none truncate">
+        <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
+          <div className="space-y-1">
+            <h3 className="font-medium leading-none line-clamp-2 text-sm">
               {videoTitle || 'Untitled Video'}
             </h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground">
               {channelTitle || 'Unknown Channel'}
             </p>
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <div className="shrink-0 rounded-full bg-muted p-1.5">
+              <Music2 className="h-3 w-3" />
+            </div>
+            <span className="text-xs text-muted-foreground capitalize">{side} deck</span>
           </div>
         </div>
       </div>
