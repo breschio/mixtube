@@ -1,7 +1,8 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
+import { useVideoSync } from '@/hooks/use-video-sync';
 
 interface MixedVideoPlayerProps {
   leftVideoId: string | null;
@@ -18,8 +19,13 @@ export default function MixedVideoPlayer({
   playing: isPlaying,
   onPlayPause
 }: MixedVideoPlayerProps) {
-  const leftPlayerRef = useRef<ReactPlayer>(null);
-  const rightPlayerRef = useRef<ReactPlayer>(null);
+  const {
+    leftPlayerRef,
+    rightPlayerRef,
+    handleStateChange,
+    handleReady,
+    syncPlay
+  } = useVideoSync();
 
   if (!leftVideoId || !rightVideoId) {
     return (
@@ -32,6 +38,11 @@ export default function MixedVideoPlayer({
   const leftOpacity = 1 - crossFaderValue;
   const rightOpacity = crossFaderValue;
 
+  const handlePlayPause = async () => {
+    await syncPlay(!isPlaying);
+    onPlayPause();
+  };
+
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
       <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: leftOpacity }}>
@@ -43,6 +54,9 @@ export default function MixedVideoPlayer({
           playing={isPlaying}
           volume={Math.max(0, 1 - crossFaderValue)}
           muted={crossFaderValue === 1}
+          onReady={() => handleReady('left')}
+          onPlay={() => handleStateChange('left', 1)}
+          onPause={() => handleStateChange('left', 2)}
           config={{
             playerVars: {
               controls: 0,
@@ -67,6 +81,9 @@ export default function MixedVideoPlayer({
           playing={isPlaying}
           volume={Math.max(0, crossFaderValue)}
           muted={crossFaderValue === 0}
+          onReady={() => handleReady('right')}
+          onPlay={() => handleStateChange('right', 1)}
+          onPause={() => handleStateChange('right', 2)}
           config={{
             playerVars: {
               controls: 0,
@@ -82,7 +99,7 @@ export default function MixedVideoPlayer({
         />
       </div>
 
-      <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+      <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
     </div>
   );
 }
