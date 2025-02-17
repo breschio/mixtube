@@ -206,9 +206,9 @@ export default function Home() {
               </Tabs>
             ) : (
               <div className="space-y-4">
-                {/* Preview Video based on active tab */}
-                <div>
-                  {activeTab === 'mix' && (
+                {/* All video players are always mounted but visibility is controlled */}
+                <div className="relative aspect-video">
+                  <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'mix' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <MixedVideoPlayer
                       leftVideoId={videos.left?.id || null}
                       rightVideoId={videos.right?.id || null}
@@ -217,8 +217,8 @@ export default function Home() {
                       onPlayPause={handlePlayPause}
                       preview={true}
                     />
-                  )}
-                  {activeTab === 'left' && (
+                  </div>
+                  <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'left' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <MixedVideoPlayer
                       leftVideoId={videos.left?.id || null}
                       rightVideoId={null}
@@ -227,8 +227,8 @@ export default function Home() {
                       onPlayPause={handlePlayPause}
                       preview={true}
                     />
-                  )}
-                  {activeTab === 'right' && (
+                  </div>
+                  <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'right' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <MixedVideoPlayer
                       leftVideoId={null}
                       rightVideoId={videos.right?.id || null}
@@ -237,7 +237,7 @@ export default function Home() {
                       onPlayPause={handlePlayPause}
                       preview={true}
                     />
-                  )}
+                  </div>
                 </div>
 
                 {/* Tabs below video preview */}
