@@ -94,7 +94,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto max-w-[1920px] w-full px-3 sm:px-4 md:px-6 py-4">
+      <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4">
         <div className="lg:grid lg:grid-cols-[1fr,400px] lg:gap-6">
           <Card className="overflow-hidden border-none bg-transparent mb-6 lg:mb-0">
             <MixedVideoPlayer
