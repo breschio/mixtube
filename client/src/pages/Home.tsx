@@ -149,81 +149,52 @@ export default function Home() {
 
           {/* Right Column with Tabs */}
           <div className="lg:overflow-y-auto lg:max-h-[calc(100vh-6rem)]">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="w-full grid grid-cols-3">
-                <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
-                <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
-                <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
-              </TabsList>
+            {isMobile ? (
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="w-full grid grid-cols-3">
+                  <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
+                  <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
+                  <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
+                </TabsList>
 
-              <TabsContent value="mix" className="mt-2">
-                <div className="space-y-4">
-                  <Card className="overflow-hidden border-none bg-transparent">
-                    <MixedVideoPlayer
-                      leftVideoId={videos.left?.id || null}
-                      rightVideoId={videos.right?.id || null}
-                      crossFaderValue={crossFader}
-                      playing={playing}
-                      onPlayPause={handlePlayPause}
-                    />
-                  </Card>
-                  <DJControls
-                    crossFader={crossFader}
-                    onCrossFaderChange={setCrossFader}
-                    leftVideoId={videos.left?.id}
-                    rightVideoId={videos.right?.id}
-                  />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="left" className="mt-2">
-                <div className="space-y-4">
-                  <Card className="overflow-hidden border-none bg-transparent">
-                    <MixedVideoPlayer
-                      leftVideoId={videos.left?.id || null}
-                      rightVideoId={null}
-                      crossFaderValue={0}
-                      playing={playing}
-                      onPlayPause={handlePlayPause}
-                    />
-                  </Card>
-                  <div className="mt-4">
-                    <SearchBar
-                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                      onSearch={(query) => handleSearch(query, 'left')}
-                      videoId={videos.left?.id || null}
+                <TabsContent value="mix" className="mt-2">
+                  <div className="space-y-4">
+                    <DJControls
+                      crossFader={crossFader}
+                      onCrossFaderChange={setCrossFader}
+                      leftVideoId={videos.left?.id}
+                      rightVideoId={videos.right?.id}
                     />
                   </div>
-                  <div className="mt-4">
-                    <RecommendedVideos
-                      videoId={videos.left?.id || null}
-                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                      searchResults={leftSearchResults}
-                      isSearching={!!searchQueries.left}
-                    />
-                  </div>
-                </div>
-              </TabsContent>
+                </TabsContent>
 
-              <TabsContent value="right" className="mt-2">
-                <div className="space-y-4">
-                  <Card className="overflow-hidden border-none bg-transparent">
-                    <MixedVideoPlayer
-                      leftVideoId={null}
-                      rightVideoId={videos.right?.id || null}
-                      crossFaderValue={1}
-                      playing={playing}
-                      onPlayPause={handlePlayPause}
-                    />
-                  </Card>
-                  <div className="mt-4">
+                <TabsContent value="left" className="mt-2">
+                  <div className="space-y-4">
+                    <div className="mt-4">
+                      <SearchBar
+                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                        onSearch={(query) => handleSearch(query, 'left')}
+                        videoId={videos.left?.id || null}
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <RecommendedVideos
+                        videoId={videos.left?.id || null}
+                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                        searchResults={leftSearchResults}
+                        isSearching={!!searchQueries.left}
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="right" className="mt-2">
+                  <div className="space-y-4">
                     <SearchBar
                       onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                       onSearch={(query) => handleSearch(query, 'right')}
                       videoId={videos.right?.id || null}
                     />
-                  </div>
-                  <div className="mt-4">
                     <RecommendedVideos
                       videoId={videos.right?.id || null}
                       onVideoSelect={(video) => handleVideoSelect(video, 'right')}
@@ -231,9 +202,94 @@ export default function Home() {
                       isSearching={!!searchQueries.right}
                     />
                   </div>
+                </TabsContent>
+              </Tabs>
+            ) : (
+              <div className="space-y-4">
+                {/* Preview Video based on active tab */}
+                <div>
+                  {activeTab === 'mix' && (
+                    <MixedVideoPlayer
+                      leftVideoId={videos.left?.id || null}
+                      rightVideoId={videos.right?.id || null}
+                      crossFaderValue={crossFader}
+                      playing={playing}
+                      onPlayPause={handlePlayPause}
+                    />
+                  )}
+                  {activeTab === 'left' && (
+                    <MixedVideoPlayer
+                      leftVideoId={videos.left?.id || null}
+                      rightVideoId={null}
+                      crossFaderValue={0}
+                      playing={playing}
+                      onPlayPause={handlePlayPause}
+                    />
+                  )}
+                  {activeTab === 'right' && (
+                    <MixedVideoPlayer
+                      leftVideoId={null}
+                      rightVideoId={videos.right?.id || null}
+                      crossFaderValue={1}
+                      playing={playing}
+                      onPlayPause={handlePlayPause}
+                    />
+                  )}
                 </div>
-              </TabsContent>
-            </Tabs>
+
+                {/* Tabs below video preview */}
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="w-full grid grid-cols-3">
+                    <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
+                    <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
+                    <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="mix" className="mt-2">
+                    <div className="space-y-4">
+                      <DJControls
+                        crossFader={crossFader}
+                        onCrossFaderChange={setCrossFader}
+                        leftVideoId={videos.left?.id}
+                        rightVideoId={videos.right?.id}
+                      />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="left" className="mt-2">
+                    <div className="space-y-4">
+                      <SearchBar
+                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                        onSearch={(query) => handleSearch(query, 'left')}
+                        videoId={videos.left?.id || null}
+                      />
+                      <RecommendedVideos
+                        videoId={videos.left?.id || null}
+                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                        searchResults={leftSearchResults}
+                        isSearching={!!searchQueries.left}
+                      />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="right" className="mt-2">
+                    <div className="space-y-4">
+                      <SearchBar
+                        onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                        onSearch={(query) => handleSearch(query, 'right')}
+                        videoId={videos.right?.id || null}
+                      />
+                      <RecommendedVideos
+                        videoId={videos.right?.id || null}
+                        onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                        searchResults={rightSearchResults}
+                        isSearching={!!searchQueries.right}
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            )}
           </div>
         </div>
       </main>
