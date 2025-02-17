@@ -75,20 +75,22 @@ export default function Home() {
     switch (activeTab) {
       case 'left':
         return (
-          <VideoPlayer
-            videoId={videos.left?.id || null}
-            videoTitle={videos.left?.title}
-            channelTitle={videos.left?.channelTitle}
-            side="left"
+          <MixedVideoPlayer
+            leftVideoId={videos.left?.id || null}
+            rightVideoId={null}
+            crossFaderValue={0}
+            playing={playing}
+            onPlayPause={handlePlayPause}
           />
         );
       case 'right':
         return (
-          <VideoPlayer
-            videoId={videos.right?.id || null}
-            videoTitle={videos.right?.title}
-            channelTitle={videos.right?.channelTitle}
-            side="right"
+          <MixedVideoPlayer
+            leftVideoId={null}
+            rightVideoId={videos.right?.id || null}
+            crossFaderValue={1}
+            playing={playing}
+            onPlayPause={handlePlayPause}
           />
         );
       default:
