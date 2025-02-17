@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
@@ -28,8 +28,24 @@ export default function MixedVideoPlayer({
     rightPlayerRef,
     handleStateChange,
     handleReady,
-    syncPlay
+    syncPlay,
+    handlePiPSwitch
   } = useVideoSync();
+
+  const prevCrossFaderRef = useRef(crossFaderValue);
+
+  // Handle PiP position changes
+  useEffect(() => {
+    if (activeTemplate === 'picture-in-picture') {
+      const wasPipRight = prevCrossFaderRef.current > 0.5;
+      const isPipRight = crossFaderValue > 0.5;
+
+      if (wasPipRight !== isPipRight) {
+        handlePiPSwitch();
+      }
+    }
+    prevCrossFaderRef.current = crossFaderValue;
+  }, [crossFaderValue, activeTemplate, handlePiPSwitch]);
 
   // Handle case when no videos are loaded
   if (!leftVideoId && !rightVideoId) {
