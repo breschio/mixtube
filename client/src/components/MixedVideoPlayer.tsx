@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
@@ -33,10 +33,26 @@ export default function MixedVideoPlayer({
   } = useVideoSync();
 
   const prevCrossFaderRef = useRef(crossFaderValue);
+  const [randomTemplate, setRandomTemplate] = useState('side-by-side');
+
+  // Handle random template changes
+  useEffect(() => {
+    if (activeTemplate === 'random-mix' && isPlaying) {
+      const templates = ['side-by-side', 'fade-through', 'picture-in-picture'];
+      const interval = setInterval(() => {
+        const currentIndex = templates.indexOf(randomTemplate);
+        const nextIndex = (currentIndex + 1) % templates.length;
+        setRandomTemplate(templates[nextIndex]);
+      }, 5000); // Change effect every 5 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [activeTemplate, isPlaying, randomTemplate]);
 
   // Handle PiP position changes
   useEffect(() => {
-    if (activeTemplate === 'picture-in-picture') {
+    if ((activeTemplate === 'picture-in-picture' || randomTemplate === 'picture-in-picture') && 
+        activeTemplate !== 'random-mix') {
       const wasPipRight = prevCrossFaderRef.current > 0.5;
       const isPipRight = crossFaderValue > 0.5;
 
@@ -45,7 +61,7 @@ export default function MixedVideoPlayer({
       }
     }
     prevCrossFaderRef.current = crossFaderValue;
-  }, [crossFaderValue, activeTemplate, handlePiPSwitch]);
+  }, [crossFaderValue, activeTemplate, randomTemplate, handlePiPSwitch]);
 
   // Handle case when no videos are loaded
   if (!leftVideoId && !rightVideoId) {
@@ -118,8 +134,10 @@ export default function MixedVideoPlayer({
     onPlayPause();
   };
 
+  const effectiveTemplate = activeTemplate === 'random-mix' ? randomTemplate : activeTemplate;
+
   // Picture-in-Picture layout
-  if (activeTemplate === 'picture-in-picture') {
+  if (effectiveTemplate === 'picture-in-picture') {
     const isPipRight = crossFaderValue > 0.5;
     const mainVideo = isPipRight ? rightVideoId : leftVideoId;
     const pipVideo = isPipRight ? leftVideoId : rightVideoId;
@@ -166,7 +184,7 @@ export default function MixedVideoPlayer({
   }
 
   // Side-by-side layout
-  if (activeTemplate === 'side-by-side') {
+  if (effectiveTemplate === 'side-by-side') {
     const leftWidth = Math.max(20, Math.min(80, (1 - crossFaderValue) * 100));
     const rightWidth = 100 - leftWidth;
 
