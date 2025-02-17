@@ -94,7 +94,7 @@ export default function Home() {
             crossFaderValue={crossFader}
             playing={playing}
             onPlayPause={handlePlayPause}
-            preview={false}
+            preview={true}
           />
         </div>
         <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'left' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -104,7 +104,7 @@ export default function Home() {
             crossFaderValue={0}
             playing={playing}
             onPlayPause={handlePlayPause}
-            preview={false}
+            preview={true}
           />
         </div>
         <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'right' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -114,7 +114,7 @@ export default function Home() {
             crossFaderValue={1}
             playing={playing}
             onPlayPause={handlePlayPause}
-            preview={false}
+            preview={true}
           />
         </div>
       </div>
@@ -155,38 +155,40 @@ export default function Home() {
 
           <div className="lg:overflow-y-auto lg:max-h-[calc(100vh-6rem)]">
             <div className="space-y-4">
-              <div className="relative aspect-video">
-                <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'mix' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                  <MixedVideoPlayer
-                    leftVideoId={videos.left?.id || null}
-                    rightVideoId={videos.right?.id || null}
-                    crossFaderValue={crossFader}
-                    playing={playing}
-                    onPlayPause={handlePlayPause}
-                    preview={true}
-                  />
+              {!isMobile && (
+                <div className="relative aspect-video">
+                  <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'mix' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                    <MixedVideoPlayer
+                      leftVideoId={videos.left?.id || null}
+                      rightVideoId={videos.right?.id || null}
+                      crossFaderValue={crossFader}
+                      playing={playing}
+                      onPlayPause={handlePlayPause}
+                      preview={true}
+                    />
+                  </div>
+                  <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'left' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                    <MixedVideoPlayer
+                      leftVideoId={videos.left?.id || null}
+                      rightVideoId={null}
+                      crossFaderValue={0}
+                      playing={playing}
+                      onPlayPause={handlePlayPause}
+                      preview={true}
+                    />
+                  </div>
+                  <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'right' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                    <MixedVideoPlayer
+                      leftVideoId={null}
+                      rightVideoId={videos.right?.id || null}
+                      crossFaderValue={1}
+                      playing={playing}
+                      onPlayPause={handlePlayPause}
+                      preview={true}
+                    />
+                  </div>
                 </div>
-                <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'left' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                  <MixedVideoPlayer
-                    leftVideoId={videos.left?.id || null}
-                    rightVideoId={null}
-                    crossFaderValue={0}
-                    playing={playing}
-                    onPlayPause={handlePlayPause}
-                    preview={true}
-                  />
-                </div>
-                <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'right' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                  <MixedVideoPlayer
-                    leftVideoId={null}
-                    rightVideoId={videos.right?.id || null}
-                    crossFaderValue={1}
-                    playing={playing}
-                    onPlayPause={handlePlayPause}
-                    preview={true}
-                  />
-                </div>
-              </div>
+              )}
 
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="w-full grid grid-cols-3">
