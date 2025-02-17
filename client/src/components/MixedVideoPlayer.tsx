@@ -10,6 +10,7 @@ interface MixedVideoPlayerProps {
   crossFaderValue: number;
   playing: boolean;
   onPlayPause: () => void;  
+  isMuted?: boolean;
 }
 
 export default function MixedVideoPlayer({ 
@@ -17,7 +18,8 @@ export default function MixedVideoPlayer({
   rightVideoId, 
   crossFaderValue,
   playing: isPlaying,
-  onPlayPause
+  onPlayPause,
+  isMuted = false
 }: MixedVideoPlayerProps) {
   const {
     leftPlayerRef,
@@ -47,6 +49,7 @@ export default function MixedVideoPlayer({
           height="100%"
           playing={isPlaying}
           volume={1}
+          muted={isMuted}
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
@@ -78,6 +81,7 @@ export default function MixedVideoPlayer({
           height="100%"
           playing={isPlaying}
           volume={1}
+          muted={isMuted}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
@@ -118,7 +122,7 @@ export default function MixedVideoPlayer({
           height="100%"
           playing={isPlaying}
           volume={Math.max(0, 1 - crossFaderValue)}
-          muted={crossFaderValue === 1}
+          muted={isMuted || crossFaderValue === 1}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
@@ -145,7 +149,7 @@ export default function MixedVideoPlayer({
           height="100%"
           playing={isPlaying}
           volume={Math.max(0, crossFaderValue)}
-          muted={crossFaderValue === 0}
+          muted={isMuted || crossFaderValue === 0}
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}

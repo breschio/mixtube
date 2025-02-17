@@ -143,6 +143,7 @@ export default function Home() {
                 crossFaderValue={crossFader}
                 playing={playing}
                 onPlayPause={handlePlayPause}
+                isMuted={!isMobile} // Mute the main player on desktop
               />
             )}
           </Card>
