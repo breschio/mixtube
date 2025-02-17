@@ -207,35 +207,15 @@ export default function Home() {
               </Tabs>
             ) : (
               <div className="space-y-4">
-                {/* Preview Video based on active tab */}
-                <div>
-                  {activeTab === 'mix' && (
-                    <MixedVideoPlayer
-                      leftVideoId={videos.left?.id || null}
-                      rightVideoId={videos.right?.id || null}
-                      crossFaderValue={crossFader}
-                      playing={playing}
-                      onPlayPause={handlePlayPause}
-                    />
-                  )}
-                  {activeTab === 'left' && (
-                    <MixedVideoPlayer
-                      leftVideoId={videos.left?.id || null}
-                      rightVideoId={null}
-                      crossFaderValue={0}
-                      playing={playing}
-                      onPlayPause={handlePlayPause}
-                    />
-                  )}
-                  {activeTab === 'right' && (
-                    <MixedVideoPlayer
-                      leftVideoId={null}
-                      rightVideoId={videos.right?.id || null}
-                      crossFaderValue={1}
-                      playing={playing}
-                      onPlayPause={handlePlayPause}
-                    />
-                  )}
+                {/* Preview Video - Always visible */}
+                <div className="sticky top-0 bg-background z-10 pb-4">
+                  <MixedVideoPlayer
+                    leftVideoId={activeTab === 'left' ? videos.left?.id : (activeTab === 'right' ? null : videos.left?.id)}
+                    rightVideoId={activeTab === 'right' ? videos.right?.id : (activeTab === 'left' ? null : videos.right?.id)}
+                    crossFaderValue={activeTab === 'left' ? 0 : (activeTab === 'right' ? 1 : crossFader)}
+                    playing={playing}
+                    onPlayPause={handlePlayPause}
+                  />
                 </div>
 
                 {/* Tabs below video preview */}
