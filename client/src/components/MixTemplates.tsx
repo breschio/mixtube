@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Grid2X2Icon, ArrowLeftRightIcon, PictureInPictureIcon } from "lucide-react";
+import { SplitSquareHorizontalIcon, LayersIcon, PictureInPictureIcon } from "lucide-react";
 
 export interface MixTemplate {
   id: string;
@@ -14,15 +14,15 @@ export const mixTemplates: MixTemplate[] = [
   {
     id: "side-by-side",
     name: "Side by Side",
-    description: "Classic 50/50 mix with both videos visible",
-    icon: Grid2X2Icon,
+    description: "Adjustable split view with both videos",
+    icon: SplitSquareHorizontalIcon,
     crossFaderValue: 0.5,
   },
   {
     id: "fade-through",
     name: "Fade Through",
-    description: "Smooth transition between videos",
-    icon: ArrowLeftRightIcon,
+    description: "Smooth opacity transition between videos",
+    icon: LayersIcon,
     crossFaderValue: 0,
   },
   {
