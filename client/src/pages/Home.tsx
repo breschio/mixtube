@@ -71,8 +71,8 @@ export default function Home() {
     setPlaying(!playing);
   };
 
-  const renderVideoPlayer = (tab: string) => {
-    switch (tab) {
+  const renderMobileVideo = () => {
+    switch (activeTab) {
       case 'left':
         return (
           <MixedVideoPlayer
@@ -135,13 +135,15 @@ export default function Home() {
       <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4">
         <div className="lg:grid lg:grid-cols-[1fr,400px] lg:gap-6">
           <Card className="overflow-hidden border-none bg-transparent mb-6 lg:mb-0">
-            <MixedVideoPlayer
-              leftVideoId={videos.left?.id || null}
-              rightVideoId={videos.right?.id || null}
-              crossFaderValue={crossFader}
-              playing={playing}
-              onPlayPause={handlePlayPause}
-            />
+            {isMobile ? renderMobileVideo() : (
+              <MixedVideoPlayer
+                leftVideoId={videos.left?.id || null}
+                rightVideoId={videos.right?.id || null}
+                crossFaderValue={crossFader}
+                playing={playing}
+                onPlayPause={handlePlayPause}
+              />
+            )}
           </Card>
 
           <div className="lg:overflow-y-auto lg:max-h-[calc(100vh-6rem)]">
@@ -152,44 +154,72 @@ export default function Home() {
                 <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
               </TabsList>
 
-              {['left', 'mix', 'right'].map((tab) => (
-                <TabsContent key={tab} value={tab} className="mt-2">
-                  <div className="space-y-4">
-                    {renderVideoPlayer(tab)}
+              <TabsContent value="mix" className="mt-2">
+                <div className="space-y-4">
+                  <DJControls
+                    crossFader={crossFader}
+                    onCrossFaderChange={setCrossFader}
+                    leftVideoId={videos.left?.id}
+                    rightVideoId={videos.right?.id}
+                  />
+                </div>
+              </TabsContent>
 
-                    {tab !== 'mix' && (
-                      <>
-                        <div className="mt-4">
-                          <SearchBar
-                            onVideoSelect={(video) => handleVideoSelect(video, tab as 'left' | 'right')}
-                            onSearch={(query) => handleSearch(query, tab as 'left' | 'right')}
-                            videoId={videos[tab as 'left' | 'right']?.id || null}
-                          />
-                        </div>
-                        <div className="mt-4">
-                          <RecommendedVideos
-                            videoId={videos[tab as 'left' | 'right']?.id || null}
-                            onVideoSelect={(video) => handleVideoSelect(video, tab as 'left' | 'right')}
-                            searchResults={tab === 'left' ? leftSearchResults : rightSearchResults}
-                            isSearching={!!searchQueries[tab as 'left' | 'right']}
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {tab === 'mix' && (
-                      <div className="space-y-4">
-                        <DJControls
-                          crossFader={crossFader}
-                          onCrossFaderChange={setCrossFader}
-                          leftVideoId={videos.left?.id}
-                          rightVideoId={videos.right?.id}
-                        />
-                      </div>
-                    )}
+              <TabsContent value="left" className="mt-2">
+                <div className="space-y-4">
+                  {!isMobile && (
+                    <VideoPlayer
+                      videoId={videos.left?.id || null}
+                      videoTitle={videos.left?.title}
+                      channelTitle={videos.left?.channelTitle}
+                      side="left"
+                    />
+                  )}
+                  <div className="mt-4">
+                    <SearchBar
+                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                      onSearch={(query) => handleSearch(query, 'left')}
+                      videoId={videos.left?.id || null}
+                    />
                   </div>
-                </TabsContent>
-              ))}
+                  <div className="mt-4">
+                    <RecommendedVideos
+                      videoId={videos.left?.id || null}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                      searchResults={leftSearchResults}
+                      isSearching={!!searchQueries.left}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="right" className="mt-2">
+                <div className="space-y-4">
+                  {!isMobile && (
+                    <VideoPlayer
+                      videoId={videos.right?.id || null}
+                      videoTitle={videos.right?.title}
+                      channelTitle={videos.right?.channelTitle}
+                      side="right"
+                    />
+                  )}
+                  <div className="mt-4">
+                    <SearchBar
+                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                      onSearch={(query) => handleSearch(query, 'right')}
+                      videoId={videos.right?.id || null}
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <RecommendedVideos
+                      videoId={videos.right?.id || null}
+                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                      searchResults={rightSearchResults}
+                      isSearching={!!searchQueries.right}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
             </Tabs>
           </div>
         </div>
