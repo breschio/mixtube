@@ -215,6 +215,7 @@ export default function Home() {
                       crossFaderValue={crossFader}
                       playing={playing}
                       onPlayPause={handlePlayPause}
+                      preview={true}
                     />
                   )}
                   {activeTab === 'left' && (
@@ -224,6 +225,7 @@ export default function Home() {
                       crossFaderValue={0}
                       playing={playing}
                       onPlayPause={handlePlayPause}
+                      preview={true}
                     />
                   )}
                   {activeTab === 'right' && (
@@ -233,6 +235,7 @@ export default function Home() {
                       crossFaderValue={1}
                       playing={playing}
                       onPlayPause={handlePlayPause}
+                      preview={true}
                     />
                   )}
                 </div>

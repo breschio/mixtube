@@ -10,6 +10,7 @@ interface MixedVideoPlayerProps {
   crossFaderValue: number;
   playing: boolean;
   onPlayPause: () => void;  
+  preview?: boolean;
 }
 
 export default function MixedVideoPlayer({ 
@@ -17,7 +18,8 @@ export default function MixedVideoPlayer({
   rightVideoId, 
   crossFaderValue,
   playing: isPlaying,
-  onPlayPause
+  onPlayPause,
+  preview = false
 }: MixedVideoPlayerProps) {
   const {
     leftPlayerRef,
@@ -46,7 +48,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={1}
+          volume={preview ? 0 : 1}
+          muted={preview}
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
@@ -77,7 +80,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={1}
+          volume={preview ? 0 : 1}
+          muted={preview}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
@@ -117,8 +121,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={Math.max(0, 1 - crossFaderValue)}
-          muted={crossFaderValue === 1}
+          volume={preview ? 0 : Math.max(0, 1 - crossFaderValue)}
+          muted={preview || crossFaderValue === 1}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
@@ -144,8 +148,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={Math.max(0, crossFaderValue)}
-          muted={crossFaderValue === 0}
+          volume={preview ? 0 : Math.max(0, crossFaderValue)}
+          muted={preview || crossFaderValue === 0}
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
