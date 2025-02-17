@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Music2, Plus } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import type { YouTubeVideo } from '@/lib/youtube';
+import { getRelatedVideos } from '@/lib/youtube';
 
 interface RecommendedVideosProps {
   videoId: string | null;
@@ -18,12 +19,10 @@ export default function RecommendedVideos({
   isSearching = false 
 }: RecommendedVideosProps) {
   const { data: recommendedVideos, isLoading } = useQuery({
-    queryKey: ['videos', videoId],
+    queryKey: ['related-videos', videoId],
     queryFn: async () => {
       if (!videoId) return [];
-      const response = await fetch(`/api/youtube/related/${videoId}`);
-      if (!response.ok) throw new Error('Failed to fetch related videos');
-      return response.json();
+      return getRelatedVideos(videoId);
     },
     enabled: !!videoId && !isSearching,
     staleTime: 60 * 1000,
@@ -70,13 +69,14 @@ export default function RecommendedVideos({
       {displayVideos.slice(0, 3).map((video) => (
         <Card 
           key={video.id}
-          className="overflow-hidden border border-border/50"
+          className="overflow-hidden border border-border/50 hover:bg-accent/5 transition-colors"
         >
           <div className="flex gap-2 p-1.5">
             <img 
               src={video.thumbnail} 
               alt={video.title}
               className="w-24 aspect-video object-cover rounded"
+              loading="lazy"
             />
             <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
               <div className="space-y-1">
