@@ -12,6 +12,7 @@ import DJControls from "@/components/DJControls";
 import AuthModal from "@/components/AuthModal";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useYoutubeSearch } from '@/hooks/use-youtube-search';
+import { useMobile } from '@/hooks/use-mobile';
 import type { YouTubeVideo } from '@/lib/youtube';
 
 interface VideoInfo extends YouTubeVideo {
@@ -20,6 +21,8 @@ interface VideoInfo extends YouTubeVideo {
 
 export default function Home() {
   const user = useUser();
+  const isMobile = useMobile();
+  const [activeTab, setActiveTab] = useState('mix');
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
@@ -68,6 +71,39 @@ export default function Home() {
     setPlaying(!playing);
   };
 
+  const renderMobileVideo = () => {
+    switch (activeTab) {
+      case 'left':
+        return (
+          <VideoPlayer
+            videoId={videos.left?.id || null}
+            videoTitle={videos.left?.title}
+            channelTitle={videos.left?.channelTitle}
+            side="left"
+          />
+        );
+      case 'right':
+        return (
+          <VideoPlayer
+            videoId={videos.right?.id || null}
+            videoTitle={videos.right?.title}
+            channelTitle={videos.right?.channelTitle}
+            side="right"
+          />
+        );
+      default:
+        return (
+          <MixedVideoPlayer
+            leftVideoId={videos.left?.id || null}
+            rightVideoId={videos.right?.id || null}
+            crossFaderValue={crossFader}
+            playing={playing}
+            onPlayPause={handlePlayPause}
+          />
+        );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background border-b">
@@ -97,17 +133,19 @@ export default function Home() {
       <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4">
         <div className="lg:grid lg:grid-cols-[1fr,400px] lg:gap-6">
           <Card className="overflow-hidden border-none bg-transparent mb-6 lg:mb-0">
-            <MixedVideoPlayer
-              leftVideoId={videos.left?.id || null}
-              rightVideoId={videos.right?.id || null}
-              crossFaderValue={crossFader}
-              playing={playing}
-              onPlayPause={handlePlayPause}
-            />
+            {isMobile ? renderMobileVideo() : (
+              <MixedVideoPlayer
+                leftVideoId={videos.left?.id || null}
+                rightVideoId={videos.right?.id || null}
+                crossFaderValue={crossFader}
+                playing={playing}
+                onPlayPause={handlePlayPause}
+              />
+            )}
           </Card>
 
           <div className="lg:overflow-y-auto lg:max-h-[calc(100vh-6rem)]">
-            <Tabs defaultValue="mix" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="w-full grid grid-cols-3">
                 <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
                 <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
@@ -127,12 +165,14 @@ export default function Home() {
 
               <TabsContent value="left" className="mt-2">
                 <div className="space-y-4">
-                  <VideoPlayer
-                    videoId={videos.left?.id || null}
-                    videoTitle={videos.left?.title}
-                    channelTitle={videos.left?.channelTitle}
-                    side="left"
-                  />
+                  {!isMobile && (
+                    <VideoPlayer
+                      videoId={videos.left?.id || null}
+                      videoTitle={videos.left?.title}
+                      channelTitle={videos.left?.channelTitle}
+                      side="left"
+                    />
+                  )}
                   <div className="mt-4">
                     <SearchBar
                       onVideoSelect={(video) => handleVideoSelect(video, 'left')}
@@ -153,12 +193,14 @@ export default function Home() {
 
               <TabsContent value="right" className="mt-2">
                 <div className="space-y-4">
-                  <VideoPlayer
-                    videoId={videos.right?.id || null}
-                    videoTitle={videos.right?.title}
-                    channelTitle={videos.right?.channelTitle}
-                    side="right"
-                  />
+                  {!isMobile && (
+                    <VideoPlayer
+                      videoId={videos.right?.id || null}
+                      videoTitle={videos.right?.title}
+                      channelTitle={videos.right?.channelTitle}
+                      side="right"
+                    />
+                  )}
                   <div className="mt-4">
                     <SearchBar
                       onVideoSelect={(video) => handleVideoSelect(video, 'right')}
