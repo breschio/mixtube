@@ -94,9 +94,9 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4">
-        <div className="2xl:grid 2xl:grid-cols-[1fr,400px] 2xl:gap-6">
-          <Card className="overflow-hidden border-none bg-transparent mb-6 2xl:mb-0">
+      <main className="flex-1 container mx-auto max-w-[1920px] w-full px-3 sm:px-4 md:px-6 py-4">
+        <div className="lg:grid lg:grid-cols-[1fr,400px] lg:gap-6">
+          <Card className="overflow-hidden border-none bg-transparent mb-6 lg:mb-0">
             <MixedVideoPlayer
               leftVideoId={videos.left?.id || null}
               rightVideoId={videos.right?.id || null}
@@ -106,7 +106,7 @@ export default function Home() {
             />
           </Card>
 
-          <div className="2xl:overflow-y-auto 2xl:max-h-[calc(100vh-6rem)]">
+          <div className="lg:overflow-y-auto lg:max-h-[calc(100vh-6rem)]">
             <Tabs defaultValue="mix" className="w-full">
               <TabsList className="w-full grid grid-cols-3">
                 <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
