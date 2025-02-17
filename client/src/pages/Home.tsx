@@ -71,7 +71,7 @@ export default function Home() {
     setPlaying(!playing);
   };
 
-  const renderMobileVideo = () => {
+  const renderVideo = () => {
     switch (activeTab) {
       case 'left':
         return (
@@ -134,8 +134,9 @@ export default function Home() {
 
       <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4">
         <div className="lg:grid lg:grid-cols-[1fr,400px] lg:gap-6">
+          {/* Main Video Area */}
           <Card className="overflow-hidden border-none bg-transparent mb-6 lg:mb-0">
-            {isMobile ? renderMobileVideo() : (
+            {isMobile ? renderVideo() : (
               <MixedVideoPlayer
                 leftVideoId={videos.left?.id || null}
                 rightVideoId={videos.right?.id || null}
@@ -146,6 +147,7 @@ export default function Home() {
             )}
           </Card>
 
+          {/* Right Column with Tabs */}
           <div className="lg:overflow-y-auto lg:max-h-[calc(100vh-6rem)]">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="w-full grid grid-cols-3">
@@ -156,6 +158,15 @@ export default function Home() {
 
               <TabsContent value="mix" className="mt-2">
                 <div className="space-y-4">
+                  <Card className="overflow-hidden border-none bg-transparent">
+                    <MixedVideoPlayer
+                      leftVideoId={videos.left?.id || null}
+                      rightVideoId={videos.right?.id || null}
+                      crossFaderValue={crossFader}
+                      playing={playing}
+                      onPlayPause={handlePlayPause}
+                    />
+                  </Card>
                   <DJControls
                     crossFader={crossFader}
                     onCrossFaderChange={setCrossFader}
@@ -167,14 +178,15 @@ export default function Home() {
 
               <TabsContent value="left" className="mt-2">
                 <div className="space-y-4">
-                  {!isMobile && (
-                    <VideoPlayer
-                      videoId={videos.left?.id || null}
-                      videoTitle={videos.left?.title}
-                      channelTitle={videos.left?.channelTitle}
-                      side="left"
+                  <Card className="overflow-hidden border-none bg-transparent">
+                    <MixedVideoPlayer
+                      leftVideoId={videos.left?.id || null}
+                      rightVideoId={null}
+                      crossFaderValue={0}
+                      playing={playing}
+                      onPlayPause={handlePlayPause}
                     />
-                  )}
+                  </Card>
                   <div className="mt-4">
                     <SearchBar
                       onVideoSelect={(video) => handleVideoSelect(video, 'left')}
@@ -195,14 +207,15 @@ export default function Home() {
 
               <TabsContent value="right" className="mt-2">
                 <div className="space-y-4">
-                  {!isMobile && (
-                    <VideoPlayer
-                      videoId={videos.right?.id || null}
-                      videoTitle={videos.right?.title}
-                      channelTitle={videos.right?.channelTitle}
-                      side="right"
+                  <Card className="overflow-hidden border-none bg-transparent">
+                    <MixedVideoPlayer
+                      leftVideoId={null}
+                      rightVideoId={videos.right?.id || null}
+                      crossFaderValue={1}
+                      playing={playing}
+                      onPlayPause={handlePlayPause}
                     />
-                  )}
+                  </Card>
                   <div className="mt-4">
                     <SearchBar
                       onVideoSelect={(video) => handleVideoSelect(video, 'right')}
