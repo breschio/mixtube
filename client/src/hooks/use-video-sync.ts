@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import type { ReactPlayer } from 'react-player/youtube';
+import type ReactPlayer from 'react-player/youtube';
 
 interface VideoSyncState {
   leftReady: boolean;
@@ -35,38 +35,54 @@ export function useVideoSync() {
     }));
   };
 
-  const syncPlay = async (shouldPlay: boolean) => {
-    const { leftReady, rightReady } = syncState;
-    if (!leftReady || !rightReady) {
-      console.log('Both players not ready yet');
-      return;
-    }
-
+  const seekAllPlayers = async (time: number) => {
     const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
     const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
 
-    if (!leftPlayer || !rightPlayer) {
-      console.log('Players not initialized');
+    if (leftPlayer) {
+      await leftPlayer.seekTo(time);
+    }
+    if (rightPlayer) {
+      await rightPlayer.seekTo(time);
+    }
+  };
+
+  const syncPlay = async (shouldPlay: boolean) => {
+    const { leftReady, rightReady } = syncState;
+    const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
+    const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
+
+    if (!leftPlayer && !rightPlayer) {
+      console.log('No players initialized');
       return;
     }
 
     try {
       if (shouldPlay) {
         console.log('Starting synchronized playback');
-        await Promise.all([
-          new Promise<void>((resolve) => {
+        // Get current time from any active player
+        const currentTime = leftPlayer?.getCurrentTime() || rightPlayer?.getCurrentTime() || 0;
+
+        // Sync all players to the same time before playing
+        await seekAllPlayers(currentTime);
+
+        // Play all available players
+        if (leftPlayer && leftReady) {
+          await new Promise<void>((resolve) => {
             leftPlayer.playVideo();
             resolve();
-          }),
-          new Promise<void>((resolve) => {
+          });
+        }
+        if (rightPlayer && rightReady) {
+          await new Promise<void>((resolve) => {
             rightPlayer.playVideo();
             resolve();
-          })
-        ]);
+          });
+        }
       } else {
-        console.log('Pausing both videos');
-        leftPlayer.pauseVideo();
-        rightPlayer.pauseVideo();
+        console.log('Pausing all videos');
+        if (leftPlayer) leftPlayer.pauseVideo();
+        if (rightPlayer) rightPlayer.pauseVideo();
       }
     } catch (error) {
       console.error('Error during video sync:', error);

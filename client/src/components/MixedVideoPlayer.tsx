@@ -38,7 +38,21 @@ export default function MixedVideoPlayer({
     );
   }
 
-  // For single video display (mobile view)
+  // Common player config
+  const playerConfig = {
+    playerVars: {
+      controls: 0,
+      modestbranding: 1,
+      playsinline: 1,
+      rel: 0,
+      showinfo: 0,
+      iv_load_policy: 3,
+      origin: window.location.origin,
+      enablejsapi: 1
+    }
+  };
+
+  // For single video display
   if (!leftVideoId && rightVideoId) {
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
@@ -53,18 +67,7 @@ export default function MixedVideoPlayer({
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
-          config={{
-            playerVars: {
-              controls: 0,
-              modestbranding: 1,
-              playsinline: 1,
-              rel: 0,
-              showinfo: 0,
-              iv_load_policy: 3,
-              origin: window.location.origin,
-              enablejsapi: 1
-            }
-          }}
+          config={playerConfig}
         />
         <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
@@ -85,18 +88,7 @@ export default function MixedVideoPlayer({
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
-          config={{
-            playerVars: {
-              controls: 0,
-              modestbranding: 1,
-              playsinline: 1,
-              rel: 0,
-              showinfo: 0,
-              iv_load_policy: 3,
-              origin: window.location.origin,
-              enablejsapi: 1
-            }
-          }}
+          config={playerConfig}
         />
         <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
@@ -126,18 +118,7 @@ export default function MixedVideoPlayer({
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
-          config={{
-            playerVars: {
-              controls: 0,
-              modestbranding: 1,
-              playsinline: 1,
-              rel: 0,
-              showinfo: 0,
-              iv_load_policy: 3,
-              origin: window.location.origin,
-              enablejsapi: 1
-            }
-          }}
+          config={playerConfig}
         />
       </div>
 
@@ -153,22 +134,11 @@ export default function MixedVideoPlayer({
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
-          config={{
-            playerVars: {
-              controls: 0,
-              modestbranding: 1,
-              playsinline: 1,
-              rel: 0,
-              showinfo: 0,
-              iv_load_policy: 3,
-              origin: window.location.origin,
-              enablejsapi: 1
-            }
-          }}
+          config={playerConfig}
         />
       </div>
 
-      <VideoOverlay isPlaying={isPlaying} onPlayPause={handleMixedPlayPause} />
+      <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
     </div>
   );
 }
