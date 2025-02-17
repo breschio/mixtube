@@ -5,7 +5,6 @@ import { SplitSquareHorizontalIcon, LayersIcon, PictureInPictureIcon } from "luc
 export interface MixTemplate {
   id: string;
   name: string;
-  description: string;
   icon: React.ComponentType<{ className?: string }>;
   crossFaderValue: number;
 }
@@ -14,21 +13,18 @@ export const mixTemplates: MixTemplate[] = [
   {
     id: "side-by-side",
     name: "Side by Side",
-    description: "Adjustable split view with both videos",
     icon: SplitSquareHorizontalIcon,
     crossFaderValue: 0.5,
   },
   {
     id: "fade-through",
     name: "Fade Through",
-    description: "Smooth opacity transition between videos",
     icon: LayersIcon,
     crossFaderValue: 0,
   },
   {
     id: "picture-in-picture",
     name: "Picture in Picture",
-    description: "One video in corner overlay",
     icon: PictureInPictureIcon,
     crossFaderValue: 0.2,
   },
@@ -60,9 +56,6 @@ export default function MixTemplates({
             <div className="flex flex-col items-center text-center space-y-2">
               <Icon className={`h-8 w-8 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
               <h3 className="font-medium">{template.name}</h3>
-              <p className="text-xs text-muted-foreground">
-                {template.description}
-              </p>
             </div>
           </Card>
         );
