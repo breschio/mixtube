@@ -165,7 +165,49 @@ export default function MixedVideoPlayer({
     );
   }
 
-  // Default side-by-side or fade-through layout
+  // Side-by-side layout
+  if (activeTemplate === 'side-by-side') {
+    const leftWidth = Math.max(20, Math.min(80, (1 - crossFaderValue) * 100));
+    const rightWidth = 100 - leftWidth;
+
+    return (
+      <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
+        <div className="h-full transition-[width] duration-200" style={{ width: `${leftWidth}%` }}>
+          <ReactPlayer
+            ref={leftPlayerRef}
+            url={`https://www.youtube.com/watch?v=${leftVideoId}`}
+            width="100%"
+            height="100%"
+            playing={isPlaying}
+            volume={preview ? Math.max(0, 1 - crossFaderValue) : 0}
+            muted={!preview}
+            onReady={() => handleReady('left')}
+            onPlay={() => handleStateChange('left', 1)}
+            onPause={() => handleStateChange('left', 2)}
+            config={playerConfig}
+          />
+        </div>
+        <div className="h-full transition-[width] duration-200" style={{ width: `${rightWidth}%` }}>
+          <ReactPlayer
+            ref={rightPlayerRef}
+            url={`https://www.youtube.com/watch?v=${rightVideoId}`}
+            width="100%"
+            height="100%"
+            playing={isPlaying}
+            volume={preview ? Math.max(0, crossFaderValue) : 0}
+            muted={!preview}
+            onReady={() => handleReady('right')}
+            onPlay={() => handleStateChange('right', 1)}
+            onPause={() => handleStateChange('right', 2)}
+            config={playerConfig}
+          />
+        </div>
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
+      </div>
+    );
+  }
+
+  // Default fade-through layout
   const leftOpacity = 1 - crossFaderValue;
   const rightOpacity = crossFaderValue;
 
