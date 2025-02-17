@@ -21,6 +21,7 @@ export function useVideoSync() {
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
   const lastSyncTime = useRef<number>(0);
+  const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleStateChange = (player: 'left' | 'right', state: number) => {
     console.log(`${player} player state changed to:`, state);
@@ -65,7 +66,14 @@ export function useVideoSync() {
     const now = Date.now();
 
     // Prevent rapid re-seeks
-    if (now - lastSyncTime.current < 500) {
+    if (now - lastSyncTime.current < 250) {
+      // Schedule a sync attempt for later
+      if (syncTimeoutRef.current) {
+        clearTimeout(syncTimeoutRef.current);
+      }
+      syncTimeoutRef.current = setTimeout(() => {
+        seekAllPlayers(time);
+      }, 250);
       return;
     }
     lastSyncTime.current = now;
@@ -73,12 +81,16 @@ export function useVideoSync() {
     console.log('Syncing all players to time:', time);
 
     try {
+      const seekPromises = [];
+
       if (leftPlayer?.seekTo) {
-        await leftPlayer.seekTo(time);
+        seekPromises.push(leftPlayer.seekTo(time));
       }
       if (rightPlayer?.seekTo) {
-        await rightPlayer.seekTo(time);
+        seekPromises.push(rightPlayer.seekTo(time));
       }
+
+      await Promise.all(seekPromises);
 
       setSyncState(prev => ({
         ...prev,
@@ -131,13 +143,29 @@ export function useVideoSync() {
     }
   };
 
-  // Add a function to handle PiP position changes
+  // Handle PiP position changes with forced sync
   const handlePiPSwitch = async () => {
+    // Clear any pending sync timeouts
+    if (syncTimeoutRef.current) {
+      clearTimeout(syncTimeoutRef.current);
+    }
+
     const currentTime = syncState.currentTime;
     if (currentTime > 0) {
+      // Force immediate sync regardless of the time threshold
+      lastSyncTime.current = 0;
       await seekAllPlayers(currentTime);
     }
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (syncTimeoutRef.current) {
+        clearTimeout(syncTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return {
     syncState,
