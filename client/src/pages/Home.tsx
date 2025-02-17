@@ -14,6 +14,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useYoutubeSearch } from '@/hooks/use-youtube-search';
 import { useMobile } from '@/hooks/use-mobile';
 import type { YouTubeVideo } from '@/lib/youtube';
+import MixTemplates, { MixTemplate, mixTemplates } from "@/components/MixTemplates";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
@@ -45,6 +46,7 @@ export default function Home() {
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.5);
   const [searchQueries, setSearchQueries] = useState({ left: '', right: '' });
+  const [activeTemplate, setActiveTemplate] = useState<string>(mixTemplates[0].id);
 
   const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left);
   const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right);
@@ -69,6 +71,11 @@ export default function Home() {
 
   const handlePlayPause = () => {
     setPlaying(!playing);
+  };
+
+  const handleTemplateSelect = (template: MixTemplate) => {
+    setActiveTemplate(template.id);
+    setCrossFader(template.crossFaderValue);
   };
 
   const renderVideo = () => {
@@ -199,6 +206,10 @@ export default function Home() {
 
                 <TabsContent value="mix" className="mt-2">
                   <div className="space-y-4">
+                    <MixTemplates
+                      onSelectTemplate={handleTemplateSelect}
+                      activeTemplate={activeTemplate}
+                    />
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={setCrossFader}
