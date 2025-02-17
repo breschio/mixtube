@@ -62,8 +62,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={preview ? 0 : 1}
-          muted={preview}
+          volume={preview ? 1 : 0}
+          muted={!preview}
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
@@ -83,8 +83,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={preview ? 0 : 1}
-          muted={preview}
+          volume={preview ? 1 : 0}
+          muted={!preview}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
@@ -113,8 +113,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={preview ? 0 : Math.max(0, 1 - crossFaderValue)}
-          muted={preview || crossFaderValue === 1}
+          volume={preview ? Math.max(0, 1 - crossFaderValue) : 0}
+          muted={!preview || crossFaderValue === 1}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
@@ -129,8 +129,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={preview ? 0 : Math.max(0, crossFaderValue)}
-          muted={preview || crossFaderValue === 0}
+          volume={preview ? Math.max(0, crossFaderValue) : 0}
+          muted={!preview || crossFaderValue === 0}
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
