@@ -88,6 +88,7 @@ export default function Home() {
           playing={playing}
           onPlayPause={handlePlayPause}
           preview={false}
+          activeTemplate={activeTemplate}
         />
       );
     }
@@ -102,6 +103,7 @@ export default function Home() {
             playing={playing}
             onPlayPause={handlePlayPause}
             preview={true}
+            activeTemplate={activeTemplate}
           />
         </div>
         <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'left' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -172,6 +174,7 @@ export default function Home() {
                       playing={playing}
                       onPlayPause={handlePlayPause}
                       preview={true}
+                      activeTemplate={activeTemplate}
                     />
                   </div>
                   <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'left' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
