@@ -96,8 +96,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={preview ? 1 : 0}
-          muted={!preview}
+          volume={0} // Always muted for single video view
+          muted={true}
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
@@ -117,8 +117,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={preview ? 1 : 0}
-          muted={!preview}
+          volume={0} // Always muted for single video view
+          muted={true}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
@@ -136,6 +136,22 @@ export default function MixedVideoPlayer({
 
   const effectiveTemplate = activeTemplate === 'random-mix' ? randomTemplate : activeTemplate;
 
+  // Calculate audio levels based on crossfader and preview state
+  const getAudioLevels = () => {
+    // Only allow audio in the mix view (when preview is false)
+    if (preview) {
+      return { left: 0, right: 0 };
+    }
+
+    // Calculate audio levels based on crossfader
+    return {
+      left: Math.max(0, 1 - crossFaderValue),
+      right: Math.max(0, crossFaderValue)
+    };
+  };
+
+  const audioLevels = getAudioLevels();
+
   // Picture-in-Picture layout
   if (effectiveTemplate === 'picture-in-picture') {
     const isPipRight = crossFaderValue > 0.5;
@@ -152,8 +168,8 @@ export default function MixedVideoPlayer({
             width="100%"
             height="100%"
             playing={isPlaying}
-            volume={preview ? (isPipRight ? Math.max(0, crossFaderValue) : Math.max(0, 1 - crossFaderValue)) : 0}
-            muted={!preview}
+            volume={isPipRight ? audioLevels.right : audioLevels.left}
+            muted={preview}
             onReady={() => handleReady(isPipRight ? 'right' : 'left')}
             onPlay={() => handleStateChange(isPipRight ? 'right' : 'left', 1)}
             onPause={() => handleStateChange(isPipRight ? 'right' : 'left', 2)}
@@ -169,8 +185,8 @@ export default function MixedVideoPlayer({
             width="100%"
             height="100%"
             playing={isPlaying}
-            volume={preview ? (isPipRight ? Math.max(0, 1 - crossFaderValue) : Math.max(0, crossFaderValue)) : 0}
-            muted={!preview}
+            volume={isPipRight ? audioLevels.left : audioLevels.right}
+            muted={preview}
             onReady={() => handleReady(isPipRight ? 'left' : 'right')}
             onPlay={() => handleStateChange(isPipRight ? 'left' : 'right', 1)}
             onPause={() => handleStateChange(isPipRight ? 'left' : 'right', 2)}
@@ -197,8 +213,8 @@ export default function MixedVideoPlayer({
             width="100%"
             height="100%"
             playing={isPlaying}
-            volume={preview ? Math.max(0, 1 - crossFaderValue) : 0}
-            muted={!preview}
+            volume={audioLevels.left}
+            muted={preview}
             onReady={() => handleReady('left')}
             onPlay={() => handleStateChange('left', 1)}
             onPause={() => handleStateChange('left', 2)}
@@ -212,8 +228,8 @@ export default function MixedVideoPlayer({
             width="100%"
             height="100%"
             playing={isPlaying}
-            volume={preview ? Math.max(0, crossFaderValue) : 0}
-            muted={!preview}
+            volume={audioLevels.right}
+            muted={preview}
             onReady={() => handleReady('right')}
             onPlay={() => handleStateChange('right', 1)}
             onPause={() => handleStateChange('right', 2)}
@@ -226,20 +242,17 @@ export default function MixedVideoPlayer({
   }
 
   // Default fade-through layout
-  const leftOpacity = 1 - crossFaderValue;
-  const rightOpacity = crossFaderValue;
-
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-      <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: leftOpacity }}>
+      <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: 1 - crossFaderValue }}>
         <ReactPlayer
           ref={leftPlayerRef}
           url={`https://www.youtube.com/watch?v=${leftVideoId}`}
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={preview ? Math.max(0, 1 - crossFaderValue) : 0}
-          muted={!preview || crossFaderValue === 1}
+          volume={audioLevels.left}
+          muted={preview}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
@@ -247,15 +260,15 @@ export default function MixedVideoPlayer({
         />
       </div>
 
-      <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: rightOpacity }}>
+      <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: crossFaderValue }}>
         <ReactPlayer
           ref={rightPlayerRef}
           url={`https://www.youtube.com/watch?v=${rightVideoId}`}
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={preview ? Math.max(0, crossFaderValue) : 0}
-          muted={!preview || crossFaderValue === 0}
+          volume={audioLevels.right}
+          muted={preview}
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
