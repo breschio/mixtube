@@ -12,6 +12,7 @@ interface MixedVideoPlayerProps {
   onPlayPause: () => void;  
   preview?: boolean;
   activeTemplate?: string;
+  mobileView?: boolean;
 }
 
 export default function MixedVideoPlayer({ 
@@ -21,7 +22,8 @@ export default function MixedVideoPlayer({
   playing: isPlaying,
   onPlayPause,
   preview = false,
-  activeTemplate = 'side-by-side'
+  activeTemplate = 'side-by-side',
+  mobileView = false
 }: MixedVideoPlayerProps) {
   const {
     leftPlayerRef,
@@ -138,12 +140,17 @@ export default function MixedVideoPlayer({
 
   // Calculate audio levels based on crossfader and preview state
   const getAudioLevels = () => {
+    // For mobile view on the mix tab, play full audio
+    if (mobileView && !preview) {
+      return { left: 1, right: 0 };
+    }
+
     // Only allow audio in the mix view (when preview is false)
     if (preview) {
       return { left: 0, right: 0 };
     }
 
-    // Calculate audio levels based on crossfader
+    // Calculate audio levels based on crossfader for desktop
     return {
       left: Math.max(0, 1 - crossFaderValue),
       right: Math.max(0, crossFaderValue)
@@ -151,6 +158,28 @@ export default function MixedVideoPlayer({
   };
 
   const audioLevels = getAudioLevels();
+
+  // For mobile view in mix tab, show only the main video
+  if (mobileView && !preview) {
+    return (
+      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+        <ReactPlayer
+          ref={leftPlayerRef}
+          url={`https://www.youtube.com/watch?v=${leftVideoId}`}
+          width="100%"
+          height="100%"
+          playing={isPlaying}
+          volume={audioLevels.left}
+          muted={false}
+          onReady={() => handleReady('left')}
+          onPlay={() => handleStateChange('left', 1)}
+          onPause={() => handleStateChange('left', 2)}
+          config={playerConfig}
+        />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+      </div>
+    );
+  }
 
   // Picture-in-Picture layout
   if (effectiveTemplate === 'picture-in-picture') {
