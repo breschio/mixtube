@@ -140,12 +140,12 @@ export default function MixedVideoPlayer({
 
   // Calculate audio levels based on crossfader and preview state
   const getAudioLevels = () => {
-    // For mobile view, ensure full audio on the active video
+    // Mobile view should always have full audio and ignore preview state
     if (mobileView) {
       return { left: 1, right: 0 };
     }
 
-    // For preview players, always mute
+    // For preview players on desktop, always mute
     if (preview) {
       return { left: 0, right: 0 };
     }
@@ -159,7 +159,7 @@ export default function MixedVideoPlayer({
 
   const audioLevels = getAudioLevels();
 
-  // For mobile view, show only the main video with full audio
+  // For mobile view, show only the main video
   if (mobileView) {
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
