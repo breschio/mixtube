@@ -115,6 +115,7 @@ export default function Home() {
             playing={playing}
             onPlayPause={handlePlayPause}
             preview={true}
+            mobileView={false}
           />
         </div>
         <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'right' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -125,6 +126,7 @@ export default function Home() {
             playing={playing}
             onPlayPause={handlePlayPause}
             preview={true}
+            mobileView={false}
           />
         </div>
       </div>

@@ -140,17 +140,17 @@ export default function MixedVideoPlayer({
 
   // Calculate audio levels based on crossfader and preview state
   const getAudioLevels = () => {
-    // For mobile view on the mix tab, play full audio
-    if (mobileView && !preview) {
+    // For mobile view, ensure full audio on the active video
+    if (mobileView) {
       return { left: 1, right: 0 };
     }
 
-    // Only allow audio in the mix view (when preview is false)
+    // For preview players, always mute
     if (preview) {
       return { left: 0, right: 0 };
     }
 
-    // Calculate audio levels based on crossfader for desktop
+    // Desktop mix view: Calculate audio levels based on crossfader
     return {
       left: Math.max(0, 1 - crossFaderValue),
       right: Math.max(0, crossFaderValue)
@@ -159,8 +159,8 @@ export default function MixedVideoPlayer({
 
   const audioLevels = getAudioLevels();
 
-  // For mobile view in mix tab, show only the main video
-  if (mobileView && !preview) {
+  // For mobile view, show only the main video with full audio
+  if (mobileView) {
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         <ReactPlayer
@@ -169,7 +169,7 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={audioLevels.left}
+          volume={1}
           muted={false}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
