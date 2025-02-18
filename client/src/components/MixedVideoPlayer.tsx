@@ -159,7 +159,7 @@ export default function MixedVideoPlayer({
 
   const audioLevels = getAudioLevels();
 
-  // For mobile view, show only the main video
+  // For mobile view, show only the main video with full audio
   if (mobileView) {
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
