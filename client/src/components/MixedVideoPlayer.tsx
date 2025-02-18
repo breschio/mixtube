@@ -68,7 +68,7 @@ export default function MixedVideoPlayer({
   // Handle case when no videos are loaded
   if (!leftVideoId && !rightVideoId) {
     return (
-      <Card className="aspect-video bg-muted/50 flex items-center justify-center relative">
+      <Card className="aspect-video bg-muted/50 flex items-center justify-center">
         <p className="text-muted-foreground">Load videos to start mixing</p>
       </Card>
     );
@@ -131,28 +131,6 @@ export default function MixedVideoPlayer({
     );
   }
 
-  // Mobile view - always show left video with full audio
-  if (mobileView) {
-    return (
-      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-        <ReactPlayer
-          ref={leftPlayerRef}
-          url={`https://www.youtube.com/watch?v=${leftVideoId}`}
-          width="100%"
-          height="100%"
-          playing={isPlaying}
-          volume={1}
-          muted={false}
-          onReady={() => handleReady('left')}
-          onPlay={() => handleStateChange('left', 1)}
-          onPause={() => handleStateChange('left', 2)}
-          config={playerConfig}
-        />
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
-      </div>
-    );
-  }
-
   const handleMixedPlayPause = async () => {
     await syncPlay(!isPlaying);
     onPlayPause();
@@ -162,9 +140,16 @@ export default function MixedVideoPlayer({
 
   // Calculate audio levels based on crossfader and preview state
   const getAudioLevels = () => {
-    // For preview players on desktop, always mute
+    // For preview players, always mute
     if (preview) {
       return { left: 0, right: 0 };
+    }
+
+    // For mobile view, use full audio on the dominant video
+    if (mobileView) {
+      return crossFaderValue > 0.5 
+        ? { left: 0, right: 1 }
+        : { left: 1, right: 0 };
     }
 
     // Desktop mix view: Calculate audio levels based on crossfader

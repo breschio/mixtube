@@ -94,17 +94,18 @@ export default function Home() {
       );
     }
 
-    // Mobile view: Show single videos in each tab
+    // Mobile view: Show mixed video player with both videos
     return (
       <div className="relative aspect-video">
         <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'mix' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
           <MixedVideoPlayer
             leftVideoId={videos.left?.id || null}
-            rightVideoId={null}
-            crossFaderValue={0}
+            rightVideoId={videos.right?.id || null}
+            crossFaderValue={crossFader}
             playing={playing}
             onPlayPause={handlePlayPause}
             preview={false}
+            activeTemplate={activeTemplate}
             mobileView={true}
           />
         </div>
