@@ -45,7 +45,7 @@ export default function MixedVideoPlayer({
         const currentIndex = templates.indexOf(randomTemplate);
         const nextIndex = (currentIndex + 1) % templates.length;
         setRandomTemplate(templates[nextIndex]);
-      }, 5000); // Change effect every 5 seconds
+      }, 5000);
 
       return () => clearInterval(interval);
     }
@@ -98,8 +98,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={0} // Always muted for single video view
-          muted={true}
+          volume={mobileView ? 1 : 0}
+          muted={!mobileView}
           onReady={() => handleReady('right')}
           onPlay={() => handleStateChange('right', 1)}
           onPause={() => handleStateChange('right', 2)}
@@ -119,8 +119,8 @@ export default function MixedVideoPlayer({
           width="100%"
           height="100%"
           playing={isPlaying}
-          volume={0} // Always muted for single video view
-          muted={true}
+          volume={mobileView ? 1 : 0}
+          muted={!mobileView}
           onReady={() => handleReady('left')}
           onPlay={() => handleStateChange('left', 1)}
           onPause={() => handleStateChange('left', 2)}
@@ -131,35 +131,7 @@ export default function MixedVideoPlayer({
     );
   }
 
-  const handleMixedPlayPause = async () => {
-    await syncPlay(!isPlaying);
-    onPlayPause();
-  };
-
-  const effectiveTemplate = activeTemplate === 'random-mix' ? randomTemplate : activeTemplate;
-
-  // Calculate audio levels based on crossfader and preview state
-  const getAudioLevels = () => {
-    // Mobile view should always have full audio and ignore preview state
-    if (mobileView) {
-      return { left: 1, right: 0 };
-    }
-
-    // For preview players on desktop, always mute
-    if (preview) {
-      return { left: 0, right: 0 };
-    }
-
-    // Desktop mix view: Calculate audio levels based on crossfader
-    return {
-      left: Math.max(0, 1 - crossFaderValue),
-      right: Math.max(0, crossFaderValue)
-    };
-  };
-
-  const audioLevels = getAudioLevels();
-
-  // For mobile view, show only the main video with full audio
+  // Mobile view - always show left video with full audio
   if (mobileView) {
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
@@ -180,6 +152,29 @@ export default function MixedVideoPlayer({
       </div>
     );
   }
+
+  const handleMixedPlayPause = async () => {
+    await syncPlay(!isPlaying);
+    onPlayPause();
+  };
+
+  const effectiveTemplate = activeTemplate === 'random-mix' ? randomTemplate : activeTemplate;
+
+  // Calculate audio levels based on crossfader and preview state
+  const getAudioLevels = () => {
+    // For preview players on desktop, always mute
+    if (preview) {
+      return { left: 0, right: 0 };
+    }
+
+    // Desktop mix view: Calculate audio levels based on crossfader
+    return {
+      left: Math.max(0, 1 - crossFaderValue),
+      right: Math.max(0, crossFaderValue)
+    };
+  };
+
+  const audioLevels = getAudioLevels();
 
   // Picture-in-Picture layout
   if (effectiveTemplate === 'picture-in-picture') {

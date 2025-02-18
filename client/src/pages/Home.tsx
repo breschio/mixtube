@@ -89,6 +89,7 @@ export default function Home() {
           onPlayPause={handlePlayPause}
           preview={false}
           activeTemplate={activeTemplate}
+          mobileView={false}
         />
       );
     }
@@ -114,8 +115,8 @@ export default function Home() {
             crossFaderValue={0}
             playing={playing}
             onPlayPause={handlePlayPause}
-            preview={true}
-            mobileView={false}
+            preview={false}
+            mobileView={true}
           />
         </div>
         <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'right' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -125,8 +126,8 @@ export default function Home() {
             crossFaderValue={1}
             playing={playing}
             onPlayPause={handlePlayPause}
-            preview={true}
-            mobileView={false}
+            preview={false}
+            mobileView={true}
           />
         </div>
       </div>
