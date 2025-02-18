@@ -78,58 +78,6 @@ export default function Home() {
     setCrossFader(template.crossFaderValue);
   };
 
-  const renderVideo = () => {
-    if (!isMobile) {
-      return (
-        <MixedVideoPlayer
-          leftVideoId={videos.left?.id || null}
-          rightVideoId={videos.right?.id || null}
-          crossFaderValue={crossFader}
-          playing={playing}
-          onPlayPause={handlePlayPause}
-          preview={false}
-          activeTemplate={activeTemplate}
-        />
-      );
-    }
-
-    return (
-      <div className="relative aspect-video">
-        <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'mix' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <MixedVideoPlayer
-            leftVideoId={videos.left?.id || null}
-            rightVideoId={videos.right?.id || null}
-            crossFaderValue={crossFader}
-            playing={playing}
-            onPlayPause={handlePlayPause}
-            preview={true}
-            activeTemplate={activeTemplate}
-          />
-        </div>
-        <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'left' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <MixedVideoPlayer
-            leftVideoId={videos.left?.id || null}
-            rightVideoId={null}
-            crossFaderValue={0}
-            playing={playing}
-            onPlayPause={handlePlayPause}
-            preview={true}
-          />
-        </div>
-        <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'right' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <MixedVideoPlayer
-            leftVideoId={null}
-            rightVideoId={videos.right?.id || null}
-            crossFaderValue={1}
-            playing={playing}
-            onPlayPause={handlePlayPause}
-            preview={true}
-          />
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background border-b">
@@ -158,14 +106,26 @@ export default function Home() {
 
       <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4">
         <div className="lg:grid lg:grid-cols-[1fr,400px] lg:gap-6">
-          <Card className="overflow-hidden border-none bg-transparent mb-6 lg:mb-0">
-            {renderVideo()}
-          </Card>
+          {/* Main Video Player (Desktop) */}
+          {!isMobile && (
+            <Card className="overflow-hidden border-none bg-transparent mb-6 lg:mb-0">
+              <MixedVideoPlayer
+                leftVideoId={videos.left?.id || null}
+                rightVideoId={videos.right?.id || null}
+                crossFaderValue={crossFader}
+                playing={playing}
+                onPlayPause={handlePlayPause}
+                preview={false}
+                activeTemplate={activeTemplate}
+              />
+            </Card>
+          )}
 
           <div className="lg:overflow-y-auto lg:max-h-[calc(100vh-6rem)]">
             <div className="space-y-4">
-              {!isMobile && (
-                <div className="relative aspect-video">
+              {/* Mobile Video Player */}
+              {isMobile && (
+                <div className="relative aspect-video mb-4">
                   <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'mix' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <MixedVideoPlayer
                       leftVideoId={videos.left?.id || null}
@@ -173,7 +133,7 @@ export default function Home() {
                       crossFaderValue={crossFader}
                       playing={playing}
                       onPlayPause={handlePlayPause}
-                      preview={true}
+                      preview={false}
                       activeTemplate={activeTemplate}
                     />
                   </div>
