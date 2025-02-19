@@ -162,7 +162,7 @@ export default function Home() {
       </header>
 
       <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4">
-        <div className="lg:grid lg:grid-cols-[400px,1fr] lg:gap-6"> {/* Changed grid-cols order */}
+        <div className="lg:grid lg:grid-cols-[2fr,1fr] lg:gap-6"> {/* Changed to 2:1 ratio */}
           {/* Left Column - Deck Controls (Larger) */}
           <div className="space-y-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
