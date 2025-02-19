@@ -107,7 +107,7 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             onPressedChange={() => handleModeToggle()}
             className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50`}
           >
-            <Search className={`h-4 w-4 ${!isUrlMode ? 'text-primary' : 'text-muted-foreground'}`} />
+            <Search className={`h-5 w-5 ${!isUrlMode ? 'text-primary' : 'text-muted-foreground'}`} />
           </Toggle>
           <Input
             type="text"
