@@ -10,15 +10,15 @@ interface MixedVideoPlayerProps {
   rightVideoId: string | null;
   crossFaderValue: number;
   playing: boolean;
-  onPlayPause: () => void;  
+  onPlayPause: () => void;
   preview?: boolean;
   activeTemplate?: string;
   mobileView?: boolean;
 }
 
-export default function MixedVideoPlayer({ 
-  leftVideoId, 
-  rightVideoId, 
+export default function MixedVideoPlayer({
+  leftVideoId,
+  rightVideoId,
   crossFaderValue,
   playing: isPlaying,
   onPlayPause,
@@ -54,8 +54,8 @@ export default function MixedVideoPlayer({
 
   // Handle PiP position changes
   useEffect(() => {
-    if ((activeTemplate === 'picture-in-picture' || randomTemplate === 'picture-in-picture') && 
-        activeTemplate !== 'random-mix') {
+    if ((activeTemplate === 'picture-in-picture' || randomTemplate === 'picture-in-picture') &&
+      activeTemplate !== 'random-mix') {
       const wasPipRight = prevCrossFaderRef.current > 0.5;
       const isPipRight = crossFaderValue > 0.5;
 
@@ -75,7 +75,9 @@ export default function MixedVideoPlayer({
     );
   }
 
-  // Common player config
+  const showSubtitles = activeTemplate === 'subtitles';
+
+  // Modify the player config to always load captions when subtitles mode is active
   const playerConfig = {
     playerVars: {
       controls: 0,
@@ -85,7 +87,8 @@ export default function MixedVideoPlayer({
       showinfo: 0,
       iv_load_policy: 3,
       origin: window.location.origin,
-      enablejsapi: 1
+      enablejsapi: 1,
+      ...(showSubtitles && { cc_load_policy: 1 })
     }
   };
 
@@ -106,6 +109,12 @@ export default function MixedVideoPlayer({
           onPause={() => handleStateChange('right', 2)}
           config={playerConfig}
         />
+        {showSubtitles && (
+          <VideoSubtitles
+            rightPlayer={rightPlayerRef.current}
+            isVisible={true}
+          />
+        )}
         <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
     );
@@ -127,6 +136,12 @@ export default function MixedVideoPlayer({
           onPause={() => handleStateChange('left', 2)}
           config={playerConfig}
         />
+        {showSubtitles && rightPlayerRef.current && (
+          <VideoSubtitles
+            rightPlayer={rightPlayerRef.current}
+            isVisible={true}
+          />
+        )}
         <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
     );
@@ -148,7 +163,7 @@ export default function MixedVideoPlayer({
 
     // For mobile view, use full audio on the dominant video
     if (mobileView) {
-      return crossFaderValue > 0.5 
+      return crossFaderValue > 0.5
         ? { left: 0, right: 1 }
         : { left: 1, right: 0 };
     }
@@ -253,7 +268,12 @@ export default function MixedVideoPlayer({
             config={playerConfig}
           />
         </div>
-
+        {showSubtitles && (
+          <VideoSubtitles
+            rightPlayer={rightPlayerRef.current}
+            isVisible={true}
+          />
+        )}
         <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
       </div>
     );
@@ -296,6 +316,12 @@ export default function MixedVideoPlayer({
             config={playerConfig}
           />
         </div>
+        {showSubtitles && (
+          <VideoSubtitles
+            rightPlayer={rightPlayerRef.current}
+            isVisible={true}
+          />
+        )}
         <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
       </div>
     );
@@ -335,7 +361,12 @@ export default function MixedVideoPlayer({
           config={playerConfig}
         />
       </div>
-
+      {showSubtitles && (
+          <VideoSubtitles
+            rightPlayer={rightPlayerRef.current}
+            isVisible={true}
+          />
+        )}
       <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
     </div>
   );
