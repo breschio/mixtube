@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import { X, Search, Link2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Toggle } from '@/components/ui/toggle';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
 import type { YouTubeVideo } from '@/lib/youtube';
@@ -102,13 +101,16 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     <div className="w-full">
       <div className="relative group">
         <div className="relative flex items-center">
-          <Toggle
-            pressed={isUrlMode}
-            onPressedChange={() => handleModeToggle()}
-            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50`}
+          <Button
+            variant="ghost"
+            size="icon"
+            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50 ${
+              !isUrlMode ? 'text-primary' : 'text-muted-foreground'
+            }`}
+            onClick={handleModeToggle}
           >
-            <Search className={`h-5 w-5 ${isUrlMode ? 'text-primary' : 'text-muted-foreground'}`} />
-          </Toggle>
+            <Search className="h-4 w-4" />
+          </Button>
           <Input
             type="text"
             placeholder={isUrlMode ? "Paste YouTube URL" : "Search YouTube"}
@@ -116,7 +118,7 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             onChange={handleInputChange}
             className={`pl-9 pr-16 normal-case transition-all ${
               !isValid && displayValue ? 'border-red-500' : ''
-            } ${isUrlMode ? 'font-mono text-sm' : ''} animate-placeholder`}
+            } ${isUrlMode ? 'font-mono text-sm' : ''}`}
           />
           <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-1">
             {displayValue && (
@@ -129,6 +131,16 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
                 <X className="h-4 w-4" />
               </Button>
             )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`h-7 w-7 hover:bg-accent/50 ${
+                isUrlMode ? 'text-primary' : 'text-muted-foreground'
+              }`}
+              onClick={handleModeToggle}
+            >
+              <Link2 className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>

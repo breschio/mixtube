@@ -123,28 +123,35 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: 'Search query required' });
       }
 
-      const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
-      const python = spawn('python3', ['server/scraper.py', searchUrl]);
+      const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+      if (!YOUTUBE_API_KEY) {
+        return res.status(500).json({ error: 'YouTube API key not configured' });
+      }
 
-      let output = '';
-      python.stdout.on('data', (data) => {
-        output += data;
+      const searchParams = new URLSearchParams({
+        part: 'snippet',
+        q: query,
+        type: 'video',
+        maxResults: '50', 
+        key: YOUTUBE_API_KEY
       });
 
-      await new Promise((resolve, reject) => {
-        python.on('close', (code) => {
-          if (code !== 0) {
-            reject(new Error('Python scraper failed'));
-            return;
-          }
-          resolve(null);
-        });
-      });
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
+      );
 
-      const scrapedData = JSON.parse(output);
-      const videos = scrapedData.videos || [];
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error?.message || 'Failed to search videos');
+      }
 
-      res.json(videos.slice(0, 50));
+      const videos = data.items.map((item: any) => ({
+        id: item.id.videoId,
+        title: item.snippet.title,
+        thumbnail: item.snippet.thumbnails.medium.url,
+      }));
+
+      res.json(videos);
     } catch (error) {
       console.error('YouTube search error:', error);
       res.status(500).json({ error: 'Failed to search videos' });
@@ -290,27 +297,7 @@ export function registerRoutes(app: Express): Server {
       }
 
       const url = `https://www.youtube.com/watch?v=${videoId}`;
-      let videoInfo;
-try {
-  // First try yt-dlp
-  videoInfo = await getVideoInfo(url);
-} catch (error) {
-  // Fallback to Python scraper
-  const python = spawn('python3', ['server/scraper.py', url]);
-  videoInfo = await new Promise((resolve, reject) => {
-    let output = '';
-    python.stdout.on('data', (data) => {
-      output += data;
-    });
-    python.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error('Python scraper failed'));
-        return;
-      }
-      resolve(JSON.parse(output));
-    });
-  });
-}
+      const videoInfo = await getVideoInfo(url);
 
       // Extract recommended videos from the video info
       let recommendedVideos = [];
