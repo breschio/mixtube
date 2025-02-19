@@ -174,9 +174,11 @@ export default function MixedVideoPlayer({
     }
 
     // Desktop mix view: Calculate audio levels based on crossfader
+    // Using smooth cosine/sine transitions for better audio crossfading
+    const angle = crossFaderValue * Math.PI / 2;
     return {
-      left: Math.cos(crossFaderValue * Math.PI / 2), // Smooth transition
-      right: Math.sin(crossFaderValue * Math.PI / 2)  // Smooth transition
+      left: Math.cos(angle),
+      right: Math.sin(angle)
     };
   };
 
@@ -367,11 +369,11 @@ export default function MixedVideoPlayer({
         />
       </div>
       {showSubtitles && (
-          <VideoSubtitles
-            rightPlayer={rightPlayerRef.current}
-            isVisible={true}
-          />
-        )}
+        <VideoSubtitles
+          rightPlayer={rightPlayerRef.current}
+          isVisible={true}
+        />
+      )}
       <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
     </div>
   );
