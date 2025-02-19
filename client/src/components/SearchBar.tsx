@@ -56,7 +56,6 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
       const videoId = extractVideoId(newValue);
       if (videoId) {
         handleVideoIdInput(videoId);
-        return;
       }
     } else {
       debouncedSearch(newValue);
@@ -94,7 +93,10 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
 
   const handleClear = () => {
     setDisplayValue('');
-    onSearch('');
+    // Only trigger search clear in search mode
+    if (!isUrlMode) {
+      onSearch('');
+    }
     setIsValid(true);
   };
 
@@ -102,7 +104,10 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     setIsUrlMode(!isUrlMode);
     setDisplayValue('');
     setIsValid(true);
-    onSearch('');
+    // Only clear search when switching from search mode to URL mode
+    if (isUrlMode) {
+      onSearch('');
+    }
   };
 
   return (
