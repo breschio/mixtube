@@ -104,8 +104,10 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
           <Button
             variant="ghost"
             size="icon"
-            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50 ${
-              !isUrlMode ? 'text-primary' : 'text-muted-foreground'
+            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 transition-all duration-200 ${
+              !isUrlMode 
+                ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' 
+                : 'text-muted-foreground hover:bg-accent/50'
             }`}
             onClick={handleModeToggle}
           >
@@ -118,7 +120,7 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             onChange={handleInputChange}
             className={`pl-9 pr-16 normal-case transition-all ${
               !isValid && displayValue ? 'border-red-500' : ''
-            } ${isUrlMode ? 'font-mono text-sm' : ''}`}
+            } ${isUrlMode ? 'font-mono text-sm' : ''} animate-placeholder`}
           />
           <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-1">
             {displayValue && (
@@ -134,8 +136,10 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             <Button
               variant="ghost"
               size="icon"
-              className={`h-7 w-7 hover:bg-accent/50 ${
-                isUrlMode ? 'text-primary' : 'text-muted-foreground'
+              className={`h-7 w-7 transition-all duration-200 ${
+                isUrlMode 
+                  ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' 
+                  : 'text-muted-foreground hover:bg-accent/50'
               }`}
               onClick={handleModeToggle}
             >
