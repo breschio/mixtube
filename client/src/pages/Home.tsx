@@ -44,9 +44,10 @@ export default function Home() {
 
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
-  const [crossFader, setCrossFader] = useState(0.6); 
+  const [crossFader, setCrossFader] = useState(0.6);
   const [searchQueries, setSearchQueries] = useState({ left: '', right: '' });
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
+  const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
 
   const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left);
   const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right);
@@ -73,9 +74,12 @@ export default function Home() {
     setPlaying(!playing);
     // If starting playback, transition to right
     if (!playing) {
+      // Show tooltip during transition
+      setShowTransitionTooltip(true);
+
       // Start from center
       setCrossFader(0.5);
-      // Create a gradual 3-second transition through multiple steps
+      // Create a gradual 1.5-second transition through multiple steps
       const steps = 90; // Increased steps for even smoother transition
       const increment = 0.1 / steps; // Total movement is 0.1 (from 0.5 to 0.6)
       const timePerStep = 1500 / steps; // 1.5 seconds total duration
@@ -84,6 +88,10 @@ export default function Home() {
       for (let i = 1; i <= steps; i++) {
         setTimeout(() => {
           setCrossFader(0.5 + (increment * i));
+          // Hide tooltip after last step
+          if (i === steps) {
+            setTimeout(() => setShowTransitionTooltip(false), 1000);
+          }
         }, timePerStep * i);
       }
     }
@@ -115,6 +123,7 @@ export default function Home() {
                 onCrossFaderChange={setCrossFader}
                 leftVideoId={videos.left?.id}
                 rightVideoId={videos.right?.id}
+                forceShowTooltip={showTransitionTooltip}
               />
             </div>
           </TabsContent>
@@ -217,6 +226,7 @@ export default function Home() {
             onCrossFaderChange={setCrossFader}
             leftVideoId={videos.left?.id}
             rightVideoId={videos.right?.id}
+            forceShowTooltip={showTransitionTooltip}
           />
         </div>
 

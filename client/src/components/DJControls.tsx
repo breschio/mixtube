@@ -7,6 +7,7 @@ interface DJControlsProps {
   onCrossFaderChange: (value: number) => void;
   leftVideoId?: string | null;
   rightVideoId?: string | null;
+  forceShowTooltip?: boolean;
 }
 
 export default function DJControls({
@@ -14,6 +15,7 @@ export default function DJControls({
   onCrossFaderChange,
   leftVideoId,
   rightVideoId,
+  forceShowTooltip = false
 }: DJControlsProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
@@ -38,10 +40,21 @@ export default function DJControls({
 
     // Set timeout to hide label after 3 seconds
     const newTimeoutId = setTimeout(() => {
-      setIsVisible(false);
+      if (!forceShowTooltip) {
+        setIsVisible(false);
+      }
     }, 3000);
     setTimeoutId(newTimeoutId);
   };
+
+  // Effect to handle forceShowTooltip prop
+  useEffect(() => {
+    if (forceShowTooltip) {
+      showLabel();
+    } else {
+      setIsVisible(false);
+    }
+  }, [forceShowTooltip]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -60,10 +73,12 @@ export default function DJControls({
       className="flex items-center gap-4 flex-1 pt-1"
       onMouseEnter={showLabel}
       onMouseLeave={() => {
-        const newTimeoutId = setTimeout(() => {
-          setIsVisible(false);
-        }, 3000);
-        setTimeoutId(newTimeoutId);
+        if (!forceShowTooltip) {
+          const newTimeoutId = setTimeout(() => {
+            setIsVisible(false);
+          }, 3000);
+          setTimeoutId(newTimeoutId);
+        }
       }}
     >
       <div className="flex-1 flex flex-col items-center gap-2">
@@ -72,7 +87,7 @@ export default function DJControls({
           <div 
             className={cn(
               "text-sm font-medium text-primary px-4 py-1 rounded-md border border-primary/20",
-              isVisible ? "opacity-100" : "opacity-0",
+              isVisible || forceShowTooltip ? "opacity-100" : "opacity-0",
               isRightSide ? "bg-primary/5" : "bg-transparent"
             )}
           >
