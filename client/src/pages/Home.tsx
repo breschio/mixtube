@@ -23,7 +23,7 @@ interface VideoInfo extends YouTubeVideo {
 export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
-  const [activeTab, setActiveTab] = useState('mix');
+  const [activeTab, setActiveTab] = useState('left');
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
