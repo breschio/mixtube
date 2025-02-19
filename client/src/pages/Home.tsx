@@ -201,15 +201,15 @@ export default function Home() {
             />
           </div>
 
+          <MixTemplates
+            onSelectTemplate={handleTemplateSelect}
+            activeTemplate={activeTemplate}
+          />
           <DJControls
             crossFader={crossFader}
             onCrossFaderChange={setCrossFader}
             leftVideoId={videos.left?.id}
             rightVideoId={videos.right?.id}
-          />
-          <MixTemplates
-            onSelectTemplate={handleTemplateSelect}
-            activeTemplate={activeTemplate}
           />
         </div>
 
