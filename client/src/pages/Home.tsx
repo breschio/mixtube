@@ -143,7 +143,7 @@ export default function Home() {
     return (
       <div className="grid grid-cols-[2fr,5fr,2fr] gap-16">
         <div className="space-y-4">
-          <h2 className="text-base font-normal uppercase tracking-wider text-center">LEFT</h2>
+          <h2 className="text-base font-normal uppercase tracking-wider text-left">LEFT</h2>
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
@@ -206,7 +206,7 @@ export default function Home() {
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-base font-normal uppercase tracking-wider text-center">RIGHT</h2>
+          <h2 className="text-base font-normal uppercase tracking-wider text-left">RIGHT</h2>
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
@@ -248,11 +248,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
-        <div className="w-full px-6 sm:px-8 md:px-12 py-1 grid grid-cols-[2fr,5fr,2fr] items-center">
+        <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
           <div className="flex items-center">
             <ThemeToggle />
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-start">
             <div className="text-foreground font-mono text-xl">
               mixtube
             </div>
