@@ -3,7 +3,6 @@ import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
 import { useVideoSync } from '@/hooks/use-video-sync';
-import VideoSubtitles from './VideoSubtitles';
 
 interface MixedVideoPlayerProps {
   leftVideoId: string | null;
@@ -137,7 +136,7 @@ export default function MixedVideoPlayer({
     onPlayPause();
   };
 
-  const effectiveTemplate = activeTemplate;
+  const effectiveTemplate = activeTemplate === 'random-mix' ? randomTemplate : activeTemplate;
 
   // Calculate audio levels based on crossfader and preview state
   const getAudioLevels = () => {
@@ -161,56 +160,6 @@ export default function MixedVideoPlayer({
   };
 
   const audioLevels = getAudioLevels();
-
-  // Subtitles mode
-  if (effectiveTemplate === 'subtitles') {
-    return (
-      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-        {/* Main video (left) */}
-        <ReactPlayer
-          ref={leftPlayerRef}
-          url={`https://www.youtube.com/watch?v=${leftVideoId}`}
-          width="100%"
-          height="100%"
-          playing={isPlaying}
-          volume={audioLevels.left}
-          muted={preview}
-          onReady={() => handleReady('left')}
-          onPlay={() => handleStateChange('left', 1)}
-          onPause={() => handleStateChange('left', 2)}
-          config={playerConfig}
-        />
-
-        {/* Hidden video for subtitles (right) */}
-        <div className="hidden">
-          <ReactPlayer
-            ref={rightPlayerRef}
-            url={`https://www.youtube.com/watch?v=${rightVideoId}`}
-            playing={isPlaying}
-            volume={0}
-            muted={true}
-            onReady={() => handleReady('right')}
-            onPlay={() => handleStateChange('right', 1)}
-            onPause={() => handleStateChange('right', 2)}
-            config={{
-              ...playerConfig,
-              playerVars: {
-                ...playerConfig.playerVars,
-                cc_load_policy: 1
-              }
-            }}
-          />
-        </div>
-
-        <VideoSubtitles
-          rightPlayer={rightPlayerRef.current}
-          isVisible={true}
-        />
-
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
-      </div>
-    );
-  }
 
   // Picture-in-Picture layout
   if (effectiveTemplate === 'picture-in-picture') {
