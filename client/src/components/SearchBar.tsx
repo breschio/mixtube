@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { X, Search, Link2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,8 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
   const [isUrlMode, setIsUrlMode] = useState(true);
+  const lastValidUrlRef = useRef<string | null>(null);
+  const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   const patterns = [
@@ -56,6 +58,7 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
       const videoId = extractVideoId(newValue);
       if (videoId) {
         handleVideoIdInput(videoId);
+        lastValidUrlRef.current = newValue;
       }
     } else {
       debouncedSearch(newValue);
@@ -82,10 +85,37 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
   // When component mounts or videoId changes, set the initial URL
   useEffect(() => {
     if (videoId) {
-      setDisplayValue(`https://youtube.com/watch?v=${videoId}`);
+      const newUrl = `https://youtube.com/watch?v=${videoId}`;
+      setDisplayValue(newUrl);
+      lastValidUrlRef.current = newUrl;
       setIsUrlMode(true);
     }
   }, [videoId]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleBlur = () => {
+    if (isUrlMode && lastValidUrlRef.current) {
+      // Clear any existing timeout
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+
+      // Set new timeout
+      blurTimeoutRef.current = setTimeout(() => {
+        if (!displayValue || displayValue !== lastValidUrlRef.current) {
+          setDisplayValue(lastValidUrlRef.current);
+        }
+      }, 5000);
+    }
+  };
 
   const handleClear = () => {
     setDisplayValue('');
@@ -121,6 +151,7 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             placeholder={isUrlMode ? "Paste YouTube URL" : "Search YouTube"}
             value={displayValue}
             onChange={handleInputChange}
+            onBlur={handleBlur}
             className={`pl-9 pr-16 normal-case transition-all ${
               !isValid && displayValue ? 'border-red-500' : ''
             } ${isUrlMode ? 'font-mono text-sm' : ''} animate-placeholder`}
