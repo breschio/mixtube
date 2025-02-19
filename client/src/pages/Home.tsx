@@ -129,24 +129,19 @@ export default function Home() {
             <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="mix" className="mt-2">
-            <div className="space-y-4">
-              <MixTemplates
-                onSelectTemplate={handleTemplateSelect}
-                activeTemplate={activeTemplate}
-              />
-              <DJControls
-                crossFader={crossFader}
-                onCrossFaderChange={handleCrossFaderChange}
-                leftVideoId={videos.left?.id}
-                rightVideoId={videos.right?.id}
-                forceShowTooltip={showTransitionTooltip}
-              />
-            </div>
-          </TabsContent>
-
           <TabsContent value="left" className="mt-2">
             <div className="space-y-4">
+              <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+                <MixedVideoPlayer
+                  leftVideoId={videos.left?.id || null}
+                  rightVideoId={null}
+                  crossFaderValue={0}
+                  playing={playing}
+                  onPlayPause={handlePlayPause}
+                  preview={true}
+                  mobileView={true}
+                />
+              </div>
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                 onSearch={(query) => handleSearch(query, 'left')}
@@ -162,8 +157,47 @@ export default function Home() {
             </div>
           </TabsContent>
 
+          <TabsContent value="mix" className="mt-2">
+            <div className="space-y-4">
+              <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+                <MixedVideoPlayer
+                  leftVideoId={videos.left?.id || null}
+                  rightVideoId={videos.right?.id || null}
+                  crossFaderValue={crossFader}
+                  playing={playing}
+                  onPlayPause={handlePlayPause}
+                  preview={false}
+                  activeTemplate={activeTemplate}
+                  mobileView={true}
+                />
+              </div>
+              <MixTemplates
+                onSelectTemplate={handleTemplateSelect}
+                activeTemplate={activeTemplate}
+              />
+              <DJControls
+                crossFader={crossFader}
+                onCrossFaderChange={handleCrossFaderChange}
+                leftVideoId={videos.left?.id}
+                rightVideoId={videos.right?.id}
+                forceShowTooltip={showTransitionTooltip}
+              />
+            </div>
+          </TabsContent>
+
           <TabsContent value="right" className="mt-2">
             <div className="space-y-4">
+              <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+                <MixedVideoPlayer
+                  leftVideoId={null}
+                  rightVideoId={videos.right?.id || null}
+                  crossFaderValue={1}
+                  playing={playing}
+                  onPlayPause={handlePlayPause}
+                  preview={true}
+                  mobileView={true}
+                />
+              </div>
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                 onSearch={(query) => handleSearch(query, 'right')}
