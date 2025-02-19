@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/card";
 import { Card } from "@/components/ui/card";
-import { SplitSquareHorizontalIcon, LayersIcon, PictureInPictureIcon, ShuffleIcon } from "lucide-react";
+import { SplitSquareHorizontalIcon, LayersIcon, PictureInPictureIcon, SubtitlesIcon } from "lucide-react";
 
 export interface MixTemplate {
   id: string;
@@ -29,10 +29,10 @@ export const mixTemplates: MixTemplate[] = [
     crossFaderValue: 0.2,
   },
   {
-    id: "random-mix",
-    name: "Random Mix",
-    icon: ShuffleIcon,
-    crossFaderValue: 0.5,
+    id: "subtitles",
+    name: "Subtitles",
+    icon: SubtitlesIcon,
+    crossFaderValue: 0,
   },
 ];
 
