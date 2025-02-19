@@ -277,7 +277,7 @@ export default function Home() {
             <ThemeToggle />
           </div>
           <div className="flex justify-center">
-            <div className="text-foreground font-mono text-xl">
+            <div className="text-foreground font-mono text-2xl">
               mixtube
             </div>
           </div>
