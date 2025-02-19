@@ -63,10 +63,10 @@ export default function RecommendedVideos({
   if (showLoading) {
     return (
       <div className="flex-1 space-y-3">
-        {[...Array(3)].map((_, i) => (
+        {[...Array(10)].map((_, i) => (
           <Card key={i} className="w-full overflow-hidden animate-pulse">
             <div className="flex gap-3 p-3">
-              <div className="w-40 aspect-video bg-muted rounded-md" />
+              <div className="w-32 aspect-video bg-muted rounded-md" />
               <div className="flex-1 space-y-3">
                 <div className="h-4 bg-muted rounded w-3/4" />
                 <div className="flex items-center gap-2">
@@ -98,7 +98,7 @@ export default function RecommendedVideos({
 
   return (
     <div className="flex-1 space-y-3">
-      {displayVideos.slice(0, 3).map((video) => (
+      {displayVideos.slice(0, 10).map((video) => (
         <VideoCard 
           key={video.id}
           video={video}
