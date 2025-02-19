@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/SearchBar";
-import VideoPlayer from "@/components/VideoPlayer";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import RecommendedVideos from "@/components/RecommendedVideos";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -143,13 +142,28 @@ export default function Home() {
       <div className="grid grid-cols-[1fr,2fr,1fr] gap-6">
         {/* Left Deck */}
         <div className="space-y-4">
+          <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+            <ReactPlayer
+              url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
+              width="100%"
+              height="100%"
+              playing={false}
+              muted={true}
+              config={{
+                youtube: {
+                  playerVars: {
+                    controls: 0,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    rel: 0,
+                    showinfo: 0,
+                    iv_load_policy: 3
+                  }
+                }
+              }}
+            />
+          </div>
           <h2 className="text-lg font-semibold">Left Deck</h2>
-          <VideoPlayer
-            videoId={videos.left?.id || null}
-            videoTitle={videos.left?.title}
-            channelTitle={videos.left?.channelTitle}
-            side="left"
-          />
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'left')}
             onSearch={(query) => handleSearch(query, 'left')}
@@ -199,13 +213,28 @@ export default function Home() {
 
         {/* Right Deck */}
         <div className="space-y-4">
+          <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+            <ReactPlayer
+              url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
+              width="100%"
+              height="100%"
+              playing={false}
+              muted={true}
+              config={{
+                youtube: {
+                  playerVars: {
+                    controls: 0,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    rel: 0,
+                    showinfo: 0,
+                    iv_load_policy: 3
+                  }
+                }
+              }}
+            />
+          </div>
           <h2 className="text-lg font-semibold">Right Deck</h2>
-          <VideoPlayer
-            videoId={videos.right?.id || null}
-            videoTitle={videos.right?.title}
-            channelTitle={videos.right?.channelTitle}
-            side="right"
-          />
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'right')}
             onSearch={(query) => handleSearch(query, 'right')}
