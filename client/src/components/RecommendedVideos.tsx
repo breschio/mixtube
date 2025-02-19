@@ -24,7 +24,15 @@ export default function RecommendedVideos({
     queryKey: ['related-videos', videoId],
     queryFn: async () => {
       if (!videoId) return [];
-      return getRelatedVideos(videoId);
+      return fetch(`/api/youtube/related?v=${videoId}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to fetch related videos');
+          return res.json();
+        })
+        .catch(err => {
+          console.error('Error fetching related videos:', err);
+          return [];
+        });
     },
     enabled: !isSearching && !!videoId,
     staleTime: 60 * 1000,
