@@ -139,7 +139,7 @@ export default function Home() {
     }
 
     return (
-      <div className="grid grid-cols-[2fr,4fr,2fr] gap-24">
+      <div className="grid grid-cols-[2fr,4fr,2fr] gap-12">
         {/* Left Deck */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Left Deck</h2>
@@ -247,7 +247,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
-        <div className="w-full px-3 sm:px-4 md:px-6 py-2 grid grid-cols-3 items-center">
+        <div className="w-full px-2 sm:px-3 md:px-4 py-1 grid grid-cols-3 items-center"> {/* Adjusted header padding */}
           <div className="flex items-center">
             <ThemeToggle />
           </div>
@@ -274,7 +274,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 w-full px-8 sm:px-12 md:px-24 py-12">
+      <main className="flex-1 w-full px-6 sm:px-8 md:px-12 py-8">
         {renderContent()}
       </main>
     </div>
