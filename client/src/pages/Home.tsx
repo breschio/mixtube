@@ -75,22 +75,17 @@ export default function Home() {
     if (!playing) {
       // Start from center
       setCrossFader(0.5);
-      // Create a gradual transition through multiple steps
-      setTimeout(() => {
-        setCrossFader(0.52);
-      }, 100);
-      setTimeout(() => {
-        setCrossFader(0.54);
-      }, 200);
-      setTimeout(() => {
-        setCrossFader(0.56);
-      }, 300);
-      setTimeout(() => {
-        setCrossFader(0.58);
-      }, 400);
-      setTimeout(() => {
-        setCrossFader(0.6);
-      }, 500);
+      // Create a gradual 9-second transition through multiple steps
+      const steps = 20; // More steps for smoother transition
+      const increment = 0.1 / steps; // Total movement is 0.1 (from 0.5 to 0.6)
+      const timePerStep = 9000 / steps;
+
+      // Create steps for smooth transition
+      for (let i = 1; i <= steps; i++) {
+        setTimeout(() => {
+          setCrossFader(0.5 + (increment * i));
+        }, timePerStep * i);
+      }
     }
   };
 
