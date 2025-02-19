@@ -120,7 +120,7 @@ function VideoCard({ video, onSelect }: VideoCardProps) {
   return (
     <Card className="overflow-hidden border border-border/50 hover:bg-accent/5 transition-colors">
       <div className="flex gap-3 p-3">
-        <div className="relative w-40 aspect-video rounded-md overflow-hidden">
+        <div className="relative w-32 aspect-video rounded-md overflow-hidden">
           <img 
             src={video.thumbnail}
             alt={video.title}
@@ -128,23 +128,23 @@ function VideoCard({ video, onSelect }: VideoCardProps) {
             loading="lazy"
           />
         </div>
-        <div className="flex-1 min-w-0 flex flex-col justify-between">
-          <h3 className="font-medium leading-snug line-clamp-2 text-sm mb-2">
-            {video.title}
-          </h3>
+        <div className="flex-1 min-w-0 flex flex-col">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-medium leading-snug line-clamp-2 text-sm mb-1">
+              {video.title}
+            </h3>
+            <p className="text-xs text-muted-foreground mb-2">
+              {video.channelTitle}
+            </p>
+          </div>
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
               <AvatarFallback>{initial}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-muted-foreground truncate">
-                {video.channelTitle}
-              </p>
-            </div>
             <Button
               size="sm"
               variant="default"
-              className="bg-primary/80 hover:bg-primary transition-colors shrink-0"
+              className="bg-primary/80 hover:bg-primary transition-colors shrink-0 ml-auto"
               onClick={onSelect}
             >
               Load
