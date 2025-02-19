@@ -139,55 +139,67 @@ export default function Home() {
     }
 
     return (
-      <div className="grid grid-cols-[1fr,1fr,1fr] gap-6">
-        {/* Left Deck */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Left Deck</h2>
-          <SearchBar
-            onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-            onSearch={(query) => handleSearch(query, 'left')}
-            videoId={videos.left?.id || null}
-          />
-          <RecommendedVideos
-            videoId={videos.left?.id || null}
-            onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-            searchResults={leftSearchResults}
-            isSearching={!!searchQueries.left}
-          />
-        </div>
+          <div className="grid grid-cols-[1fr,1fr,1fr] gap-6">
+            {/* Left Deck */}
+            <div className="space-y-4">
+              <VideoPlayer 
+                videoId={videos.left?.id || null}
+                videoTitle={videos.left?.title}
+                channelTitle={videos.left?.channelTitle}
+                side="left"
+              />
+              <h2 className="text-lg font-semibold">Left Deck</h2>
+              <SearchBar
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                onSearch={(query) => handleSearch(query, 'left')}
+                videoId={videos.left?.id || null}
+              />
+              <RecommendedVideos
+                videoId={videos.left?.id || null}
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                searchResults={leftSearchResults}
+                isSearching={!!searchQueries.left}
+              />
+            </div>
 
-        {/* Mix Controls */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Mix Controls</h2>
-          <MixTemplates
-            onSelectTemplate={handleTemplateSelect}
-            activeTemplate={activeTemplate}
-          />
-          <DJControls
-            crossFader={crossFader}
-            onCrossFaderChange={setCrossFader}
-            leftVideoId={videos.left?.id}
-            rightVideoId={videos.right?.id}
-          />
-        </div>
+            {/* Mix Controls */}
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold">mixtube</h2>
+              <MixTemplates
+                onSelectTemplate={handleTemplateSelect}
+                activeTemplate={activeTemplate}
+              />
+              <DJControls
+                crossFader={crossFader}
+                onCrossFaderChange={setCrossFader}
+                leftVideoId={videos.left?.id}
+                rightVideoId={videos.right?.id}
+              />
+            </div>
 
-        {/* Right Deck */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Right Deck</h2>
-          <SearchBar
-            onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            onSearch={(query) => handleSearch(query, 'right')}
-            videoId={videos.right?.id || null}
-          />
-          <RecommendedVideos
-            videoId={videos.right?.id || null}
-            onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            searchResults={rightSearchResults}
-            isSearching={!!searchQueries.right}
-          />
-        </div>
-      </div>
-    );
+            {/* Right Deck */}
+            <div className="space-y-4">
+              <VideoPlayer 
+                videoId={videos.right?.id || null}
+                videoTitle={videos.right?.title}
+                channelTitle={videos.right?.channelTitle}
+                side="right"
+              />
+              <h2 className="text-lg font-semibold">Right Deck</h2>
+              <SearchBar
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                onSearch={(query) => handleSearch(query, 'right')}
+                videoId={videos.right?.id || null}
+              />
+              <RecommendedVideos
+                videoId={videos.right?.id || null}
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                searchResults={rightSearchResults}
+                isSearching={!!searchQueries.right}
+              />
+            </div>
+          </div>
+        );
   };
 
   const renderVideo = () => {
