@@ -182,7 +182,6 @@ export default function Home() {
         <div className="space-y-6">
           <div className="flex justify-center">
             <div className="text-foreground font-mono text-xl">
-              mixtube
             </div>
           </div>
           <MixTemplates
@@ -298,9 +297,7 @@ export default function Home() {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
         <div className="container mx-auto max-w-[1440px] px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
-          <div className="text-foreground font-mono text-xl">
-            mixtube
-          </div>
+          <div></div>
           <div className="flex items-center gap-4">
             <ThemeToggle />
             {!user && (
