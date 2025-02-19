@@ -3,6 +3,7 @@ import { X, Search, Link2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { debounce } from '@/lib/utils';
 import type { YouTubeVideo } from '@/lib/youtube';
 
@@ -82,7 +83,6 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     }
   };
 
-  // When component mounts or videoId changes, set the initial URL
   useEffect(() => {
     if (videoId) {
       const newUrl = `https://youtube.com/watch?v=${videoId}`;
@@ -92,7 +92,6 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     }
   }, [videoId]);
 
-  // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
       if (blurTimeoutRef.current) {
@@ -103,12 +102,9 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
 
   const handleBlur = () => {
     if (isUrlMode && lastValidUrlRef.current) {
-      // Clear any existing timeout
       if (blurTimeoutRef.current) {
         clearTimeout(blurTimeoutRef.current);
       }
-
-      // Set new timeout
       blurTimeoutRef.current = setTimeout(() => {
         if (!displayValue || displayValue !== lastValidUrlRef.current) {
           setDisplayValue(lastValidUrlRef.current);
@@ -125,57 +121,58 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     setIsValid(true);
   };
 
-  const handleModeToggle = () => {
-    setIsUrlMode(!isUrlMode);
+  const handleModeToggle = (value: string) => {
+    const newIsUrlMode = value === 'url';
+    setIsUrlMode(newIsUrlMode);
     setDisplayValue('');
     setIsValid(true);
   };
-
-  const activeIconClassName = "bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]";
-  const inactiveIconClassName = "text-muted-foreground hover:bg-accent/50";
 
   return (
     <div className="w-full">
       <div className="relative group">
         <div className="relative flex items-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 transition-all duration-200 ${activeIconClassName}`}
-            onClick={handleModeToggle}
+          <ToggleGroup
+            type="single"
+            value={isUrlMode ? 'url' : 'search'}
+            onValueChange={handleModeToggle}
+            className="absolute left-1 top-1/2 -translate-y-1/2 h-7 flex gap-0.5"
           >
-            {isUrlMode ? <Link2 className="h-4 w-4" /> : <Search className="h-4 w-4" />}
-          </Button>
+            <ToggleGroupItem
+              value="url"
+              size="sm"
+              className={`h-7 w-7 p-0 ${isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : ''}`}
+            >
+              <Link2 className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="search"
+              size="sm"
+              className={`h-7 w-7 p-0 ${!isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : ''}`}
+            >
+              <Search className="h-4 w-4" />
+            </ToggleGroupItem>
+          </ToggleGroup>
           <Input
             type="text"
             placeholder={isUrlMode ? "Paste YouTube URL" : "Search YouTube"}
             value={displayValue}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            className={`pl-9 pr-16 normal-case transition-all ${
+            className={`pl-16 pr-9 normal-case transition-all ${
               !isValid && displayValue ? 'border-red-500' : ''
             } ${isUrlMode ? 'font-mono text-sm' : ''} animate-placeholder`}
           />
-          <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-1">
-            {displayValue && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 hover:bg-accent/50"
-                onClick={handleClear}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
+          {displayValue && (
             <Button
               variant="ghost"
               size="icon"
-              className={`h-7 w-7 transition-all duration-200 ${inactiveIconClassName}`}
-              onClick={handleModeToggle}
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50"
+              onClick={handleClear}
             >
-              {isUrlMode ? <Search className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
+              <X className="h-4 w-4" />
             </Button>
-          </div>
+          )}
         </div>
       </div>
       {!isValid && displayValue && (
