@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Music2, Plus } from 'lucide-react';
+import { Music2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import type { YouTubeVideo } from '@/lib/youtube';
 import { getRelatedVideos } from '@/lib/youtube';
@@ -104,7 +104,6 @@ export default function RecommendedVideos({
                     className="ml-auto bg-primary/80 hover:bg-primary transition-colors"
                     onClick={() => onVideoSelect(video)}
                   >
-                    <Plus className="h-3 w-3 mr-1" />
                     Load
                   </Button>
                 </div>
@@ -152,7 +151,6 @@ export default function RecommendedVideos({
                   className="ml-auto bg-primary/80 hover:bg-primary transition-colors"
                   onClick={() => onVideoSelect(video)}
                 >
-                  <Plus className="h-3 w-3 mr-1" />
                   Load
                 </Button>
               </div>
