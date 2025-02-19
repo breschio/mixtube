@@ -76,9 +76,9 @@ export default function Home() {
       // Start from center
       setCrossFader(0.5);
       // Create a gradual 3-second transition through multiple steps
-      const steps = 60; // Increased steps for smoother transition
+      const steps = 90; // Increased steps for even smoother transition
       const increment = 0.1 / steps; // Total movement is 0.1 (from 0.5 to 0.6)
-      const timePerStep = 3000 / steps; // 3 seconds total duration
+      const timePerStep = 1500 / steps; // 1.5 seconds total duration
 
       // Create steps for smooth transition
       for (let i = 1; i <= steps; i++) {
