@@ -161,6 +161,11 @@ export default function MixedVideoPlayer({
       return { left: 0, right: 0 };
     }
 
+    // For subtitles mode, only play left video audio
+    if (activeTemplate === 'subtitles') {
+      return { left: 1, right: 0 };
+    }
+
     // For mobile view, use full audio on the dominant video
     if (mobileView) {
       return crossFaderValue > 0.5
@@ -170,8 +175,8 @@ export default function MixedVideoPlayer({
 
     // Desktop mix view: Calculate audio levels based on crossfader
     return {
-      left: Math.max(0, 1 - crossFaderValue),
-      right: Math.max(0, crossFaderValue)
+      left: Math.cos(crossFaderValue * Math.PI / 2), // Smooth transition
+      right: Math.sin(crossFaderValue * Math.PI / 2)  // Smooth transition
     };
   };
 
