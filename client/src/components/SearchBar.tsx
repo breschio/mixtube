@@ -139,18 +139,18 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             className="absolute left-1 top-1/2 -translate-y-1/2 h-7 flex gap-0.5"
           >
             <ToggleGroupItem
-              value="url"
-              size="sm"
-              className={`h-7 w-7 p-0 ${isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : ''}`}
-            >
-              <Link2 className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
               value="search"
               size="sm"
               className={`h-7 w-7 p-0 ${!isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : ''}`}
             >
               <Search className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="url"
+              size="sm"
+              className={`h-7 w-7 p-0 ${isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : ''}`}
+            >
+              <Link2 className="h-4 w-4" />
             </ToggleGroupItem>
           </ToggleGroup>
           <Input
