@@ -144,6 +144,12 @@ export default function Home() {
         {/* Left Deck */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Left Deck</h2>
+          <VideoPlayer
+            videoId={videos.left?.id || null}
+            videoTitle={videos.left?.title}
+            channelTitle={videos.left?.channelTitle}
+            side="left"
+          />
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'left')}
             onSearch={(query) => handleSearch(query, 'left')}
@@ -194,6 +200,12 @@ export default function Home() {
         {/* Right Deck */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Right Deck</h2>
+          <VideoPlayer
+            videoId={videos.right?.id || null}
+            videoTitle={videos.right?.title}
+            channelTitle={videos.right?.channelTitle}
+            side="right"
+          />
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'right')}
             onSearch={(query) => handleSearch(query, 'right')}
