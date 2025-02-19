@@ -115,6 +115,7 @@ export default function Home() {
                 onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                 searchResults={leftSearchResults}
                 isSearching={!!searchQueries.left}
+                side="left"
               />
             </div>
           </TabsContent>
@@ -131,6 +132,7 @@ export default function Home() {
                 onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                 searchResults={rightSearchResults}
                 isSearching={!!searchQueries.right}
+                side="right"
               />
             </div>
           </TabsContent>
@@ -173,6 +175,7 @@ export default function Home() {
             onVideoSelect={(video) => handleVideoSelect(video, 'left')}
             searchResults={leftSearchResults}
             isSearching={!!searchQueries.left}
+            side="left"
           />
         </div>
 
@@ -235,6 +238,7 @@ export default function Home() {
             onVideoSelect={(video) => handleVideoSelect(video, 'right')}
             searchResults={rightSearchResults}
             isSearching={!!searchQueries.right}
+            side="right"
           />
         </div>
       </div>
