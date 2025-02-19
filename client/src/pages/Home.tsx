@@ -35,10 +35,10 @@ export default function Home() {
       thumbnail: `https://img.youtube.com/vi/xpvjPsme8_k/mqdefault.jpg`
     },
     right: {
-      id: 'nKS3CxE1RzY',
-      title: 'Default Right Video',
-      channelTitle: 'Default Channel',
-      thumbnail: `https://img.youtube.com/vi/nKS3CxE1RzY/mqdefault.jpg`
+      id: 'Q_050nEIMqw',
+      title: 'How to Attract Money & Clients',
+      channelTitle: 'Unknown Channel',
+      thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
     }
   });
 
