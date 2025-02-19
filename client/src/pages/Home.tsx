@@ -179,8 +179,10 @@ export default function Home() {
         </div>
 
         {/* Mix Controls */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">mixtube</h2>
+        <div className="space-y-6">
+          <div className="flex justify-center">
+            <h2 className="mixtube-logo">mixtube</h2>
+          </div>
           <MixTemplates
             onSelectTemplate={handleTemplateSelect}
             activeTemplate={activeTemplate}
