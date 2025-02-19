@@ -13,104 +13,6 @@ interface RecommendedVideosProps {
   side?: 'left' | 'right';
 }
 
-// Parse video ID from YouTube URL
-function getVideoIdFromUrl(url: string): string {
-  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-  const match = url.match(regex);
-  return match ? match[1] : '';
-}
-
-// Default videos from CSV data
-const DEFAULT_LEFT_VIDEOS: YouTubeVideo[] = [
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/playlist?list=PLtysvtOEQOMz_Zkf2WKcrmJXkRdk2xAAm'),
-    title: '2 Hours For Sleep Studying Relaxing ASMR Satisfying Eating Sounds Compilation Mukbang 먹방',
-    channelTitle: 'Various',
-    thumbnail: `https://img.youtube.com/vi/${getVideoIdFromUrl('https://www.youtube.com/playlist?list=PLtysvtOEQOMz_Zkf2WKcrmJXkRdk2xAAm')}/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=jGuVJHmo2hQ'),
-    title: 'The Most Popular ASMR Triggers',
-    channelTitle: 'Various',
-    thumbnail: `https://img.youtube.com/vi/jGuVJHmo2hQ/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=NxSab5KZGL8'),
-    title: 'TOP 50 ASMR The best ASMR of February 2024',
-    channelTitle: 'Various',
-    thumbnail: `https://img.youtube.com/vi/NxSab5KZGL8/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/playlist?list=PLWk4fkmkuf3vlICsIp-8EjB3Yje3XxRqI'),
-    title: 'Top 20 Most Viewed Videos - WhispersRed ASMR',
-    channelTitle: 'WhispersRed ASMR',
-    thumbnail: `https://img.youtube.com/vi/PLWk4fkmkuf3vlICsIp-8EjB3Yje3XxRqI/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=jGuVJHmo2hQ'),
-    title: 'The Most Popular ASMR Triggers',
-    channelTitle: 'Various',
-    thumbnail: `https://img.youtube.com/vi/jGuVJHmo2hQ/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=Pl1gDg7gTtA'),
-    title: 'ASMR 20 Triggers to Help You Sleep',
-    channelTitle: 'ASMR Darling',
-    thumbnail: `https://img.youtube.com/vi/Pl1gDg7gTtA/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=Pl1gDg7gTtA'),
-    title: 'ASMR 20 Triggers to Help You Sleep',
-    channelTitle: 'ASMR Darling',
-    thumbnail: `https://img.youtube.com/vi/Pl1gDg7gTtA/mqdefault.jpg`
-  }
-];
-
-const DEFAULT_RIGHT_VIDEOS: YouTubeVideo[] = [
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=UaPtQ682mBk'),
-    title: 'Compilation Of The Best Motivational Speeches | Listen Every Morning',
-    channelTitle: 'Various',
-    thumbnail: `https://img.youtube.com/vi/UaPtQ682mBk/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=uvZhjIRl6D0'),
-    title: 'Powerful Motivational Speeches For Success',
-    channelTitle: 'Various',
-    thumbnail: `https://img.youtube.com/vi/uvZhjIRl6D0/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=v3hpZ4HPIT4'),
-    title: 'MINDSET IS EVERYTHING | Powerful Motivational Speeches',
-    channelTitle: 'Various',
-    thumbnail: `https://img.youtube.com/vi/v3hpZ4HPIT4/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=S0HJ3h815Zo'),
-    title: 'Best Motivational Video Speeches Of All Time',
-    channelTitle: 'Various',
-    thumbnail: `https://img.youtube.com/vi/S0HJ3h815Zo/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=j9tg4FpcB2I'),
-    title: 'Focus On Yourself, Not Others | Powerful Motivational Speeches',
-    channelTitle: 'Various',
-    thumbnail: `https://img.youtube.com/vi/j9tg4FpcB2I/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=sCV38GynwT4'),
-    title: 'CHANGE THE WAY YOU SEE YOURSELF - Eric Thomas',
-    channelTitle: 'Eric Thomas',
-    thumbnail: `https://img.youtube.com/vi/sCV38GynwT4/mqdefault.jpg`
-  },
-  {
-    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=TBuIGBCF9jc'),
-    title: 'Admiral McRaven Leaves the Audience SPEECHLESS',
-    channelTitle: 'Admiral McRaven',
-    thumbnail: `https://img.youtube.com/vi/TBuIGBCF9jc/mqdefault.jpg`
-  }
-];
-
 export default function RecommendedVideos({ 
   videoId, 
   onVideoSelect, 
@@ -121,10 +23,10 @@ export default function RecommendedVideos({
   const { data: recommendedVideos, isLoading } = useQuery({
     queryKey: ['related-videos', videoId],
     queryFn: async () => {
-      if (!videoId) return side === 'left' ? DEFAULT_LEFT_VIDEOS : DEFAULT_RIGHT_VIDEOS;
+      if (!videoId) return [];
       return getRelatedVideos(videoId);
     },
-    enabled: !isSearching,
+    enabled: !isSearching && !!videoId,
     staleTime: 60 * 1000,
     gcTime: 2 * 60 * 1000,
   });
@@ -154,16 +56,9 @@ export default function RecommendedVideos({
   }
 
   if (!displayVideos?.length) {
-    const defaultVideos = side === 'left' ? DEFAULT_LEFT_VIDEOS : DEFAULT_RIGHT_VIDEOS;
     return (
-      <div className="flex-1 space-y-3">
-        {defaultVideos.map((video) => (
-          <VideoCard 
-            key={video.id}
-            video={video}
-            onSelect={() => onVideoSelect(video)}
-          />
-        ))}
+      <div className="flex-1 p-4 text-center text-muted-foreground">
+        No videos found
       </div>
     );
   }

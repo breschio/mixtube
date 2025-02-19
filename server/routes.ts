@@ -14,8 +14,11 @@ const rateLimiter = new Map<string, number[]>();
 async function getVideoInfo(url: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const ytdl = spawn('yt-dlp', [
-      '--dump-json',
+      '--dump-single-json',
+      '--no-playlist',
       '--flat-playlist',
+      '--extract-flat',
+      '--no-warnings',
       url
     ]);
 
@@ -293,22 +296,20 @@ export function registerRoutes(app: Express): Server {
         return res.json(cachedData.data);
       }
 
-      // Add to rate limiter
-      const requests = rateLimiter.get(videoId) || [];
-      requests.push(now);
-      rateLimiter.set(videoId, requests);
-
       const url = `https://www.youtube.com/watch?v=${videoId}`;
       const videoInfo = await getVideoInfo(url);
 
-      // Extract related videos from the video info
-      const relatedVideos = videoInfo.entries || [];
-      const formattedVideos = relatedVideos.map((video: any) => ({
-        id: video.id,
-        title: video.title,
-        thumbnail: `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`,
-        channelTitle: video.channel || 'Unknown Channel'
-      })).slice(0, 10);
+      // Extract recommended videos from the video info
+      const recommendedVideos = videoInfo.recommended_videos || [];
+      const formattedVideos = recommendedVideos
+        .filter((video: any) => video && video.id && video.title)
+        .map((video: any) => ({
+          id: video.id,
+          title: video.title,
+          thumbnail: `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`,
+          channelTitle: video.channel || video.uploader || 'Unknown Channel'
+        }))
+        .slice(0, 10);
 
       // Cache the successful response
       await cache.set(cacheKey, { data: formattedVideos, timestamp: now });
