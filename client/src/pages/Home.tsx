@@ -44,9 +44,9 @@ export default function Home() {
 
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
-  const [crossFader, setCrossFader] = useState(0.6); 
+  const [crossFader, setCrossFader] = useState(0.4); // Changed to 0.4 for 40% right width
   const [searchQueries, setSearchQueries] = useState({ left: '', right: '' });
-  const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side"); 
+  const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
 
   const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left);
   const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right);
@@ -71,6 +71,15 @@ export default function Home() {
 
   const handlePlayPause = () => {
     setPlaying(!playing);
+    // If starting playback, transition to right
+    if (!playing) {
+      // Start from center
+      setCrossFader(0.5);
+      // After a brief delay, smoothly transition to the right side
+      setTimeout(() => {
+        setCrossFader(0.4);
+      }, 100);
+    }
   };
 
   const handleTemplateSelect = (template: MixTemplate) => {
