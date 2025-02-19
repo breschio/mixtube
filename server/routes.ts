@@ -123,35 +123,28 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: 'Search query required' });
       }
 
-      const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
-      if (!YOUTUBE_API_KEY) {
-        return res.status(500).json({ error: 'YouTube API key not configured' });
-      }
+      const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+      const python = spawn('python3', ['server/scraper.py', searchUrl]);
 
-      const searchParams = new URLSearchParams({
-        part: 'snippet',
-        q: query,
-        type: 'video',
-        maxResults: '50', 
-        key: YOUTUBE_API_KEY
+      let output = '';
+      python.stdout.on('data', (data) => {
+        output += data;
       });
 
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
-      );
+      await new Promise((resolve, reject) => {
+        python.on('close', (code) => {
+          if (code !== 0) {
+            reject(new Error('Python scraper failed'));
+            return;
+          }
+          resolve(null);
+        });
+      });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error?.message || 'Failed to search videos');
-      }
+      const scrapedData = JSON.parse(output);
+      const videos = scrapedData.videos || [];
 
-      const videos = data.items.map((item: any) => ({
-        id: item.id.videoId,
-        title: item.snippet.title,
-        thumbnail: item.snippet.thumbnails.medium.url,
-      }));
-
-      res.json(videos);
+      res.json(videos.slice(0, 50));
     } catch (error) {
       console.error('YouTube search error:', error);
       res.status(500).json({ error: 'Failed to search videos' });
