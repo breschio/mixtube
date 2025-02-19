@@ -16,9 +16,7 @@ async function getVideoInfo(url: string): Promise<any> {
     const ytdl = spawn('yt-dlp', [
       '--dump-single-json',
       '--no-playlist',
-      '--flat-playlist',
-      '--extract-flat',
-      '--no-warnings',
+      '--skip-download',
       url
     ]);
 
@@ -35,6 +33,7 @@ async function getVideoInfo(url: string): Promise<any> {
 
     ytdl.on('close', (code) => {
       if (code !== 0) {
+        console.error('yt-dlp error:', error);
         reject(new Error(`yt-dlp exited with code ${code}: ${error}`));
         return;
       }
@@ -42,6 +41,7 @@ async function getVideoInfo(url: string): Promise<any> {
         const info = JSON.parse(output);
         resolve(info);
       } catch (e) {
+        console.error('Error parsing yt-dlp output:', e);
         reject(e);
       }
     });
@@ -300,7 +300,18 @@ export function registerRoutes(app: Express): Server {
       const videoInfo = await getVideoInfo(url);
 
       // Extract recommended videos from the video info
-      const recommendedVideos = videoInfo.recommended_videos || [];
+      let recommendedVideos = [];
+
+      if (videoInfo.related_videos) {
+        recommendedVideos = videoInfo.related_videos;
+      } else if (videoInfo.entries?.[0]?.entries) {
+        recommendedVideos = videoInfo.entries[0].entries;
+      } else {
+        console.log('No recommended videos found in yt-dlp output');
+        // Fallback to using the YouTube API endpoint
+        return res.redirect(`/api/youtube/related?v=${videoId}`);
+      }
+
       const formattedVideos = recommendedVideos
         .filter((video: any) => video && video.id && video.title)
         .map((video: any) => ({
@@ -317,7 +328,8 @@ export function registerRoutes(app: Express): Server {
       res.json(formattedVideos);
     } catch (error) {
       console.error('yt-dlp error:', error);
-      res.status(500).json({ error: 'Failed to fetch related videos' });
+      // Fallback to using the YouTube API endpoint
+      return res.redirect(`/api/youtube/related?v=${videoId}`);
     }
   });
 
