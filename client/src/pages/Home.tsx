@@ -13,7 +13,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useYoutubeSearch } from '@/hooks/use-youtube-search';
 import { useMobile } from '@/hooks/use-mobile';
 import type { YouTubeVideo } from '@/lib/youtube';
-import MixTemplates, { MixTemplate, mixTemplates } from "@/components/MixTemplates";
+//import MixTemplates, { MixTemplate, mixTemplates } from "@/components/MixTemplates"; //Removed MixTemplates import
 import ReactPlayer from 'react-player';
 
 interface VideoInfo extends YouTubeVideo {
@@ -103,11 +103,6 @@ export default function Home() {
     }
   };
 
-  const handleTemplateSelect = (template: MixTemplate) => {
-    setActiveTemplate(template.id);
-    setCrossFader(template.crossFaderValue);
-    setUserInteractedWithSlider(true); // Count template selection as user interaction
-  };
 
   const handleCrossFaderChange = (value: number, userInitiated?: boolean) => {
     setCrossFader(value);
@@ -128,10 +123,7 @@ export default function Home() {
 
           <TabsContent value="mix" className="mt-2">
             <div className="space-y-4">
-              <MixTemplates
-                onSelectTemplate={handleTemplateSelect}
-                activeTemplate={activeTemplate}
-              />
+              {/*MixTemplates removed*/}
               <DJControls
                 crossFader={crossFader}
                 onCrossFaderChange={handleCrossFaderChange}
@@ -199,7 +191,9 @@ export default function Home() {
                     rel: 0,
                     showinfo: 0,
                     iv_load_policy: 3,
-                    start: 0
+                    start: 0,
+                    disablekb: 1,
+                    fs: 0,
                   }
                 }
               }}
@@ -232,10 +226,7 @@ export default function Home() {
               mobileView={false}
             />
           </div>
-          <MixTemplates
-            onSelectTemplate={handleTemplateSelect}
-            activeTemplate={activeTemplate}
-          />
+          {/*MixTemplates removed*/}
           <DJControls
             crossFader={crossFader}
             onCrossFaderChange={handleCrossFaderChange}
@@ -263,7 +254,9 @@ export default function Home() {
                     rel: 0,
                     showinfo: 0,
                     iv_load_policy: 3,
-                    start: 0
+                    start: 0,
+                    disablekb: 1,
+                    fs: 0,
                   }
                 }
               }}
