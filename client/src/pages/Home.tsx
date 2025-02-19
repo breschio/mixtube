@@ -45,7 +45,10 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.6);
-  const [searchQueries, setSearchQueries] = useState({ left: '', right: '' });
+  const [searchQueries, setSearchQueries] = useState({ 
+    left: `https://youtube.com/watch?v=ApSCH4JXjQU`,
+    right: `https://youtube.com/watch?v=Q_050nEIMqw` 
+  });
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [userInteractedWithSlider, setUserInteractedWithSlider] = useState(false);

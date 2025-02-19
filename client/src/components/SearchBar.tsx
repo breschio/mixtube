@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { X, Search, Link2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -84,6 +84,14 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     }
   };
 
+  // When component mounts or videoId changes, set the initial URL
+  useEffect(() => {
+    if (videoId) {
+      setDisplayValue(`https://youtube.com/watch?v=${videoId}`);
+      setIsUrlMode(true);
+    }
+  }, [videoId]);
+
   const handleClear = () => {
     setDisplayValue('');
     onSearch('');
@@ -105,8 +113,8 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             variant="ghost"
             size="icon"
             className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 transition-all duration-200 ${
-              !isUrlMode 
-                ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' 
+              !isUrlMode
+                ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]'
                 : 'text-muted-foreground hover:bg-accent/50'
             }`}
             onClick={handleModeToggle}
@@ -137,8 +145,8 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
               variant="ghost"
               size="icon"
               className={`h-7 w-7 transition-all duration-200 ${
-                isUrlMode 
-                  ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' 
+                isUrlMode
+                  ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]'
                   : 'text-muted-foreground hover:bg-accent/50'
               }`}
               onClick={handleModeToggle}
