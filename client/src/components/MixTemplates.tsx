@@ -46,7 +46,7 @@ export default function MixTemplates({
   activeTemplate,
 }: MixTemplatesProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {mixTemplates.map((template) => {
         const Icon = template.icon;
         const isActive = activeTemplate === template.id;
