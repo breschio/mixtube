@@ -20,6 +20,7 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
   const [isUrlMode, setIsUrlMode] = useState(true);
   const lastValidUrlRef = useRef<string | null>(null);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isTypingRef = useRef(false);
   const { toast } = useToast();
 
   const patterns = [
@@ -51,9 +52,37 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     [onSearch]
   );
 
+  const startUrlRestorationTimer = () => {
+    if (blurTimeoutRef.current) {
+      clearTimeout(blurTimeoutRef.current);
+    }
+
+    if (isUrlMode && lastValidUrlRef.current && !isTypingRef.current) {
+      blurTimeoutRef.current = setTimeout(() => {
+        if (!displayValue || displayValue !== lastValidUrlRef.current) {
+          setDisplayValue(lastValidUrlRef.current || '');
+        }
+      }, 5000);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setDisplayValue(newValue);
+    isTypingRef.current = true;
+
+    // Clear any existing restoration timer when user starts typing
+    if (blurTimeoutRef.current) {
+      clearTimeout(blurTimeoutRef.current);
+    }
+
+    // Set a timeout to mark typing as finished
+    setTimeout(() => {
+      isTypingRef.current = false;
+      if (!newValue && isUrlMode) {
+        startUrlRestorationTimer();
+      }
+    }, 1000);
 
     if (isUrlMode) {
       const videoId = extractVideoId(newValue);
@@ -101,15 +130,9 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
   }, []);
 
   const handleBlur = () => {
-    if (isUrlMode && lastValidUrlRef.current) {
-      if (blurTimeoutRef.current) {
-        clearTimeout(blurTimeoutRef.current);
-      }
-      blurTimeoutRef.current = setTimeout(() => {
-        if (!displayValue || displayValue !== lastValidUrlRef.current) {
-          setDisplayValue(lastValidUrlRef.current);
-        }
-      }, 5000);
+    isTypingRef.current = false;
+    if (isUrlMode && !displayValue) {
+      startUrlRestorationTimer();
     }
   };
 
@@ -119,6 +142,11 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
       onSearch('');
     }
     setIsValid(true);
+
+    // Start the restoration timer after clearing
+    if (isUrlMode) {
+      startUrlRestorationTimer();
+    }
   };
 
   const handleModeToggle = (value: string) => {
