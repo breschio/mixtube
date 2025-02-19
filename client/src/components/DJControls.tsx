@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface DJControlsProps {
   crossFader: number;
-  onCrossFaderChange: (value: number) => void;
+  onCrossFaderChange: (value: number, userInitiated?: boolean) => void;
   leftVideoId?: string | null;
   rightVideoId?: string | null;
   forceShowTooltip?: boolean;
@@ -36,7 +36,7 @@ export default function DJControls({
   // Handle slider interaction
   const handleSliderChange = (value: number[]) => {
     showLabel();
-    onCrossFaderChange(value[0]);
+    onCrossFaderChange(value[0], true); // Add userInitiated flag
 
     // Set timeout to hide label after 3 seconds
     const newTimeoutId = setTimeout(() => {
