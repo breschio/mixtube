@@ -102,15 +102,18 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     <div className="w-full">
       <div className="relative group">
         <div className="relative flex items-center">
+          <Switch
+            checked={isUrlMode}
+            onCheckedChange={handleModeToggle}
+            className="data-[state=checked]:bg-primary mr-2"
+          />
           <Button
             variant="ghost"
             size="icon"
-            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50 ${
-              !isUrlMode ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50`}
             onClick={handleModeToggle}
           >
-            <Search className="h-4 w-4" />
+            <Search className={`h-4 w-4 ${!isUrlMode ? 'text-primary' : 'text-muted-foreground'}`} />
           </Button>
           <Input
             type="text"
@@ -132,11 +135,6 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
                 <X className="h-4 w-4" />
               </Button>
             )}
-            <Switch
-              checked={isUrlMode}
-              onCheckedChange={handleModeToggle}
-              className="data-[state=checked]:bg-primary"
-            />
           </div>
         </div>
       </div>
