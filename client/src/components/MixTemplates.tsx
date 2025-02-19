@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { SplitSquareHorizontalIcon, LayersIcon } from "lucide-react";
+import { SplitSquareHorizontalIcon, LayersIcon, PictureInPictureIcon, ShuffleIcon } from "lucide-react";
 
 export interface MixTemplate {
   id: string;
@@ -22,6 +22,18 @@ export const mixTemplates: MixTemplate[] = [
     icon: LayersIcon,
     crossFaderValue: 0.6, // Maintaining same 40% right balance
   },
+  {
+    id: "picture-in-picture",
+    name: "Picture in Picture",
+    icon: PictureInPictureIcon,
+    crossFaderValue: 0.6, // Maintaining same 40% right balance
+  },
+  {
+    id: "random-mix",
+    name: "Random Mix",
+    icon: ShuffleIcon,
+    crossFaderValue: 0.6, // Maintaining same 40% right balance
+  },
 ];
 
 interface MixTemplatesProps {
@@ -34,7 +46,7 @@ export default function MixTemplates({
   activeTemplate,
 }: MixTemplatesProps) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {mixTemplates.map((template) => {
         const Icon = template.icon;
         const isActive = activeTemplate === template.id;
