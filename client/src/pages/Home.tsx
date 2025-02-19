@@ -142,6 +142,7 @@ export default function Home() {
       <div className="grid grid-cols-[2fr,4fr,2fr] gap-24">
         {/* Left Deck */}
         <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Left Deck</h2>
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
@@ -163,7 +164,6 @@ export default function Home() {
               }}
             />
           </div>
-          <h2 className="text-lg font-semibold">Left Deck</h2>
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'left')}
             onSearch={(query) => handleSearch(query, 'left')}
@@ -206,6 +206,7 @@ export default function Home() {
 
         {/* Right Deck */}
         <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Right Deck</h2>
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
@@ -227,7 +228,6 @@ export default function Home() {
               }}
             />
           </div>
-          <h2 className="text-lg font-semibold">Right Deck</h2>
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'right')}
             onSearch={(query) => handleSearch(query, 'right')}
