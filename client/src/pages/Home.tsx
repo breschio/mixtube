@@ -44,7 +44,7 @@ export default function Home() {
 
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
-  const [crossFader, setCrossFader] = useState(0.4); // Changed to 0.4 for 40% right width
+  const [crossFader, setCrossFader] = useState(0.6); 
   const [searchQueries, setSearchQueries] = useState({ left: '', right: '' });
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
 
@@ -77,7 +77,7 @@ export default function Home() {
       setCrossFader(0.5);
       // After a brief delay, smoothly transition to the right side
       setTimeout(() => {
-        setCrossFader(0.4);
+        setCrossFader(0.6);
       }, 100);
     }
   };

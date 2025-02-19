@@ -14,7 +14,7 @@ export const mixTemplates: MixTemplate[] = [
     id: "side-by-side",
     name: "Side by Side",
     icon: SplitSquareHorizontalIcon,
-    crossFaderValue: 0.4, // Changed to 0.4 to give exactly 40% to the right side
+    crossFaderValue: 0.6, // Setting to 0.6 to give exactly 40% to the right side
   },
   {
     id: "fade-through",
