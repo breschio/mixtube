@@ -144,14 +144,12 @@ export default function Home() {
               <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
             </TabsList>
 
-            {/* Mix templates below tabs */}
-            <MixTemplates
-              onSelectTemplate={handleTemplateSelect}
-              activeTemplate={activeTemplate}
-            />
-
             {/* Tab content */}
             <TabsContent value="mix" className="mt-2 space-y-4">
+              <MixTemplates
+                onSelectTemplate={handleTemplateSelect}
+                activeTemplate={activeTemplate}
+              />
               <DJControls
                 crossFader={crossFader}
                 onCrossFaderChange={handleCrossFaderChange}
@@ -334,6 +332,7 @@ export default function Home() {
       <main className="flex-1 w-full px-6 sm:px-8 md:px-12 pt-4 pb-8">
         {isMobile ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4">
+            {/* Video player at the top */}
             <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
               <MixedVideoPlayer
                 leftVideoId={videos.left?.id || null}
@@ -346,16 +345,20 @@ export default function Home() {
                 mobileView={true}
               />
             </div>
+
+            {/* Tabs directly below video */}
             <TabsList className="w-full grid grid-cols-3">
               <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
               <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
               <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
             </TabsList>
-            <MixTemplates
-              onSelectTemplate={handleTemplateSelect}
-              activeTemplate={activeTemplate}
-            />
+
+            {/* Tab content */}
             <TabsContent value="mix" className="mt-2 space-y-4">
+              <MixTemplates
+                onSelectTemplate={handleTemplateSelect}
+                activeTemplate={activeTemplate}
+              />
               <DJControls
                 crossFader={crossFader}
                 onCrossFaderChange={handleCrossFaderChange}
@@ -364,6 +367,7 @@ export default function Home() {
                 forceShowTooltip={showTransitionTooltip}
               />
             </TabsContent>
+
             <TabsContent value="left" className="mt-2 space-y-4">
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'left')}
@@ -378,6 +382,7 @@ export default function Home() {
                 side="left"
               />
             </TabsContent>
+
             <TabsContent value="right" className="mt-2 space-y-4">
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'right')}
