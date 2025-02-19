@@ -29,10 +29,10 @@ export default function Home() {
     right: VideoInfo | null;
   }>({
     left: {
-      id: 'xpvjPsme8_k',
-      title: 'Default Left Video',
+      id: 'ApSCH4JXjQU',
+      title: 'Chilled Jazz House Music Mix - Cozy Playlist',
       channelTitle: 'Default Channel',
-      thumbnail: `https://img.youtube.com/vi/xpvjPsme8_k/mqdefault.jpg`
+      thumbnail: `https://img.youtube.com/vi/ApSCH4JXjQU/mqdefault.jpg`
     },
     right: {
       id: 'Q_050nEIMqw',
