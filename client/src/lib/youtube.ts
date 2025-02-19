@@ -21,16 +21,18 @@ export async function searchVideos(query: string): Promise<YouTubeVideo[]> {
 }
 
 export async function getRelatedVideos(videoId: string): Promise<YouTubeVideo[]> {
-  const response = await fetch(`/api/youtube/related?v=${videoId}`);
-  const data = await response.json();
+  try {
+    const response = await fetch(`/api/youtube/related-ytdl?v=${videoId}`);
+    const data = await response.json();
 
-  if (!response.ok) {
-    const error = data as YouTubeError;
-    if (error.error?.code === 403) {
-      throw new Error('API quota exceeded. Please try again later.');
+    if (!response.ok) {
+      const error = data as YouTubeError;
+      throw new Error(error.error?.message || 'Failed to fetch related videos');
     }
-    throw new Error(error.error?.message || 'Failed to fetch related videos');
-  }
 
-  return data || [];
+    return data;
+  } catch (error) {
+    console.error('Error fetching related videos:', error);
+    throw error;
+  }
 }
