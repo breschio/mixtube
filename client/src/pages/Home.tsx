@@ -313,7 +313,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 w-full px-6 sm:px-8 md:px-12 py-8">
+      <main className="flex-1 w-full px-6 sm:px-8 md:px-12 pt-4 pb-8">
         {renderContent()}
       </main>
     </div>
