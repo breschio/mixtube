@@ -1,9 +1,7 @@
 import { useState, useCallback } from 'react';
-import { X, Search, Link2, Youtube } from 'lucide-react';
+import { X, Search, Link2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
 import type { YouTubeVideo } from '@/lib/youtube';
@@ -92,54 +90,58 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     setIsValid(true);
   };
 
-  const handleModeToggle = (checked: boolean) => {
-    setIsUrlMode(checked);
+  const handleModeToggle = () => {
+    setIsUrlMode(!isUrlMode);
     setDisplayValue('');
     setIsValid(true);
     onSearch('');
   };
 
   return (
-    <div className="space-y-2 w-full">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center space-x-2">
-          <Switch
-            checked={isUrlMode}
-            onCheckedChange={handleModeToggle}
-            className="data-[state=checked]:bg-primary"
-          />
-          <Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            {isUrlMode ? 'URL Mode' : 'Search Mode'}
-          </Label>
-        </div>
-      </div>
-
+    <div className="w-full">
       <div className="relative group">
         <div className="relative flex items-center">
-          {isUrlMode ? (
-            <Link2 className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
-          ) : (
-            <Search className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
-          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50 ${
+              !isUrlMode ? 'text-primary' : 'text-muted-foreground'
+            }`}
+            onClick={handleModeToggle}
+          >
+            <Search className="h-4 w-4" />
+          </Button>
           <Input
             type="text"
             placeholder={isUrlMode ? "Paste YouTube URL" : "Search YouTube"}
             value={displayValue}
             onChange={handleInputChange}
-            className={`pl-9 pr-8 normal-case transition-all ${
+            className={`pl-9 pr-16 normal-case transition-all ${
               !isValid && displayValue ? 'border-red-500' : ''
             } ${isUrlMode ? 'font-mono text-sm' : ''}`}
           />
-          {displayValue && (
+          <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-1">
+            {displayValue && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 hover:bg-accent/50"
+                onClick={handleClear}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
-              onClick={handleClear}
+              className={`h-7 w-7 hover:bg-accent/50 ${
+                isUrlMode ? 'text-primary' : 'text-muted-foreground'
+              }`}
+              onClick={handleModeToggle}
             >
-              <X className="h-4 w-4" />
+              <Link2 className="h-4 w-4" />
             </Button>
-          )}
+          </div>
         </div>
       </div>
       {!isValid && displayValue && (
