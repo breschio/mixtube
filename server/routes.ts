@@ -297,7 +297,27 @@ export function registerRoutes(app: Express): Server {
       }
 
       const url = `https://www.youtube.com/watch?v=${videoId}`;
-      const videoInfo = await getVideoInfo(url);
+      let videoInfo;
+try {
+  // First try yt-dlp
+  videoInfo = await getVideoInfo(url);
+} catch (error) {
+  // Fallback to Python scraper
+  const python = spawn('python3', ['server/scraper.py', url]);
+  videoInfo = await new Promise((resolve, reject) => {
+    let output = '';
+    python.stdout.on('data', (data) => {
+      output += data;
+    });
+    python.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error('Python scraper failed'));
+        return;
+      }
+      resolve(JSON.parse(output));
+    });
+  });
+}
 
       // Extract recommended videos from the video info
       let recommendedVideos = [];
