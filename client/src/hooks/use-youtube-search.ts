@@ -23,7 +23,7 @@ const FALLBACK_VIDEOS: YouTubeVideo[] = [
   }
 ];
 
-export function useYoutubeSearch(searchTerm: string) {
+export function useYoutubeSearch(searchTerm: string, isUrlMode: boolean = false) {
   const { toast } = useToast();
 
   return useQuery({
@@ -46,7 +46,7 @@ export function useYoutubeSearch(searchTerm: string) {
         return FALLBACK_VIDEOS;
       }
     },
-    enabled: searchTerm.length >= 2,
+    enabled: !isUrlMode && searchTerm.length >= 2,
     staleTime: 60 * 1000,
     gcTime: 2 * 60 * 1000,
   });

@@ -64,21 +64,17 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
 
   const handleVideoIdInput = async (videoId: string) => {
     try {
-      const response = await fetch(`/api/youtube/videos/${videoId}`);
-      if (!response.ok) throw new Error('Failed to fetch video details');
-      const videoDetails = await response.json();
-      onVideoSelect(videoDetails);
-    } catch (error) {
-      console.error('Error fetching video details:', error);
       onVideoSelect({
         id: videoId,
-        title: 'Video Title Unavailable',
+        title: 'Loading...',
         thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
       });
+    } catch (error) {
+      console.error('Error handling video ID:', error);
       toast({
-        title: "Limited Video Details",
-        description: "Some video details couldn't be loaded. Basic playback will still work.",
-        variant: "default"
+        title: "Invalid Video URL",
+        description: "Please check the URL and try again.",
+        variant: "destructive"
       });
     }
   };
@@ -93,7 +89,6 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
 
   const handleClear = () => {
     setDisplayValue('');
-    // Only trigger search clear in search mode
     if (!isUrlMode) {
       onSearch('');
     }
@@ -104,10 +99,6 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     setIsUrlMode(!isUrlMode);
     setDisplayValue('');
     setIsValid(true);
-    // Only clear search when switching from search mode to URL mode
-    if (isUrlMode) {
-      onSearch('');
-    }
   };
 
   return (

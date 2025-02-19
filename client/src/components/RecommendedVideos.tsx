@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useQuery } from '@tanstack/react-query';
 import type { YouTubeVideo } from '@/lib/youtube';
-import { getRelatedVideos } from '@/lib/youtube';
 
 interface RecommendedVideosProps {
   videoId: string | null;
@@ -39,8 +38,8 @@ export default function RecommendedVideos({
     gcTime: 2 * 60 * 1000,
   });
 
-  const displayVideos = searchResults || recommendedVideos;
-  const showLoading = isSearching || isLoading;
+  const displayVideos = isSearching ? searchResults : recommendedVideos;
+  const showLoading = (isSearching || isLoading) && !displayVideos?.length;
 
   if (showLoading) {
     return (
