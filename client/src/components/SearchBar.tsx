@@ -101,6 +101,9 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     setIsValid(true);
   };
 
+  const activeIconClassName = "bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]";
+  const inactiveIconClassName = "text-muted-foreground hover:bg-accent/50";
+
   return (
     <div className="w-full">
       <div className="relative group">
@@ -108,14 +111,10 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
           <Button
             variant="ghost"
             size="icon"
-            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 transition-all duration-200 ${
-              !isUrlMode
-                ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]'
-                : 'text-muted-foreground hover:bg-accent/50'
-            }`}
+            className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 transition-all duration-200 ${activeIconClassName}`}
             onClick={handleModeToggle}
           >
-            <Search className="h-4 w-4" />
+            {isUrlMode ? <Link2 className="h-4 w-4" /> : <Search className="h-4 w-4" />}
           </Button>
           <Input
             type="text"
@@ -140,14 +139,10 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             <Button
               variant="ghost"
               size="icon"
-              className={`h-7 w-7 transition-all duration-200 ${
-                isUrlMode
-                  ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]'
-                  : 'text-muted-foreground hover:bg-accent/50'
-              }`}
+              className={`h-7 w-7 transition-all duration-200 ${inactiveIconClassName}`}
               onClick={handleModeToggle}
             >
-              <Link2 className="h-4 w-4" />
+              {isUrlMode ? <Search className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
             </Button>
           </div>
         </div>
