@@ -25,8 +25,32 @@ const DEFAULT_LEFT_VIDEOS: YouTubeVideo[] = [
   {
     id: getVideoIdFromUrl('https://www.youtube.com/watch?v=jGuVJHmo2hQ'),
     title: 'The Most Popular ASMR Triggers',
-    channelTitle: 'Various',
+    channelTitle: 'Various ASMR Artists',
     thumbnail: `https://img.youtube.com/vi/jGuVJHmo2hQ/mqdefault.jpg`
+  },
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=Pl1gDg7gTtA'),
+    title: 'ASMR 20 Triggers to Help You Sleep',
+    channelTitle: 'ASMR Darling',
+    thumbnail: `https://img.youtube.com/vi/Pl1gDg7gTtA/mqdefault.jpg`
+  },
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/playlist?list=PLtysvtOEQOMz_Zkf2WKcrmJXkRdk2xAAm'),
+    title: '2 Hours For Sleep Studying Relaxing ASMR',
+    channelTitle: 'Various ASMR Artists',
+    thumbnail: `https://img.youtube.com/vi/ApSCH4JXjQU/mqdefault.jpg`
+  },
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=NxSab5KZGL8'),
+    title: 'TOP 50 ASMR The best ASMR of February 2024',
+    channelTitle: 'Various ASMR Artists',
+    thumbnail: `https://img.youtube.com/vi/NxSab5KZGL8/mqdefault.jpg`
+  },
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/playlist?list=PLWk4fkmkuf3vlICsIp-8EjB3Yje3XxRqI'),
+    title: 'Top 20 Most Viewed Videos - WhispersRed ASMR',
+    channelTitle: 'WhispersRed ASMR',
+    thumbnail: `https://img.youtube.com/vi/u29yZkR3qVw/mqdefault.jpg`
   }
 ];
 
@@ -34,8 +58,32 @@ const DEFAULT_RIGHT_VIDEOS: YouTubeVideo[] = [
   {
     id: getVideoIdFromUrl('https://www.youtube.com/watch?v=v3hpZ4HPIT4'),
     title: 'MINDSET IS EVERYTHING | Powerful Motivational Speeches',
-    channelTitle: 'Various',
+    channelTitle: 'Various Speakers',
     thumbnail: `https://img.youtube.com/vi/v3hpZ4HPIT4/mqdefault.jpg`
+  },
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=TBuIGBCF9jc'),
+    title: 'Admiral McRaven Leaves the Audience SPEECHLESS',
+    channelTitle: 'Admiral McRaven',
+    thumbnail: `https://img.youtube.com/vi/TBuIGBCF9jc/mqdefault.jpg`
+  },
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=UaPtQ682mBk'),
+    title: 'Best Motivational Speeches | Listen Every Morning',
+    channelTitle: 'Various Speakers',
+    thumbnail: `https://img.youtube.com/vi/UaPtQ682mBk/mqdefault.jpg`
+  },
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=S0HJ3h815Zo'),
+    title: 'Best Motivational Video Speeches Of All Time',
+    channelTitle: 'Various Speakers',
+    thumbnail: `https://img.youtube.com/vi/S0HJ3h815Zo/mqdefault.jpg`
+  },
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=sCV38GynwT4'),
+    title: 'CHANGE THE WAY YOU SEE YOURSELF - Eric Thomas',
+    channelTitle: 'Eric Thomas',
+    thumbnail: `https://img.youtube.com/vi/sCV38GynwT4/mqdefault.jpg`
   }
 ];
 
@@ -138,8 +186,10 @@ function VideoCard({ video, onSelect }: VideoCardProps) {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback>{initial}</AvatarFallback>
+            <Avatar className="h-8 w-8 bg-primary/10">
+              <AvatarFallback className="bg-primary/10 text-primary">
+                {initial}
+              </AvatarFallback>
             </Avatar>
             <Button
               size="sm"
