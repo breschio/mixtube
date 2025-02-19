@@ -140,9 +140,9 @@ export default function Home() {
     }
 
     return (
-      <div className="grid grid-cols-[1fr,1fr,1fr] gap-6">
+      <div className="grid grid-cols-[1fr,1fr,1fr] gap-6 h-full">
         {/* Left Deck */}
-        <div className="space-y-4">
+        <div className="space-y-4 min-h-0 flex flex-col">
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
@@ -170,16 +170,18 @@ export default function Home() {
             onSearch={(query) => handleSearch(query, 'left')}
             videoId={videos.left?.id || null}
           />
-          <RecommendedVideos
-            videoId={videos.left?.id || null}
-            onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-            searchResults={leftSearchResults}
-            isSearching={!!searchQueries.left}
-          />
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <RecommendedVideos
+              videoId={videos.left?.id || null}
+              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+              searchResults={leftSearchResults}
+              isSearching={!!searchQueries.left}
+            />
+          </div>
         </div>
 
         {/* Mix Controls */}
-        <div className="space-y-6">
+        <div className="space-y-6 flex flex-col">
           <div className="flex justify-center">
             <div className="text-foreground font-mono text-xl">
               mixtube
@@ -198,7 +200,7 @@ export default function Home() {
         </div>
 
         {/* Right Deck */}
-        <div className="space-y-4">
+        <div className="space-y-4 min-h-0 flex flex-col">
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
@@ -226,12 +228,14 @@ export default function Home() {
             onSearch={(query) => handleSearch(query, 'right')}
             videoId={videos.right?.id || null}
           />
-          <RecommendedVideos
-            videoId={videos.right?.id || null}
-            onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            searchResults={rightSearchResults}
-            isSearching={!!searchQueries.right}
-          />
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <RecommendedVideos
+              videoId={videos.right?.id || null}
+              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+              searchResults={rightSearchResults}
+              isSearching={!!searchQueries.right}
+            />
+          </div>
         </div>
       </div>
     );
@@ -320,10 +324,10 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4">
-        <div className="lg:grid lg:grid-cols-[2fr,1fr] lg:gap-6">
+      <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4 flex flex-col">
+        <div className="flex-1 lg:grid lg:grid-cols-[2fr,1fr] lg:gap-6">
           {/* Main Content */}
-          <div className="space-y-4">
+          <div className="flex-1 flex flex-col">
             {renderContent()}
           </div>
 
