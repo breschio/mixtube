@@ -35,10 +35,10 @@ export default function Home() {
       thumbnail: `https://img.youtube.com/vi/xpvjPsme8_k/mqdefault.jpg`
     },
     right: {
-      id: 'eR2FFb6Zg9Q',
+      id: 'nKS3CxE1RzY',
       title: 'Default Right Video',
       channelTitle: 'Default Channel',
-      thumbnail: `https://img.youtube.com/vi/eR2FFb6Zg9Q/mqdefault.jpg`
+      thumbnail: `https://img.youtube.com/vi/nKS3CxE1RzY/mqdefault.jpg`
     }
   });
 
