@@ -18,13 +18,9 @@ export default function DJControls({
   const [isVisible, setIsVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
-  // Calculate percentage and label
-  const getPercentageLabel = () => {
-    const percentage = Math.abs(Math.round((crossFader - 0.5) * 200));
-    if (percentage === 0) return "Center";
-    return crossFader < 0.5 
-      ? `${percentage}% Left` 
-      : `${percentage}% Right`;
+  // Calculate percentage and labels
+  const getPercentage = () => {
+    return Math.abs(Math.round((crossFader - 0.5) * 200));
   };
 
   // Show label and reset timeout
@@ -56,27 +52,33 @@ export default function DJControls({
     };
   }, [timeoutId]);
 
+  const percentage = getPercentage();
+  const isRightSide = crossFader > 0.5;
+
   return (
     <div 
       className="flex items-center gap-4 flex-1 pt-1"
       onMouseEnter={showLabel}
       onMouseLeave={() => {
-        // Set timeout to hide label after 3 seconds
         const newTimeoutId = setTimeout(() => {
           setIsVisible(false);
         }, 3000);
         setTimeoutId(newTimeoutId);
       }}
     >
-      <div className="text-sm font-medium text-primary min-w-[40px]">Left</div>
       <div className="flex-1 flex flex-col items-center gap-2">
-        <div 
-          className={cn(
-            "text-sm font-medium text-primary transition-opacity duration-300",
-            isVisible ? "opacity-100" : "opacity-0"
-          )}
-        >
-          {getPercentageLabel()}
+        <div className="flex w-full justify-between items-center mb-2">
+          <span className="text-sm text-primary">Left</span>
+          <div 
+            className={cn(
+              "text-sm font-medium text-primary px-4 py-1 rounded-md border border-primary/20",
+              isVisible ? "opacity-100" : "opacity-0",
+              isRightSide ? "bg-primary/5" : "bg-transparent"
+            )}
+          >
+            {percentage}% {isRightSide ? 'Right' : 'Left'}
+          </div>
+          <span className="text-sm text-primary">Right</span>
         </div>
         <Slider
           value={[crossFader]}
@@ -86,7 +88,6 @@ export default function DJControls({
           className="flex-1"
         />
       </div>
-      <div className="text-sm font-medium text-primary min-w-[40px]">Right</div>
     </div>
   );
 }
