@@ -297,9 +297,10 @@ export default function Home() {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
         <div className="container mx-auto max-w-[1440px] px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
-          <div></div>
-          <div className="flex items-center gap-4">
+          <div>
             <ThemeToggle />
+          </div>
+          <div className="flex items-center gap-4">
             {!user && (
               <AuthModal trigger={
                 <Button variant="outline" size="sm">
