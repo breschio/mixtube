@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { X, Search, Link2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
 import type { YouTubeVideo } from '@/lib/youtube';
@@ -118,7 +119,7 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             onChange={handleInputChange}
             className={`pl-9 pr-16 normal-case transition-all ${
               !isValid && displayValue ? 'border-red-500' : ''
-            } ${isUrlMode ? 'font-mono text-sm' : ''}`}
+            } ${isUrlMode ? 'font-mono text-sm' : ''} animate-placeholder`}
           />
           <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-1">
             {displayValue && (
@@ -131,16 +132,11 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
                 <X className="h-4 w-4" />
               </Button>
             )}
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`h-7 w-7 hover:bg-accent/50 ${
-                isUrlMode ? 'text-primary' : 'text-muted-foreground'
-              }`}
-              onClick={handleModeToggle}
-            >
-              <Link2 className="h-4 w-4" />
-            </Button>
+            <Switch
+              checked={isUrlMode}
+              onCheckedChange={handleModeToggle}
+              className="data-[state=checked]:bg-primary"
+            />
           </div>
         </div>
       </div>
