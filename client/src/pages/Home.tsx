@@ -244,7 +244,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
-        <div className="w-full px-2 sm:px-3 md:px-4 py-1 grid grid-cols-3 items-center"> {/* Adjusted header padding */}
+        <div className="w-full px-6 sm:px-8 md:px-12 py-1 grid grid-cols-[2fr,5fr,2fr] items-center">
           <div className="flex items-center">
             <ThemeToggle />
           </div>
