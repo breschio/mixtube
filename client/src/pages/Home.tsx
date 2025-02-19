@@ -139,7 +139,7 @@ export default function Home() {
     }
 
     return (
-      <div className="grid grid-cols-[2fr,4fr,2fr] gap-12">
+      <div className="grid grid-cols-[2fr,4fr,2fr] gap-24">
         {/* Left Deck */}
         <div className="space-y-4">
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
@@ -274,7 +274,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 w-full px-6 sm:px-8 md:px-12 py-8">
+      <main className="flex-1 w-full px-8 sm:px-12 md:px-24 py-12">
         {renderContent()}
       </main>
     </div>
