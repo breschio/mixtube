@@ -136,19 +136,19 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
             type="single"
             value={isUrlMode ? 'url' : 'search'}
             onValueChange={handleModeToggle}
-            className="absolute left-1 top-1/2 -translate-y-1/2 h-7 flex gap-0.5"
+            className="absolute left-1 top-1/2 -translate-y-1/2 h-7 flex gap-0.5 bg-accent/20 rounded-md p-0.5"
           >
             <ToggleGroupItem
               value="search"
               size="sm"
-              className={`h-7 w-7 p-0 ${!isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : ''}`}
+              className={`h-6 w-6 p-0 rounded-sm ${!isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : 'hover:bg-accent/50 text-muted-foreground'}`}
             >
               <Search className="h-4 w-4" />
             </ToggleGroupItem>
             <ToggleGroupItem
               value="url"
               size="sm"
-              className={`h-7 w-7 p-0 ${isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : ''}`}
+              className={`h-6 w-6 p-0 rounded-sm ${isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : 'hover:bg-accent/50 text-muted-foreground'}`}
             >
               <Link2 className="h-4 w-4" />
             </ToggleGroupItem>
