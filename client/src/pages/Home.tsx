@@ -139,7 +139,7 @@ export default function Home() {
     }
 
     return (
-      <div className="grid grid-cols-[2fr,4fr,2fr] gap-12">
+      <div className="grid grid-cols-[2fr,5fr,2fr] gap-16">
         <div className="space-y-4">
           <h2 className="text-base font-normal uppercase tracking-wider text-center">LEFT</h2>
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
@@ -176,7 +176,7 @@ export default function Home() {
           />
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 px-8 border-l border-r border-border/20">
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <MixedVideoPlayer
               leftVideoId={videos.left?.id || null}
