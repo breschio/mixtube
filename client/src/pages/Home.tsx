@@ -105,11 +105,14 @@ export default function Home() {
 
           <TabsContent value="left" className="mt-2">
             <div className="space-y-4">
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                onSearch={(query) => handleSearch(query, 'left')}
-                videoId={videos.left?.id || null}
-              />
+              <div className="flex items-center gap-4">
+                <h2 className="text-base font-normal uppercase tracking-wider text-left shrink-0">LEFT</h2>
+                <SearchBar
+                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                  onSearch={(query) => handleSearch(query, 'left')}
+                  videoId={videos.left?.id || null}
+                />
+              </div>
               <RecommendedVideos
                 videoId={videos.left?.id || null}
                 onVideoSelect={(video) => handleVideoSelect(video, 'left')}
@@ -122,11 +125,14 @@ export default function Home() {
 
           <TabsContent value="right" className="mt-2">
             <div className="space-y-4">
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                onSearch={(query) => handleSearch(query, 'right')}
-                videoId={videos.right?.id || null}
-              />
+              <div className="flex items-center gap-4">
+                <h2 className="text-base font-normal uppercase tracking-wider text-left shrink-0">RIGHT</h2>
+                <SearchBar
+                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                  onSearch={(query) => handleSearch(query, 'right')}
+                  videoId={videos.right?.id || null}
+                />
+              </div>
               <RecommendedVideos
                 videoId={videos.right?.id || null}
                 onVideoSelect={(video) => handleVideoSelect(video, 'right')}
@@ -143,7 +149,6 @@ export default function Home() {
     return (
       <div className="grid grid-cols-[2fr,5fr,2fr] gap-16">
         <div className="space-y-4">
-          <h2 className="text-base font-normal uppercase tracking-wider text-left">LEFT</h2>
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
@@ -165,11 +170,14 @@ export default function Home() {
               }}
             />
           </div>
-          <SearchBar
-            onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-            onSearch={(query) => handleSearch(query, 'left')}
-            videoId={videos.left?.id || null}
-          />
+          <div className="flex items-center gap-4">
+            <h2 className="text-base font-normal uppercase tracking-wider text-left shrink-0">LEFT</h2>
+            <SearchBar
+              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+              onSearch={(query) => handleSearch(query, 'left')}
+              videoId={videos.left?.id || null}
+            />
+          </div>
           <RecommendedVideos
             videoId={videos.left?.id || null}
             onVideoSelect={(video) => handleVideoSelect(video, 'left')}
@@ -206,7 +214,6 @@ export default function Home() {
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-base font-normal uppercase tracking-wider text-left">RIGHT</h2>
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
@@ -228,11 +235,14 @@ export default function Home() {
               }}
             />
           </div>
-          <SearchBar
-            onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            onSearch={(query) => handleSearch(query, 'right')}
-            videoId={videos.right?.id || null}
-          />
+          <div className="flex items-center gap-4">
+            <h2 className="text-base font-normal uppercase tracking-wider text-left shrink-0">RIGHT</h2>
+            <SearchBar
+              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+              onSearch={(query) => handleSearch(query, 'right')}
+              videoId={videos.right?.id || null}
+            />
+          </div>
           <RecommendedVideos
             videoId={videos.right?.id || null}
             onVideoSelect={(video) => handleVideoSelect(video, 'right')}
