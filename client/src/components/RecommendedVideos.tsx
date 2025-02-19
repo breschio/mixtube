@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Music2 } from 'lucide-react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useQuery } from '@tanstack/react-query';
 import type { YouTubeVideo } from '@/lib/youtube';
 import { getRelatedVideos } from '@/lib/youtube';
@@ -13,19 +13,31 @@ interface RecommendedVideosProps {
   side?: 'left' | 'right';
 }
 
-const DEFAULT_LEFT_VIDEOS: YouTubeVideo[] = [{
-  id: 'ApSCH4JXjQU',
-  title: 'Chilled Jazz House Music Mix - Cozy Playlist',
-  channelTitle: 'Default Channel',
-  thumbnail: `https://img.youtube.com/vi/ApSCH4JXjQU/mqdefault.jpg`
-}];
+// Parse video ID from YouTube URL
+function getVideoIdFromUrl(url: string): string {
+  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = url.match(regex);
+  return match ? match[1] : '';
+}
 
-const DEFAULT_RIGHT_VIDEOS: YouTubeVideo[] = [{
-  id: 'Q_050nEIMqw',
-  title: 'How to Attract Money & Clients',
-  channelTitle: 'Unknown Channel',
-  thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
-}];
+// Default videos from CSV data
+const DEFAULT_LEFT_VIDEOS: YouTubeVideo[] = [
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=jGuVJHmo2hQ'),
+    title: 'The Most Popular ASMR Triggers',
+    channelTitle: 'Various',
+    thumbnail: `https://img.youtube.com/vi/jGuVJHmo2hQ/mqdefault.jpg`
+  }
+];
+
+const DEFAULT_RIGHT_VIDEOS: YouTubeVideo[] = [
+  {
+    id: getVideoIdFromUrl('https://www.youtube.com/watch?v=v3hpZ4HPIT4'),
+    title: 'MINDSET IS EVERYTHING | Powerful Motivational Speeches',
+    channelTitle: 'Various',
+    thumbnail: `https://img.youtube.com/vi/v3hpZ4HPIT4/mqdefault.jpg`
+  }
+];
 
 export default function RecommendedVideos({ 
   videoId, 
@@ -53,11 +65,14 @@ export default function RecommendedVideos({
       <div className="flex-1 space-y-3">
         {[...Array(3)].map((_, i) => (
           <Card key={i} className="w-full overflow-hidden animate-pulse">
-            <div className="flex gap-2 p-1.5">
-              <div className="w-24 aspect-video bg-muted rounded" />
-              <div className="flex-1 py-1 space-y-2">
+            <div className="flex gap-3 p-3">
+              <div className="w-40 aspect-video bg-muted rounded-md" />
+              <div className="flex-1 space-y-3">
                 <div className="h-4 bg-muted rounded w-3/4" />
-                <div className="h-4 bg-muted rounded w-1/2" />
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-muted" />
+                  <div className="h-4 bg-muted rounded w-1/3" />
+                </div>
               </div>
             </div>
           </Card>
@@ -71,45 +86,11 @@ export default function RecommendedVideos({
     return (
       <div className="flex-1 space-y-3">
         {defaultVideos.map((video) => (
-          <Card 
+          <VideoCard 
             key={video.id}
-            className="overflow-hidden border border-border/50 hover:bg-accent/5 transition-colors"
-          >
-            <div className="flex gap-2 p-1.5">
-              <img 
-                src={video.thumbnail} 
-                alt={video.title}
-                className="w-24 aspect-video object-cover rounded"
-                loading="lazy"
-              />
-              <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
-                <div className="space-y-1">
-                  <h3 className="font-medium leading-none line-clamp-2 text-sm">
-                    {video.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {video.channelTitle || 'Unknown Channel'}
-                  </p>
-                </div>
-                <div className="flex items-center justify-between mt-1">
-                  <div className="flex items-center gap-2">
-                    <div className="shrink-0 rounded-full bg-muted p-1.5">
-                      <Music2 className="h-3 w-3" />
-                    </div>
-                    <span className="text-xs text-muted-foreground">Recommended</span>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="default"
-                    className="ml-auto bg-primary/80 hover:bg-primary transition-colors"
-                    onClick={() => onVideoSelect(video)}
-                  >
-                    Load
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Card>
+            video={video}
+            onSelect={() => onVideoSelect(video)}
+          />
         ))}
       </div>
     );
@@ -118,46 +99,59 @@ export default function RecommendedVideos({
   return (
     <div className="flex-1 space-y-3">
       {displayVideos.slice(0, 3).map((video) => (
-        <Card 
+        <VideoCard 
           key={video.id}
-          className="overflow-hidden border border-border/50 hover:bg-accent/5 transition-colors"
-        >
-          <div className="flex gap-2 p-1.5">
-            <img 
-              src={video.thumbnail} 
-              alt={video.title}
-              className="w-24 aspect-video object-cover rounded"
-              loading="lazy"
-            />
-            <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
-              <div className="space-y-1">
-                <h3 className="font-medium leading-none line-clamp-2 text-sm">
-                  {video.title}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {video.channelTitle || 'Unknown Channel'}
-                </p>
-              </div>
-              <div className="flex items-center justify-between mt-1">
-                <div className="flex items-center gap-2">
-                  <div className="shrink-0 rounded-full bg-muted p-1.5">
-                    <Music2 className="h-3 w-3" />
-                  </div>
-                  <span className="text-xs text-muted-foreground">Recommended</span>
-                </div>
-                <Button
-                  size="sm"
-                  variant="default"
-                  className="ml-auto bg-primary/80 hover:bg-primary transition-colors"
-                  onClick={() => onVideoSelect(video)}
-                >
-                  Load
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Card>
+          video={video}
+          onSelect={() => onVideoSelect(video)}
+        />
       ))}
     </div>
+  );
+}
+
+interface VideoCardProps {
+  video: YouTubeVideo;
+  onSelect: () => void;
+}
+
+function VideoCard({ video, onSelect }: VideoCardProps) {
+  const initial = video.channelTitle?.[0]?.toUpperCase() || '?';
+
+  return (
+    <Card className="overflow-hidden border border-border/50 hover:bg-accent/5 transition-colors">
+      <div className="flex gap-3 p-3">
+        <div className="relative w-40 aspect-video rounded-md overflow-hidden">
+          <img 
+            src={video.thumbnail}
+            alt={video.title}
+            className="object-cover w-full h-full"
+            loading="lazy"
+          />
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col justify-between">
+          <h3 className="font-medium leading-snug line-clamp-2 text-sm mb-2">
+            {video.title}
+          </h3>
+          <div className="flex items-center gap-2">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback>{initial}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-muted-foreground truncate">
+                {video.channelTitle}
+              </p>
+            </div>
+            <Button
+              size="sm"
+              variant="default"
+              className="bg-primary/80 hover:bg-primary transition-colors shrink-0"
+              onClick={onSelect}
+            >
+              Load
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Card>
   );
 }
