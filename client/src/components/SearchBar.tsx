@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { X, Search, Link2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
+import { Toggle } from '@/components/ui/toggle';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
 import type { YouTubeVideo } from '@/lib/youtube';
@@ -102,19 +102,13 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     <div className="w-full">
       <div className="relative group">
         <div className="relative flex items-center">
-          <Switch
-            checked={isUrlMode}
-            onCheckedChange={handleModeToggle}
-            className="data-[state=checked]:bg-primary mr-2"
-          />
-          <Button
-            variant="ghost"
-            size="icon"
+          <Toggle
+            pressed={!isUrlMode}
+            onPressedChange={() => handleModeToggle()}
             className={`absolute left-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50`}
-            onClick={handleModeToggle}
           >
             <Search className={`h-4 w-4 ${!isUrlMode ? 'text-primary' : 'text-muted-foreground'}`} />
-          </Button>
+          </Toggle>
           <Input
             type="text"
             placeholder={isUrlMode ? "Paste YouTube URL" : "Search YouTube"}
