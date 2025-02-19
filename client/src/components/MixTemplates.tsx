@@ -20,19 +20,19 @@ export const mixTemplates: MixTemplate[] = [
     id: "fade-through",
     name: "Fade Through",
     icon: LayersIcon,
-    crossFaderValue: 0,
+    crossFaderValue: 0.6, // Maintaining same 40% right balance
   },
   {
     id: "picture-in-picture",
     name: "Picture in Picture",
     icon: PictureInPictureIcon,
-    crossFaderValue: 0.2,
+    crossFaderValue: 0.6, // Maintaining same 40% right balance
   },
   {
     id: "random-mix",
     name: "Random Mix",
     icon: ShuffleIcon,
-    crossFaderValue: 0.5,
+    crossFaderValue: 0.6, // Maintaining same 40% right balance
   },
 ];
 
