@@ -33,21 +33,36 @@ export default function MixedVideoPlayer({
     syncPlay,
   } = useVideoSync();
 
-  const [randomTemplate, setRandomTemplate] = useState('side-by-side');
+  // Auto-mix state
+  const [autoMixValue, setAutoMixValue] = useState(0.5);
+  const autoMixTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Handle random template changes
+  // Handle auto-mix transitions
   useEffect(() => {
-    if (activeTemplate === 'random-mix' && isPlaying) {
-      const templates = ['side-by-side', 'fade-through', 'picture-in-picture'];
-      const interval = setInterval(() => {
-        const currentIndex = templates.indexOf(randomTemplate);
-        const nextIndex = (currentIndex + 1) % templates.length;
-        setRandomTemplate(templates[nextIndex]);
-      }, 5000);
+    if (activeTemplate === 'auto-mix' && isPlaying) {
+      const startAutoMix = () => {
+        // Clear any existing timer
+        if (autoMixTimerRef.current) {
+          clearTimeout(autoMixTimerRef.current);
+        }
 
-      return () => clearInterval(interval);
+        // Generate random values within the 36% range (0.36 to 0.64)
+        const targetValue = 0.36 + Math.random() * 0.28; // 0.28 is the range (0.64 - 0.36)
+        setAutoMixValue(targetValue);
+
+        // Set random interval between 2 and 5 seconds
+        const interval = 2000 + Math.random() * 3000;
+        autoMixTimerRef.current = setTimeout(startAutoMix, interval);
+      };
+
+      startAutoMix();
+      return () => {
+        if (autoMixTimerRef.current) {
+          clearTimeout(autoMixTimerRef.current);
+        }
+      };
     }
-  }, [activeTemplate, isPlaying, randomTemplate]);
+  }, [activeTemplate, isPlaying]);
 
   // Common player config
   const playerConfig = {
@@ -71,14 +86,16 @@ export default function MixedVideoPlayer({
         ? { left: 0, right: 1 }
         : { left: 1, right: 0 };
     }
+    const effectiveCrossfader = activeTemplate === 'auto-mix' ? autoMixValue : crossFaderValue;
     return {
-      left: Math.max(0, 1 - crossFaderValue),
-      right: Math.max(0, crossFaderValue)
+      left: Math.max(0, 1 - effectiveCrossfader),
+      right: Math.max(0, effectiveCrossfader)
     };
   };
 
   const audioLevels = getAudioLevels();
-  const isPipRight = crossFaderValue > 0.5;
+  const effectiveCrossfader = activeTemplate === 'auto-mix' ? autoMixValue : crossFaderValue;
+  const isPipRight = effectiveCrossfader > 0.5;
 
   // Create persistent player elements
   const leftPlayer = leftVideoId ? (
@@ -146,11 +163,9 @@ export default function MixedVideoPlayer({
     onPlayPause();
   };
 
-  const currentTemplate = activeTemplate === 'random-mix' ? randomTemplate : activeTemplate;
-
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-      {currentTemplate === 'picture-in-picture' ? (
+      {activeTemplate === 'picture-in-picture' ? (
         <>
           <div className="absolute inset-0 transition-transform duration-300">
             {isPipRight ? rightPlayer : leftPlayer}
@@ -159,27 +174,27 @@ export default function MixedVideoPlayer({
             {isPipRight ? leftPlayer : rightPlayer}
           </div>
         </>
-      ) : currentTemplate === 'side-by-side' ? (
+      ) : activeTemplate === 'side-by-side' || activeTemplate === 'auto-mix' ? (
         <div className="flex h-full">
           <div 
             className="h-full transition-[width] duration-200" 
-            style={{ width: `${Math.max(20, Math.min(80, (1 - crossFaderValue) * 100))}%` }}
+            style={{ width: `${Math.max(20, Math.min(80, (1 - effectiveCrossfader) * 100))}%` }}
           >
             {leftPlayer}
           </div>
           <div 
             className="h-full transition-[width] duration-200" 
-            style={{ width: `${Math.max(20, Math.min(80, crossFaderValue * 100))}%` }}
+            style={{ width: `${Math.max(20, Math.min(80, effectiveCrossfader * 100))}%` }}
           >
             {rightPlayer}
           </div>
         </div>
       ) : (
         <>
-          <div className="absolute inset-0 transition-opacity duration-200" style={{ opacity: 1 - crossFaderValue }}>
+          <div className="absolute inset-0 transition-opacity duration-200" style={{ opacity: 1 - effectiveCrossfader }}>
             {leftPlayer}
           </div>
-          <div className="absolute inset-0 transition-opacity duration-200" style={{ opacity: crossFaderValue }}>
+          <div className="absolute inset-0 transition-opacity duration-200" style={{ opacity: effectiveCrossfader }}>
             {rightPlayer}
           </div>
         </>
