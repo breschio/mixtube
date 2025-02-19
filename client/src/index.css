@@ -34,15 +34,23 @@
   }
 
   :root {
-    --transition-duration: 200ms;
+    --transition-duration: 800ms;
     --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Enhance theme transition with opacity */
+  :root[class*="theme-"] {
+    transition: 
+      background-color var(--transition-duration) var(--transition-timing),
+      color var(--transition-duration) var(--transition-timing);
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     transition: 
       background-color var(--transition-duration) var(--transition-timing),
-      color var(--transition-duration) var(--transition-timing);
+      color var(--transition-duration) var(--transition-timing),
+      opacity var(--transition-duration) var(--transition-timing);
   }
 
   /* Add transitions to common elements that change with theme */
@@ -52,7 +60,8 @@
       color var(--transition-duration) var(--transition-timing),
       border-color var(--transition-duration) var(--transition-timing),
       outline-color var(--transition-duration) var(--transition-timing),
-      box-shadow var(--transition-duration) var(--transition-timing);
+      box-shadow var(--transition-duration) var(--transition-timing),
+      opacity var(--transition-duration) var(--transition-timing);
   }
 
   h1, h2, h3, h4, h5, h6 {
