@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
@@ -31,39 +31,7 @@ export default function MixedVideoPlayer({
     handleStateChange,
     handleReady,
     syncPlay,
-    handlePiPSwitch
   } = useVideoSync();
-
-  const prevCrossFaderRef = useRef(crossFaderValue);
-  const [randomTemplate, setRandomTemplate] = useState('side-by-side');
-
-  // Handle random template changes
-  useEffect(() => {
-    if (activeTemplate === 'random-mix' && isPlaying) {
-      const templates = ['side-by-side', 'fade-through', 'picture-in-picture'];
-      const interval = setInterval(() => {
-        const currentIndex = templates.indexOf(randomTemplate);
-        const nextIndex = (currentIndex + 1) % templates.length;
-        setRandomTemplate(templates[nextIndex]);
-      }, 5000);
-
-      return () => clearInterval(interval);
-    }
-  }, [activeTemplate, isPlaying, randomTemplate]);
-
-  // Handle PiP position changes
-  useEffect(() => {
-    if ((activeTemplate === 'picture-in-picture' || randomTemplate === 'picture-in-picture') &&
-        activeTemplate !== 'random-mix') {
-      const wasPipRight = prevCrossFaderRef.current > 0.5;
-      const isPipRight = crossFaderValue > 0.5;
-
-      if (wasPipRight !== isPipRight) {
-        handlePiPSwitch();
-      }
-    }
-    prevCrossFaderRef.current = crossFaderValue;
-  }, [crossFaderValue, activeTemplate, randomTemplate, handlePiPSwitch]);
 
   // Common player config
   const playerConfig = {
@@ -94,7 +62,6 @@ export default function MixedVideoPlayer({
   };
 
   const audioLevels = getAudioLevels();
-  const isPipRight = crossFaderValue > 0.5;
 
   // Base player components that stay mounted
   const leftPlayer = (
@@ -131,48 +98,32 @@ export default function MixedVideoPlayer({
 
   // Handle different layout templates
   const renderTemplate = () => {
-    switch (activeTemplate) {
-      case 'picture-in-picture':
-        return (
-          <>
-            <div className="absolute inset-0">
-              {isPipRight ? rightPlayer : leftPlayer}
-            </div>
-            <div className="absolute bottom-4 right-4 w-1/4 aspect-video rounded-lg overflow-hidden shadow-lg border border-white/20">
-              {isPipRight ? leftPlayer : rightPlayer}
-            </div>
-          </>
-        );
-
-      case 'side-by-side': {
-        const leftWidth = Math.max(20, Math.min(80, (1 - crossFaderValue) * 100));
-        const rightWidth = 100 - leftWidth;
-        return (
-          <>
-            <div className="h-full transition-[width] duration-200" style={{ width: `${leftWidth}%` }}>
-              {leftPlayer}
-            </div>
-            <div className="h-full transition-[width] duration-200" style={{ width: `${rightWidth}%` }}>
-              {rightPlayer}
-            </div>
-          </>
-        );
-      }
-
-      case 'random-mix':
-      case 'fade-through':
-      default:
-        return (
-          <>
-            <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: 1 - crossFaderValue }}>
-              {leftPlayer}
-            </div>
-            <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: crossFaderValue }}>
-              {rightPlayer}
-            </div>
-          </>
-        );
+    if (activeTemplate === 'side-by-side') {
+      const leftWidth = Math.max(20, Math.min(80, (1 - crossFaderValue) * 100));
+      const rightWidth = 100 - leftWidth;
+      return (
+        <>
+          <div className="h-full transition-[width] duration-200" style={{ width: `${leftWidth}%` }}>
+            {leftPlayer}
+          </div>
+          <div className="h-full transition-[width] duration-200" style={{ width: `${rightWidth}%` }}>
+            {rightPlayer}
+          </div>
+        </>
+      );
     }
+
+    // Default to fade-through
+    return (
+      <>
+        <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: 1 - crossFaderValue }}>
+          {leftPlayer}
+        </div>
+        <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: crossFaderValue }}>
+          {rightPlayer}
+        </div>
+      </>
+    );
   };
 
   // Handle case when no videos are loaded
