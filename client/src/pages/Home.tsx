@@ -75,10 +75,22 @@ export default function Home() {
     if (!playing) {
       // Start from center
       setCrossFader(0.5);
-      // After a brief delay, smoothly transition to the right side
+      // Create a gradual transition through multiple steps
+      setTimeout(() => {
+        setCrossFader(0.52);
+      }, 100);
+      setTimeout(() => {
+        setCrossFader(0.54);
+      }, 200);
+      setTimeout(() => {
+        setCrossFader(0.56);
+      }, 300);
+      setTimeout(() => {
+        setCrossFader(0.58);
+      }, 400);
       setTimeout(() => {
         setCrossFader(0.6);
-      }, 100);
+      }, 500);
     }
   };
 
