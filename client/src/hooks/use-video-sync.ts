@@ -22,11 +22,7 @@ export function useVideoSync() {
   const rightPlayerRef = useRef<ReactPlayer>(null);
   const lastSyncTime = useRef<number>(0);
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const syncIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const initialPlayAttemptRef = useRef<boolean>(false);
-
-  // Stricter sync tolerance for better audio sync
-  const syncToleranceMs = 50;
 
   const handleStateChange = (player: 'left' | 'right', state: number) => {
     console.log(`${player} player state changed to:`, state);
@@ -34,6 +30,18 @@ export function useVideoSync() {
       ...prev,
       [`${player}State`]: state
     }));
+
+    // Update current time when either player changes state
+    const currentPlayer = player === 'left' ? leftPlayerRef.current : rightPlayerRef.current;
+    if (currentPlayer) {
+      const time = currentPlayer.getCurrentTime();
+      if (time !== undefined) {
+        setSyncState(prev => ({
+          ...prev,
+          currentTime: time
+        }));
+      }
+    }
   };
 
   const handleReady = (player: 'left' | 'right') => {
@@ -42,12 +50,18 @@ export function useVideoSync() {
       ...prev,
       [`${player}Ready`]: true
     }));
-  };
 
-  const checkSyncDeviation = () => {
-    const leftTime = leftPlayerRef.current?.getCurrentTime() || 0;
-    const rightTime = rightPlayerRef.current?.getCurrentTime() || 0;
-    return Math.abs(leftTime - rightTime) * 1000 > syncToleranceMs;
+    // When a player becomes ready, sync it to the current time
+    // but only if we're not in the initial play attempt
+    if (!initialPlayAttemptRef.current) {
+      const currentTime = syncState.currentTime;
+      if (currentTime > 0) {
+        const playerRef = player === 'left' ? leftPlayerRef.current : rightPlayerRef.current;
+        if (playerRef?.seekTo) {
+          playerRef.seekTo(currentTime, 'seconds');
+        }
+      }
+    }
   };
 
   const seekAllPlayers = async (time: number) => {
@@ -56,16 +70,19 @@ export function useVideoSync() {
     const now = Date.now();
 
     // Prevent rapid re-seeks
-    if (now - lastSyncTime.current < syncToleranceMs) {
+    if (now - lastSyncTime.current < 250) {
+      // Schedule a sync attempt for later
       if (syncTimeoutRef.current) {
         clearTimeout(syncTimeoutRef.current);
       }
       syncTimeoutRef.current = setTimeout(() => {
         seekAllPlayers(time);
-      }, syncToleranceMs);
+      }, 250);
       return;
     }
     lastSyncTime.current = now;
+
+    console.log('Syncing all players to time:', time);
 
     try {
       const seekPromises = [];
@@ -88,21 +105,6 @@ export function useVideoSync() {
     }
   };
 
-  const startSyncInterval = () => {
-    // Clear any existing interval
-    if (syncIntervalRef.current) {
-      clearInterval(syncIntervalRef.current);
-    }
-
-    // Start a new sync check interval
-    syncIntervalRef.current = setInterval(() => {
-      if (checkSyncDeviation()) {
-        const leftTime = leftPlayerRef.current?.getCurrentTime() || 0;
-        seekAllPlayers(leftTime);
-      }
-    }, 1000);
-  };
-
   const syncPlay = async (shouldPlay: boolean) => {
     const { leftReady, rightReady } = syncState;
     const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
@@ -121,57 +123,50 @@ export function useVideoSync() {
         // Force seek to start for initial playback
         if (!syncState.currentTime) {
           await seekAllPlayers(0);
-        } else if (checkSyncDeviation()) {
-          await seekAllPlayers(syncState.currentTime);
         }
 
         // Wait for both players to be ready if they exist
-        if (leftPlayer && rightPlayer) {
-          await Promise.all([
-            new Promise<void>(resolve => {
-              const checkReady = () => {
-                if (syncState.leftReady) resolve();
-                else setTimeout(checkReady, syncToleranceMs);
-              };
-              checkReady();
-            }),
-            new Promise<void>(resolve => {
-              const checkReady = () => {
-                if (syncState.rightReady) resolve();
-                else setTimeout(checkReady, syncToleranceMs);
-              };
-              checkReady();
-            })
-          ]);
+        const readyPromises = [];
+        if (leftPlayer && !leftReady) {
+          readyPromises.push(new Promise(resolve => {
+            const checkReady = () => {
+              if (syncState.leftReady) resolve(true);
+              else setTimeout(checkReady, 100);
+            };
+            checkReady();
+          }));
         }
+        if (rightPlayer && !rightReady) {
+          readyPromises.push(new Promise(resolve => {
+            const checkReady = () => {
+              if (syncState.rightReady) resolve(true);
+              else setTimeout(checkReady, 100);
+            };
+            checkReady();
+          }));
+        }
+
+        await Promise.all(readyPromises);
+
+        // Sync all players to the same time before playing
+        await seekAllPlayers(syncState.currentTime);
 
         // Play all available players
-        const playPromises = [];
         if (leftPlayer && leftReady) {
-          playPromises.push(new Promise<void>((resolve) => {
+          await new Promise<void>((resolve) => {
             leftPlayer.playVideo();
             resolve();
-          }));
+          });
         }
         if (rightPlayer && rightReady) {
-          playPromises.push(new Promise<void>((resolve) => {
+          await new Promise<void>((resolve) => {
             rightPlayer.playVideo();
             resolve();
-          }));
+          });
         }
-
-        await Promise.all(playPromises);
-        startSyncInterval();
       } else {
         console.log('Pausing all videos');
         initialPlayAttemptRef.current = false;
-
-        // Clear sync interval when pausing
-        if (syncIntervalRef.current) {
-          clearInterval(syncIntervalRef.current);
-          syncIntervalRef.current = null;
-        }
-
         if (leftPlayer) leftPlayer.pauseVideo();
         if (rightPlayer) rightPlayer.pauseVideo();
       }
@@ -180,14 +175,26 @@ export function useVideoSync() {
     }
   };
 
+  // Handle PiP position changes with forced sync
+  const handlePiPSwitch = async () => {
+    // Clear any pending sync timeouts
+    if (syncTimeoutRef.current) {
+      clearTimeout(syncTimeoutRef.current);
+    }
+
+    const currentTime = syncState.currentTime;
+    if (currentTime > 0) {
+      // Force immediate sync regardless of the time threshold
+      lastSyncTime.current = 0;
+      await seekAllPlayers(currentTime);
+    }
+  };
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (syncTimeoutRef.current) {
         clearTimeout(syncTimeoutRef.current);
-      }
-      if (syncIntervalRef.current) {
-        clearInterval(syncIntervalRef.current);
       }
     };
   }, []);
@@ -198,6 +205,7 @@ export function useVideoSync() {
     rightPlayerRef,
     handleStateChange,
     handleReady,
-    syncPlay
+    syncPlay,
+    handlePiPSwitch
   };
 }

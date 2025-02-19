@@ -10,15 +10,15 @@ interface MixedVideoPlayerProps {
   rightVideoId: string | null;
   crossFaderValue: number;
   playing: boolean;
-  onPlayPause: () => void;
+  onPlayPause: () => void;  
   preview?: boolean;
   activeTemplate?: string;
   mobileView?: boolean;
 }
 
-export default function MixedVideoPlayer({
-  leftVideoId,
-  rightVideoId,
+export default function MixedVideoPlayer({ 
+  leftVideoId, 
+  rightVideoId, 
   crossFaderValue,
   playing: isPlaying,
   onPlayPause,
@@ -31,9 +31,11 @@ export default function MixedVideoPlayer({
     rightPlayerRef,
     handleStateChange,
     handleReady,
-    syncPlay
+    syncPlay,
+    handlePiPSwitch
   } = useVideoSync();
 
+  const prevCrossFaderRef = useRef(crossFaderValue);
   const [randomTemplate, setRandomTemplate] = useState('side-by-side');
 
   // Handle random template changes
@@ -50,6 +52,20 @@ export default function MixedVideoPlayer({
     }
   }, [activeTemplate, isPlaying, randomTemplate]);
 
+  // Handle PiP position changes
+  useEffect(() => {
+    if ((activeTemplate === 'picture-in-picture' || randomTemplate === 'picture-in-picture') && 
+        activeTemplate !== 'random-mix') {
+      const wasPipRight = prevCrossFaderRef.current > 0.5;
+      const isPipRight = crossFaderValue > 0.5;
+
+      if (wasPipRight !== isPipRight) {
+        handlePiPSwitch();
+      }
+    }
+    prevCrossFaderRef.current = crossFaderValue;
+  }, [crossFaderValue, activeTemplate, randomTemplate, handlePiPSwitch]);
+
   // Handle case when no videos are loaded
   if (!leftVideoId && !rightVideoId) {
     return (
@@ -58,38 +74,6 @@ export default function MixedVideoPlayer({
       </Card>
     );
   }
-
-  const showSubtitles = activeTemplate === 'subtitles';
-
-  // Calculate audio levels based on crossfader and preview state
-  const getAudioLevels = () => {
-    // For preview players, always mute
-    if (preview) {
-      return { left: 0, right: 0 };
-    }
-
-    // For subtitles mode, only play left video audio
-    if (activeTemplate === 'subtitles') {
-      return { left: 1, right: 0 };
-    }
-
-    // For mobile view, use full audio on the dominant video
-    if (mobileView) {
-      return crossFaderValue > 0.5 
-        ? { left: 0, right: 1 }
-        : { left: 1, right: 0 };
-    }
-
-    // Desktop mix view: Calculate audio levels based on crossfader
-    const angle = crossFaderValue * Math.PI / 2;
-    return {
-      left: Math.cos(angle),
-      right: Math.sin(angle)
-    };
-  };
-
-  const audioLevels = getAudioLevels();
-  const effectiveTemplate = activeTemplate === 'random-mix' ? randomTemplate : activeTemplate;
 
   // Common player config
   const playerConfig = {
@@ -101,15 +85,88 @@ export default function MixedVideoPlayer({
       showinfo: 0,
       iv_load_policy: 3,
       origin: window.location.origin,
-      enablejsapi: 1,
-      ...(showSubtitles && { cc_load_policy: 1 })
+      enablejsapi: 1
     }
   };
 
-  // For single video display (left only)
+  // For single video display
+  if (!leftVideoId && rightVideoId) {
+    return (
+      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+        <ReactPlayer
+          ref={rightPlayerRef}
+          url={`https://www.youtube.com/watch?v=${rightVideoId}`}
+          width="100%"
+          height="100%"
+          playing={isPlaying}
+          volume={mobileView ? 1 : 0}
+          muted={!mobileView}
+          onReady={() => handleReady('right')}
+          onPlay={() => handleStateChange('right', 1)}
+          onPause={() => handleStateChange('right', 2)}
+          config={playerConfig}
+        />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+      </div>
+    );
+  }
+
   if (leftVideoId && !rightVideoId) {
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+        <ReactPlayer
+          ref={leftPlayerRef}
+          url={`https://www.youtube.com/watch?v=${leftVideoId}`}
+          width="100%"
+          height="100%"
+          playing={isPlaying}
+          volume={mobileView ? 1 : 0}
+          muted={!mobileView}
+          onReady={() => handleReady('left')}
+          onPlay={() => handleStateChange('left', 1)}
+          onPause={() => handleStateChange('left', 2)}
+          config={playerConfig}
+        />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+      </div>
+    );
+  }
+
+  const handleMixedPlayPause = async () => {
+    await syncPlay(!isPlaying);
+    onPlayPause();
+  };
+
+  const effectiveTemplate = activeTemplate;
+
+  // Calculate audio levels based on crossfader and preview state
+  const getAudioLevels = () => {
+    // For preview players, always mute
+    if (preview) {
+      return { left: 0, right: 0 };
+    }
+
+    // For mobile view, use full audio on the dominant video
+    if (mobileView) {
+      return crossFaderValue > 0.5 
+        ? { left: 0, right: 1 }
+        : { left: 1, right: 0 };
+    }
+
+    // Desktop mix view: Calculate audio levels based on crossfader
+    return {
+      left: Math.max(0, 1 - crossFaderValue),
+      right: Math.max(0, crossFaderValue)
+    };
+  };
+
+  const audioLevels = getAudioLevels();
+
+  // Subtitles mode
+  if (effectiveTemplate === 'subtitles') {
+    return (
+      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+        {/* Main video (left) */}
         <ReactPlayer
           ref={leftPlayerRef}
           url={`https://www.youtube.com/watch?v=${leftVideoId}`}
@@ -123,43 +180,84 @@ export default function MixedVideoPlayer({
           onPause={() => handleStateChange('left', 2)}
           config={playerConfig}
         />
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+
+        {/* Hidden video for subtitles (right) */}
+        <div className="hidden">
+          <ReactPlayer
+            ref={rightPlayerRef}
+            url={`https://www.youtube.com/watch?v=${rightVideoId}`}
+            playing={isPlaying}
+            volume={0}
+            muted={true}
+            onReady={() => handleReady('right')}
+            onPlay={() => handleStateChange('right', 1)}
+            onPause={() => handleStateChange('right', 2)}
+            config={{
+              ...playerConfig,
+              playerVars: {
+                ...playerConfig.playerVars,
+                cc_load_policy: 1
+              }
+            }}
+          />
+        </div>
+
+        <VideoSubtitles
+          rightPlayer={rightPlayerRef.current}
+          isVisible={true}
+        />
+
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
       </div>
     );
   }
 
-  // For single video display (right only)
-  if (!leftVideoId && rightVideoId) {
+  // Picture-in-Picture layout
+  if (effectiveTemplate === 'picture-in-picture') {
+    const isPipRight = crossFaderValue > 0.5;
+    const mainVideo = isPipRight ? rightVideoId : leftVideoId;
+    const pipVideo = isPipRight ? leftVideoId : rightVideoId;
+
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-        <ReactPlayer
-          ref={rightPlayerRef}
-          url={`https://www.youtube.com/watch?v=${rightVideoId}`}
-          width="100%"
-          height="100%"
-          playing={isPlaying}
-          volume={audioLevels.right}
-          muted={preview}
-          onReady={() => handleReady('right')}
-          onPlay={() => handleStateChange('right', 1)}
-          onPause={() => handleStateChange('right', 2)}
-          config={playerConfig}
-        />
-        {showSubtitles && (
-          <VideoSubtitles
-            rightPlayer={rightPlayerRef.current}
-            isVisible={true}
+        {/* Main video */}
+        <div className="absolute inset-0">
+          <ReactPlayer
+            ref={isPipRight ? rightPlayerRef : leftPlayerRef}
+            url={`https://www.youtube.com/watch?v=${mainVideo}`}
+            width="100%"
+            height="100%"
+            playing={isPlaying}
+            volume={isPipRight ? audioLevels.right : audioLevels.left}
+            muted={preview}
+            onReady={() => handleReady(isPipRight ? 'right' : 'left')}
+            onPlay={() => handleStateChange(isPipRight ? 'right' : 'left', 1)}
+            onPause={() => handleStateChange(isPipRight ? 'right' : 'left', 2)}
+            config={playerConfig}
           />
-        )}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+        </div>
+
+        {/* PiP overlay */}
+        <div className="absolute bottom-4 right-4 w-1/4 aspect-video rounded-lg overflow-hidden shadow-lg border border-white/20">
+          <ReactPlayer
+            ref={isPipRight ? leftPlayerRef : rightPlayerRef}
+            url={`https://www.youtube.com/watch?v=${pipVideo}`}
+            width="100%"
+            height="100%"
+            playing={isPlaying}
+            volume={isPipRight ? audioLevels.left : audioLevels.right}
+            muted={preview}
+            onReady={() => handleReady(isPipRight ? 'left' : 'right')}
+            onPlay={() => handleStateChange(isPipRight ? 'left' : 'right', 1)}
+            onPause={() => handleStateChange(isPipRight ? 'left' : 'right', 2)}
+            config={playerConfig}
+          />
+        </div>
+
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
       </div>
     );
   }
-
-  const handleMixedPlayPause = async () => {
-    await syncPlay(!isPlaying);
-    onPlayPause();
-  };
 
   // Side-by-side layout
   if (effectiveTemplate === 'side-by-side') {
@@ -198,60 +296,6 @@ export default function MixedVideoPlayer({
             config={playerConfig}
           />
         </div>
-        {showSubtitles && (
-          <VideoSubtitles
-            rightPlayer={rightPlayerRef.current}
-            isVisible={true}
-          />
-        )}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
-      </div>
-    );
-  }
-
-  // Picture-in-Picture layout
-  if (effectiveTemplate === 'picture-in-picture') {
-    const isPipRight = crossFaderValue > 0.5;
-
-    return (
-      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-        <div className="absolute inset-0">
-          <ReactPlayer
-            ref={isPipRight ? rightPlayerRef : leftPlayerRef}
-            url={`https://www.youtube.com/watch?v=${isPipRight ? rightVideoId : leftVideoId}`}
-            width="100%"
-            height="100%"
-            playing={isPlaying}
-            volume={isPipRight ? audioLevels.right : audioLevels.left}
-            muted={preview}
-            onReady={() => handleReady(isPipRight ? 'right' : 'left')}
-            onPlay={() => handleStateChange(isPipRight ? 'right' : 'left', 1)}
-            onPause={() => handleStateChange(isPipRight ? 'right' : 'left', 2)}
-            config={playerConfig}
-          />
-        </div>
-
-        <div className="absolute bottom-4 right-4 w-1/4 aspect-video rounded-lg overflow-hidden shadow-lg border border-white/20">
-          <ReactPlayer
-            ref={isPipRight ? leftPlayerRef : rightPlayerRef}
-            url={`https://www.youtube.com/watch?v=${isPipRight ? leftVideoId : rightVideoId}`}
-            width="100%"
-            height="100%"
-            playing={isPlaying}
-            volume={isPipRight ? audioLevels.left : audioLevels.right}
-            muted={preview}
-            onReady={() => handleReady(isPipRight ? 'left' : 'right')}
-            onPlay={() => handleStateChange(isPipRight ? 'left' : 'right', 1)}
-            onPause={() => handleStateChange(isPipRight ? 'left' : 'right', 2)}
-            config={playerConfig}
-          />
-        </div>
-        {showSubtitles && (
-          <VideoSubtitles
-            rightPlayer={rightPlayerRef.current}
-            isVisible={true}
-          />
-        )}
         <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
       </div>
     );
@@ -260,7 +304,7 @@ export default function MixedVideoPlayer({
   // Default fade-through layout
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-      <div className="absolute inset-0 transition-opacity duration-200" style={{ opacity: 1 - crossFaderValue }}>
+      <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: 1 - crossFaderValue }}>
         <ReactPlayer
           ref={leftPlayerRef}
           url={`https://www.youtube.com/watch?v=${leftVideoId}`}
@@ -275,7 +319,8 @@ export default function MixedVideoPlayer({
           config={playerConfig}
         />
       </div>
-      <div className="absolute inset-0 transition-opacity duration-200" style={{ opacity: crossFaderValue }}>
+
+      <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: crossFaderValue }}>
         <ReactPlayer
           ref={rightPlayerRef}
           url={`https://www.youtube.com/watch?v=${rightVideoId}`}
@@ -290,12 +335,7 @@ export default function MixedVideoPlayer({
           config={playerConfig}
         />
       </div>
-      {showSubtitles && (
-        <VideoSubtitles
-          rightPlayer={rightPlayerRef.current}
-          isVisible={true}
-        />
-      )}
+
       <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
     </div>
   );
