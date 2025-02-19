@@ -44,9 +44,9 @@ export default function Home() {
 
   const [playing, setPlaying] = useState(false);
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
-  const [crossFader, setCrossFader] = useState(0.5);
+  const [crossFader, setCrossFader] = useState(0.6); 
   const [searchQueries, setSearchQueries] = useState({ left: '', right: '' });
-  const [activeTemplate, setActiveTemplate] = useState<string>(mixTemplates[0].id);
+  const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side"); 
 
   const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left);
   const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right);
