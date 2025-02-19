@@ -142,7 +142,7 @@ export default function Home() {
       <div className="grid grid-cols-[2fr,4fr,2fr] gap-12">
         {/* Left Deck */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Left Deck</h2>
+          <h2 className="text-base font-normal uppercase tracking-wider">Left Deck</h2>
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
@@ -206,7 +206,7 @@ export default function Home() {
 
         {/* Right Deck */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Right Deck</h2>
+          <h2 className="text-base font-normal uppercase tracking-wider">Right Deck</h2>
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
