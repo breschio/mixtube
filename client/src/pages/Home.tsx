@@ -187,8 +187,9 @@ export default function Home() {
               url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
               width="100%"
               height="100%"
-              playing={false}
+              playing={playing}
               muted={true}
+              onReady={() => setVideosReady(prev => ({ ...prev, left: true }))}
               config={{
                 youtube: {
                   playerVars: {
@@ -197,7 +198,8 @@ export default function Home() {
                     playsinline: 1,
                     rel: 0,
                     showinfo: 0,
-                    iv_load_policy: 3
+                    iv_load_policy: 3,
+                    start: 0
                   }
                 }
               }}
@@ -223,14 +225,13 @@ export default function Home() {
               leftVideoId={videos.left?.id || null}
               rightVideoId={videos.right?.id || null}
               crossFaderValue={crossFader}
-              playing={playing}
+              playing={playing && videosReady.left && videosReady.right}
               onPlayPause={handlePlayPause}
               preview={false}
               activeTemplate={activeTemplate}
               mobileView={false}
             />
           </div>
-
           <MixTemplates
             onSelectTemplate={handleTemplateSelect}
             activeTemplate={activeTemplate}
@@ -250,8 +251,9 @@ export default function Home() {
               url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
               width="100%"
               height="100%"
-              playing={false}
+              playing={playing}
               muted={true}
+              onReady={() => setVideosReady(prev => ({ ...prev, right: true }))}
               config={{
                 youtube: {
                   playerVars: {
@@ -260,7 +262,8 @@ export default function Home() {
                     playsinline: 1,
                     rel: 0,
                     showinfo: 0,
-                    iv_load_policy: 3
+                    iv_load_policy: 3,
+                    start: 0
                   }
                 }
               }}
