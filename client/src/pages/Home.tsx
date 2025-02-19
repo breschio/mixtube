@@ -139,7 +139,7 @@ export default function Home() {
     }
 
     return (
-      <div className="grid grid-cols-[1fr,2fr,1fr] gap-6">
+      <div className="grid grid-cols-[2fr,4fr,2fr] gap-6">
         {/* Left Deck */}
         <div className="space-y-4">
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
@@ -179,13 +179,6 @@ export default function Home() {
 
         {/* Mix Controls */}
         <div className="space-y-6">
-          <div className="flex justify-center">
-            <div className="text-foreground font-mono text-xl">
-              mixtube
-            </div>
-          </div>
-
-          {/* Video Preview moved here */}
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <MixedVideoPlayer
               leftVideoId={videos.left?.id || null}
@@ -255,12 +248,16 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
-        <div className="w-full px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
-          <div className="text-foreground font-mono text-xl">
-            mixtube
-          </div>
-          <div className="flex items-center gap-4">
+        <div className="w-full px-3 sm:px-4 md:px-6 py-2 grid grid-cols-3 items-center">
+          <div className="flex items-center">
             <ThemeToggle />
+          </div>
+          <div className="flex justify-center">
+            <div className="text-foreground font-mono text-xl">
+              mixtube
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-4">
             {!user && (
               <AuthModal trigger={
                 <Button variant="outline" size="sm">
