@@ -140,30 +140,9 @@ export default function Home() {
     }
 
     return (
-      <div className="grid grid-cols-[1fr,1fr,1fr] gap-6">
+      <div className="grid grid-cols-[1fr,2fr,1fr] gap-6">
         {/* Left Deck */}
         <div className="space-y-4">
-          <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-            <ReactPlayer
-              url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
-              width="100%"
-              height="100%"
-              playing={false}
-              muted={true}
-              config={{
-                youtube: {
-                  playerVars: {
-                    controls: 0,
-                    modestbranding: 1,
-                    playsinline: 1,
-                    rel: 0,
-                    showinfo: 0,
-                    iv_load_policy: 3
-                  }
-                }
-              }}
-            />
-          </div>
           <h2 className="text-lg font-semibold">Left Deck</h2>
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'left')}
@@ -185,6 +164,21 @@ export default function Home() {
               mixtube
             </div>
           </div>
+
+          {/* Video Preview moved here */}
+          <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+            <MixedVideoPlayer
+              leftVideoId={videos.left?.id || null}
+              rightVideoId={videos.right?.id || null}
+              crossFaderValue={crossFader}
+              playing={playing}
+              onPlayPause={handlePlayPause}
+              preview={false}
+              activeTemplate={activeTemplate}
+              mobileView={false}
+            />
+          </div>
+
           <DJControls
             crossFader={crossFader}
             onCrossFaderChange={setCrossFader}
@@ -199,27 +193,6 @@ export default function Home() {
 
         {/* Right Deck */}
         <div className="space-y-4">
-          <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-            <ReactPlayer
-              url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
-              width="100%"
-              height="100%"
-              playing={false}
-              muted={true}
-              config={{
-                youtube: {
-                  playerVars: {
-                    controls: 0,
-                    modestbranding: 1,
-                    playsinline: 1,
-                    rel: 0,
-                    showinfo: 0,
-                    iv_load_policy: 3
-                  }
-                }
-              }}
-            />
-          </div>
           <h2 className="text-lg font-semibold">Right Deck</h2>
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'right')}
@@ -237,67 +210,11 @@ export default function Home() {
     );
   };
 
-  const renderVideo = () => {
-    if (!isMobile) {
-      return (
-        <MixedVideoPlayer
-          leftVideoId={videos.left?.id || null}
-          rightVideoId={videos.right?.id || null}
-          crossFaderValue={crossFader}
-          playing={playing}
-          onPlayPause={handlePlayPause}
-          preview={false}
-          activeTemplate={activeTemplate}
-          mobileView={false}
-        />
-      );
-    }
-
-    // Mobile view: Show mixed video player with both videos
-    return (
-      <div className="relative aspect-video">
-        <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'mix' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <MixedVideoPlayer
-            leftVideoId={videos.left?.id || null}
-            rightVideoId={videos.right?.id || null}
-            crossFaderValue={crossFader}
-            playing={playing}
-            onPlayPause={handlePlayPause}
-            preview={false}
-            activeTemplate={activeTemplate}
-            mobileView={true}
-          />
-        </div>
-        <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'left' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <MixedVideoPlayer
-            leftVideoId={videos.left?.id || null}
-            rightVideoId={null}
-            crossFaderValue={0}
-            playing={playing}
-            onPlayPause={handlePlayPause}
-            preview={false}
-            mobileView={true}
-          />
-        </div>
-        <div className={`absolute inset-0 transition-opacity duration-200 ${activeTab === 'right' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <MixedVideoPlayer
-            leftVideoId={null}
-            rightVideoId={videos.right?.id || null}
-            crossFaderValue={1}
-            playing={playing}
-            onPlayPause={handlePlayPause}
-            preview={false}
-            mobileView={true}
-          />
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
-        <div className="container mx-auto max-w-[1440px] px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
+        <div className="w-full px-3 sm:px-4 md:px-6 py-2 flex justify-between items-center">
           <div className="text-foreground font-mono text-xl">
             mixtube
           </div>
@@ -320,31 +237,8 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto max-w-[1440px] w-full px-3 sm:px-4 md:px-6 py-4">
-        <div className="lg:grid lg:grid-cols-[2fr,1fr] lg:gap-6">
-          {/* Main Content */}
-          <div className="space-y-4">
-            {renderContent()}
-          </div>
-
-          {/* Mixed Video */}
-          <Card className="overflow-hidden border-none bg-transparent mb-6 lg:mb-0">
-            {isMobile ? (
-              renderVideo()
-            ) : (
-              <MixedVideoPlayer
-                leftVideoId={videos.left?.id || null}
-                rightVideoId={videos.right?.id || null}
-                crossFaderValue={crossFader}
-                playing={playing}
-                onPlayPause={handlePlayPause}
-                preview={false}
-                activeTemplate={activeTemplate}
-                mobileView={false}
-              />
-            )}
-          </Card>
-        </div>
+      <main className="flex-1 w-full px-3 sm:px-4 md:px-6 py-4">
+        {renderContent()}
       </main>
     </div>
   );
