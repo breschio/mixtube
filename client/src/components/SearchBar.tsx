@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
-import { X, Search } from 'lucide-react';
+import { X, Search, Link2, Youtube } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { debounce } from '@/lib/utils';
 import type { YouTubeVideo } from '@/lib/youtube';
@@ -16,6 +18,7 @@ interface SearchBarProps {
 export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightColumn = false }: SearchBarProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
+  const [isUrlMode, setIsUrlMode] = useState(true);
   const { toast } = useToast();
 
   const patterns = [
@@ -51,13 +54,15 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     const newValue = e.target.value;
     setDisplayValue(newValue);
 
-    const videoId = extractVideoId(newValue);
-    if (videoId) {
-      handleVideoIdInput(videoId);
-      return;
+    if (isUrlMode) {
+      const videoId = extractVideoId(newValue);
+      if (videoId) {
+        handleVideoIdInput(videoId);
+        return;
+      }
+    } else {
+      debouncedSearch(newValue);
     }
-
-    debouncedSearch(newValue);
   };
 
   const handleVideoIdInput = async (videoId: string) => {
@@ -87,17 +92,43 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     setIsValid(true);
   };
 
+  const handleModeToggle = (checked: boolean) => {
+    setIsUrlMode(checked);
+    setDisplayValue('');
+    setIsValid(true);
+    onSearch('');
+  };
+
   return (
     <div className="space-y-2 w-full">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center space-x-2">
+          <Switch
+            checked={isUrlMode}
+            onCheckedChange={handleModeToggle}
+            className="data-[state=checked]:bg-primary"
+          />
+          <Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            {isUrlMode ? 'URL Mode' : 'Search Mode'}
+          </Label>
+        </div>
+      </div>
+
       <div className="relative group">
         <div className="relative flex items-center">
-          <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
+          {isUrlMode ? (
+            <Link2 className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
+          ) : (
+            <Search className="absolute left-3 h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
+          )}
           <Input
             type="text"
-            placeholder="Search YouTube"
+            placeholder={isUrlMode ? "Paste YouTube URL" : "Search YouTube"}
             value={displayValue}
             onChange={handleInputChange}
-            className={`pl-9 normal-case transition-all ${!isValid && displayValue ? 'border-red-500' : ''}`}
+            className={`pl-9 pr-8 normal-case transition-all ${
+              !isValid && displayValue ? 'border-red-500' : ''
+            } ${isUrlMode ? 'font-mono text-sm' : ''}`}
           />
           {displayValue && (
             <Button
@@ -112,7 +143,9 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
         </div>
       </div>
       {!isValid && displayValue && (
-        <p className="text-xs text-red-500 mt-1">Please enter a valid YouTube URL or video ID</p>
+        <p className="text-xs text-red-500 mt-1">
+          Please enter a valid YouTube {isUrlMode ? 'URL or video ID' : 'search term'}
+        </p>
       )}
     </div>
   );
