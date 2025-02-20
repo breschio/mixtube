@@ -77,39 +77,12 @@ export default function Home() {
 
   const handlePlayPause = () => {
     setPlaying(!playing);
-    // If starting playback and user hasn't interacted with slider
-    if (!playing && !userInteractedWithSlider) {
-      // Show tooltip during transition
-      setShowTransitionTooltip(true);
-
-      // Start from center
-      setCrossFader(0.5);
-
-      // Wait for 5 seconds before starting the transition
-      setTimeout(() => {
-        // Create a gradual 1.5-second transition through multiple steps
-        const steps = 90; // Increased steps for even smoother transition
-        const increment = 0.1 / steps; // Total movement is 0.1 (from 0.5 to 0.6)
-        const timePerStep = 1500 / steps; // 1.5 seconds total duration
-
-        // Create steps for smooth transition
-        for (let i = 1; i <= steps; i++) {
-          setTimeout(() => {
-            setCrossFader(0.5 + (increment * i));
-            // Hide tooltip after last step
-            if (i === steps) {
-              setTimeout(() => setShowTransitionTooltip(false), 1000);
-            }
-          }, timePerStep * i);
-        }
-      }, 5000); // 5 second delay before transition starts
-    }
   };
 
   const handleTemplateSelect = (template: MixTemplate) => {
     setActiveTemplate(template.id);
     setCrossFader(template.crossFaderValue);
-    setUserInteractedWithSlider(true); // Count template selection as user interaction
+    setUserInteractedWithSlider(true);
   };
 
   const handleCrossFaderChange = (value: number, userInitiated?: boolean) => {
