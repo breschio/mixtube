@@ -44,7 +44,7 @@ export default function MixedVideoPlayer({
       iv_load_policy: 3,
       origin: window.location.origin,
       enablejsapi: 1,
-      mute: mobileView ? 1 : 0 // Mute by default on mobile to allow autoplay
+      mute: 0 // Never mute by default, let crossfader handle audio
     }
   };
 
@@ -52,16 +52,7 @@ export default function MixedVideoPlayer({
   const getAudioLevels = () => {
     if (preview) return { left: 0, right: 0 };
 
-    // Mobile specific audio handling
-    if (mobileView) {
-      if (crossFaderValue <= 0.5) {
-        return { left: 1, right: 0 };
-      } else {
-        return { left: 0, right: 1 };
-      }
-    }
-
-    // Desktop audio handling
+    // Use smooth crossfade for both mobile and desktop
     return {
       left: Math.max(0, 1 - crossFaderValue),
       right: Math.max(0, crossFaderValue)
@@ -79,7 +70,7 @@ export default function MixedVideoPlayer({
       height="100%"
       playing={isPlaying}
       volume={audioLevels.left}
-      muted={preview || (mobileView && crossFaderValue > 0.5)}
+      muted={preview}
       onReady={() => handleReady('left')}
       onPlay={() => handleStateChange('left', 1)}
       onPause={() => handleStateChange('left', 2)}
@@ -96,7 +87,7 @@ export default function MixedVideoPlayer({
       height="100%"
       playing={isPlaying}
       volume={audioLevels.right}
-      muted={preview || (mobileView && crossFaderValue <= 0.5)}
+      muted={preview}
       onReady={() => handleReady('right')}
       onPlay={() => handleStateChange('right', 1)}
       onPause={() => handleStateChange('right', 2)}
