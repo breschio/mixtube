@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type ReactPlayer from 'react-player/youtube';
+import { useMobile } from './use-mobile';
 
 interface VideoSyncState {
   leftReady: boolean;
@@ -10,6 +11,7 @@ interface VideoSyncState {
 }
 
 export function useVideoSync() {
+  const isMobile = useMobile();
   const [syncState, setSyncState] = useState<VideoSyncState>({
     leftReady: false,
     rightReady: false,
@@ -23,6 +25,8 @@ export function useVideoSync() {
   const lastSyncTime = useRef<number>(0);
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const initialPlayAttemptRef = useRef<boolean>(false);
+  const syncRetryCountRef = useRef<number>(0);
+  const MAX_SYNC_RETRIES = 3;
 
   const handleStateChange = (player: 'left' | 'right', state: number) => {
     console.log(`${player} player state changed to:`, state);
@@ -52,7 +56,6 @@ export function useVideoSync() {
     }));
 
     // When a player becomes ready, sync it to the current time
-    // but only if we're not in the initial play attempt
     if (!initialPlayAttemptRef.current) {
       const currentTime = syncState.currentTime;
       if (currentTime > 0) {
@@ -71,7 +74,6 @@ export function useVideoSync() {
 
     // Prevent rapid re-seeks
     if (now - lastSyncTime.current < 250) {
-      // Schedule a sync attempt for later
       if (syncTimeoutRef.current) {
         clearTimeout(syncTimeoutRef.current);
       }
@@ -100,8 +102,16 @@ export function useVideoSync() {
         ...prev,
         currentTime: time
       }));
+
+      // Reset retry counter on successful seek
+      syncRetryCountRef.current = 0;
     } catch (error) {
       console.error('Error seeking players:', error);
+      // Retry logic for failed seeks
+      if (syncRetryCountRef.current < MAX_SYNC_RETRIES) {
+        syncRetryCountRef.current++;
+        setTimeout(() => seekAllPlayers(time), 500);
+      }
     }
   };
 
@@ -125,44 +135,37 @@ export function useVideoSync() {
           await seekAllPlayers(0);
         }
 
-        // Wait for both players to be ready if they exist
-        const readyPromises = [];
-        if (leftPlayer && !leftReady) {
-          readyPromises.push(new Promise(resolve => {
-            const checkReady = () => {
-              if (syncState.leftReady) resolve(true);
-              else setTimeout(checkReady, 100);
-            };
-            checkReady();
-          }));
-        }
-        if (rightPlayer && !rightReady) {
-          readyPromises.push(new Promise(resolve => {
-            const checkReady = () => {
-              if (syncState.rightReady) resolve(true);
-              else setTimeout(checkReady, 100);
-            };
-            checkReady();
-          }));
-        }
-
-        await Promise.all(readyPromises);
-
-        // Sync all players to the same time before playing
-        await seekAllPlayers(syncState.currentTime);
-
-        // Play all available players
-        if (leftPlayer && leftReady) {
-          await new Promise<void>((resolve) => {
-            leftPlayer.playVideo();
-            resolve();
-          });
-        }
-        if (rightPlayer && rightReady) {
-          await new Promise<void>((resolve) => {
-            rightPlayer.playVideo();
-            resolve();
-          });
+        // Special handling for mobile
+        if (isMobile) {
+          // Start players sequentially on mobile
+          if (leftPlayer && leftReady) {
+            await new Promise<void>((resolve) => {
+              leftPlayer.playVideo();
+              setTimeout(resolve, 100);
+            });
+          }
+          if (rightPlayer && rightReady) {
+            await new Promise<void>((resolve) => {
+              rightPlayer.playVideo();
+              setTimeout(resolve, 100);
+            });
+          }
+        } else {
+          // Desktop behavior - start simultaneously
+          const playPromises = [];
+          if (leftPlayer && leftReady) {
+            playPromises.push(new Promise<void>((resolve) => {
+              leftPlayer.playVideo();
+              resolve();
+            }));
+          }
+          if (rightPlayer && rightReady) {
+            playPromises.push(new Promise<void>((resolve) => {
+              rightPlayer.playVideo();
+              resolve();
+            }));
+          }
+          await Promise.all(playPromises);
         }
       } else {
         console.log('Pausing all videos');
@@ -172,21 +175,10 @@ export function useVideoSync() {
       }
     } catch (error) {
       console.error('Error during video sync:', error);
-    }
-  };
-
-  // Handle PiP position changes with forced sync
-  const handlePiPSwitch = async () => {
-    // Clear any pending sync timeouts
-    if (syncTimeoutRef.current) {
-      clearTimeout(syncTimeoutRef.current);
-    }
-
-    const currentTime = syncState.currentTime;
-    if (currentTime > 0) {
-      // Force immediate sync regardless of the time threshold
-      lastSyncTime.current = 0;
-      await seekAllPlayers(currentTime);
+      // Reset play state on error
+      if (leftPlayer) leftPlayer.pauseVideo();
+      if (rightPlayer) rightPlayer.pauseVideo();
+      throw error;
     }
   };
 
@@ -206,6 +198,5 @@ export function useVideoSync() {
     handleStateChange,
     handleReady,
     syncPlay,
-    handlePiPSwitch
   };
 }

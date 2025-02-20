@@ -1,24 +1,41 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from 'express-session';
+import cors from 'cors';
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { authRoutes } from "./auth";
 
 const app = express();
+
+// Basic health check endpoint
+app.get('/ping', (_req, res) => {
+  res.status(200).send('OK');
+});
+
+// Configure middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(session({
+
+// Session configuration
+const sessionConfig = {
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: true }
-}));
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+  }
+};
+
+app.use(session(sessionConfig));
 
 // Auth routes
 app.get('/auth/login', authRoutes.login);
 app.get('/auth/callback', authRoutes.callback);
 app.get('/auth/logout', authRoutes.logout);
 
+// Logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -32,7 +49,7 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
+    if (path.startsWith("/api") || path === '/ping') {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
@@ -50,29 +67,56 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = registerRoutes(app);
+  try {
+    log('Starting server initialization...');
+    const server = registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+    // Error handling middleware
+    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+      console.error('Error:', err);
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
+      res.status(status).json({ message });
+    });
 
-    res.status(status).json({ message });
-    throw err;
-  });
+    // Setup Vite or serve static files based on environment
+    if (app.get("env") === "development") {
+      log('Setting up Vite middleware for development...');
+      await setupVite(app, server);
+      log('Vite middleware setup complete');
+    } else {
+      log('Setting up static file serving for production...');
+      serveStatic(app);
+    }
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+    // Start server
+    const PORT = 5000;
+    server.listen(PORT, "0.0.0.0", () => {
+      log(`Server is running on http://0.0.0.0:${PORT}`);
+      log('Server initialization complete');
+    });
+
+    // Handle server errors
+    server.on('error', (error: any) => {
+      if (error.syscall !== 'listen') {
+        throw error;
+      }
+
+      switch (error.code) {
+        case 'EACCES':
+          console.error(`Port ${PORT} requires elevated privileges`);
+          process.exit(1);
+          break;
+        case 'EADDRINUSE':
+          console.error(`Port ${PORT} is already in use`);
+          process.exit(1);
+          break;
+        default:
+          throw error;
+      }
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
   }
-
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client
-  const PORT = 5000;
-  server.listen(PORT, "0.0.0.0", () => {
-    log(`serving on port ${PORT}`);
-  });
 })();

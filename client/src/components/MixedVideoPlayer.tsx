@@ -43,18 +43,25 @@ export default function MixedVideoPlayer({
       showinfo: 0,
       iv_load_policy: 3,
       origin: window.location.origin,
-      enablejsapi: 1
+      enablejsapi: 1,
+      mute: mobileView ? 1 : 0 // Mute by default on mobile to allow autoplay
     }
   };
 
   // Calculate audio levels based on crossfader and preview state
   const getAudioLevels = () => {
     if (preview) return { left: 0, right: 0 };
+
+    // Mobile specific audio handling
     if (mobileView) {
-      return crossFaderValue > 0.5
-        ? { left: 0, right: 1 }
-        : { left: 1, right: 0 };
+      if (crossFaderValue <= 0.5) {
+        return { left: 1, right: 0 };
+      } else {
+        return { left: 0, right: 1 };
+      }
     }
+
+    // Desktop audio handling
     return {
       left: Math.max(0, 1 - crossFaderValue),
       right: Math.max(0, crossFaderValue)
@@ -72,10 +79,11 @@ export default function MixedVideoPlayer({
       height="100%"
       playing={isPlaying}
       volume={audioLevels.left}
-      muted={preview}
+      muted={preview || (mobileView && crossFaderValue > 0.5)}
       onReady={() => handleReady('left')}
       onPlay={() => handleStateChange('left', 1)}
       onPause={() => handleStateChange('left', 2)}
+      onError={(e) => console.error('Left player error:', e)}
       config={playerConfig}
     />
   );
@@ -88,10 +96,11 @@ export default function MixedVideoPlayer({
       height="100%"
       playing={isPlaying}
       volume={audioLevels.right}
-      muted={preview}
+      muted={preview || (mobileView && crossFaderValue <= 0.5)}
       onReady={() => handleReady('right')}
       onPlay={() => handleStateChange('right', 1)}
       onPause={() => handleStateChange('right', 2)}
+      onError={(e) => console.error('Right player error:', e)}
       config={playerConfig}
     />
   );
@@ -155,8 +164,12 @@ export default function MixedVideoPlayer({
   }
 
   const handleMixedPlayPause = async () => {
-    await syncPlay(!isPlaying);
-    onPlayPause();
+    try {
+      await syncPlay(!isPlaying);
+      onPlayPause();
+    } catch (error) {
+      console.error('Error in handleMixedPlayPause:', error);
+    }
   };
 
   return (
