@@ -185,6 +185,8 @@ export default function Home() {
                     rel: 0,
                     showinfo: 0,
                     iv_load_policy: 3,
+                    cc_load_policy: 3,
+                    cc_lang_pref: 'none',
                     start: 0
                   }
                 }
@@ -249,6 +251,8 @@ export default function Home() {
                     rel: 0,
                     showinfo: 0,
                     iv_load_policy: 3,
+                    cc_load_policy: 3,
+                    cc_lang_pref: 'none',
                     start: 0
                   }
                 }
@@ -270,6 +274,22 @@ export default function Home() {
         </div>
       </div>
     );
+  };
+
+  const playerConfig = {
+    youtube: {
+      playerVars: {
+        controls: 0,
+        modestbranding: 1,
+        playsinline: 1,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3,
+        cc_load_policy: 3, 
+        cc_lang_pref: 'none', 
+        start: 0
+      }
+    }
   };
 
   return (
@@ -305,7 +325,6 @@ export default function Home() {
       <main className="flex-1 w-full px-6 sm:px-8 md:px-12 pt-4 pb-8">
         {isMobile ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4">
-            {/* Video player at the top */}
             <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
               <MixedVideoPlayer
                 leftVideoId={videos.left?.id || null}
@@ -318,15 +337,11 @@ export default function Home() {
                 mobileView={true}
               />
             </div>
-
-            {/* Tabs directly below video */}
             <TabsList className="w-full grid grid-cols-3">
               <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
               <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
               <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
             </TabsList>
-
-            {/* Tab content */}
             <TabsContent value="mix" className="mt-2 space-y-4">
               <MixTemplates
                 onSelectTemplate={handleTemplateSelect}
@@ -340,7 +355,6 @@ export default function Home() {
                 forceShowTooltip={showTransitionTooltip}
               />
             </TabsContent>
-
             <TabsContent value="left" className="mt-2 space-y-4">
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'left')}
@@ -355,7 +369,6 @@ export default function Home() {
                 side="left"
               />
             </TabsContent>
-
             <TabsContent value="right" className="mt-2 space-y-4">
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'right')}
@@ -382,19 +395,7 @@ export default function Home() {
                   playing={playing}
                   muted={true}
                   onReady={() => setVideosReady(prev => ({ ...prev, left: true }))}
-                  config={{
-                    youtube: {
-                      playerVars: {
-                        controls: 0,
-                        modestbranding: 1,
-                        playsinline: 1,
-                        rel: 0,
-                        showinfo: 0,
-                        iv_load_policy: 3,
-                        start: 0
-                      }
-                    }
-                  }}
+                  config={playerConfig}
                 />
               </div>
               <SearchBar
@@ -444,19 +445,7 @@ export default function Home() {
                   playing={playing}
                   muted={true}
                   onReady={() => setVideosReady(prev => ({ ...prev, right: true }))}
-                  config={{
-                    youtube: {
-                      playerVars: {
-                        controls: 0,
-                        modestbranding: 1,
-                        playsinline: 1,
-                        rel: 0,
-                        showinfo: 0,
-                        iv_load_policy: 3,
-                        start: 0
-                      }
-                    }
-                  }}
+                  config={playerConfig}
                 />
               </div>
               <SearchBar

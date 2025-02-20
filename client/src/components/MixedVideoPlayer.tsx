@@ -35,16 +35,20 @@ export default function MixedVideoPlayer({
 
   // Common player config
   const playerConfig = {
-    playerVars: {
-      controls: 0,
-      modestbranding: 1,
-      playsinline: 1,
-      rel: 0,
-      showinfo: 0,
-      iv_load_policy: 3,
-      origin: window.location.origin,
-      enablejsapi: 1,
-      mute: 0 // Never mute by default, let crossfader handle audio
+    youtube: {
+      playerVars: {
+        controls: 0,
+        modestbranding: 1,
+        playsinline: 1,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3,
+        cc_load_policy: 3, // Disable closed captions by default
+        cc_lang_pref: 'none', // No preferred caption language
+        origin: window.location.origin,
+        enablejsapi: 1,
+        mute: 0 // Never mute by default, let crossfader handle audio
+      }
     }
   };
 
