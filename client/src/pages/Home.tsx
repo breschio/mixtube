@@ -46,16 +46,20 @@ export default function Home() {
   const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
   const [crossFader, setCrossFader] = useState(0.6);
   const [searchQueries, setSearchQueries] = useState({ 
-    left: `https://youtube.com/watch?v=ApSCH4JXjQU`,
-    right: `https://youtube.com/watch?v=Q_050nEIMqw` 
+    left: '',  
+    right: '' 
   });
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [userInteractedWithSlider, setUserInteractedWithSlider] = useState(false);
   const [videosReady, setVideosReady] = useState({ left: false, right: false });
 
-  const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left);
-  const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right);
+  const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left, {
+    enabled: searchQueries.left.length >= 2
+  });
+  const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right, {
+    enabled: searchQueries.right.length >= 2
+  });
 
   const handleVideoSelect = (video: YouTubeVideo, target: 'left' | 'right') => {
     setVideos(prev => ({
@@ -69,10 +73,12 @@ export default function Home() {
   };
 
   const handleSearch = (query: string, target: 'left' | 'right') => {
-    setSearchQueries(prev => ({
-      ...prev,
-      [target]: query
-    }));
+    if (query.length >= 2) {
+      setSearchQueries(prev => ({
+        ...prev,
+        [target]: query
+      }));
+    }
   };
 
   const handlePlayPause = () => {
@@ -96,7 +102,6 @@ export default function Home() {
     if (isMobile) {
       return (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4">
-            {/* Video player at the top */}
             <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
               <MixedVideoPlayer
                 leftVideoId={videos.left?.id || null}
@@ -110,14 +115,12 @@ export default function Home() {
               />
             </div>
 
-            {/* Tabs directly below video */}
             <TabsList className="w-full grid grid-cols-3">
               <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
               <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
               <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
             </TabsList>
 
-            {/* Tab content */}
             <TabsContent value="mix" className="mt-2 space-y-4">
               <MixTemplates
                 onSelectTemplate={handleTemplateSelect}
