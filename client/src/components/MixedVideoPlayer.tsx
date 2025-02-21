@@ -39,7 +39,7 @@ export default function MixedVideoPlayer({
       playerVars: {
         controls: 0,
         modestbranding: 1,
-        playsinline: 1,
+        playsinline: 1, // Essential for iOS
         rel: 0,
         showinfo: 0,
         iv_load_policy: 3,
@@ -47,7 +47,9 @@ export default function MixedVideoPlayer({
         cc_lang_pref: 'none', // No preferred caption language
         origin: window.location.origin,
         enablejsapi: 1,
-        mute: 0 // Never mute by default, let crossfader handle audio
+        mute: 0, // Never mute by default, let crossfader handle audio
+        fs: 0, // Disable fullscreen on mobile
+        disablekb: 1 // Disable keyboard controls
       }
     }
   };
