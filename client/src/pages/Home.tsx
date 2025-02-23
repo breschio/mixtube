@@ -281,19 +281,21 @@ export default function Home() {
             </Button>
 
             {!rightPanelCollapsed && (
-              <div className="space-y-6 max-w-[600px] mx-auto w-full">
+              <div className="space-y-4 max-w-[600px] mx-auto w-full">
                 {mainVideoPlayer}
-                <MixTemplates
-                  onSelectTemplate={handleTemplateSelect}
-                  activeTemplate={activeTemplate}
-                />
-                <DJControls
-                  crossFader={crossFader}
-                  onCrossFaderChange={handleCrossFaderChange}
-                  leftVideoId={videos.left?.id}
-                  rightVideoId={videos.right?.id}
-                  forceShowTooltip={showTransitionTooltip}
-                />
+                <div className="flex flex-col gap-4">
+                  <MixTemplates
+                    onSelectTemplate={handleTemplateSelect}
+                    activeTemplate={activeTemplate}
+                  />
+                  <DJControls
+                    crossFader={crossFader}
+                    onCrossFaderChange={handleCrossFaderChange}
+                    leftVideoId={videos.left?.id}
+                    rightVideoId={videos.right?.id}
+                    forceShowTooltip={showTransitionTooltip}
+                  />
+                </div>
               </div>
             )}
           </div>
