@@ -302,19 +302,23 @@ export default function Home() {
     return (
       <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
         <ResizablePanel
-          defaultSize={20}
-          minSize={15}
+          defaultSize={25}
+          minSize={20}
           collapsible
           collapsedSize={4}
           onCollapse={setLeftPanelCollapsed}
           isCollapsed={leftPanelCollapsed}
+          className="transition-all duration-300 ease-in-out"
         >
           {renderSidePanel('left')}
         </ResizablePanel>
 
         <ResizableHandle withHandle />
 
-        <ResizablePanel defaultSize={60}>
+        <ResizablePanel 
+          defaultSize={50}
+          className="transition-all duration-300 ease-in-out"
+        >
           <div className="h-full px-8 space-y-6">
             {mainVideoPlayer}
             <MixTemplates
@@ -334,12 +338,13 @@ export default function Home() {
         <ResizableHandle withHandle />
 
         <ResizablePanel
-          defaultSize={20}
-          minSize={15}
+          defaultSize={25}
+          minSize={20}
           collapsible
           collapsedSize={4}
           onCollapse={setRightPanelCollapsed}
           isCollapsed={rightPanelCollapsed}
+          className="transition-all duration-300 ease-in-out"
         >
           {renderSidePanel('right')}
         </ResizablePanel>

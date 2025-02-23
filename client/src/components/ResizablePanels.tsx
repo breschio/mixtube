@@ -41,11 +41,12 @@ export function ResizableHandle({ withHandle = false, className }: { withHandle?
     <ResizablePrimitive.PanelResizeHandle
       className={cn(
         "relative flex w-px items-center justify-center bg-border after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full",
+        "transition-colors duration-300 ease-in-out hover:bg-primary/20",
         className
       )}
     >
       {withHandle && (
-        <div className="z-10 flex h-4 w-3 items-center justify-center rounded-sm border bg-border">
+        <div className="z-10 flex h-4 w-3 items-center justify-center rounded-sm border bg-border transition-colors duration-300 ease-in-out hover:bg-primary/20">
           <DragHandleDots2Icon className="h-2.5 w-2.5" />
         </div>
       )}
