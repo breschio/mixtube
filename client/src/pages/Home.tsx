@@ -255,7 +255,10 @@ export default function Home() {
           )}
         >
           <div className="h-full flex flex-col px-4">
-            <div className="max-w-[600px] mx-auto w-full">
+            <div className={cn(
+              "max-w-[600px] mx-auto w-full transition-transform duration-300 ease-in-out",
+              !showMixControls && "scale-120 origin-center"
+            )}>
               {mainVideoPlayer}
             </div>
           </div>
