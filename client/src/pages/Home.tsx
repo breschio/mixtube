@@ -4,7 +4,7 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit2 } from "lucide-react"; 
+import { Eye, Edit2, ChevronLeft, ChevronRight } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import RecommendedVideos from "@/components/RecommendedVideos";
@@ -17,6 +17,7 @@ import { useMobile } from '@/hooks/use-mobile';
 import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import ReactPlayer from 'react-player';
+import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
@@ -26,6 +27,8 @@ export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
   const [isEditMode, setIsEditMode] = useState(false);
+  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
+  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState('left');
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
@@ -122,6 +125,64 @@ export default function Home() {
     }
   };
 
+  const renderSidePanel = (side: 'left' | 'right') => {
+    const isLeft = side === 'left';
+    const collapsed = isLeft ? leftPanelCollapsed : rightPanelCollapsed;
+    const setCollapsed = isLeft ? setLeftPanelCollapsed : setRightPanelCollapsed;
+    const video = videos[side];
+    const searchResults = isLeft ? leftSearchResults : rightSearchResults;
+    const searchQuery = searchQueries[side];
+
+    return (
+      <div className="h-full flex flex-col">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-sm font-medium">{isLeft ? 'Left Video' : 'Right Video'}</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setCollapsed(!collapsed)}
+            className="h-6 w-6 p-0"
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </Button>
+        </div>
+
+        {!collapsed && (
+          <>
+            <div className="aspect-video bg-black rounded-lg overflow-hidden relative mb-4">
+              <div className={cn("absolute inset-0 transition-opacity duration-300", playing ? "opacity-100" : "opacity-80")}>
+                <ReactPlayer
+                  url={`https://www.youtube.com/watch?v=${video?.id}`}
+                  width="100%"
+                  height="100%"
+                  playing={playing}
+                  volume={0}
+                  muted={true}
+                  onReady={() => setVideosReady(prev => ({ ...prev, [side]: true }))}
+                  config={playerConfig}
+                />
+              </div>
+            </div>
+            <SearchBar
+              onVideoSelect={(video) => handleVideoSelect(video, side)}
+              onSearch={(query) => handleSearch(query, side)}
+              videoId={video?.id || null}
+            />
+            <div className="flex-1 overflow-auto">
+              <RecommendedVideos
+                videoId={video?.id || null}
+                onVideoSelect={(video) => handleVideoSelect(video, side)}
+                searchResults={searchResults}
+                isSearching={!!searchQuery}
+                side={side}
+              />
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
   const renderContent = () => {
     const mainVideoPlayer = (
       <div className={cn(
@@ -212,80 +273,51 @@ export default function Home() {
       );
     }
 
-    // Desktop edit mode with side panels
     return (
-      <div className="grid grid-cols-[2fr,5fr,2fr] gap-16 transition-all duration-500 ease-in-out">
-        <div className="space-y-4">
-          <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-            <div className={cn("absolute inset-0 transition-opacity duration-300", playing ? "opacity-100" : "opacity-80")}>
-              <ReactPlayer
-                url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
-                width="100%"
-                height="100%"
-                playing={playing}
-                volume={0}
-                muted={true}
-                onReady={() => setVideosReady(prev => ({ ...prev, left: true }))}
-                config={playerConfig}
-              />
-            </div>
+      <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
+        <ResizablePanel
+          defaultSize={20}
+          minSize={15}
+          collapsible
+          collapsedSize={4}
+          onCollapse={setLeftPanelCollapsed}
+          isCollapsed={leftPanelCollapsed}
+        >
+          {renderSidePanel('left')}
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        <ResizablePanel defaultSize={60}>
+          <div className="h-full px-8 space-y-6">
+            {mainVideoPlayer}
+            <MixTemplates
+              onSelectTemplate={handleTemplateSelect}
+              activeTemplate={activeTemplate}
+            />
+            <DJControls
+              crossFader={crossFader}
+              onCrossFaderChange={handleCrossFaderChange}
+              leftVideoId={videos.left?.id}
+              rightVideoId={videos.right?.id}
+              forceShowTooltip={showTransitionTooltip}
+            />
           </div>
-          <SearchBar
-            onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-            onSearch={(query) => handleSearch(query, 'left')}
-            videoId={videos.left?.id || null}
-          />
-          <RecommendedVideos
-            videoId={videos.left?.id || null}
-            onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-            searchResults={leftSearchResults}
-            isSearching={!!searchQueries.left}
-            side="left"
-          />
-        </div>
-        <div className="space-y-6 px-8 border-l border-r border-border/20">
-          {mainVideoPlayer}
-          <MixTemplates
-            onSelectTemplate={handleTemplateSelect}
-            activeTemplate={activeTemplate}
-          />
-          <DJControls
-            crossFader={crossFader}
-            onCrossFaderChange={handleCrossFaderChange}
-            leftVideoId={videos.left?.id}
-            rightVideoId={videos.right?.id}
-            forceShowTooltip={showTransitionTooltip}
-          />
-        </div>
-        <div className="space-y-4">
-          <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-            <div className={cn("absolute inset-0 transition-opacity duration-300", playing ? "opacity-100" : "opacity-80")}>
-              <ReactPlayer
-                url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
-                width="100%"
-                height="100%"
-                playing={playing}
-                volume={0}
-                muted={true}
-                onReady={() => setVideosReady(prev => ({ ...prev, right: true }))}
-                config={playerConfig}
-              />
-            </div>
-          </div>
-          <SearchBar
-            onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            onSearch={(query) => handleSearch(query, 'right')}
-            videoId={videos.right?.id || null}
-          />
-          <RecommendedVideos
-            videoId={videos.right?.id || null}
-            onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-            searchResults={rightSearchResults}
-            isSearching={!!searchQueries.right}
-            side="right"
-          />
-        </div>
-      </div>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        <ResizablePanel
+          defaultSize={20}
+          minSize={15}
+          collapsible
+          collapsedSize={4}
+          onCollapse={setRightPanelCollapsed}
+          isCollapsed={rightPanelCollapsed}
+        >
+          {renderSidePanel('right')}
+        </ResizablePanel>
+      </ResizablePanelGroup>
     );
   };
 
@@ -338,8 +370,8 @@ export default function Home() {
       </header>
 
       <main className={cn(
-        "flex-1 w-full px-6 sm:px-8 md:px-12 pt-4 pb-8 transition-all duration-500 ease-in-out",
-        !isEditMode && "flex items-center justify-center"
+        "flex-1 w-full px-6 sm:px-8 md:px-12 pb-8 transition-all duration-500 ease-in-out",
+        !isEditMode && "flex items-center justify-center pt-4"
       )}>
         {renderContent()}
       </main>
