@@ -158,8 +158,8 @@ export default function Home() {
     return (
       <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
         <ResizablePanel
-          defaultSize={60}
-          minSize={40}
+          defaultSize={30}
+          minSize={25}
           collapsible
           collapsedSize={4}
           onCollapse={setLeftPanelCollapsed}
@@ -167,17 +167,14 @@ export default function Home() {
           className="transition-all duration-300 ease-in-out"
         >
           <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium">Video Selection</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLeftPanelCollapsed(!leftPanelCollapsed)}
-                className="h-6 w-6 p-0"
-              >
-                {leftPanelCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-              </Button>
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLeftPanelCollapsed(!leftPanelCollapsed)}
+              className="h-6 w-6 p-0 self-end mb-2"
+            >
+              {leftPanelCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </Button>
 
             {!leftPanelCollapsed && (
               <Tabs defaultValue="left" className="flex-1 flex flex-col">
@@ -265,8 +262,8 @@ export default function Home() {
         <ResizableHandle withHandle />
 
         <ResizablePanel
-          defaultSize={40}
-          minSize={30}
+          defaultSize={70}
+          minSize={40}
           collapsible
           collapsedSize={4}
           onCollapse={setRightPanelCollapsed}
@@ -274,17 +271,14 @@ export default function Home() {
           className="transition-all duration-300 ease-in-out"
         >
           <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium">Mix Controls</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setRightPanelCollapsed(!rightPanelCollapsed)}
-                className="h-6 w-6 p-0"
-              >
-                {rightPanelCollapsed ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-              </Button>
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setRightPanelCollapsed(!rightPanelCollapsed)}
+              className="h-6 w-6 p-0 self-end mb-2"
+            >
+              {rightPanelCollapsed ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </Button>
 
             {!rightPanelCollapsed && (
               <div className="space-y-6">
