@@ -1,8 +1,10 @@
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Eye, Edit2 } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import RecommendedVideos from "@/components/RecommendedVideos";
@@ -23,6 +25,7 @@ interface VideoInfo extends YouTubeVideo {
 export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
+  const [isEditMode, setIsEditMode] = useState(true);
   const [activeTab, setActiveTab] = useState('left');
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
@@ -99,72 +102,92 @@ export default function Home() {
   };
 
   const renderContent = () => {
+    const mainVideoPlayer = (
+      <div className={cn(
+        "aspect-video bg-black rounded-lg overflow-hidden relative",
+        !isEditMode && "h-[80vh] max-h-[80vh]"
+      )}>
+        <MixedVideoPlayer
+          leftVideoId={videos.left?.id || null}
+          rightVideoId={videos.right?.id || null}
+          crossFaderValue={crossFader}
+          playing={playing && (!isEditMode || (videosReady.left && videosReady.right))}
+          onPlayPause={handlePlayPause}
+          preview={false}
+          activeTemplate={activeTemplate}
+          mobileView={isMobile}
+        />
+      </div>
+    );
+
+    if (!isEditMode) {
+      return (
+        <div className="space-y-4">
+          {mainVideoPlayer}
+          <div className="flex justify-center">
+            <DJControls
+              crossFader={crossFader}
+              onCrossFaderChange={handleCrossFaderChange}
+              leftVideoId={videos.left?.id}
+              rightVideoId={videos.right?.id}
+              forceShowTooltip={showTransitionTooltip}
+            />
+          </div>
+        </div>
+      );
+    }
+
     if (isMobile) {
       return (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4">
-            <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-              <MixedVideoPlayer
-                leftVideoId={videos.left?.id || null}
-                rightVideoId={videos.right?.id || null}
-                crossFaderValue={crossFader}
-                playing={playing}
-                onPlayPause={handlePlayPause}
-                preview={false}
-                activeTemplate={activeTemplate}
-                mobileView={true}
-              />
-            </div>
-
-            <TabsList className="w-full grid grid-cols-3">
-              <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
-              <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
-              <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="mix" className="mt-2 space-y-4">
-              <MixTemplates
-                onSelectTemplate={handleTemplateSelect}
-                activeTemplate={activeTemplate}
-              />
-              <DJControls
-                crossFader={crossFader}
-                onCrossFaderChange={handleCrossFaderChange}
-                leftVideoId={videos.left?.id}
-                rightVideoId={videos.right?.id}
-                forceShowTooltip={showTransitionTooltip}
-              />
-            </TabsContent>
-
-            <TabsContent value="left" className="mt-2 space-y-4">
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                onSearch={(query) => handleSearch(query, 'left')}
-                videoId={videos.left?.id || null}
-              />
-              <RecommendedVideos
-                videoId={videos.left?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                searchResults={leftSearchResults}
-                isSearching={!!searchQueries.left}
-                side="left"
-              />
-            </TabsContent>
-
-            <TabsContent value="right" className="mt-2 space-y-4">
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                onSearch={(query) => handleSearch(query, 'right')}
-                videoId={videos.right?.id || null}
-              />
-              <RecommendedVideos
-                videoId={videos.right?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                searchResults={rightSearchResults}
-                isSearching={!!searchQueries.right}
-                side="right"
-              />
-            </TabsContent>
-          </Tabs>
+          {mainVideoPlayer}
+          <TabsList className="w-full grid grid-cols-3">
+            <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
+            <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
+            <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
+          </TabsList>
+          <TabsContent value="mix" className="mt-2 space-y-4">
+            <MixTemplates
+              onSelectTemplate={handleTemplateSelect}
+              activeTemplate={activeTemplate}
+            />
+            <DJControls
+              crossFader={crossFader}
+              onCrossFaderChange={handleCrossFaderChange}
+              leftVideoId={videos.left?.id}
+              rightVideoId={videos.right?.id}
+              forceShowTooltip={showTransitionTooltip}
+            />
+          </TabsContent>
+          <TabsContent value="left" className="mt-2 space-y-4">
+            <SearchBar
+              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+              onSearch={(query) => handleSearch(query, 'left')}
+              videoId={videos.left?.id || null}
+            />
+            <RecommendedVideos
+              videoId={videos.left?.id || null}
+              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+              searchResults={leftSearchResults}
+              isSearching={!!searchQueries.left}
+              side="left"
+            />
+          </TabsContent>
+          <TabsContent value="right" className="mt-2 space-y-4">
+            <SearchBar
+              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+              onSearch={(query) => handleSearch(query, 'right')}
+              videoId={videos.right?.id || null}
+            />
+            <RecommendedVideos
+              videoId={videos.right?.id || null}
+              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+              searchResults={rightSearchResults}
+              isSearching={!!searchQueries.right}
+              side="right"
+            />
+          </TabsContent>
+        </Tabs>
       );
     }
 
@@ -209,20 +232,8 @@ export default function Home() {
             side="left"
           />
         </div>
-
         <div className="space-y-6 px-8 border-l border-r border-border/20">
-          <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-            <MixedVideoPlayer
-              leftVideoId={videos.left?.id || null}
-              rightVideoId={videos.right?.id || null}
-              crossFaderValue={crossFader}
-              playing={playing && videosReady.left && videosReady.right}
-              onPlayPause={handlePlayPause}
-              preview={false}
-              activeTemplate={activeTemplate}
-              mobileView={false}
-            />
-          </div>
+          {mainVideoPlayer}
           <MixTemplates
             onSelectTemplate={handleTemplateSelect}
             activeTemplate={activeTemplate}
@@ -235,7 +246,6 @@ export default function Home() {
             forceShowTooltip={showTransitionTooltip}
           />
         </div>
-
         <div className="space-y-4">
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
@@ -245,21 +255,7 @@ export default function Home() {
               playing={playing}
               muted={true}
               onReady={() => setVideosReady(prev => ({ ...prev, right: true }))}
-              config={{
-                youtube: {
-                  playerVars: {
-                    controls: 0,
-                    modestbranding: 1,
-                    playsinline: 1,
-                    rel: 0,
-                    showinfo: 0,
-                    iv_load_policy: 3,
-                    cc_load_policy: 3,
-                    cc_lang_pref: 'none',
-                    start: 0
-                  }
-                }
-              }}
+              config={playerConfig}
             />
           </div>
           <SearchBar
@@ -299,8 +295,26 @@ export default function Home() {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
         <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditMode(!isEditMode)}
+              className="gap-2"
+            >
+              {isEditMode ? (
+                <>
+                  <Eye className="h-4 w-4" />
+                  <span className="hidden sm:inline">Watch Mode</span>
+                </>
+              ) : (
+                <>
+                  <Edit2 className="h-4 w-4" />
+                  <span className="hidden sm:inline">Edit Mode</span>
+                </>
+              )}
+            </Button>
           </div>
           <div className="flex justify-center">
             <div className="text-foreground font-mono font-light text-2xl tracking-wider">
@@ -325,147 +339,11 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 w-full px-6 sm:px-8 md:px-12 pt-4 pb-8">
-        {isMobile ? (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4">
-            <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-              <MixedVideoPlayer
-                leftVideoId={videos.left?.id || null}
-                rightVideoId={videos.right?.id || null}
-                crossFaderValue={crossFader}
-                playing={playing}
-                onPlayPause={handlePlayPause}
-                preview={false}
-                activeTemplate={activeTemplate}
-                mobileView={true}
-              />
-            </div>
-            <TabsList className="w-full grid grid-cols-3">
-              <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
-              <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
-              <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
-            </TabsList>
-            <TabsContent value="mix" className="mt-2 space-y-4">
-              <MixTemplates
-                onSelectTemplate={handleTemplateSelect}
-                activeTemplate={activeTemplate}
-              />
-              <DJControls
-                crossFader={crossFader}
-                onCrossFaderChange={handleCrossFaderChange}
-                leftVideoId={videos.left?.id}
-                rightVideoId={videos.right?.id}
-                forceShowTooltip={showTransitionTooltip}
-              />
-            </TabsContent>
-            <TabsContent value="left" className="mt-2 space-y-4">
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                onSearch={(query) => handleSearch(query, 'left')}
-                videoId={videos.left?.id || null}
-              />
-              <RecommendedVideos
-                videoId={videos.left?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                searchResults={leftSearchResults}
-                isSearching={!!searchQueries.left}
-                side="left"
-              />
-            </TabsContent>
-            <TabsContent value="right" className="mt-2 space-y-4">
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                onSearch={(query) => handleSearch(query, 'right')}
-                videoId={videos.right?.id || null}
-              />
-              <RecommendedVideos
-                videoId={videos.right?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                searchResults={rightSearchResults}
-                isSearching={!!searchQueries.right}
-                side="right"
-              />
-            </TabsContent>
-          </Tabs>
-        ) : (
-          <div className="grid grid-cols-[2fr,5fr,2fr] gap-16">
-            <div className="space-y-4">
-              <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-                <ReactPlayer
-                  url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
-                  width="100%"
-                  height="100%"
-                  playing={playing}
-                  muted={true}
-                  onReady={() => setVideosReady(prev => ({ ...prev, left: true }))}
-                  config={playerConfig}
-                />
-              </div>
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                onSearch={(query) => handleSearch(query, 'left')}
-                videoId={videos.left?.id || null}
-              />
-              <RecommendedVideos
-                videoId={videos.left?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                searchResults={leftSearchResults}
-                isSearching={!!searchQueries.left}
-                side="left"
-              />
-            </div>
-            <div className="space-y-6 px-8 border-l border-r border-border/20">
-              <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-                <MixedVideoPlayer
-                  leftVideoId={videos.left?.id || null}
-                  rightVideoId={videos.right?.id || null}
-                  crossFaderValue={crossFader}
-                  playing={playing && videosReady.left && videosReady.right}
-                  onPlayPause={handlePlayPause}
-                  preview={false}
-                  activeTemplate={activeTemplate}
-                  mobileView={false}
-                />
-              </div>
-              <MixTemplates
-                onSelectTemplate={handleTemplateSelect}
-                activeTemplate={activeTemplate}
-              />
-              <DJControls
-                crossFader={crossFader}
-                onCrossFaderChange={handleCrossFaderChange}
-                leftVideoId={videos.left?.id}
-                rightVideoId={videos.right?.id}
-                forceShowTooltip={showTransitionTooltip}
-              />
-            </div>
-            <div className="space-y-4">
-              <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-                <ReactPlayer
-                  url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
-                  width="100%"
-                  height="100%"
-                  playing={playing}
-                  muted={true}
-                  onReady={() => setVideosReady(prev => ({ ...prev, right: true }))}
-                  config={playerConfig}
-                />
-              </div>
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                onSearch={(query) => handleSearch(query, 'right')}
-                videoId={videos.right?.id || null}
-              />
-              <RecommendedVideos
-                videoId={videos.right?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                searchResults={rightSearchResults}
-                isSearching={!!searchQueries.right}
-                side="right"
-              />
-            </div>
-          </div>
-        )}
+      <main className={cn(
+        "flex-1 w-full px-6 sm:px-8 md:px-12 pt-4 pb-8",
+        !isEditMode && "flex items-center justify-center"
+      )}>
+        {renderContent()}
       </main>
     </div>
   );

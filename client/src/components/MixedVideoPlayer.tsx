@@ -35,22 +35,20 @@ export default function MixedVideoPlayer({
 
   // Common player config
   const playerConfig = {
-    youtube: {
-      playerVars: {
-        controls: 0,
-        modestbranding: 1,
-        playsinline: 1, // Essential for iOS
-        rel: 0,
-        showinfo: 0,
-        iv_load_policy: 3,
-        cc_load_policy: 3, // Disable closed captions by default
-        cc_lang_pref: 'none', // No preferred caption language
-        origin: window.location.origin,
-        enablejsapi: 1,
-        mute: 0, // Never mute by default, let crossfader handle audio
-        fs: 0, // Disable fullscreen on mobile
-        disablekb: 1 // Disable keyboard controls
-      }
+    playerVars: {
+      controls: 0,
+      modestbranding: 1,
+      playsinline: 1,
+      rel: 0,
+      showinfo: 0,
+      iv_load_policy: 3,
+      cc_load_policy: 3,
+      cc_lang_pref: 'none',
+      origin: window.location.origin,
+      enablejsapi: 1,
+      mute: 0,
+      fs: 0,
+      disablekb: 1
     }
   };
 
@@ -81,7 +79,9 @@ export default function MixedVideoPlayer({
       onPlay={() => handleStateChange('left', 1)}
       onPause={() => handleStateChange('left', 2)}
       onError={(e) => console.error('Left player error:', e)}
-      config={playerConfig}
+      config={{
+        youtube: playerConfig
+      }}
     />
   );
 
@@ -98,7 +98,9 @@ export default function MixedVideoPlayer({
       onPlay={() => handleStateChange('right', 1)}
       onPause={() => handleStateChange('right', 2)}
       onError={(e) => console.error('Right player error:', e)}
-      config={playerConfig}
+      config={{
+        youtube: playerConfig
+      }}
     />
   );
 
