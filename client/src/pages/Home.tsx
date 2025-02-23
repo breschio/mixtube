@@ -15,7 +15,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useYoutubeSearch } from '@/hooks/use-youtube-search';
 import { useMobile } from '@/hooks/use-mobile';
 import type { YouTubeVideo } from '@/lib/youtube';
-import MixTemplates, { MixTemplate, mixTemplates } from "@/components/MixTemplates";
+import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import ReactPlayer from 'react-player';
 
 interface VideoInfo extends YouTubeVideo {
@@ -25,7 +25,7 @@ interface VideoInfo extends YouTubeVideo {
 export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
-  const [isEditMode, setIsEditMode] = useState(true);
+  const [isEditMode, setIsEditMode] = useState(false); // Default to Watch mode
   const [activeTab, setActiveTab] = useState('left');
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
@@ -104,8 +104,8 @@ export default function Home() {
   const renderContent = () => {
     const mainVideoPlayer = (
       <div className={cn(
-        "aspect-video bg-black rounded-lg overflow-hidden relative",
-        !isEditMode && "h-[80vh] max-h-[80vh]"
+        "aspect-video bg-black rounded-lg overflow-hidden relative transition-all duration-500 ease-in-out",
+        !isEditMode && "h-[80vh] max-h-[80vh] w-full max-w-[1000px] mx-auto" // Added max-width constraint
       )}>
         <MixedVideoPlayer
           leftVideoId={videos.left?.id || null}
@@ -122,9 +122,9 @@ export default function Home() {
 
     if (!isEditMode) {
       return (
-        <div className="space-y-4">
+        <div className="space-y-4 transition-all duration-500 ease-in-out transform">
           {mainVideoPlayer}
-          <div className="flex justify-center">
+          <div className="flex justify-center transition-opacity duration-500">
             <DJControls
               crossFader={crossFader}
               onCrossFaderChange={handleCrossFaderChange}
@@ -139,7 +139,7 @@ export default function Home() {
 
     if (isMobile) {
       return (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4 transition-all duration-500 ease-in-out">
           {mainVideoPlayer}
           <TabsList className="w-full grid grid-cols-3">
             <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
@@ -192,7 +192,7 @@ export default function Home() {
     }
 
     return (
-      <div className="grid grid-cols-[2fr,5fr,2fr] gap-16">
+      <div className="grid grid-cols-[2fr,5fr,2fr] gap-16 transition-all duration-500 ease-in-out">
         <div className="space-y-4">
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
             <ReactPlayer
@@ -301,17 +301,17 @@ export default function Home() {
               variant="ghost"
               size="sm"
               onClick={() => setIsEditMode(!isEditMode)}
-              className="gap-2"
+              className="gap-2 transition-colors duration-200"
             >
               {isEditMode ? (
                 <>
                   <Eye className="h-4 w-4" />
-                  <span className="hidden sm:inline">Watch Mode</span>
+                  <span className="hidden sm:inline">Watch</span>
                 </>
               ) : (
                 <>
                   <Edit2 className="h-4 w-4" />
-                  <span className="hidden sm:inline">Edit Mode</span>
+                  <span className="hidden sm:inline">Edit</span>
                 </>
               )}
             </Button>
@@ -340,7 +340,7 @@ export default function Home() {
       </header>
 
       <main className={cn(
-        "flex-1 w-full px-6 sm:px-8 md:px-12 pt-4 pb-8",
+        "flex-1 w-full px-6 sm:px-8 md:px-12 pt-4 pb-8 transition-all duration-500 ease-in-out",
         !isEditMode && "flex items-center justify-center"
       )}>
         {renderContent()}
