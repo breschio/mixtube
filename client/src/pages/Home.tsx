@@ -18,6 +18,7 @@ import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import ReactPlayer from 'react-player';
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
+import VideoPreview from "@/components/VideoPreview";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
@@ -59,6 +60,16 @@ export default function Home() {
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [userInteractedWithSlider, setUserInteractedWithSlider] = useState(false);
   const [videosReady, setVideosReady] = useState({ left: false, right: false });
+  const [videoStates, setVideoStates] = useState({
+    left: {
+      playing: false,
+      volume: 0.5
+    },
+    right: {
+      playing: false,
+      volume: 0.5
+    }
+  });
 
   const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left, {
     enabled: searchQueries.left.length >= 2
@@ -132,6 +143,27 @@ export default function Home() {
     const video = videos[side];
     const searchResults = isLeft ? leftSearchResults : rightSearchResults;
     const searchQuery = searchQueries[side];
+    const videoState = videoStates[side];
+
+    const handlePlayPause = () => {
+      setVideoStates(prev => ({
+        ...prev,
+        [side]: {
+          ...prev[side],
+          playing: !prev[side].playing
+        }
+      }));
+    };
+
+    const handleVolumeChange = (value: number) => {
+      setVideoStates(prev => ({
+        ...prev,
+        [side]: {
+          ...prev[side],
+          volume: value
+        }
+      }));
+    };
 
     return (
       <div className="h-full flex flex-col">
@@ -149,20 +181,14 @@ export default function Home() {
 
         {!collapsed && (
           <>
-            <div className="aspect-video bg-black rounded-lg overflow-hidden relative mb-4">
-              <div className={cn("absolute inset-0 transition-opacity duration-300", playing ? "opacity-100" : "opacity-80")}>
-                <ReactPlayer
-                  url={`https://www.youtube.com/watch?v=${video?.id}`}
-                  width="100%"
-                  height="100%"
-                  playing={playing}
-                  volume={0}
-                  muted={true}
-                  onReady={() => setVideosReady(prev => ({ ...prev, [side]: true }))}
-                  config={playerConfig}
-                />
-              </div>
-            </div>
+            <VideoPreview
+              videoId={video?.id || null}
+              playing={videoState.playing}
+              onPlayPause={handlePlayPause}
+              volume={videoState.volume}
+              onVolumeChange={handleVolumeChange}
+              className="mb-4"
+            />
             <SearchBar
               onVideoSelect={(video) => handleVideoSelect(video, side)}
               onSearch={(query) => handleSearch(query, side)}
