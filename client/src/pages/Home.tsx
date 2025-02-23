@@ -25,7 +25,7 @@ interface VideoInfo extends YouTubeVideo {
 export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
-  const [isEditMode, setIsEditMode] = useState(false); // Default to Watch mode
+  const [isEditMode, setIsEditMode] = useState(false);
   const [activeTab, setActiveTab] = useState('left');
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
@@ -63,6 +63,27 @@ export default function Home() {
   const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right, {
     enabled: searchQueries.right.length >= 2
   });
+
+  // Common player config
+  const playerConfig = {
+    youtube: {
+      playerVars: {
+        controls: 0,
+        modestbranding: 1,
+        playsinline: 1,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3,
+        cc_load_policy: 3,
+        cc_lang_pref: 'none',
+        origin: window.location.origin,
+        enablejsapi: 1,
+        mute: 0,
+        fs: 0,
+        disablekb: 1
+      }
+    }
+  };
 
   const handleVideoSelect = (video: YouTubeVideo, target: 'left' | 'right') => {
     setVideos(prev => ({
@@ -105,13 +126,13 @@ export default function Home() {
     const mainVideoPlayer = (
       <div className={cn(
         "aspect-video bg-black rounded-lg overflow-hidden relative transition-all duration-500 ease-in-out",
-        !isEditMode && "h-[80vh] max-h-[80vh] w-full max-w-[1000px] mx-auto" // Added max-width constraint
+        !isEditMode && "h-[80vh] max-h-[80vh] w-full max-w-[1000px] mx-auto"
       )}>
         <MixedVideoPlayer
           leftVideoId={videos.left?.id || null}
           rightVideoId={videos.right?.id || null}
           crossFaderValue={crossFader}
-          playing={playing && (!isEditMode || (videosReady.left && videosReady.right))}
+          playing={playing}
           onPlayPause={handlePlayPause}
           preview={false}
           activeTemplate={activeTemplate}
@@ -191,33 +212,23 @@ export default function Home() {
       );
     }
 
+    // Desktop edit mode with side panels
     return (
       <div className="grid grid-cols-[2fr,5fr,2fr] gap-16 transition-all duration-500 ease-in-out">
         <div className="space-y-4">
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-            <ReactPlayer
-              url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
-              width="100%"
-              height="100%"
-              playing={playing}
-              muted={true}
-              onReady={() => setVideosReady(prev => ({ ...prev, left: true }))}
-              config={{
-                youtube: {
-                  playerVars: {
-                    controls: 0,
-                    modestbranding: 1,
-                    playsinline: 1,
-                    rel: 0,
-                    showinfo: 0,
-                    iv_load_policy: 3,
-                    cc_load_policy: 3,
-                    cc_lang_pref: 'none',
-                    start: 0
-                  }
-                }
-              }}
-            />
+            <div className={cn("absolute inset-0 transition-opacity duration-300", playing ? "opacity-100" : "opacity-80")}>
+              <ReactPlayer
+                url={`https://www.youtube.com/watch?v=${videos.left?.id}`}
+                width="100%"
+                height="100%"
+                playing={playing}
+                volume={0}
+                muted={true}
+                onReady={() => setVideosReady(prev => ({ ...prev, left: true }))}
+                config={playerConfig}
+              />
+            </div>
           </div>
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'left')}
@@ -248,15 +259,18 @@ export default function Home() {
         </div>
         <div className="space-y-4">
           <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-            <ReactPlayer
-              url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
-              width="100%"
-              height="100%"
-              playing={playing}
-              muted={true}
-              onReady={() => setVideosReady(prev => ({ ...prev, right: true }))}
-              config={playerConfig}
-            />
+            <div className={cn("absolute inset-0 transition-opacity duration-300", playing ? "opacity-100" : "opacity-80")}>
+              <ReactPlayer
+                url={`https://www.youtube.com/watch?v=${videos.right?.id}`}
+                width="100%"
+                height="100%"
+                playing={playing}
+                volume={0}
+                muted={true}
+                onReady={() => setVideosReady(prev => ({ ...prev, right: true }))}
+                config={playerConfig}
+              />
+            </div>
           </div>
           <SearchBar
             onVideoSelect={(video) => handleVideoSelect(video, 'right')}
@@ -273,22 +287,6 @@ export default function Home() {
         </div>
       </div>
     );
-  };
-
-  const playerConfig = {
-    youtube: {
-      playerVars: {
-        controls: 0,
-        modestbranding: 1,
-        playsinline: 1,
-        rel: 0,
-        showinfo: 0,
-        iv_load_policy: 3,
-        cc_load_policy: 3, 
-        cc_lang_pref: 'none', 
-        start: 0
-      }
-    }
   };
 
   return (
