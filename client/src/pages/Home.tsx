@@ -154,9 +154,10 @@ export default function Home() {
   const renderContent = () => {
     return (
       <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
+        {/* Left Panel - Video Selection */}
         <ResizablePanel
-          defaultSize={30}
-          minSize={25}
+          defaultSize={25}
+          minSize={20}
           collapsible
           collapsedSize={4}
           onCollapse={setLeftPanelCollapsed}
@@ -258,9 +259,25 @@ export default function Home() {
 
         <ResizableHandle withHandle />
 
+        {/* Center Panel - Video Player */}
         <ResizablePanel
-          defaultSize={70}
-          minSize={40}
+          defaultSize={50}
+          minSize={30}
+          className="transition-all duration-300 ease-in-out"
+        >
+          <div className="h-full flex flex-col px-4">
+            <div className="max-w-[600px] mx-auto w-full">
+              {mainVideoPlayer}
+            </div>
+          </div>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        {/* Right Panel - Mix Controls */}
+        <ResizablePanel
+          defaultSize={25}
+          minSize={20}
           collapsible
           collapsedSize={4}
           onCollapse={setRightPanelCollapsed}
@@ -278,21 +295,23 @@ export default function Home() {
             </Button>
 
             {!rightPanelCollapsed && (
-              <div className="space-y-4 max-w-[600px] mx-auto w-full">
-                {mainVideoPlayer}
-                <div className="flex flex-col gap-4">
-                  <MixTemplates
-                    onSelectTemplate={handleTemplateSelect}
-                    activeTemplate={activeTemplate}
-                  />
-                  <DJControls
-                    crossFader={crossFader}
-                    onCrossFaderChange={handleCrossFaderChange}
-                    leftVideoId={videos.left?.id}
-                    rightVideoId={videos.right?.id}
-                    forceShowTooltip={showTransitionTooltip}
-                  />
-                </div>
+              <div className="space-y-4">
+                <Card className="p-4">
+                  <h2 className="text-lg font-semibold mb-4">Mix Controls</h2>
+                  <div className="space-y-6">
+                    <MixTemplates
+                      onSelectTemplate={handleTemplateSelect}
+                      activeTemplate={activeTemplate}
+                    />
+                    <DJControls
+                      crossFader={crossFader}
+                      onCrossFaderChange={handleCrossFaderChange}
+                      leftVideoId={videos.left?.id}
+                      rightVideoId={videos.right?.id}
+                      forceShowTooltip={showTransitionTooltip}
+                    />
+                  </div>
+                </Card>
               </div>
             )}
           </div>
