@@ -11,7 +11,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       scale: {
-        '120': '1.2',
+        '150': '1.5',
       },
       colors: {
         background: "hsl(var(--background))",
