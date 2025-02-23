@@ -166,7 +166,7 @@ export default function Home() {
           isCollapsed={leftPanelCollapsed}
           className="transition-all duration-300 ease-in-out"
         >
-          <div className="h-full flex flex-col">
+          <div className="h-full flex flex-col pr-4">
             <Button
               variant="ghost"
               size="sm"
@@ -270,7 +270,7 @@ export default function Home() {
           isCollapsed={rightPanelCollapsed}
           className="transition-all duration-300 ease-in-out"
         >
-          <div className="h-full flex flex-col">
+          <div className="h-full flex flex-col pl-4">
             <Button
               variant="ghost"
               size="sm"
@@ -281,7 +281,7 @@ export default function Home() {
             </Button>
 
             {!rightPanelCollapsed && (
-              <div className="space-y-6">
+              <div className="space-y-6 max-w-[600px] mx-auto w-full">
                 {mainVideoPlayer}
                 <MixTemplates
                   onSelectTemplate={handleTemplateSelect}
