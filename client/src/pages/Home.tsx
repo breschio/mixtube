@@ -136,217 +136,173 @@ export default function Home() {
     }
   };
 
-  const renderSidePanel = (side: 'left' | 'right') => {
-    const isLeft = side === 'left';
-    const collapsed = isLeft ? leftPanelCollapsed : rightPanelCollapsed;
-    const setCollapsed = isLeft ? setLeftPanelCollapsed : setRightPanelCollapsed;
-    const video = videos[side];
-    const searchResults = isLeft ? leftSearchResults : rightSearchResults;
-    const searchQuery = searchQueries[side];
-    const videoState = videoStates[side];
-
-    const handlePlayPause = () => {
-      setVideoStates(prev => ({
-        ...prev,
-        [side]: {
-          ...prev[side],
-          playing: !prev[side].playing
-        }
-      }));
-    };
-
-    const handleVolumeChange = (value: number) => {
-      setVideoStates(prev => ({
-        ...prev,
-        [side]: {
-          ...prev[side],
-          volume: value
-        }
-      }));
-    };
-
-    return (
-      <div className="h-full flex flex-col">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-sm font-medium">{isLeft ? 'Left Video' : 'Right Video'}</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setCollapsed(!collapsed)}
-            className="h-6 w-6 p-0"
-          >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </Button>
-        </div>
-
-        {!collapsed && (
-          <>
-            <VideoPreview
-              videoId={video?.id || null}
-              playing={videoState.playing}
-              onPlayPause={handlePlayPause}
-              volume={videoState.volume}
-              onVolumeChange={handleVolumeChange}
-              className="mb-4"
-            />
-            <SearchBar
-              onVideoSelect={(video) => handleVideoSelect(video, side)}
-              onSearch={(query) => handleSearch(query, side)}
-              videoId={video?.id || null}
-            />
-            <div className="flex-1 overflow-auto">
-              <RecommendedVideos
-                videoId={video?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, side)}
-                searchResults={searchResults}
-                isSearching={!!searchQuery}
-                side={side}
-              />
-            </div>
-          </>
-        )}
-      </div>
-    );
-  };
+  const mainVideoPlayer = (
+    <div className={cn(
+      "aspect-video bg-black rounded-lg overflow-hidden relative transition-all duration-500 ease-in-out",
+      !isEditMode && "h-[80vh] max-h-[80vh] w-full max-w-[1000px] mx-auto"
+    )}>
+      <MixedVideoPlayer
+        leftVideoId={videos.left?.id || null}
+        rightVideoId={videos.right?.id || null}
+        crossFaderValue={crossFader}
+        playing={playing}
+        onPlayPause={handlePlayPause}
+        preview={false}
+        activeTemplate={activeTemplate}
+        mobileView={isMobile}
+      />
+    </div>
+  );
 
   const renderContent = () => {
-    const mainVideoPlayer = (
-      <div className={cn(
-        "aspect-video bg-black rounded-lg overflow-hidden relative transition-all duration-500 ease-in-out",
-        !isEditMode && "h-[80vh] max-h-[80vh] w-full max-w-[1000px] mx-auto"
-      )}>
-        <MixedVideoPlayer
-          leftVideoId={videos.left?.id || null}
-          rightVideoId={videos.right?.id || null}
-          crossFaderValue={crossFader}
-          playing={playing}
-          onPlayPause={handlePlayPause}
-          preview={false}
-          activeTemplate={activeTemplate}
-          mobileView={isMobile}
-        />
-      </div>
-    );
-
-    if (!isEditMode) {
-      return (
-        <div className="space-y-4 transition-all duration-500 ease-in-out transform">
-          {mainVideoPlayer}
-          <div className="flex justify-center transition-opacity duration-500">
-            <DJControls
-              crossFader={crossFader}
-              onCrossFaderChange={handleCrossFaderChange}
-              leftVideoId={videos.left?.id}
-              rightVideoId={videos.right?.id}
-              forceShowTooltip={showTransitionTooltip}
-            />
-          </div>
-        </div>
-      );
-    }
-
-    if (isMobile) {
-      return (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4 transition-all duration-500 ease-in-out">
-          {mainVideoPlayer}
-          <TabsList className="w-full grid grid-cols-3">
-            <TabsTrigger value="left" className="text-base py-2">Left</TabsTrigger>
-            <TabsTrigger value="mix" className="text-base py-2">Mix</TabsTrigger>
-            <TabsTrigger value="right" className="text-base py-2">Right</TabsTrigger>
-          </TabsList>
-          <TabsContent value="mix" className="mt-2 space-y-4">
-            <MixTemplates
-              onSelectTemplate={handleTemplateSelect}
-              activeTemplate={activeTemplate}
-            />
-            <DJControls
-              crossFader={crossFader}
-              onCrossFaderChange={handleCrossFaderChange}
-              leftVideoId={videos.left?.id}
-              rightVideoId={videos.right?.id}
-              forceShowTooltip={showTransitionTooltip}
-            />
-          </TabsContent>
-          <TabsContent value="left" className="mt-2 space-y-4">
-            <SearchBar
-              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-              onSearch={(query) => handleSearch(query, 'left')}
-              videoId={videos.left?.id || null}
-            />
-            <RecommendedVideos
-              videoId={videos.left?.id || null}
-              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-              searchResults={leftSearchResults}
-              isSearching={!!searchQueries.left}
-              side="left"
-            />
-          </TabsContent>
-          <TabsContent value="right" className="mt-2 space-y-4">
-            <SearchBar
-              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-              onSearch={(query) => handleSearch(query, 'right')}
-              videoId={videos.right?.id || null}
-            />
-            <RecommendedVideos
-              videoId={videos.right?.id || null}
-              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-              searchResults={rightSearchResults}
-              isSearching={!!searchQueries.right}
-              side="right"
-            />
-          </TabsContent>
-        </Tabs>
-      );
-    }
-
     return (
       <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
         <ResizablePanel
-          defaultSize={25}
-          minSize={20}
+          defaultSize={60}
+          minSize={40}
           collapsible
           collapsedSize={4}
           onCollapse={setLeftPanelCollapsed}
           isCollapsed={leftPanelCollapsed}
           className="transition-all duration-300 ease-in-out"
         >
-          {renderSidePanel('left')}
-        </ResizablePanel>
+          <div className="h-full flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-sm font-medium">Video Selection</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLeftPanelCollapsed(!leftPanelCollapsed)}
+                className="h-6 w-6 p-0"
+              >
+                {leftPanelCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+              </Button>
+            </div>
 
-        <ResizableHandle withHandle />
-
-        <ResizablePanel 
-          defaultSize={50}
-          className="transition-all duration-300 ease-in-out"
-        >
-          <div className="h-full px-8 space-y-6">
-            {mainVideoPlayer}
-            <MixTemplates
-              onSelectTemplate={handleTemplateSelect}
-              activeTemplate={activeTemplate}
-            />
-            <DJControls
-              crossFader={crossFader}
-              onCrossFaderChange={handleCrossFaderChange}
-              leftVideoId={videos.left?.id}
-              rightVideoId={videos.right?.id}
-              forceShowTooltip={showTransitionTooltip}
-            />
+            {!leftPanelCollapsed && (
+              <Tabs defaultValue="left" className="flex-1 flex flex-col">
+                <TabsList className="w-full grid grid-cols-2">
+                  <TabsTrigger value="left">Left Video</TabsTrigger>
+                  <TabsTrigger value="right">Right Video</TabsTrigger>
+                </TabsList>
+                <TabsContent value="left" className="flex-1 mt-4">
+                  <div className="h-full flex flex-col">
+                    <VideoPreview
+                      videoId={videos.left?.id || null}
+                      playing={videoStates.left.playing}
+                      onPlayPause={() => {
+                        setVideoStates(prev => ({
+                          ...prev,
+                          left: { ...prev.left, playing: !prev.left.playing }
+                        }));
+                      }}
+                      volume={videoStates.left.volume}
+                      onVolumeChange={(value) => {
+                        setVideoStates(prev => ({
+                          ...prev,
+                          left: { ...prev.left, volume: value }
+                        }));
+                      }}
+                      className="mb-4"
+                    />
+                    <SearchBar
+                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                      onSearch={(query) => handleSearch(query, 'left')}
+                      videoId={videos.left?.id || null}
+                    />
+                    <div className="flex-1 overflow-auto mt-4">
+                      <RecommendedVideos
+                        videoId={videos.left?.id || null}
+                        onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                        searchResults={leftSearchResults}
+                        isSearching={!!searchQueries.left}
+                        side="left"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="right" className="flex-1 mt-4">
+                  <div className="h-full flex flex-col">
+                    <VideoPreview
+                      videoId={videos.right?.id || null}
+                      playing={videoStates.right.playing}
+                      onPlayPause={() => {
+                        setVideoStates(prev => ({
+                          ...prev,
+                          right: { ...prev.right, playing: !prev.right.playing }
+                        }));
+                      }}
+                      volume={videoStates.right.volume}
+                      onVolumeChange={(value) => {
+                        setVideoStates(prev => ({
+                          ...prev,
+                          right: { ...prev.right, volume: value }
+                        }));
+                      }}
+                      className="mb-4"
+                    />
+                    <SearchBar
+                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                      onSearch={(query) => handleSearch(query, 'right')}
+                      videoId={videos.right?.id || null}
+                    />
+                    <div className="flex-1 overflow-auto mt-4">
+                      <RecommendedVideos
+                        videoId={videos.right?.id || null}
+                        onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                        searchResults={rightSearchResults}
+                        isSearching={!!searchQueries.right}
+                        side="right"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            )}
           </div>
         </ResizablePanel>
 
         <ResizableHandle withHandle />
 
         <ResizablePanel
-          defaultSize={25}
-          minSize={20}
+          defaultSize={40}
+          minSize={30}
           collapsible
           collapsedSize={4}
           onCollapse={setRightPanelCollapsed}
           isCollapsed={rightPanelCollapsed}
           className="transition-all duration-300 ease-in-out"
         >
-          {renderSidePanel('right')}
+          <div className="h-full flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-sm font-medium">Mix Controls</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setRightPanelCollapsed(!rightPanelCollapsed)}
+                className="h-6 w-6 p-0"
+              >
+                {rightPanelCollapsed ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              </Button>
+            </div>
+
+            {!rightPanelCollapsed && (
+              <div className="space-y-6">
+                {mainVideoPlayer}
+                <MixTemplates
+                  onSelectTemplate={handleTemplateSelect}
+                  activeTemplate={activeTemplate}
+                />
+                <DJControls
+                  crossFader={crossFader}
+                  onCrossFaderChange={handleCrossFaderChange}
+                  leftVideoId={videos.left?.id}
+                  rightVideoId={videos.right?.id}
+                  forceShowTooltip={showTransitionTooltip}
+                />
+              </div>
+            )}
+          </div>
         </ResizablePanel>
       </ResizablePanelGroup>
     );
