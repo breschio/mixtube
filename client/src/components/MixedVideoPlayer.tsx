@@ -137,7 +137,7 @@ export default function MixedVideoPlayer({
   // Handle case when no videos are loaded
   if (!leftVideoId && !rightVideoId) {
     return (
-      <Card className="aspect-video bg-muted/50 flex items-center justify-center">
+      <Card className="bg-muted/50 flex items-center justify-center p-4">
         <p className="text-muted-foreground">Load videos to start mixing</p>
       </Card>
     );
@@ -146,7 +146,7 @@ export default function MixedVideoPlayer({
   // For single video display
   if (!leftVideoId && rightVideoId) {
     return (
-      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+      <div className="bg-black rounded-lg overflow-hidden relative">
         {rightPlayer}
         <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
@@ -155,7 +155,7 @@ export default function MixedVideoPlayer({
 
   if (leftVideoId && !rightVideoId) {
     return (
-      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+      <div className="bg-black rounded-lg overflow-hidden relative">
         {leftPlayer}
         <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
@@ -172,7 +172,7 @@ export default function MixedVideoPlayer({
   };
 
   return (
-    <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
+    <div className="bg-black rounded-lg overflow-hidden relative flex">
       {renderTemplate()}
       <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
     </div>

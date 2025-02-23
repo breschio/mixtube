@@ -137,10 +137,7 @@ export default function Home() {
   };
 
   const mainVideoPlayer = (
-    <div className={cn(
-      "aspect-video bg-black rounded-lg overflow-hidden relative transition-all duration-500 ease-in-out",
-      !isEditMode && "h-[80vh] max-h-[80vh] w-full max-w-[1000px] mx-auto"
-    )}>
+    <div className="relative">
       <MixedVideoPlayer
         leftVideoId={videos.left?.id || null}
         rightVideoId={videos.right?.id || null}
