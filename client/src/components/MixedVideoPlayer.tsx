@@ -79,9 +79,7 @@ export default function MixedVideoPlayer({
       onPlay={() => handleStateChange('left', 1)}
       onPause={() => handleStateChange('left', 2)}
       onError={(e) => console.error('Left player error:', e)}
-      config={{
-        youtube: playerConfig
-      }}
+      config={playerConfig}
     />
   );
 
@@ -98,9 +96,7 @@ export default function MixedVideoPlayer({
       onPlay={() => handleStateChange('right', 1)}
       onPause={() => handleStateChange('right', 2)}
       onError={(e) => console.error('Right player error:', e)}
-      config={{
-        youtube: playerConfig
-      }}
+      config={playerConfig}
     />
   );
 
@@ -137,7 +133,7 @@ export default function MixedVideoPlayer({
   // Handle case when no videos are loaded
   if (!leftVideoId && !rightVideoId) {
     return (
-      <Card className="bg-muted/50 flex items-center justify-center p-4">
+      <Card className="aspect-video bg-muted/50 flex items-center justify-center">
         <p className="text-muted-foreground">Load videos to start mixing</p>
       </Card>
     );
@@ -146,7 +142,7 @@ export default function MixedVideoPlayer({
   // For single video display
   if (!leftVideoId && rightVideoId) {
     return (
-      <div className="bg-black rounded-lg overflow-hidden relative">
+      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {rightPlayer}
         <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
@@ -155,7 +151,7 @@ export default function MixedVideoPlayer({
 
   if (leftVideoId && !rightVideoId) {
     return (
-      <div className="bg-black rounded-lg overflow-hidden relative">
+      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {leftPlayer}
         <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
@@ -172,7 +168,7 @@ export default function MixedVideoPlayer({
   };
 
   return (
-    <div className="bg-black rounded-lg overflow-hidden relative flex">
+    <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
       {renderTemplate()}
       <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
     </div>
