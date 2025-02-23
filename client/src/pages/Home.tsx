@@ -4,7 +4,7 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit2 } from "lucide-react"; 
+import { Shuffle } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import RecommendedVideos from "@/components/RecommendedVideos";
@@ -27,7 +27,7 @@ interface VideoInfo extends YouTubeVideo {
 export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [showMixControls, setShowMixControls] = useState(true);
   const [activeTab, setActiveTab] = useState('left');
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
@@ -156,7 +156,10 @@ export default function Home() {
         <ResizablePanel
           defaultSize={25}
           minSize={20}
-          className="transition-all duration-300 ease-in-out"
+          className={cn(
+            "transition-all duration-300 ease-in-out",
+            !showMixControls && "!min-w-0 !w-0 !basis-0"
+          )}
         >
           <div className="h-full flex flex-col pr-4">
             <Tabs defaultValue="left" className="flex-1 flex flex-col">
@@ -240,13 +243,16 @@ export default function Home() {
           </div>
         </ResizablePanel>
 
-        <ResizableHandle withHandle />
+        <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
 
         {/* Center Panel - Video Player */}
         <ResizablePanel
           defaultSize={50}
           minSize={30}
-          className="transition-all duration-300 ease-in-out"
+          className={cn(
+            "transition-all duration-300 ease-in-out",
+            !showMixControls && "!basis-full"
+          )}
         >
           <div className="h-full flex flex-col px-4">
             <div className="max-w-[600px] mx-auto w-full">
@@ -255,13 +261,16 @@ export default function Home() {
           </div>
         </ResizablePanel>
 
-        <ResizableHandle withHandle />
+        <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
 
         {/* Right Panel - Mix Controls */}
         <ResizablePanel
           defaultSize={25}
           minSize={20}
-          className="transition-all duration-300 ease-in-out"
+          className={cn(
+            "transition-all duration-300 ease-in-out",
+            !showMixControls && "!min-w-0 !w-0 !basis-0"
+          )}
         >
           <div className="h-full flex flex-col pl-4">
             <Card className="p-4">
@@ -295,20 +304,11 @@ export default function Home() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsEditMode(!isEditMode)}
+              onClick={() => setShowMixControls(!showMixControls)}
               className="gap-2 transition-colors duration-200"
             >
-              {isEditMode ? (
-                <>
-                  <Eye className="h-4 w-4" />
-                  <span className="hidden sm:inline">Watch</span>
-                </>
-              ) : (
-                <>
-                  <Edit2 className="h-4 w-4" />
-                  <span className="hidden sm:inline">Edit</span>
-                </>
-              )}
+              <Shuffle className="h-4 w-4" />
+              <span className="hidden sm:inline">Mix</span>
             </Button>
           </div>
           <div className="flex justify-center">
@@ -334,10 +334,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className={cn(
-        "flex-1 w-full px-6 sm:px-8 md:px-12 pb-8 transition-all duration-500 ease-in-out",
-        !isEditMode && "flex items-center justify-center pt-4"
-      )}>
+      <main className="flex-1 w-full px-6 sm:px-8 md:px-12 pb-8">
         {renderContent()}
       </main>
     </div>
