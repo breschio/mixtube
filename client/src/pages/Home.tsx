@@ -360,7 +360,7 @@ export default function Home() {
                 defaultTab="sign-up"
                 trigger={
                   <Button 
-                    variant="ghost" 
+                    variant="outline" 
                     size="icon"
                     className="hover:text-primary transition-colors duration-200"
                   >
