@@ -223,10 +223,10 @@ export default function Home() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 mt-8">
-        <TabsList className="w-full justify-between">
-          <TabsTrigger value="left">Left</TabsTrigger>
-          <TabsTrigger value="mix">Mix</TabsTrigger>
-          <TabsTrigger value="right">Right</TabsTrigger>
+        <TabsList className="w-full grid grid-cols-3 p-0">
+          <TabsTrigger value="left" className="flex-1 px-8 py-3">Left</TabsTrigger>
+          <TabsTrigger value="mix" className="flex-1 px-8 py-3">Mix</TabsTrigger>
+          <TabsTrigger value="right" className="flex-1 px-8 py-3">Right</TabsTrigger>
         </TabsList>
         <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
           <div className="px-0">
