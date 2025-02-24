@@ -4,7 +4,7 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { User, Shuffle } from "lucide-react"; 
+import { User, Shuffle, Tv } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -270,8 +270,14 @@ export default function Home() {
               onClick={() => setShowMixControls(!showMixControls)}
               className="hover:text-primary transition-colors duration-200"
             >
-              <Shuffle className="h-5 w-5" />
-              <span className="sr-only">Toggle Mix Mode</span>
+              {showMixControls ? (
+                <Tv className="h-5 w-5" />
+              ) : (
+                <Shuffle className="h-5 w-5" />
+              )}
+              <span className="sr-only">
+                {showMixControls ? 'Exit Mix Mode' : 'Enter Mix Mode'}
+              </span>
             </Button>
           </div>
           <div className="flex justify-center">
