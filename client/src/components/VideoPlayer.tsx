@@ -1,14 +1,11 @@
 import { Card } from '@/components/ui/card';
 import { Music2 } from "lucide-react";
-import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 
 interface VideoPlayerProps {
   videoId: string | null;
   videoTitle?: string;
   channelTitle?: string;
   side: 'left' | 'right';
-  onVideoEnd?: () => void;
 }
 
 export default function VideoPlayer({ 
@@ -16,51 +13,7 @@ export default function VideoPlayer({
   videoTitle = '',
   channelTitle = '',
   side,
-  onVideoEnd
 }: VideoPlayerProps) {
-  // Fetch related videos when a video is loaded
-  const { data: relatedVideos } = useQuery({
-    queryKey: ['related-videos', videoId],
-    queryFn: async () => {
-      if (!videoId) return [];
-      return fetch(`/api/youtube/related?v=${videoId}`)
-        .then(res => {
-          if (!res.ok) throw new Error('Failed to fetch related videos');
-          return res.json();
-        })
-        .catch(err => {
-          console.error('Error fetching related videos:', err);
-          return [];
-        });
-    },
-    enabled: !!videoId,
-    staleTime: 60 * 1000,
-    gcTime: 2 * 60 * 1000,
-  });
-
-  useEffect(() => {
-    if (!videoId) return;
-
-    // Initialize YouTube player
-    const player = new YT.Player(`youtube-player-${side}`, {
-      videoId,
-      events: {
-        onStateChange: (event) => {
-          // Video has ended
-          if (event.data === YT.PlayerState.ENDED) {
-            if (onVideoEnd && relatedVideos?.length > 0) {
-              onVideoEnd();
-            }
-          }
-        }
-      }
-    });
-
-    return () => {
-      player.destroy();
-    };
-  }, [videoId, side, onVideoEnd, relatedVideos]);
-
   if (!videoId) {
     return (
       <Card className="bg-muted/50 flex items-center justify-center p-4">

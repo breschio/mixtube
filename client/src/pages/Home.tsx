@@ -79,46 +79,6 @@ export default function Home() {
     setCrossFader(value);
   };
 
-  const handleVideoEnd = async (side: 'left' | 'right') => {
-    console.log(`Video ended on ${side} side, fetching next video...`);
-    try {
-      if (!videos[side]?.id) {
-        console.log('No current video ID found');
-        return;
-      }
-
-      const response = await fetch(`/api/youtube/related?v=${videos[side]?.id}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch related videos: ${response.statusText}`);
-      }
-
-      const relatedVideos = await response.json();
-      console.log('Related videos received:', relatedVideos);
-
-      if (relatedVideos?.length > 0) {
-        const nextVideo = relatedVideos[0];
-        console.log('Loading next video:', nextVideo);
-
-        handleVideoSelect({
-          id: nextVideo.id,
-          title: nextVideo.title,
-          thumbnail: nextVideo.thumbnail,
-          channelTitle: nextVideo.channelTitle || 'Unknown Channel'
-        }, side);
-
-        // Ensure the video starts playing
-        setVideoStates(prev => ({
-          ...prev,
-          [side]: { ...prev[side], playing: true }
-        }));
-      } else {
-        console.log('No related videos found');
-      }
-    } catch (error) {
-      console.error('Error loading next video:', error);
-    }
-  };
-
   const renderControls = (side: 'left' | 'right') => (
     <div className="h-full flex flex-col">
       <VideoPreview
@@ -137,7 +97,6 @@ export default function Home() {
             [side]: { ...prev[side], volume: value }
           }));
         }}
-        onVideoEnd={() => handleVideoEnd(side)}
         className="mb-4"
       />
       <SearchBar
@@ -304,14 +263,12 @@ export default function Home() {
       <header className="w-full bg-background">
         <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
           <div className="flex items-center gap-2">
-            <div className="h-10">
-              <ThemeToggle />
-            </div>
+            <ThemeToggle />
             <Button
               variant="outline"
               size="icon"
               onClick={() => setShowMixControls(!showMixControls)}
-              className="h-10 hover:text-primary transition-colors duration-200"
+              className="hover:text-primary transition-colors duration-200"
             >
               {showMixControls ? (
                 <Tv className="h-5 w-5" />

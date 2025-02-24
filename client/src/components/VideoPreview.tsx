@@ -11,7 +11,6 @@ interface VideoPreviewProps {
   onPlayPause: () => void;
   volume: number;
   onVolumeChange: (value: number) => void;
-  onVideoEnd?: () => void;
   className?: string;
 }
 
@@ -21,11 +20,9 @@ export default function VideoPreview({
   onPlayPause,
   volume,
   onVolumeChange,
-  onVideoEnd,
   className
 }: VideoPreviewProps) {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-  const [isEnded, setIsEnded] = useState(false);
 
   const playerConfig = {
     youtube: {
@@ -46,14 +43,6 @@ export default function VideoPreview({
     }
   };
 
-  const handleEnded = () => {
-    console.log('Video ended event triggered');
-    setIsEnded(true);
-    if (onVideoEnd) {
-      onVideoEnd();
-    }
-  };
-
   return (
     <div className={cn("relative group", className)}>
       <div className="aspect-video bg-black rounded-lg overflow-hidden">
@@ -65,12 +54,10 @@ export default function VideoPreview({
             playing={playing}
             volume={volume}
             config={playerConfig}
-            onEnded={handleEnded}
-            onPlay={() => setIsEnded(false)}
           />
         )}
       </div>
-
+      
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <div className="flex items-center gap-2">
           <Button
@@ -85,7 +72,7 @@ export default function VideoPreview({
               <Play className="h-4 w-4" />
             )}
           </Button>
-
+          
           <div 
             className="relative flex items-center"
             onMouseEnter={() => setShowVolumeSlider(true)}
@@ -103,7 +90,7 @@ export default function VideoPreview({
                 <Volume2 className="h-4 w-4" />
               )}
             </Button>
-
+            
             {showVolumeSlider && (
               <div className="absolute left-8 bottom-0 w-24 px-2 py-1 bg-black/90 rounded">
                 <Slider
