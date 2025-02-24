@@ -145,15 +145,14 @@ export default function Home() {
       <div className="relative w-full aspect-video">
         {mainVideoPlayer}
       </div>
-      {!showMixControls && (
-        <div className="border-t border-border/50">
-          <VideoInfo
-            title={videos.left?.title}
-            channelTitle={videos.left?.channelTitle}
-            onToggleMixMode={() => setShowMixControls(true)}
-          />
-        </div>
-      )}
+      <div className="border-t border-border/50">
+        <VideoInfo
+          title={videos.left?.title}
+          channelTitle={videos.left?.channelTitle}
+          onToggleMixMode={() => setShowMixControls(!showMixControls)}
+          mixMode={showMixControls}
+        />
+      </div>
       {showMixControls && mixControls}
     </>
   );
@@ -173,15 +172,14 @@ export default function Home() {
         />
       </div>
 
-      {!showMixControls && (
-        <div className="px-3 border-t border-border/50">
-          <VideoInfo
-            title={videos.left?.title}
-            channelTitle={videos.left?.channelTitle}
-            onToggleMixMode={() => setShowMixControls(true)}
-          />
-        </div>
-      )}
+      <div className="px-3 border-t border-border/50">
+        <VideoInfo
+          title={videos.left?.title}
+          channelTitle={videos.left?.channelTitle}
+          onToggleMixMode={() => setShowMixControls(!showMixControls)}
+          mixMode={showMixControls}
+        />
+      </div>
 
       <div 
         className={cn(
@@ -189,7 +187,7 @@ export default function Home() {
           showMixControls ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
         )}
         style={{
-          height: showMixControls ? 'calc(100% - 56.25vw)' : '0',
+          height: showMixControls ? 'calc(100% - 56.25vw - 4rem)' : '0',
           marginTop: showMixControls ? '1rem' : '0'
         }}
       >

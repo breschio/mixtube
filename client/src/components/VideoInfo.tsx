@@ -7,12 +7,14 @@ interface VideoInfoProps {
   title?: string;
   channelTitle?: string;
   onToggleMixMode: () => void;
+  mixMode?: boolean;
 }
 
 export default function VideoInfo({ 
   title = 'Untitled Video',
   channelTitle = 'Unknown Channel',
-  onToggleMixMode 
+  onToggleMixMode,
+  mixMode = false 
 }: VideoInfoProps) {
   return (
     <div className="py-2">
@@ -46,7 +48,7 @@ export default function VideoInfo({
           </Button>
           <Button variant="ghost" size="sm" className="gap-1 h-8 px-2" onClick={onToggleMixMode}>
             <Shuffle className="h-4 w-4" />
-            Mix
+            {mixMode ? 'Watch' : 'Mix'}
           </Button>
         </div>
       </div>
