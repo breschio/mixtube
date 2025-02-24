@@ -230,7 +230,7 @@ export default function Home() {
         </TabsList>
         <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
           <div className="px-0">
-            <div className="px-6 mt-6">
+            <div className="mt-6">
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                 onSearch={(query) => handleSearch(query, 'left')}
@@ -255,7 +255,7 @@ export default function Home() {
         </TabsContent>
         <TabsContent value="right" className="h-[calc(100%-3rem)] overflow-auto">
           <div className="px-0">
-            <div className="px-6 mt-6">
+            <div className="mt-6">
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                 onSearch={(query) => handleSearch(query, 'right')}
