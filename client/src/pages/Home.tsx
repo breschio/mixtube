@@ -224,24 +224,28 @@ export default function Home() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 mt-4">
         <TabsList className="w-full justify-between">
-          <TabsTrigger value="left">Left Video</TabsTrigger>
+          <TabsTrigger value="left">Left</TabsTrigger>
           <TabsTrigger value="mix">Mix</TabsTrigger>
-          <TabsTrigger value="right">Right Video</TabsTrigger>
+          <TabsTrigger value="right">Right</TabsTrigger>
         </TabsList>
         <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
-          <div className="px-4">
-            <SearchBar
-              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-              onSearch={(query) => handleSearch(query, 'left')}
-              videoId={videos.left?.id || null}
-            />
-            <RecommendedVideos
-              videoId={videos.left?.id || null}
-              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-              searchResults={leftSearchResults}
-              isSearching={!!searchQueries.left}
-              side="left"
-            />
+          <div className="px-0">
+            <div className="px-4">
+              <SearchBar
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                onSearch={(query) => handleSearch(query, 'left')}
+                videoId={videos.left?.id || null}
+              />
+            </div>
+            <div className="mt-6">
+              <RecommendedVideos
+                videoId={videos.left?.id || null}
+                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                searchResults={leftSearchResults}
+                isSearching={!!searchQueries.left}
+                side="left"
+              />
+            </div>
           </div>
         </TabsContent>
         <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
@@ -250,19 +254,23 @@ export default function Home() {
           </div>
         </TabsContent>
         <TabsContent value="right" className="h-[calc(100%-3rem)] overflow-auto">
-          <div className="px-4">
-            <SearchBar
-              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-              onSearch={(query) => handleSearch(query, 'right')}
-              videoId={videos.right?.id || null}
-            />
-            <RecommendedVideos
-              videoId={videos.right?.id || null}
-              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-              searchResults={rightSearchResults}
-              isSearching={!!searchQueries.right}
-              side="right"
-            />
+          <div className="px-0">
+            <div className="px-4">
+              <SearchBar
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                onSearch={(query) => handleSearch(query, 'right')}
+                videoId={videos.right?.id || null}
+              />
+            </div>
+            <div className="mt-6">
+              <RecommendedVideos
+                videoId={videos.right?.id || null}
+                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                searchResults={rightSearchResults}
+                isSearching={!!searchQueries.right}
+                side="right"
+              />
+            </div>
           </div>
         </TabsContent>
       </Tabs>
