@@ -142,78 +142,52 @@ export default function Home() {
   const renderMobileLayout = () => (
     <div className="h-[calc(100vh-5rem)] flex flex-col">
       <div className="relative">
-        <div className={cn("w-full", activeTab !== "left" && "hidden")}>
-          <MixedVideoPlayer
-            leftVideoId={videos.left?.id || null}
-            rightVideoId={null}
-            crossFaderValue={1}
-            playing={playing}
-            onPlayPause={handlePlayPause}
-            preview={false}
-            activeTemplate="single"
-            mobileView={true}
-          />
-        </div>
-
-        <div className={cn("w-full", activeTab !== "mix" && "hidden")}>
-          <MixedVideoPlayer
-            leftVideoId={videos.left?.id || null}
-            rightVideoId={videos.right?.id || null}
-            crossFaderValue={crossFader}
-            playing={playing}
-            onPlayPause={handlePlayPause}
-            preview={false}
-            activeTemplate={activeTemplate}
-            mobileView={true}
-          />
-        </div>
-
-        <div className={cn("w-full", activeTab !== "right" && "hidden")}>
-          <MixedVideoPlayer
-            leftVideoId={null}
-            rightVideoId={videos.right?.id || null}
-            crossFaderValue={0}
-            playing={playing}
-            onPlayPause={handlePlayPause}
-            preview={false}
-            activeTemplate="single"
-            mobileView={true}
-          />
-        </div>
+        <MixedVideoPlayer
+          leftVideoId={videos.left?.id || null}
+          rightVideoId={videos.right?.id || null}
+          crossFaderValue={crossFader}
+          playing={playing}
+          onPlayPause={handlePlayPause}
+          preview={false}
+          activeTemplate={showMixControls ? activeTemplate : "single"}
+          mobileView={true}
+        />
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 mt-8">
-        <TabsList className="w-full grid grid-cols-3 gap-1 p-1">
-          <TabsTrigger value="left" className="flex-1 px-8 py-3">Left</TabsTrigger>
-          <TabsTrigger value="mix" className="flex-1 px-8 py-3">Mix</TabsTrigger>
-          <TabsTrigger value="right" className="flex-1 px-8 py-3">Right</TabsTrigger>
-        </TabsList>
-        <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
-          <div className="px-0">
-            <div className="mt-6">
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                videoId={videos.left?.id || null}
-              />
+      {showMixControls && (
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 mt-8">
+          <TabsList className="w-full grid grid-cols-3 gap-1 p-1">
+            <TabsTrigger value="left" className="flex-1 px-8 py-3">Left</TabsTrigger>
+            <TabsTrigger value="mix" className="flex-1 px-8 py-3">Mix</TabsTrigger>
+            <TabsTrigger value="right" className="flex-1 px-8 py-3">Right</TabsTrigger>
+          </TabsList>
+          <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
+            <div className="px-0">
+              <div className="mt-6">
+                <SearchBar
+                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                  videoId={videos.left?.id || null}
+                />
+              </div>
             </div>
-          </div>
-        </TabsContent>
-        <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
-          <div className="px-0">
-            {mixControls}
-          </div>
-        </TabsContent>
-        <TabsContent value="right" className="h-[calc(100%-3rem)] overflow-auto">
-          <div className="px-0">
-            <div className="mt-6">
-              <SearchBar
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                videoId={videos.right?.id || null}
-              />
+          </TabsContent>
+          <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
+            <div className="px-0">
+              {mixControls}
             </div>
-          </div>
-        </TabsContent>
-      </Tabs>
+          </TabsContent>
+          <TabsContent value="right" className="h-[calc(100%-3rem)] overflow-auto">
+            <div className="px-0">
+              <div className="mt-6">
+                <SearchBar
+                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                  videoId={videos.right?.id || null}
+                />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 
@@ -281,17 +255,15 @@ export default function Home() {
         <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            {!isMobile && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setShowMixControls(!showMixControls)}
-                className="hover:text-primary transition-colors duration-200"
-              >
-                <Shuffle className="h-5 w-5" />
-                <span className="sr-only">Toggle Mix Mode</span>
-              </Button>
-            )}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setShowMixControls(!showMixControls)}
+              className="hover:text-primary transition-colors duration-200"
+            >
+              <Shuffle className="h-5 w-5" />
+              <span className="sr-only">Toggle Mix Mode</span>
+            </Button>
           </div>
           <div className="flex justify-center">
             {!isMobile && (
