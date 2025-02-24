@@ -337,22 +337,21 @@ export default function Home() {
         <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            {!isMobile && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowMixControls(!showMixControls)}
-                className="gap-2 transition-colors duration-200"
-              >
-                <Shuffle className="h-4 w-4" />
-                <span className="hidden sm:inline">Mix</span>
-              </Button>
-            )}
           </div>
           <div className="flex justify-center">
-            <div className="text-foreground font-mono font-light text-2xl tracking-wider">
-              mixtube
-            </div>
+            {!isMobile && (
+              <button
+                onClick={() => setShowMixControls(!showMixControls)}
+                className="text-foreground font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200"
+              >
+                mixtube
+              </button>
+            )}
+            {isMobile && (
+              <div className="text-foreground font-mono font-light text-2xl tracking-wider">
+                mixtube
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-end gap-4">
             {!user && (
