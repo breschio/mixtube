@@ -27,7 +27,7 @@ export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
   const [showMixControls, setShowMixControls] = useState(false);
-  const [activeTab, setActiveTab] = useState("left"); // For mobile tab view
+  const [activeTab, setActiveTab] = useState("mix"); // For mobile tab view
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
