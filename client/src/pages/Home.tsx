@@ -11,7 +11,6 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DJControls from "@/components/DJControls";
 import AuthModal from "@/components/AuthModal";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useYoutubeSearch } from '@/hooks/use-youtube-search';
 import { useMobile } from '@/hooks/use-mobile';
 import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
@@ -57,38 +56,14 @@ export default function Home() {
     }
   });
   const [crossFader, setCrossFader] = useState(0.6);
-  const [searchQueries, setSearchQueries] = useState({ 
-    left: '',  
-    right: '' 
-  });
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
-
-  const { data: leftSearchResults } = useYoutubeSearch(searchQueries.left, {
-    enabled: searchQueries.left.length >= 2
-  });
-  const { data: rightSearchResults } = useYoutubeSearch(searchQueries.right, {
-    enabled: searchQueries.right.length >= 2
-  });
 
   const handleVideoSelect = (video: YouTubeVideo, target: 'left' | 'right') => {
     setVideos(prev => ({
       ...prev,
       [target]: { ...video, channelTitle: video.channelTitle || 'Unknown Channel' }
     }));
-    setSearchQueries(prev => ({
-      ...prev,
-      [target]: ''
-    }));
-  };
-
-  const handleSearch = (query: string, target: 'left' | 'right') => {
-    if (query.length >= 2) {
-      setSearchQueries(prev => ({
-        ...prev,
-        [target]: query
-      }));
-    }
   };
 
   const handlePlayPause = () => {
@@ -126,7 +101,6 @@ export default function Home() {
       />
       <SearchBar
         onVideoSelect={(video) => handleVideoSelect(video, side)}
-        onSearch={(query) => handleSearch(query, side)}
         videoId={videos[side]?.id || null}
       />
     </div>
@@ -223,7 +197,6 @@ export default function Home() {
             <div className="mt-6">
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                onSearch={(query) => handleSearch(query, 'left')}
                 videoId={videos.left?.id || null}
               />
             </div>
@@ -239,7 +212,6 @@ export default function Home() {
             <div className="mt-6">
               <SearchBar
                 onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                onSearch={(query) => handleSearch(query, 'right')}
                 videoId={videos.right?.id || null}
               />
             </div>

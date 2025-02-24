@@ -3,9 +3,7 @@ import { createServer, type Server } from "http";
 import { cache } from './cache';
 import { spawn } from 'child_process';
 
-// Increased cache duration for search results
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-const SEARCH_CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000;
 const MAX_REQUESTS_PER_WINDOW = 10;
 
@@ -50,70 +48,6 @@ async function getVideoInfo(url: string): Promise<any> {
 }
 
 export function registerRoutes(app: Express): Server {
-  // Remove debug endpoint
-
-  app.get('/api/youtube/search', async (req, res) => {
-    try {
-      const query = req.query.q as string;
-      if (!query || query.length < 2) {
-        return res.status(400).json({ error: 'Search query too short' });
-      }
-
-      const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
-      if (!YOUTUBE_API_KEY) {
-        return res.status(500).json({ error: 'YouTube API key not configured' });
-      }
-
-      // Check rate limit
-      if (isRateLimited(query)) {
-        return res.status(429).json({ error: 'Rate limit exceeded' });
-      }
-
-      // Check cache first
-      const cacheKey = `search:${query}`;
-      const cachedData = await cache.get(cacheKey);
-      const now = Date.now();
-      if (cachedData && (now - cachedData.timestamp) < SEARCH_CACHE_DURATION) {
-        return res.json(cachedData.data);
-      }
-
-      const searchParams = new URLSearchParams({
-        part: 'snippet',
-        q: query,
-        type: 'video',
-        maxResults: '50',
-        key: YOUTUBE_API_KEY
-      });
-
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?${searchParams.toString()}`
-      );
-
-      const data = await response.json();
-      if (!response.ok) {
-        if (data.error?.code === 403) {
-          return res.status(429).json({ error: 'API quota exceeded' });
-        }
-        throw new Error(data.error?.message || 'Failed to search videos');
-      }
-
-      const videos = data.items.map((item: any) => ({
-        id: item.id.videoId,
-        title: item.snippet.title,
-        thumbnail: item.snippet.thumbnails.medium.url,
-        channelTitle: item.snippet.channelTitle,
-      }));
-
-      // Cache successful response
-      await cache.set(cacheKey, { data: videos, timestamp: now });
-
-      res.json(videos);
-    } catch (error) {
-      console.error('YouTube search error:', error);
-      res.status(500).json({ error: 'Failed to search videos' });
-    }
-  });
-
   app.get('/api/youtube/related', async (req, res) => {
     try {
       const videoId = req.query.v as string;
@@ -132,12 +66,12 @@ export function registerRoutes(app: Express): Server {
         return res.status(429).json({ error: { code: 429, message: 'Rate limit exceeded' } });
       }
 
-      // Check cache with shorter duration
+      // Check cache
       const cacheKey = `related:${videoId}`;
       const cachedData = await cache.get(cacheKey);
       const now = Date.now();
       if (cachedData && (now - cachedData.timestamp) < CACHE_DURATION) {
-        return res.json(cachedData.data.slice(0,50)); 
+        return res.json(cachedData.data);
       }
 
       // Add to rate limiter
@@ -182,14 +116,14 @@ export function registerRoutes(app: Express): Server {
         console.error('YouTube API error:', data.error);
         if (data.error?.code === 403) {
           console.log('YouTube API quota exceeded, using fallback data');
-          return res.json(FALLBACK_VIDEOS.slice(0, 50)); 
+          return res.json(FALLBACK_VIDEOS); 
         }
         throw new Error(data.error?.message || 'Failed to fetch related videos');
       }
 
       if (!data.items?.length) {
         console.log('No related videos found for:', videoId);
-        return res.json(FALLBACK_VIDEOS.slice(0, 50)); 
+        return res.json(FALLBACK_VIDEOS); 
       }
 
       const videos = data.items.map((item: any) => ({
@@ -198,13 +132,13 @@ export function registerRoutes(app: Express): Server {
         thumbnail: item.snippet.thumbnails.medium.url,
       }));
 
-      // Cache the successful response with new shorter duration
+      // Cache the successful response
       await cache.set(cacheKey, {data: videos, timestamp: now});
 
       res.json(videos);
     } catch (error) {
       console.error('YouTube related videos error:', error);
-      res.json(FALLBACK_VIDEOS.slice(0, 50)); 
+      res.json(FALLBACK_VIDEOS); 
     }
   });
 

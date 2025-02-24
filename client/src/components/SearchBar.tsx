@@ -1,23 +1,18 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { X, Search, Link2 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { debounce } from '@/lib/utils';
 import type { YouTubeVideo } from '@/lib/youtube';
 
 interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
-  onSearch: (query: string) => void;
   videoId: string | null;
-  isRightColumn?: boolean;
 }
 
-export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightColumn = false }: SearchBarProps) {
+export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
-  const [isUrlMode, setIsUrlMode] = useState(true);
   const lastValidUrlRef = useRef<string | null>(null);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isTypingRef = useRef(false);
@@ -41,23 +36,16 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
       setIsValid(false);
       return null;
     }
-    setIsValid(true);
+    setIsValid(false);
     return null;
   };
-
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      onSearch(value);
-    }, 800),
-    [onSearch]
-  );
 
   const startUrlRestorationTimer = () => {
     if (blurTimeoutRef.current) {
       clearTimeout(blurTimeoutRef.current);
     }
 
-    if (isUrlMode && lastValidUrlRef.current && !isTypingRef.current) {
+    if (lastValidUrlRef.current && !isTypingRef.current) {
       blurTimeoutRef.current = setTimeout(() => {
         if (!displayValue || displayValue !== lastValidUrlRef.current) {
           setDisplayValue(lastValidUrlRef.current || '');
@@ -71,27 +59,21 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     setDisplayValue(newValue);
     isTypingRef.current = true;
 
-    // Clear any existing restoration timer when user starts typing
     if (blurTimeoutRef.current) {
       clearTimeout(blurTimeoutRef.current);
     }
 
-    // Set a timeout to mark typing as finished
     setTimeout(() => {
       isTypingRef.current = false;
-      if (!newValue && isUrlMode) {
+      if (!newValue) {
         startUrlRestorationTimer();
       }
     }, 1000);
 
-    if (isUrlMode) {
-      const videoId = extractVideoId(newValue);
-      if (videoId) {
-        handleVideoIdInput(videoId);
-        lastValidUrlRef.current = newValue;
-      }
-    } else {
-      debouncedSearch(newValue);
+    const videoId = extractVideoId(newValue);
+    if (videoId) {
+      handleVideoIdInput(videoId);
+      lastValidUrlRef.current = newValue;
     }
   };
 
@@ -112,12 +94,24 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     }
   };
 
+  const handleBlur = () => {
+    isTypingRef.current = false;
+    if (!displayValue) {
+      startUrlRestorationTimer();
+    }
+  };
+
+  const handleClear = () => {
+    setDisplayValue('');
+    setIsValid(true);
+    startUrlRestorationTimer();
+  };
+
   useEffect(() => {
     if (videoId) {
       const newUrl = `https://youtube.com/watch?v=${videoId}`;
       setDisplayValue(newUrl);
       lastValidUrlRef.current = newUrl;
-      setIsUrlMode(true);
     }
   }, [videoId]);
 
@@ -129,67 +123,19 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
     };
   }, []);
 
-  const handleBlur = () => {
-    isTypingRef.current = false;
-    if (isUrlMode && !displayValue) {
-      startUrlRestorationTimer();
-    }
-  };
-
-  const handleClear = () => {
-    setDisplayValue('');
-    if (!isUrlMode) {
-      onSearch('');
-    }
-    setIsValid(true);
-
-    // Start the restoration timer after clearing
-    if (isUrlMode) {
-      startUrlRestorationTimer();
-    }
-  };
-
-  const handleModeToggle = (value: string) => {
-    const newIsUrlMode = value === 'url';
-    setIsUrlMode(newIsUrlMode);
-    setDisplayValue('');
-    setIsValid(true);
-  };
-
   return (
     <div className="w-full">
       <div className="relative group">
         <div className="relative flex items-center">
-          <ToggleGroup
-            type="single"
-            value={isUrlMode ? 'url' : 'search'}
-            onValueChange={handleModeToggle}
-            className="absolute left-1 top-1/2 -translate-y-1/2 h-7 flex gap-0.5 bg-accent/20 rounded-md p-0.5"
-          >
-            <ToggleGroupItem
-              value="search"
-              size="sm"
-              className={`h-6 w-6 p-0 rounded-sm ${!isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : 'hover:bg-accent/50 text-muted-foreground'}`}
-            >
-              <Search className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="url"
-              size="sm"
-              className={`h-6 w-6 p-0 rounded-sm ${isUrlMode ? 'bg-primary/20 text-primary hover:bg-primary/30 shadow-[0_0_10px_rgba(var(--primary),0.2)]' : 'hover:bg-accent/50 text-muted-foreground'}`}
-            >
-              <Link2 className="h-4 w-4" />
-            </ToggleGroupItem>
-          </ToggleGroup>
           <Input
             type="text"
-            placeholder={isUrlMode ? "Paste YouTube URL" : "Search YouTube"}
+            placeholder="Paste YouTube URL"
             value={displayValue}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            className={`pl-16 pr-9 normal-case transition-all ${
+            className={`pr-9 font-mono text-sm transition-all ${
               !isValid && displayValue ? 'border-red-500' : ''
-            } ${isUrlMode ? 'font-mono text-sm' : ''} animate-placeholder`}
+            } animate-placeholder`}
           />
           {displayValue && (
             <Button
@@ -205,7 +151,7 @@ export default function SearchBar({ onVideoSelect, onSearch, videoId, isRightCol
       </div>
       {!isValid && displayValue && (
         <p className="text-xs text-red-500 mt-1">
-          Please enter a valid YouTube {isUrlMode ? 'URL or video ID' : 'search term'}
+          Please enter a valid YouTube URL or video ID
         </p>
       )}
     </div>
