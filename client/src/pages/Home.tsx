@@ -178,7 +178,50 @@ export default function Home() {
   // Mobile Layout with Tabs
   const renderMobileLayout = () => (
     <div className="h-[calc(100vh-5rem)] flex flex-col">
-      {mainVideoPlayer}
+      <div className="relative">
+        {/* Left Video Player */}
+        <div className={cn("w-full", activeTab !== "left" && "hidden")}>
+          <MixedVideoPlayer
+            leftVideoId={videos.left?.id || null}
+            rightVideoId={null}
+            crossFaderValue={1}
+            playing={playing}
+            onPlayPause={handlePlayPause}
+            preview={false}
+            activeTemplate="single"
+            mobileView={true}
+          />
+        </div>
+
+        {/* Mix Video Player */}
+        <div className={cn("w-full", activeTab !== "mix" && "hidden")}>
+          <MixedVideoPlayer
+            leftVideoId={videos.left?.id || null}
+            rightVideoId={videos.right?.id || null}
+            crossFaderValue={crossFader}
+            playing={playing}
+            onPlayPause={handlePlayPause}
+            preview={false}
+            activeTemplate={activeTemplate}
+            mobileView={true}
+          />
+        </div>
+
+        {/* Right Video Player */}
+        <div className={cn("w-full", activeTab !== "right" && "hidden")}>
+          <MixedVideoPlayer
+            leftVideoId={null}
+            rightVideoId={videos.right?.id || null}
+            crossFaderValue={0}
+            playing={playing}
+            onPlayPause={handlePlayPause}
+            preview={false}
+            activeTemplate="single"
+            mobileView={true}
+          />
+        </div>
+      </div>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 mt-4">
         <TabsList className="w-full justify-between">
           <TabsTrigger value="left">Left Video</TabsTrigger>
