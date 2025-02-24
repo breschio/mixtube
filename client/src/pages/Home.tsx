@@ -154,46 +154,49 @@ export default function Home() {
         />
       </div>
 
-      {showMixControls && (
-        <div className="transition-all duration-300 ease-in-out transform"
-             style={{
-               height: showMixControls ? 'calc(100% - 56.25vw - 2rem)' : '0',
-               opacity: showMixControls ? 1 : 0,
-             }}>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full mt-8">
-            <TabsList className="w-full grid grid-cols-3 gap-1 p-1">
-              <TabsTrigger value="left" className="flex-1 px-8 py-3">Left</TabsTrigger>
-              <TabsTrigger value="mix" className="flex-1 px-8 py-3">Mix</TabsTrigger>
-              <TabsTrigger value="right" className="flex-1 px-8 py-3">Right</TabsTrigger>
-            </TabsList>
-            <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
-              <div className="px-0">
-                <div className="mt-6">
-                  <SearchBar
-                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                    videoId={videos.left?.id || null}
-                  />
-                </div>
+      <div 
+        className={cn(
+          "overflow-hidden transition-all duration-300 ease-in-out transform",
+          showMixControls ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
+        )}
+        style={{
+          height: showMixControls ? 'calc(100% - 56.25vw)' : '0',
+          marginTop: showMixControls ? '2rem' : '0'
+        }}
+      >
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
+          <TabsList className="w-full grid grid-cols-3 gap-1 p-1">
+            <TabsTrigger value="left" className="flex-1 px-8 py-3">Left</TabsTrigger>
+            <TabsTrigger value="mix" className="flex-1 px-8 py-3">Mix</TabsTrigger>
+            <TabsTrigger value="right" className="flex-1 px-8 py-3">Right</TabsTrigger>
+          </TabsList>
+          <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
+            <div className="px-0">
+              <div className="mt-6">
+                <SearchBar
+                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                  videoId={videos.left?.id || null}
+                />
               </div>
-            </TabsContent>
-            <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
-              <div className="px-0">
-                {mixControls}
+            </div>
+          </TabsContent>
+          <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
+            <div className="px-0">
+              {mixControls}
+            </div>
+          </TabsContent>
+          <TabsContent value="right" className="h-[calc(100%-3rem)] overflow-auto">
+            <div className="px-0">
+              <div className="mt-6">
+                <SearchBar
+                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                  videoId={videos.right?.id || null}
+                />
               </div>
-            </TabsContent>
-            <TabsContent value="right" className="h-[calc(100%-3rem)] overflow-auto">
-              <div className="px-0">
-                <div className="mt-6">
-                  <SearchBar
-                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                    videoId={videos.right?.id || null}
-                  />
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      )}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 
