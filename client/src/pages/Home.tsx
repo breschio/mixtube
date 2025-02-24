@@ -16,9 +16,8 @@ import { useYoutubeSearch } from '@/hooks/use-youtube-search';
 import { useMobile } from '@/hooks/use-mobile';
 import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
-import ReactPlayer from 'react-player';
-import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
 import VideoPreview from "@/components/VideoPreview";
+import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
@@ -48,16 +47,6 @@ export default function Home() {
   });
 
   const [playing, setPlaying] = useState(false);
-  const [volumes, setVolumes] = useState({ left: 0.5, right: 0.5 });
-  const [crossFader, setCrossFader] = useState(0.6);
-  const [searchQueries, setSearchQueries] = useState({ 
-    left: '',  
-    right: '' 
-  });
-  const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
-  const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
-  const [userInteractedWithSlider, setUserInteractedWithSlider] = useState(false);
-  const [videosReady, setVideosReady] = useState({ left: false, right: false });
   const [videoStates, setVideoStates] = useState({
     left: {
       playing: false,
@@ -68,34 +57,20 @@ export default function Home() {
       volume: 0.5
     }
   });
+  const [crossFader, setCrossFader] = useState(0.6);
+  const [searchQueries, setSearchQueries] = useState({ 
+    left: '',  
+    right: '' 
+  });
+  const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
+  const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
 
-  const { data: leftSearchResults, isLoading: leftSearchLoading } = useYoutubeSearch(searchQueries.left, {
+  const { data: leftSearchResults } = useYoutubeSearch(searchQueries.left, {
     enabled: searchQueries.left.length >= 2
   });
-  const { data: rightSearchResults, isLoading: rightSearchLoading } = useYoutubeSearch(searchQueries.right, {
+  const { data: rightSearchResults } = useYoutubeSearch(searchQueries.right, {
     enabled: searchQueries.right.length >= 2
   });
-
-  // Common player config
-  const playerConfig = {
-    youtube: {
-      playerVars: {
-        controls: 0,
-        modestbranding: 1,
-        playsinline: 1,
-        rel: 0,
-        showinfo: 0,
-        iv_load_policy: 3,
-        cc_load_policy: 3,
-        cc_lang_pref: 'none',
-        origin: window.location.origin,
-        enablejsapi: 1,
-        mute: 0,
-        fs: 0,
-        disablekb: 1
-      }
-    }
-  };
 
   const handleVideoSelect = (video: YouTubeVideo, target: 'left' | 'right') => {
     setVideos(prev => ({
@@ -124,14 +99,10 @@ export default function Home() {
   const handleTemplateSelect = (template: MixTemplate) => {
     setActiveTemplate(template.id);
     setCrossFader(template.crossFaderValue);
-    setUserInteractedWithSlider(true);
   };
 
-  const handleCrossFaderChange = (value: number, userInitiated?: boolean) => {
+  const handleCrossFaderChange = (value: number) => {
     setCrossFader(value);
-    if (userInitiated) {
-      setUserInteractedWithSlider(true);
-    }
   };
 
   const mainVideoPlayer = (
@@ -149,6 +120,24 @@ export default function Home() {
     </div>
   );
 
+  const mixControls = (
+    <Card className="p-4">
+      <div className="space-y-6">
+        <MixTemplates
+          onSelectTemplate={handleTemplateSelect}
+          activeTemplate={activeTemplate}
+        />
+        <DJControls
+          crossFader={crossFader}
+          onCrossFaderChange={handleCrossFaderChange}
+          leftVideoId={videos.left?.id}
+          rightVideoId={videos.right?.id}
+          forceShowTooltip={showTransitionTooltip}
+        />
+      </div>
+    </Card>
+  );
+
   const renderContent = () => {
     return (
       <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
@@ -163,9 +152,9 @@ export default function Home() {
         >
           <div className="h-full flex flex-col pr-4">
             <Tabs defaultValue="left" className="flex-1 flex flex-col">
-              <TabsList className="w-full grid grid-cols-2">
-                <TabsTrigger value="left">Left Video</TabsTrigger>
-                <TabsTrigger value="right">Right Video</TabsTrigger>
+              <TabsList className="w-full">
+                <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
+                <TabsTrigger value="right" className="flex-1">Right Video</TabsTrigger>
               </TabsList>
               <TabsContent value="left" className="flex-1 mt-4">
                 <div className="h-full flex flex-col">
@@ -260,6 +249,11 @@ export default function Home() {
               !showMixControls && "scale-150 origin-center mt-32"
             )}>
               {mainVideoPlayer}
+              {showMixControls && (
+                <div className="mt-4">
+                  {mixControls}
+                </div>
+              )}
             </div>
           </div>
         </ResizablePanel>
@@ -276,22 +270,7 @@ export default function Home() {
           )}
         >
           <div className="h-full flex flex-col pl-4">
-            <Card className="p-4">
-              <h2 className="text-lg font-semibold mb-4">Mix Controls</h2>
-              <div className="space-y-6">
-                <MixTemplates
-                  onSelectTemplate={handleTemplateSelect}
-                  activeTemplate={activeTemplate}
-                />
-                <DJControls
-                  crossFader={crossFader}
-                  onCrossFaderChange={handleCrossFaderChange}
-                  leftVideoId={videos.left?.id}
-                  rightVideoId={videos.right?.id}
-                  forceShowTooltip={showTransitionTooltip}
-                />
-              </div>
-            </Card>
+
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
