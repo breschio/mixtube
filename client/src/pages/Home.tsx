@@ -79,6 +79,27 @@ export default function Home() {
     setCrossFader(value);
   };
 
+  const handleVideoEnd = async (side: 'left' | 'right') => {
+    try {
+      const response = await fetch(`/api/youtube/related?v=${videos[side]?.id}`);
+      if (!response.ok) throw new Error('Failed to fetch related videos');
+
+      const relatedVideos = await response.json();
+      if (relatedVideos?.length > 0) {
+        const nextVideo = relatedVideos[0];
+
+        handleVideoSelect({
+          id: nextVideo.id,
+          title: nextVideo.title,
+          thumbnail: nextVideo.thumbnail,
+          channelTitle: nextVideo.channelTitle || 'Unknown Channel'
+        }, side);
+      }
+    } catch (error) {
+      console.error('Error loading next video:', error);
+    }
+  };
+
   const renderControls = (side: 'left' | 'right') => (
     <div className="h-full flex flex-col">
       <VideoPreview
@@ -97,6 +118,7 @@ export default function Home() {
             [side]: { ...prev[side], volume: value }
           }));
         }}
+        onVideoEnd={() => handleVideoEnd(side)}
         className="mb-4"
       />
       <SearchBar
