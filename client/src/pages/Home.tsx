@@ -253,19 +253,6 @@ export default function Home() {
             <div className="relative w-full aspect-video">
               {mainVideoPlayer}
             </div>
-            {!showMixControls && (
-              <div className="flex justify-center mt-8">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => setShowMixControls(true)}
-                  className="gap-2 text-lg font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
-                >
-                  <Shuffle className="w-5 h-5" />
-                  Edit mix
-                </Button>
-              </div>
-            )}
             {showMixControls && mixControls}
           </div>
         </div>
@@ -294,12 +281,22 @@ export default function Home() {
         <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            {!isMobile && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setShowMixControls(!showMixControls)}
+                className="hover:text-primary transition-colors duration-200"
+              >
+                <Shuffle className="h-5 w-5" />
+                <span className="sr-only">Toggle Mix Mode</span>
+              </Button>
+            )}
           </div>
           <div className="flex justify-center">
             {!isMobile && (
               <Button
                 variant="ghost"
-                onClick={() => setShowMixControls(!showMixControls)}
                 className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent"
               >
                 mixtube
