@@ -15,19 +15,19 @@ export default function VideoInfo({
   onToggleMixMode 
 }: VideoInfoProps) {
   return (
-    <div className="py-3">
-      <h1 className="text-xl font-semibold mb-3 leading-tight">
+    <div className="py-2">
+      <h1 className="text-base font-medium mb-2 leading-tight">
         {title}
       </h1>
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
+        <div className="flex items-center gap-2">
+          <Avatar className="h-8 w-8">
             <AvatarFallback>
               {channelTitle.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="font-medium text-sm">
+            <span className="text-sm font-medium">
               {channelTitle}
             </span>
             <span className="text-xs text-muted-foreground">
@@ -35,16 +35,16 @@ export default function VideoInfo({
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-2">
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="sm" className="gap-1 h-8 px-2">
             <ThumbsUp className="h-4 w-4" />
             Like
           </Button>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="ghost" size="sm" className="gap-1 h-8 px-2">
             <Share2 className="h-4 w-4" />
             Share
           </Button>
-          <Button variant="outline" size="sm" className="gap-2" onClick={onToggleMixMode}>
+          <Button variant="ghost" size="sm" className="gap-1 h-8 px-2" onClick={onToggleMixMode}>
             <Shuffle className="h-4 w-4" />
             Mix
           </Button>

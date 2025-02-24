@@ -146,11 +146,13 @@ export default function Home() {
         {mainVideoPlayer}
       </div>
       {!showMixControls && (
-        <VideoInfo
-          title={videos.left?.title}
-          channelTitle={videos.left?.channelTitle}
-          onToggleMixMode={() => setShowMixControls(true)}
-        />
+        <div className="border-t border-border/50">
+          <VideoInfo
+            title={videos.left?.title}
+            channelTitle={videos.left?.channelTitle}
+            onToggleMixMode={() => setShowMixControls(true)}
+          />
+        </div>
       )}
       {showMixControls && mixControls}
     </>
@@ -172,7 +174,7 @@ export default function Home() {
       </div>
 
       {!showMixControls && (
-        <div className="px-4">
+        <div className="px-3 border-t border-border/50">
           <VideoInfo
             title={videos.left?.title}
             channelTitle={videos.left?.channelTitle}
@@ -188,7 +190,7 @@ export default function Home() {
         )}
         style={{
           height: showMixControls ? 'calc(100% - 56.25vw)' : '0',
-          marginTop: showMixControls ? '2rem' : '0'
+          marginTop: showMixControls ? '1rem' : '0'
         }}
       >
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
@@ -258,7 +260,7 @@ export default function Home() {
         )}>
           <div className={cn(
             "max-w-[600px] mx-auto w-full transition-all duration-300 ease-in-out",
-            !showMixControls && "scale-150 origin-center mt-24" 
+            !showMixControls && "scale-125 origin-center mt-16" 
           )}>
             {mainContent}
           </div>
