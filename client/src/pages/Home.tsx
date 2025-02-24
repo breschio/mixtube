@@ -223,7 +223,7 @@ export default function Home() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 mt-8">
-        <TabsList className="w-full grid grid-cols-3 p-0">
+        <TabsList className="w-full grid grid-cols-3 gap-1 p-1">
           <TabsTrigger value="left" className="flex-1 px-8 py-3">Left</TabsTrigger>
           <TabsTrigger value="mix" className="flex-1 px-8 py-3">Mix</TabsTrigger>
           <TabsTrigger value="right" className="flex-1 px-8 py-3">Right</TabsTrigger>
