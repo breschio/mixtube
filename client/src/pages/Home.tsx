@@ -341,8 +341,9 @@ export default function Home() {
           <div className="flex justify-center">
             {!isMobile && (
               <Button
+                variant="ghost"
                 onClick={() => setShowMixControls(!showMixControls)}
-                className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200"
+                className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent"
               >
                 mixtube
               </Button>
