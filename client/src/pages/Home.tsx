@@ -27,7 +27,6 @@ export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
   const [showMixControls, setShowMixControls] = useState(false);
-  const [activeTab, setActiveTab] = useState('left');
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
@@ -105,6 +104,43 @@ export default function Home() {
     setCrossFader(value);
   };
 
+  const renderControls = (side: 'left' | 'right') => (
+    <div className="h-full flex flex-col">
+      <VideoPreview
+        videoId={videos[side]?.id || null}
+        playing={videoStates[side].playing}
+        onPlayPause={() => {
+          setVideoStates(prev => ({
+            ...prev,
+            [side]: { ...prev[side], playing: !prev[side].playing }
+          }));
+        }}
+        volume={videoStates[side].volume}
+        onVolumeChange={(value) => {
+          setVideoStates(prev => ({
+            ...prev,
+            [side]: { ...prev[side], volume: value }
+          }));
+        }}
+        className="mb-4"
+      />
+      <SearchBar
+        onVideoSelect={(video) => handleVideoSelect(video, side)}
+        onSearch={(query) => handleSearch(query, side)}
+        videoId={videos[side]?.id || null}
+      />
+      <div className="flex-1 overflow-auto mt-4">
+        <RecommendedVideos
+          videoId={videos[side]?.id || null}
+          onVideoSelect={(video) => handleVideoSelect(video, side)}
+          searchResults={side === 'left' ? leftSearchResults : rightSearchResults}
+          isSearching={!!searchQueries[side]}
+          side={side}
+        />
+      </div>
+    </div>
+  );
+
   const mainVideoPlayer = (
     <div className="relative">
       <MixedVideoPlayer
@@ -121,7 +157,7 @@ export default function Home() {
   );
 
   const mixControls = (
-    <Card className="p-4">
+    <Card className="mt-4 p-4">
       <div className="space-y-6">
         <MixTemplates
           onSelectTemplate={handleTemplateSelect}
@@ -141,7 +177,7 @@ export default function Home() {
   const renderContent = () => {
     return (
       <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
-        {/* Left Panel - Video Selection */}
+        {/* Left Panel - Left Video Controls */}
         <ResizablePanel
           defaultSize={25}
           minSize={20}
@@ -151,90 +187,13 @@ export default function Home() {
           )}
         >
           <div className="h-full flex flex-col pr-4">
-            <Tabs defaultValue="left" className="flex-1 flex flex-col">
-              <TabsList className="w-full">
-                <TabsTrigger value="left" className="flex-1">Left Video</TabsTrigger>
-                <TabsTrigger value="right" className="flex-1">Right Video</TabsTrigger>
-              </TabsList>
-              <TabsContent value="left" className="flex-1 mt-4">
-                <div className="h-full flex flex-col">
-                  <VideoPreview
-                    videoId={videos.left?.id || null}
-                    playing={videoStates.left.playing}
-                    onPlayPause={() => {
-                      setVideoStates(prev => ({
-                        ...prev,
-                        left: { ...prev.left, playing: !prev.left.playing }
-                      }));
-                    }}
-                    volume={videoStates.left.volume}
-                    onVolumeChange={(value) => {
-                      setVideoStates(prev => ({
-                        ...prev,
-                        left: { ...prev.left, volume: value }
-                      }));
-                    }}
-                    className="mb-4"
-                  />
-                  <SearchBar
-                    onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                    onSearch={(query) => handleSearch(query, 'left')}
-                    videoId={videos.left?.id || null}
-                  />
-                  <div className="flex-1 overflow-auto mt-4">
-                    <RecommendedVideos
-                      videoId={videos.left?.id || null}
-                      onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                      searchResults={leftSearchResults}
-                      isSearching={!!searchQueries.left}
-                      side="left"
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-              <TabsContent value="right" className="flex-1 mt-4">
-                <div className="h-full flex flex-col">
-                  <VideoPreview
-                    videoId={videos.right?.id || null}
-                    playing={videoStates.right.playing}
-                    onPlayPause={() => {
-                      setVideoStates(prev => ({
-                        ...prev,
-                        right: { ...prev.right, playing: !prev.right.playing }
-                      }));
-                    }}
-                    volume={videoStates.right.volume}
-                    onVolumeChange={(value) => {
-                      setVideoStates(prev => ({
-                        ...prev,
-                        right: { ...prev.right, volume: value }
-                      }));
-                    }}
-                    className="mb-4"
-                  />
-                  <SearchBar
-                    onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                    onSearch={(query) => handleSearch(query, 'right')}
-                    videoId={videos.right?.id || null}
-                  />
-                  <div className="flex-1 overflow-auto mt-4">
-                    <RecommendedVideos
-                      videoId={videos.right?.id || null}
-                      onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                      searchResults={rightSearchResults}
-                      isSearching={!!searchQueries.right}
-                      side="right"
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
+            {renderControls('left')}
           </div>
         </ResizablePanel>
 
         <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
 
-        {/* Center Panel - Video Player */}
+        {/* Center Panel - Video Player & Mix Controls */}
         <ResizablePanel
           defaultSize={50}
           minSize={30}
@@ -245,22 +204,18 @@ export default function Home() {
         >
           <div className="h-full flex flex-col px-4">
             <div className={cn(
-              "max-w-[600px] mx-auto w-full transition-all duration-300 ease-in-out flex items-center justify-center",
+              "max-w-[600px] mx-auto w-full transition-all duration-300 ease-in-out",
               !showMixControls && "scale-150 origin-center mt-32"
             )}>
               {mainVideoPlayer}
-              {showMixControls && (
-                <div className="mt-4">
-                  {mixControls}
-                </div>
-              )}
+              {showMixControls && mixControls}
             </div>
           </div>
         </ResizablePanel>
 
         <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
 
-        {/* Right Panel - Mix Controls */}
+        {/* Right Panel - Right Video Controls */}
         <ResizablePanel
           defaultSize={25}
           minSize={20}
@@ -270,7 +225,7 @@ export default function Home() {
           )}
         >
           <div className="h-full flex flex-col pl-4">
-
+            {renderControls('right')}
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
