@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { User } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
-import RecommendedVideos from "@/components/RecommendedVideos";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DJControls from "@/components/DJControls";
 import AuthModal from "@/components/AuthModal";
@@ -130,15 +129,6 @@ export default function Home() {
         onSearch={(query) => handleSearch(query, side)}
         videoId={videos[side]?.id || null}
       />
-      <div className="flex-1 overflow-auto mt-4">
-        <RecommendedVideos
-          videoId={videos[side]?.id || null}
-          onVideoSelect={(video) => handleVideoSelect(video, side)}
-          searchResults={side === 'left' ? leftSearchResults : rightSearchResults}
-          isSearching={!!searchQueries[side]}
-          side={side}
-        />
-      </div>
     </div>
   );
 
@@ -237,15 +227,6 @@ export default function Home() {
                 videoId={videos.left?.id || null}
               />
             </div>
-            <div className="mt-6">
-              <RecommendedVideos
-                videoId={videos.left?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                searchResults={leftSearchResults}
-                isSearching={!!searchQueries.left}
-                side="left"
-              />
-            </div>
           </div>
         </TabsContent>
         <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
@@ -260,15 +241,6 @@ export default function Home() {
                 onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                 onSearch={(query) => handleSearch(query, 'right')}
                 videoId={videos.right?.id || null}
-              />
-            </div>
-            <div className="mt-6">
-              <RecommendedVideos
-                videoId={videos.right?.id || null}
-                onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                searchResults={rightSearchResults}
-                isSearching={!!searchQueries.right}
-                side="right"
               />
             </div>
           </div>
