@@ -158,8 +158,8 @@ export default function Home() {
   );
 
   const mixControls = (
-    <Card className="mt-4 p-4">
-      <div className="space-y-6">
+    <Card className="mt-6">
+      <div className="p-4">
         <MixTemplates
           onSelectTemplate={handleTemplateSelect}
           activeTemplate={activeTemplate}
@@ -249,7 +249,7 @@ export default function Home() {
           </div>
         </TabsContent>
         <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
-          <div className="px-4">
+          <div className="px-0">
             {mixControls}
           </div>
         </TabsContent>
