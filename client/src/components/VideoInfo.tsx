@@ -1,4 +1,4 @@
-import { User, Share2, ThumbsUp, Shuffle, Monitor, Play } from 'lucide-react';
+import { User, Share2, ThumbsUp, Shuffle, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -16,6 +16,27 @@ export default function VideoInfo({
   onToggleMixMode,
   mixMode = false 
 }: VideoInfoProps) {
+  if (mixMode) {
+    return (
+      <div className="py-3 px-1">
+        <div className="flex items-center justify-between">
+          <h1 className="text-base font-medium leading-tight">
+            {title}
+          </h1>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="gap-1.5 h-8 px-3" 
+            onClick={onToggleMixMode}
+          >
+            <Monitor className="h-4 w-4" />
+            Watch
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-2">
       <h1 className="text-base font-medium mb-2 leading-tight">
@@ -48,7 +69,7 @@ export default function VideoInfo({
           </Button>
           <Button variant="ghost" size="sm" className="gap-1 h-8 px-2" onClick={onToggleMixMode}>
             <Shuffle className="h-4 w-4" />
-            {mixMode ? 'Watch' : 'Mix'}
+            Mix
           </Button>
         </div>
       </div>
