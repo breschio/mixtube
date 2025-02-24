@@ -16,11 +16,12 @@ import { signInWithEmail, signUpWithEmail } from "@/lib/supabase";
 
 interface AuthModalProps {
   trigger?: React.ReactNode;
+  defaultTab?: 'sign-in' | 'sign-up';
 }
 
-export default function AuthModal({ trigger }: AuthModalProps) {
+export default function AuthModal({ trigger, defaultTab = 'sign-in' }: AuthModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(defaultTab === 'sign-up');
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     email: "",

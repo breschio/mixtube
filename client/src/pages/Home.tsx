@@ -4,7 +4,7 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Shuffle } from "lucide-react"; 
+import { User } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import RecommendedVideos from "@/components/RecommendedVideos";
@@ -356,11 +356,18 @@ export default function Home() {
           </div>
           <div className="flex items-center justify-end gap-4">
             {!user && (
-              <AuthModal trigger={
-                <Button variant="outline" size="sm">
-                  Sign In
-                </Button>
-              } />
+              <AuthModal 
+                defaultTab="sign-up"
+                trigger={
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="hover:text-primary transition-colors duration-200"
+                  >
+                    <User className="h-5 w-5" />
+                  </Button>
+                } 
+              />
             )}
             {user && (
               <Avatar className="h-8 w-8">
