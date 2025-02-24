@@ -340,12 +340,13 @@ export default function Home() {
           </div>
           <div className="flex justify-center">
             {!isMobile && (
-              <button
+              <Button
+                variant="outline"
                 onClick={() => setShowMixControls(!showMixControls)}
-                className="text-foreground font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200"
+                className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200"
               >
                 mixtube
-              </button>
+              </Button>
             )}
             {isMobile && (
               <div className="text-foreground font-mono font-light text-2xl tracking-wider">
