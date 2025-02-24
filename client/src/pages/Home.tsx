@@ -341,7 +341,6 @@ export default function Home() {
           <div className="flex justify-center">
             {!isMobile && (
               <Button
-                variant="outline"
                 onClick={() => setShowMixControls(!showMixControls)}
                 className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200"
               >
