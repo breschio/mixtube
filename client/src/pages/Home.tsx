@@ -4,9 +4,10 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { User, Shuffle, Tv } from "lucide-react"; 
+import { User } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
+import VideoInfo from "@/components/VideoInfo";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DJControls from "@/components/DJControls";
 import AuthModal from "@/components/AuthModal";
@@ -139,6 +140,22 @@ export default function Home() {
     </Card>
   );
 
+  const mainContent = (
+    <>
+      <div className="relative w-full aspect-video">
+        {mainVideoPlayer}
+      </div>
+      {!showMixControls && (
+        <VideoInfo
+          title={videos.left?.title}
+          channelTitle={videos.left?.channelTitle}
+          onToggleMixMode={() => setShowMixControls(true)}
+        />
+      )}
+      {showMixControls && mixControls}
+    </>
+  );
+
   const renderMobileLayout = () => (
     <div className="h-[calc(100vh-5rem)] flex flex-col">
       <div className="relative">
@@ -153,6 +170,16 @@ export default function Home() {
           mobileView={true}
         />
       </div>
+
+      {!showMixControls && (
+        <div className="px-4">
+          <VideoInfo
+            title={videos.left?.title}
+            channelTitle={videos.left?.channelTitle}
+            onToggleMixMode={() => setShowMixControls(true)}
+          />
+        </div>
+      )}
 
       <div 
         className={cn(
@@ -233,10 +260,7 @@ export default function Home() {
             "max-w-[600px] mx-auto w-full transition-all duration-300 ease-in-out",
             !showMixControls && "scale-150 origin-center mt-24" 
           )}>
-            <div className="relative w-full aspect-video">
-              {mainVideoPlayer}
-            </div>
-            {showMixControls && mixControls}
+            {mainContent}
           </div>
         </div>
       </ResizablePanel>
@@ -264,21 +288,6 @@ export default function Home() {
         <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setShowMixControls(!showMixControls)}
-              className="hover:text-primary transition-colors duration-200"
-            >
-              {showMixControls ? (
-                <Tv className="h-5 w-5" />
-              ) : (
-                <Shuffle className="h-5 w-5" />
-              )}
-              <span className="sr-only">
-                {showMixControls ? 'Exit Mix Mode' : 'Enter Mix Mode'}
-              </span>
-            </Button>
           </div>
           <div className="flex justify-center">
             {!isMobile && (
