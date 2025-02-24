@@ -247,10 +247,13 @@ export default function Home() {
           !showMixControls && "!basis-full"
         )}
       >
-        <div className="h-full flex flex-col px-4">
+        <div className={cn(
+          "h-full flex flex-col px-4",
+          !showMixControls && "pb-32" 
+        )}>
           <div className={cn(
             "max-w-[600px] mx-auto w-full transition-all duration-300 ease-in-out",
-            !showMixControls && "scale-150 origin-center mt-32"
+            !showMixControls && "scale-150 origin-center mt-24" 
           )}>
             <div className="relative w-full aspect-video">
               {mainVideoPlayer}
