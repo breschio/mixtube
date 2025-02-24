@@ -18,7 +18,6 @@ import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import VideoPreview from "@/components/VideoPreview";
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
-import { Button as MovingButton } from "@/components/ui/moving-border";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
@@ -341,14 +340,13 @@ export default function Home() {
           </div>
           <div className="flex justify-center">
             {!isMobile && (
-              <MovingButton
-                borderRadius="0.5rem"
-                className="bg-background dark:bg-slate-900 text-foreground border-border dark:border-slate-800 h-12"
+              <Button
+                variant="outline"
                 onClick={() => setShowMixControls(!showMixControls)}
-                duration={3000}
+                className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200"
               >
                 mixtube
-              </MovingButton>
+              </Button>
             )}
             {isMobile && (
               <div className="text-foreground font-mono font-light text-2xl tracking-wider">
