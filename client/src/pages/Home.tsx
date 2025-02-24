@@ -80,13 +80,24 @@ export default function Home() {
   };
 
   const handleVideoEnd = async (side: 'left' | 'right') => {
+    console.log(`Video ended on ${side} side, fetching next video...`);
     try {
+      if (!videos[side]?.id) {
+        console.log('No current video ID found');
+        return;
+      }
+
       const response = await fetch(`/api/youtube/related?v=${videos[side]?.id}`);
-      if (!response.ok) throw new Error('Failed to fetch related videos');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch related videos: ${response.statusText}`);
+      }
 
       const relatedVideos = await response.json();
+      console.log('Related videos received:', relatedVideos);
+
       if (relatedVideos?.length > 0) {
         const nextVideo = relatedVideos[0];
+        console.log('Loading next video:', nextVideo);
 
         handleVideoSelect({
           id: nextVideo.id,
@@ -94,6 +105,14 @@ export default function Home() {
           thumbnail: nextVideo.thumbnail,
           channelTitle: nextVideo.channelTitle || 'Unknown Channel'
         }, side);
+
+        // Ensure the video starts playing
+        setVideoStates(prev => ({
+          ...prev,
+          [side]: { ...prev[side], playing: true }
+        }));
+      } else {
+        console.log('No related videos found');
       }
     } catch (error) {
       console.error('Error loading next video:', error);

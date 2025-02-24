@@ -25,6 +25,7 @@ export default function VideoPreview({
   className
 }: VideoPreviewProps) {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const [isEnded, setIsEnded] = useState(false);
 
   const playerConfig = {
     youtube: {
@@ -45,6 +46,14 @@ export default function VideoPreview({
     }
   };
 
+  const handleEnded = () => {
+    console.log('Video ended event triggered');
+    setIsEnded(true);
+    if (onVideoEnd) {
+      onVideoEnd();
+    }
+  };
+
   return (
     <div className={cn("relative group", className)}>
       <div className="aspect-video bg-black rounded-lg overflow-hidden">
@@ -56,7 +65,8 @@ export default function VideoPreview({
             playing={playing}
             volume={volume}
             config={playerConfig}
-            onEnded={onVideoEnd}
+            onEnded={handleEnded}
+            onPlay={() => setIsEnded(false)}
           />
         )}
       </div>
