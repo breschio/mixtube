@@ -4,7 +4,7 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { User } from "lucide-react"; 
+import { User, Shuffle } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -25,7 +25,7 @@ export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
   const [showMixControls, setShowMixControls] = useState(false);
-  const [activeTab, setActiveTab] = useState("mix"); // For mobile tab view
+  const [activeTab, setActiveTab] = useState("mix"); 
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
@@ -139,11 +139,9 @@ export default function Home() {
     </Card>
   );
 
-  // Mobile Layout with Tabs
   const renderMobileLayout = () => (
     <div className="h-[calc(100vh-5rem)] flex flex-col">
       <div className="relative">
-        {/* Left Video Player */}
         <div className={cn("w-full", activeTab !== "left" && "hidden")}>
           <MixedVideoPlayer
             leftVideoId={videos.left?.id || null}
@@ -157,7 +155,6 @@ export default function Home() {
           />
         </div>
 
-        {/* Mix Video Player */}
         <div className={cn("w-full", activeTab !== "mix" && "hidden")}>
           <MixedVideoPlayer
             leftVideoId={videos.left?.id || null}
@@ -171,7 +168,6 @@ export default function Home() {
           />
         </div>
 
-        {/* Right Video Player */}
         <div className={cn("w-full", activeTab !== "right" && "hidden")}>
           <MixedVideoPlayer
             leftVideoId={null}
@@ -221,7 +217,6 @@ export default function Home() {
     </div>
   );
 
-  // Desktop Layout with Resizable Panels
   const renderDesktopLayout = () => (
     <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
       <ResizablePanel
@@ -258,6 +253,19 @@ export default function Home() {
             <div className="relative w-full aspect-video">
               {mainVideoPlayer}
             </div>
+            {!showMixControls && (
+              <div className="flex justify-center mt-8">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setShowMixControls(true)}
+                  className="gap-2 text-lg font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+                >
+                  <Shuffle className="w-5 h-5" />
+                  Edit mix
+                </Button>
+              </div>
+            )}
             {showMixControls && mixControls}
           </div>
         </div>
