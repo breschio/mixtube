@@ -263,12 +263,14 @@ export default function Home() {
       <header className="w-full bg-background">
         <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
           <div className="flex items-center gap-2">
-            <ThemeToggle />
+            <div className="h-10">
+              <ThemeToggle />
+            </div>
             <Button
               variant="outline"
               size="icon"
               onClick={() => setShowMixControls(!showMixControls)}
-              className="hover:text-primary transition-colors duration-200"
+              className="h-10 hover:text-primary transition-colors duration-200"
             >
               {showMixControls ? (
                 <Tv className="h-5 w-5" />
