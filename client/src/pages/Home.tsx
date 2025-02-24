@@ -252,7 +252,9 @@ export default function Home() {
             "max-w-[600px] mx-auto w-full transition-all duration-300 ease-in-out",
             !showMixControls && "scale-150 origin-center mt-32"
           )}>
-            {mainVideoPlayer}
+            <div className="relative w-full aspect-video">
+              {mainVideoPlayer}
+            </div>
             {showMixControls && mixControls}
           </div>
         </div>
