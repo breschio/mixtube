@@ -27,6 +27,7 @@ export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
   const [showMixControls, setShowMixControls] = useState(false);
+  const [activeTab, setActiveTab] = useState("left"); // For mobile tab view
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
@@ -174,63 +175,110 @@ export default function Home() {
     </Card>
   );
 
-  const renderContent = () => {
-    return (
-      <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
-        {/* Left Panel - Left Video Controls */}
-        <ResizablePanel
-          defaultSize={25}
-          minSize={20}
-          className={cn(
-            "transition-all duration-300 ease-in-out",
-            !showMixControls && "!min-w-0 !w-0 !basis-0"
-          )}
-        >
-          <div className="h-full flex flex-col pr-4">
-            {renderControls('left')}
+  // Mobile Layout with Tabs
+  const renderMobileLayout = () => (
+    <div className="h-[calc(100vh-5rem)] flex flex-col">
+      {mainVideoPlayer}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 mt-4">
+        <TabsList className="w-full justify-between">
+          <TabsTrigger value="left">Left Video</TabsTrigger>
+          <TabsTrigger value="mix">Mix</TabsTrigger>
+          <TabsTrigger value="right">Right Video</TabsTrigger>
+        </TabsList>
+        <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
+          <div className="px-4">
+            <SearchBar
+              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+              onSearch={(query) => handleSearch(query, 'left')}
+              videoId={videos.left?.id || null}
+            />
+            <RecommendedVideos
+              videoId={videos.left?.id || null}
+              onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+              searchResults={leftSearchResults}
+              isSearching={!!searchQueries.left}
+              side="left"
+            />
           </div>
-        </ResizablePanel>
-
-        <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
-
-        {/* Center Panel - Video Player & Mix Controls */}
-        <ResizablePanel
-          defaultSize={50}
-          minSize={30}
-          className={cn(
-            "transition-all duration-300 ease-in-out",
-            !showMixControls && "!basis-full"
-          )}
-        >
-          <div className="h-full flex flex-col px-4">
-            <div className={cn(
-              "max-w-[600px] mx-auto w-full transition-all duration-300 ease-in-out",
-              !showMixControls && "scale-150 origin-center mt-32"
-            )}>
-              {mainVideoPlayer}
-              {showMixControls && mixControls}
-            </div>
+        </TabsContent>
+        <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
+          <div className="px-4">
+            {mixControls}
           </div>
-        </ResizablePanel>
-
-        <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
-
-        {/* Right Panel - Right Video Controls */}
-        <ResizablePanel
-          defaultSize={25}
-          minSize={20}
-          className={cn(
-            "transition-all duration-300 ease-in-out",
-            !showMixControls && "!min-w-0 !w-0 !basis-0"
-          )}
-        >
-          <div className="h-full flex flex-col pl-4">
-            {renderControls('right')}
+        </TabsContent>
+        <TabsContent value="right" className="h-[calc(100%-3rem)] overflow-auto">
+          <div className="px-4">
+            <SearchBar
+              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+              onSearch={(query) => handleSearch(query, 'right')}
+              videoId={videos.right?.id || null}
+            />
+            <RecommendedVideos
+              videoId={videos.right?.id || null}
+              onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+              searchResults={rightSearchResults}
+              isSearching={!!searchQueries.right}
+              side="right"
+            />
           </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    );
-  };
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+
+  // Desktop Layout with Resizable Panels
+  const renderDesktopLayout = () => (
+    <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
+      <ResizablePanel
+        defaultSize={25}
+        minSize={20}
+        className={cn(
+          "transition-all duration-300 ease-in-out",
+          !showMixControls && "!min-w-0 !w-0 !basis-0"
+        )}
+      >
+        <div className="h-full flex flex-col pr-4">
+          {renderControls('left')}
+        </div>
+      </ResizablePanel>
+
+      <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
+
+      <ResizablePanel
+        defaultSize={50}
+        minSize={30}
+        className={cn(
+          "transition-all duration-300 ease-in-out",
+          !showMixControls && "!basis-full"
+        )}
+      >
+        <div className="h-full flex flex-col px-4">
+          <div className={cn(
+            "max-w-[600px] mx-auto w-full transition-all duration-300 ease-in-out",
+            !showMixControls && "scale-150 origin-center mt-32"
+          )}>
+            {mainVideoPlayer}
+            {showMixControls && mixControls}
+          </div>
+        </div>
+      </ResizablePanel>
+
+      <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
+
+      <ResizablePanel
+        defaultSize={25}
+        minSize={20}
+        className={cn(
+          "transition-all duration-300 ease-in-out",
+          !showMixControls && "!min-w-0 !w-0 !basis-0"
+        )}
+      >
+        <div className="h-full flex flex-col pl-4">
+          {renderControls('right')}
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  );
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -238,15 +286,17 @@ export default function Home() {
         <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowMixControls(!showMixControls)}
-              className="gap-2 transition-colors duration-200"
-            >
-              <Shuffle className="h-4 w-4" />
-              <span className="hidden sm:inline">Mix</span>
-            </Button>
+            {!isMobile && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowMixControls(!showMixControls)}
+                className="gap-2 transition-colors duration-200"
+              >
+                <Shuffle className="h-4 w-4" />
+                <span className="hidden sm:inline">Mix</span>
+              </Button>
+            )}
           </div>
           <div className="flex justify-center">
             <div className="text-foreground font-mono font-light text-2xl tracking-wider">
@@ -272,7 +322,7 @@ export default function Home() {
       </header>
 
       <main className="flex-1 w-full px-6 sm:px-8 md:px-12 pb-8">
-        {renderContent()}
+        {isMobile ? renderMobileLayout() : renderDesktopLayout()}
       </main>
     </div>
   );
