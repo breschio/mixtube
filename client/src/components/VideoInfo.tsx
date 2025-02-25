@@ -1,7 +1,7 @@
 import { User, Share2, ThumbsUp, Shuffle, Monitor, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 interface VideoInfoProps {
@@ -13,6 +13,7 @@ interface VideoInfoProps {
   user?: any;
   leftVideoSelected: boolean;
   rightVideoSelected: boolean;
+  showSaveButton?: boolean;
 }
 
 export default function VideoInfo({ 
@@ -23,7 +24,8 @@ export default function VideoInfo({
   onSaveMix,
   user,
   leftVideoSelected,
-  rightVideoSelected
+  rightVideoSelected,
+  showSaveButton = true
 }: VideoInfoProps) {
   if (mixMode) {
     return (
@@ -33,29 +35,31 @@ export default function VideoInfo({
             {title}
           </h1>
           <div className="flex items-center gap-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="gap-1.5 h-8 px-3"
-                      onClick={() => onSaveMix?.()}
-                      disabled={!leftVideoSelected || !rightVideoSelected}
-                    >
-                      <Upload className="h-4 w-4" />
-                      Post
-                    </Button>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {(!leftVideoSelected || !rightVideoSelected) 
-                    ? "Select both videos to save" 
-                    : "Save your mix"}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            {showSaveButton && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1.5 h-8 px-3"
+                        onClick={() => onSaveMix?.()}
+                        disabled={!leftVideoSelected || !rightVideoSelected}
+                      >
+                        <Upload className="h-4 w-4" />
+                        Post
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {(!leftVideoSelected || !rightVideoSelected) 
+                      ? "Select both videos to save" 
+                      : "Save your mix"}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
             <Button 
               variant="ghost" 
               size="sm" 

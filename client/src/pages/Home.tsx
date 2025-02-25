@@ -300,6 +300,7 @@ export default function Home() {
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
+          showSaveButton={!currentMix}
         />
       </div>
       {showMixControls && mixControls}
@@ -333,6 +334,7 @@ export default function Home() {
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
+          showSaveButton={!currentMix}
         />
       </div>
 
@@ -389,6 +391,7 @@ export default function Home() {
               user={user}
               leftVideoSelected={!!videos.left?.id}
               rightVideoSelected={!!videos.right?.id}
+              showSaveButton={!currentMix} 
             />
           </div>
           {showMixControls && mixControls}
