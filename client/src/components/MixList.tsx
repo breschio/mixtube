@@ -77,11 +77,11 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
               <div className="flex flex-col min-w-0 flex-1">
                 <h3 className="text-sm lg:text-sm md:text-xs sm:text-xs font-medium line-clamp-2 leading-tight mb-0.5">{mix.title}</h3>
                 <div className="text-[11px] lg:text-[11px] md:text-[10px] sm:text-[10px] text-muted-foreground leading-tight mt-1">
-                  <div>MixTube</div>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <span>{mix.views.toLocaleString()} views</span>
-                    <span>•</span>
-                    <span>{formatTimeAgo(new Date(mix.createdAt))} ago</span>
+                  <div className="truncate">MixTube</div>
+                  <div className="flex items-center gap-1 mt-0.5 truncate">
+                    <span className="min-w-fit">{mix.views.toLocaleString()} views</span>
+                    <span className="min-w-fit">•</span>
+                    <span className="truncate">{formatTimeAgo(new Date(mix.createdAt))} ago</span>
                   </div>
                 </div>
               </div>
