@@ -139,15 +139,6 @@ export default function Home() {
   );
 
   const handleSaveMix = async (title: string) => {
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to save your mix",
-        variant: "destructive"
-      });
-      return;
-    }
-
     if (!videos.left?.id || !videos.right?.id) {
       toast({
         title: "Incomplete Mix",

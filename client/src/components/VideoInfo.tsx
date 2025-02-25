@@ -42,7 +42,7 @@ export default function VideoInfo({
                       size="sm"
                       className="gap-1.5 h-8 px-3"
                       onClick={() => onSaveMix?.()}
-                      disabled={!user || !leftVideoSelected || !rightVideoSelected}
+                      disabled={!leftVideoSelected || !rightVideoSelected}
                     >
                       <Upload className="h-4 w-4" />
                       Post
@@ -50,9 +50,9 @@ export default function VideoInfo({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  {!user ? "Sign in to save your mix" : 
-                   (!leftVideoSelected || !rightVideoSelected) ? "Select both videos to save" : 
-                   "Save your mix"}
+                  {(!leftVideoSelected || !rightVideoSelected) 
+                    ? "Select both videos to save" 
+                    : "Save your mix"}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
