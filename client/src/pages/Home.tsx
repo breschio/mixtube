@@ -63,6 +63,7 @@ export default function Home() {
       thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
     }
   });
+  const [isNewMode, setIsNewMode] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -98,7 +99,8 @@ export default function Home() {
     setPlaying(false);
     setCrossFader(0.5);
     setActiveTab("left");
-    setCurrentMix(null); 
+    setCurrentMix(null);
+    setIsNewMode(true);
   };
 
   const [playing, setPlaying] = useState(false);
@@ -159,7 +161,8 @@ export default function Home() {
     setActiveTemplate(mix.template);
     setShowMixControls(false);
     setCurrentMix(mix);
-    setPlaying(true); 
+    setPlaying(true);
+    setIsNewMode(false);
 
     try {
       await fetch(`/api/mixes/${mix.id}/view`, { method: 'POST' });
@@ -389,7 +392,7 @@ export default function Home() {
         minSize={20}
         className={cn(
           "transition-all duration-300 ease-in-out",
-          !showMixControls && "!min-w-0 !w-0 !basis-0"
+          (!showMixControls || !isNewMode) && "!min-w-0 !w-0 !basis-0"
         )}
       >
         <div className="h-full flex flex-col pr-4">
@@ -397,33 +400,52 @@ export default function Home() {
         </div>
       </ResizablePanel>
 
-      <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
+      <ResizableHandle withHandle className={cn(!showMixControls || !isNewMode && "hidden")} />
 
       <ResizablePanel
         defaultSize={50}
         minSize={30}
         className={cn(
           "transition-all duration-300 ease-in-out",
-          !showMixControls && "!basis-[70%]"
+          (!showMixControls || !isNewMode) && "!basis-[70%]"
         )}
       >
         <div className="h-full flex flex-col px-4">
           {mainContent}
+          {showMixControls && !isNewMode && (
+            <Card className="mt-6">
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <MixTemplates
+                    onSelectTemplate={handleTemplateSelect}
+                    activeTemplate={activeTemplate}
+                  />
+                </div>
+                <DJControls
+                  crossFader={crossFader}
+                  onCrossFaderChange={handleCrossFaderChange}
+                  leftVideoId={videos.left?.id}
+                  rightVideoId={videos.right?.id}
+                  forceShowTooltip={showTransitionTooltip}
+                />
+              </div>
+            </Card>
+          )}
         </div>
       </ResizablePanel>
 
-      <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
+      <ResizableHandle withHandle className={cn((!showMixControls || !isNewMode) && "hidden")} />
 
       <ResizablePanel
         defaultSize={25}
         minSize={20}
         className={cn(
           "transition-all duration-300 ease-in-out",
-          !showMixControls && "!basis-[30%]"
+          (!showMixControls || !isNewMode) && "!basis-[30%]"
         )}
       >
         <div className="h-full flex flex-col pl-4">
-          {showMixControls ? renderControls('right') : (
+          {isNewMode && showMixControls ? renderControls('right') : (
             <MixList 
               mixes={mixes} 
               onPlayMix={handlePlayMix}
@@ -439,7 +461,8 @@ export default function Home() {
     setShowMixControls(false);
     setActiveTab("mix");
     setPlaying(false);
-    setCurrentMix(null); 
+    setCurrentMix(null);
+    setIsNewMode(false);
   };
 
   return (
