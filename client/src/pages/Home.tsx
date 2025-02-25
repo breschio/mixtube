@@ -305,7 +305,25 @@ export default function Home() {
           rightVideoSelected={!!videos.right?.id}
         />
       </div>
-      {showMixControls && mixControls}
+      {showMixControls && !isNewMode && (
+        <Card className="mt-6">
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <MixTemplates
+                onSelectTemplate={handleTemplateSelect}
+                activeTemplate={activeTemplate}
+              />
+            </div>
+            <DJControls
+              crossFader={crossFader}
+              onCrossFaderChange={handleCrossFaderChange}
+              leftVideoId={videos.left?.id}
+              rightVideoId={videos.right?.id}
+              forceShowTooltip={showTransitionTooltip}
+            />
+          </div>
+        </Card>
+      )}
     </>
   );
 
@@ -386,7 +404,13 @@ export default function Home() {
   );
 
   const renderDesktopLayout = () => (
-    <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
+    <ResizablePanelGroup 
+      direction="horizontal" 
+      className={cn(
+        "h-[calc(100vh-5rem)]",
+        !isNewMode && "border-none" 
+      )}
+    >
       <ResizablePanel
         defaultSize={25}
         minSize={20}
@@ -400,7 +424,13 @@ export default function Home() {
         </div>
       </ResizablePanel>
 
-      <ResizableHandle withHandle className={cn(!showMixControls || !isNewMode && "hidden")} />
+      <ResizableHandle 
+        withHandle 
+        className={cn(
+          (!showMixControls || !isNewMode) && "hidden",
+          !isNewMode && "border-none" 
+        )} 
+      />
 
       <ResizablePanel
         defaultSize={50}
@@ -412,29 +442,16 @@ export default function Home() {
       >
         <div className="h-full flex flex-col px-4">
           {mainContent}
-          {showMixControls && !isNewMode && (
-            <Card className="mt-6">
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <MixTemplates
-                    onSelectTemplate={handleTemplateSelect}
-                    activeTemplate={activeTemplate}
-                  />
-                </div>
-                <DJControls
-                  crossFader={crossFader}
-                  onCrossFaderChange={handleCrossFaderChange}
-                  leftVideoId={videos.left?.id}
-                  rightVideoId={videos.right?.id}
-                  forceShowTooltip={showTransitionTooltip}
-                />
-              </div>
-            </Card>
-          )}
         </div>
       </ResizablePanel>
 
-      <ResizableHandle withHandle className={cn((!showMixControls || !isNewMode) && "hidden")} />
+      <ResizableHandle 
+        withHandle 
+        className={cn(
+          (!showMixControls || !isNewMode) && "hidden",
+          !isNewMode && "border-none" 
+        )} 
+      />
 
       <ResizablePanel
         defaultSize={25}
