@@ -1,6 +1,7 @@
 import { User, Share2, ThumbsUp, Shuffle, Monitor, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 interface VideoInfoProps {
@@ -32,17 +33,29 @@ export default function VideoInfo({
             {title}
           </h1>
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="gap-1.5 h-8 px-3"
-              onClick={() => onSaveMix?.()}
-              disabled={!user} // Only disable if not logged in
-              title={!user ? "Sign in to save your mix" : undefined}
-            >
-              <Upload className="h-4 w-4" />
-              Post
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-1.5 h-8 px-3"
+                      onClick={() => onSaveMix?.()}
+                      disabled={!user || !leftVideoSelected || !rightVideoSelected}
+                    >
+                      <Upload className="h-4 w-4" />
+                      Post
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {!user ? "Sign in to save your mix" : 
+                   (!leftVideoSelected || !rightVideoSelected) ? "Select both videos to save" : 
+                   "Save your mix"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <Button 
               variant="ghost" 
               size="sm" 
