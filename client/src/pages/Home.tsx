@@ -255,7 +255,7 @@ export default function Home() {
       </div>
       {showMixControls && mixControls}
       {!showMixControls && (
-        <div className="mt-8">
+        <div className="mt-16 px-4 md:px-8 lg:px-16 max-w-[1400px] mx-auto">
           <MixCarousel mixes={mixes} onPlayMix={handlePlayMix} />
         </div>
       )}
