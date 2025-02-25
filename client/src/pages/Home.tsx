@@ -4,7 +4,7 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { User } from "lucide-react"; 
+import { User, Plus } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
@@ -44,6 +44,16 @@ export default function Home() {
       thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
     }
   });
+
+  const handleNewMix = () => {
+    setVideos({
+      left: null,
+      right: null
+    });
+    setShowMixControls(true);
+    setPlaying(false);
+    setCrossFader(0.5);
+  };
 
   const [playing, setPlaying] = useState(false);
   const [videoStates, setVideoStates] = useState({
@@ -305,6 +315,15 @@ export default function Home() {
             )}
           </div>
           <div className="flex items-center justify-end gap-4">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={handleNewMix}
+            >
+              <Plus className="h-4 w-4" />
+              New
+            </Button>
             {!user && (
               <AuthModal 
                 defaultTab="sign-up"
