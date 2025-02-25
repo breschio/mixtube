@@ -53,6 +53,7 @@ export default function Home() {
     setShowMixControls(true);
     setPlaying(false);
     setCrossFader(0.5);
+    setActiveTab("left");
   };
 
   const [playing, setPlaying] = useState(false);
@@ -113,6 +114,7 @@ export default function Home() {
       <SearchBar
         onVideoSelect={(video) => handleVideoSelect(video, side)}
         videoId={videos[side]?.id || null}
+        autoFocus={side === 'left' && !videos.left?.id}
       />
     </div>
   );

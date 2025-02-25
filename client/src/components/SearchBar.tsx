@@ -8,14 +8,16 @@ import type { YouTubeVideo } from '@/lib/youtube';
 interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
   videoId: string | null;
+  autoFocus?: boolean;
 }
 
-export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
+export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchBarProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
   const lastValidUrlRef = useRef<string | null>(null);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isTypingRef = useRef(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const patterns = [
@@ -108,6 +110,12 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
   };
 
   useEffect(() => {
+    if (autoFocus && !videoId && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [autoFocus, videoId]);
+
+  useEffect(() => {
     if (videoId) {
       const newUrl = `https://youtube.com/watch?v=${videoId}`;
       setDisplayValue(newUrl);
@@ -131,6 +139,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
       <div className="relative group">
         <div className="relative flex items-center">
           <Input
+            ref={inputRef}
             type="text"
             placeholder="Paste YouTube URL"
             value={displayValue}
