@@ -21,6 +21,7 @@ import VideoPreview from "@/components/VideoPreview";
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
 import MixCarousel from "@/components/MixCarousel";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import MixList from "@/components/MixList";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
@@ -390,7 +391,13 @@ export default function Home() {
         )}
       >
         <div className="h-full flex flex-col pl-4">
-          {renderControls('right')}
+          {showMixControls ? renderControls('right') : (
+            <MixList 
+              mixes={mixes} 
+              onPlayMix={handlePlayMix}
+              className="h-full overflow-y-auto"
+            />
+          )}
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
