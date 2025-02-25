@@ -47,16 +47,26 @@ export default function MixCarousel({ mixes, onPlayMix }: MixCarouselProps) {
                   <Card className="relative overflow-hidden group">
                     <div className="aspect-video w-full relative">
                       <div className="absolute inset-0 grid grid-cols-2 gap-1">
-                        <img
-                          src={`https://img.youtube.com/vi/${mix.leftVideoId}/maxresdefault.jpg`}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                        <img
-                          src={`https://img.youtube.com/vi/${mix.rightVideoId}/maxresdefault.jpg`}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="relative bg-muted/20">
+                          <img
+                            src={`https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`}
+                            alt=""
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = `https://img.youtube.com/vi/${mix.leftVideoId}/0.jpg`;
+                            }}
+                          />
+                        </div>
+                        <div className="relative bg-muted/20">
+                          <img
+                            src={`https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`}
+                            alt=""
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = `https://img.youtube.com/vi/${mix.rightVideoId}/0.jpg`;
+                            }}
+                          />
+                        </div>
                       </div>
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Button
