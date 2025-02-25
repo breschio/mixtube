@@ -243,14 +243,8 @@ export default function Home() {
 
   const mainContent = (
     <>
-      <div className="relative w-full">
-        <div className="grid grid-cols-[1fr,2fr,1fr] gap-4 items-center">
-          <MixCarousel mixes={mixes} onPlayMix={handlePlayMix} />
-          <div className="aspect-video">
-            {mainVideoPlayer}
-          </div>
-          <MixCarousel mixes={mixes} onPlayMix={handlePlayMix} />
-        </div>
+      <div className="relative w-full aspect-video">
+        {mainVideoPlayer}
       </div>
       <div className="border-t border-border/50">
         <VideoInfo
@@ -265,6 +259,11 @@ export default function Home() {
         />
       </div>
       {showMixControls && mixControls}
+      {!showMixControls && (
+        <div className="mt-16 px-4 md:px-8 lg:px-16 max-w-[1400px] mx-auto">
+          <MixCarousel mixes={mixes} onPlayMix={handlePlayMix} />
+        </div>
+      )}
     </>
   );
 
