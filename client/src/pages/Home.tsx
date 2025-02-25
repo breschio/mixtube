@@ -4,7 +4,7 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { User, Plus } from "lucide-react"; 
+import { User, Plus, Save } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
@@ -13,6 +13,8 @@ import DJControls from "@/components/DJControls";
 import AuthModal from "@/components/AuthModal";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useMobile } from '@/hooks/use-mobile';
+import SaveMixDialog from "@/components/SaveMixDialog";
+import { useToast } from "@/hooks/use-toast";
 import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import VideoPreview from "@/components/VideoPreview";
@@ -25,8 +27,10 @@ interface VideoInfo extends YouTubeVideo {
 export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
+  const { toast } = useToast();
   const [showMixControls, setShowMixControls] = useState(false);
-  const [activeTab, setActiveTab] = useState("mix"); 
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState("mix");
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
@@ -134,13 +138,77 @@ export default function Home() {
     </div>
   );
 
+  const handleSaveMix = async (title: string) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to save your mix",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!videos.left?.id || !videos.right?.id) {
+      toast({
+        title: "Incomplete Mix",
+        description: "Please select both videos before saving",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/mixes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          leftVideoId: videos.left.id,
+          rightVideoId: videos.right.id,
+          crossFaderValue: Math.round(crossFader * 100),
+          template: activeTemplate,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save mix');
+      }
+
+      toast({
+        title: "Success",
+        description: "Your mix has been saved",
+      });
+    } catch (error) {
+      console.error('Error saving mix:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save mix. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const mixControls = (
     <Card className="mt-6">
       <div className="p-4">
-        <MixTemplates
-          onSelectTemplate={handleTemplateSelect}
-          activeTemplate={activeTemplate}
-        />
+        <div className="flex items-center justify-between mb-4">
+          <MixTemplates
+            onSelectTemplate={handleTemplateSelect}
+            activeTemplate={activeTemplate}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => setShowSaveDialog(true)}
+            disabled={!user || !videos.left?.id || !videos.right?.id}
+          >
+            <Save className="h-4 w-4" />
+            Save Mix
+          </Button>
+        </div>
         <DJControls
           crossFader={crossFader}
           onCrossFaderChange={handleCrossFaderChange}
@@ -353,6 +421,11 @@ export default function Home() {
       <main className="flex-1 w-full px-6 sm:px-8 md:px-12 pb-8">
         {isMobile ? renderMobileLayout() : renderDesktopLayout()}
       </main>
+      <SaveMixDialog
+        open={showSaveDialog}
+        onOpenChange={setShowSaveDialog}
+        onSave={handleSaveMix}
+      />
     </div>
   );
 }

@@ -2,6 +2,9 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { cache } from './cache';
 import { spawn } from 'child_process';
+import { db } from "@db/index";
+import { mixes } from "@db/schema";
+import { eq } from "drizzle-orm";
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000;
@@ -102,7 +105,7 @@ export function registerRoutes(app: Express): Server {
         part: 'snippet',
         channelId: channelId,
         type: 'video',
-        maxResults: '50', 
+        maxResults: '50',
         key: YOUTUBE_API_KEY
       });
 
@@ -116,14 +119,14 @@ export function registerRoutes(app: Express): Server {
         console.error('YouTube API error:', data.error);
         if (data.error?.code === 403) {
           console.log('YouTube API quota exceeded, using fallback data');
-          return res.json(FALLBACK_VIDEOS); 
+          return res.json(FALLBACK_VIDEOS);
         }
         throw new Error(data.error?.message || 'Failed to fetch related videos');
       }
 
       if (!data.items?.length) {
         console.log('No related videos found for:', videoId);
-        return res.json(FALLBACK_VIDEOS); 
+        return res.json(FALLBACK_VIDEOS);
       }
 
       const videos = data.items.map((item: any) => ({
@@ -138,7 +141,7 @@ export function registerRoutes(app: Express): Server {
       res.json(videos);
     } catch (error) {
       console.error('YouTube related videos error:', error);
-      res.json(FALLBACK_VIDEOS); 
+      res.json(FALLBACK_VIDEOS);
     }
   });
 
@@ -196,6 +199,37 @@ export function registerRoutes(app: Express): Server {
       console.error('yt-dlp error:', error);
       // Fallback to using the YouTube API endpoint
       return res.redirect(`/api/youtube/related?v=${videoId}`);
+    }
+  });
+
+  app.post('/api/mixes', async (req, res) => {
+    try {
+      const { title, leftVideoId, rightVideoId, crossFaderValue, template } = req.body;
+
+      // Ensure user is authenticated
+      if (!req.session.userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Validate required fields
+      if (!title || !leftVideoId || !rightVideoId || crossFaderValue === undefined || !template) {
+        return res.status(400).json({ error: 'Missing required fields' });
+      }
+
+      // Insert new mix
+      const [newMix] = await db.insert(mixes).values({
+        title,
+        userId: req.session.userId,
+        leftVideoId,
+        rightVideoId,
+        crossFaderValue,
+        template,
+      }).returning();
+
+      res.json(newMix);
+    } catch (error) {
+      console.error('Error saving mix:', error);
+      res.status(500).json({ error: 'Failed to save mix' });
     }
   });
 
