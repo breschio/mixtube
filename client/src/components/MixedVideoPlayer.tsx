@@ -13,6 +13,8 @@ interface MixedVideoPlayerProps {
   preview?: boolean;
   activeTemplate?: string;
   mobileView?: boolean;
+  leftStartTime?: number;
+  rightStartTime?: number;
 }
 
 export default function MixedVideoPlayer({
@@ -23,7 +25,9 @@ export default function MixedVideoPlayer({
   onPlayPause,
   preview = false,
   activeTemplate = 'side-by-side',
-  mobileView = false
+  mobileView = false,
+  leftStartTime,
+  rightStartTime
 }: MixedVideoPlayerProps) {
   const {
     leftPlayerRef,
@@ -48,7 +52,8 @@ export default function MixedVideoPlayer({
       enablejsapi: 1,
       mute: 0,
       fs: 0,
-      disablekb: 1
+      disablekb: 1,
+      start: 0 // This will be overridden by the url if needed
     }
   };
 
@@ -65,11 +70,18 @@ export default function MixedVideoPlayer({
 
   const audioLevels = getAudioLevels();
 
+  // Create URLs with start times if provided
+  const getVideoUrl = (videoId: string | null, startTime?: number) => {
+    if (!videoId) return '';
+    const url = `https://www.youtube.com/watch?v=${videoId}`;
+    return startTime ? `${url}&start=${startTime}` : url;
+  };
+
   // Base player components that stay mounted
   const leftPlayer = (
     <ReactPlayer
       ref={leftPlayerRef}
-      url={`https://www.youtube.com/watch?v=${leftVideoId}`}
+      url={getVideoUrl(leftVideoId, leftStartTime)}
       width="100%"
       height="100%"
       playing={isPlaying}
@@ -86,7 +98,7 @@ export default function MixedVideoPlayer({
   const rightPlayer = (
     <ReactPlayer
       ref={rightPlayerRef}
-      url={`https://www.youtube.com/watch?v=${rightVideoId}`}
+      url={getVideoUrl(rightVideoId, rightStartTime)}
       width="100%"
       height="100%"
       playing={isPlaying}

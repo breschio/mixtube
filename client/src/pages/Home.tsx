@@ -24,6 +24,7 @@ import DJControls from "@/components/DJControls";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
+  startTime?: number;
 }
 
 export default function Home() {
@@ -218,6 +219,8 @@ export default function Home() {
         preview={false}
         activeTemplate={activeTemplate}
         mobileView={isMobile}
+        leftStartTime={videos.left?.startTime}
+        rightStartTime={videos.right?.startTime}
       />
     </div>
   );
@@ -275,6 +278,8 @@ export default function Home() {
           preview={false}
           activeTemplate={showMixControls ? activeTemplate : "single"}
           mobileView={true}
+          leftStartTime={videos.left?.startTime}
+          rightStartTime={videos.right?.startTime}
         />
       </div>
 

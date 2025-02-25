@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { parseYouTubeStartTime } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
 
 interface SearchBarProps {
@@ -60,17 +61,19 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
 
     const videoId = extractVideoId(newValue);
     if (videoId) {
-      handleVideoIdInput(videoId);
+      handleVideoIdInput(videoId, newValue);
       lastValidUrlRef.current = newValue;
     }
   };
 
-  const handleVideoIdInput = async (videoId: string) => {
+  const handleVideoIdInput = async (videoId: string, originalUrl: string) => {
     try {
+      const startTime = parseYouTubeStartTime(originalUrl);
       onVideoSelect({
         id: videoId,
         title: 'Loading...',
         thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+        startTime
       });
     } catch (error) {
       console.error('Error handling video ID:', error);
