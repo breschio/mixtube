@@ -29,7 +29,7 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
         {mixes.map((mix) => (
           <div key={mix.id} className="group cursor-pointer" onClick={() => onPlayMix?.(mix)}>
             <div className="flex gap-2">
-              <div className="relative shrink-0" style={{ width: "180px" }}>
+              <div className="relative shrink-0" style={{ width: "120px" }}>
                 <div className="aspect-video grid grid-cols-2 gap-0.5 bg-muted/20">
                   <div className="relative bg-muted/20">
                     <img
@@ -63,8 +63,8 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
                 </div>
               </div>
               <div className="flex flex-col min-w-0">
-                <h3 className="text-sm font-medium line-clamp-2 leading-tight mb-1">{mix.title}</h3>
-                <div className="text-xs text-muted-foreground">
+                <h3 className="text-xs font-medium line-clamp-2 leading-snug mb-0.5">{mix.title}</h3>
+                <div className="text-[11px] text-muted-foreground leading-tight">
                   <div>MixTube</div>
                   <div className="flex items-center gap-1">
                     <span>{Math.floor(Math.random() * 1000)}K views</span>
