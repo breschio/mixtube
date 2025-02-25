@@ -10,8 +10,8 @@ interface VideoInfoProps {
   mixMode?: boolean;
   onSaveMix?: () => void;
   user?: any;
-  leftVideoSelected: boolean; // Added
-  rightVideoSelected: boolean; // Added
+  leftVideoSelected: boolean;
+  rightVideoSelected: boolean;
 }
 
 export default function VideoInfo({ 
@@ -21,8 +21,8 @@ export default function VideoInfo({
   mixMode = false,
   onSaveMix,
   user,
-  leftVideoSelected, // Added
-  rightVideoSelected // Added
+  leftVideoSelected,
+  rightVideoSelected
 }: VideoInfoProps) {
   if (mixMode) {
     return (
@@ -37,7 +37,8 @@ export default function VideoInfo({
               size="sm"
               className="gap-1.5 h-8 px-3"
               onClick={() => onSaveMix?.()}
-              disabled={!user || !leftVideoSelected || !rightVideoSelected} // Modified
+              disabled={!user} // Only disable if not logged in
+              title={!user ? "Sign in to save your mix" : undefined}
             >
               <Upload className="h-4 w-4" />
               Post
