@@ -42,20 +42,6 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
     return null;
   };
 
-  const startUrlRestorationTimer = () => {
-    if (blurTimeoutRef.current) {
-      clearTimeout(blurTimeoutRef.current);
-    }
-
-    if (lastValidUrlRef.current && !isTypingRef.current) {
-      blurTimeoutRef.current = setTimeout(() => {
-        if (!displayValue || displayValue !== lastValidUrlRef.current) {
-          setDisplayValue(lastValidUrlRef.current || '');
-        }
-      }, 5000);
-    }
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setDisplayValue(newValue);
@@ -93,6 +79,20 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
         description: "Please check the URL and try again.",
         variant: "destructive"
       });
+    }
+  };
+
+  const startUrlRestorationTimer = () => {
+    if (blurTimeoutRef.current) {
+      clearTimeout(blurTimeoutRef.current);
+    }
+
+    if (lastValidUrlRef.current && !isTypingRef.current) {
+      blurTimeoutRef.current = setTimeout(() => {
+        if (!displayValue || displayValue !== lastValidUrlRef.current) {
+          setDisplayValue(lastValidUrlRef.current || '');
+        }
+      }, 5000);
     }
   };
 
@@ -136,7 +136,7 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
 
   return (
     <div className="w-full">
-      <div className="relative group p-0.5">
+      <div className="relative group p-1">
         <div className="relative flex items-center">
           <Input
             ref={inputRef}
