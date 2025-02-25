@@ -4,7 +4,7 @@ import { cache } from './cache';
 import { spawn } from 'child_process';
 import { db } from "@db/index";
 import { mixes } from "@db/schema";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000;
@@ -230,6 +230,16 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error('Error saving mix:', error);
       res.status(500).json({ error: 'Failed to save mix' });
+    }
+  });
+
+  app.get('/api/mixes', async (req, res) => {
+    try {
+      const recentMixes = await db.select().from(mixes).orderBy(desc(mixes.createdAt)).limit(10);
+      res.json(recentMixes);
+    } catch (error) {
+      console.error('Error fetching mixes:', error);
+      res.status(500).json({ error: 'Failed to fetch mixes' });
     }
   });
 

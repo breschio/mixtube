@@ -19,6 +19,8 @@ import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import VideoPreview from "@/components/VideoPreview";
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
+import MixCarousel from "@/components/MixCarousel";
+import { useQuery } from "@tanstack/react-query";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
@@ -46,6 +48,17 @@ export default function Home() {
       title: 'How to Attract Money & Clients',
       channelTitle: 'Unknown Channel',
       thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
+    }
+  });
+
+  const { data: mixes = [] } = useQuery({
+    queryKey: ['/api/mixes'],
+    queryFn: async () => {
+      const response = await fetch('/api/mixes');
+      if (!response.ok) {
+        throw new Error('Failed to fetch mixes');
+      }
+      return response.json();
     }
   });
 
@@ -94,6 +107,27 @@ export default function Home() {
   const handleCrossFaderChange = (value: number) => {
     setCrossFader(value);
   };
+
+  const handlePlayMix = (mix: any) => {
+    setVideos({
+      left: {
+        id: mix.leftVideoId,
+        title: "Loading...",
+        channelTitle: "Loading...",
+        thumbnail: `https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`
+      },
+      right: {
+        id: mix.rightVideoId,
+        title: "Loading...",
+        channelTitle: "Loading...",
+        thumbnail: `https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`
+      }
+    });
+    setCrossFader(mix.crossFaderValue / 100);
+    setActiveTemplate(mix.template);
+    setShowMixControls(true);
+  };
+
 
   const renderControls = (side: 'left' | 'right') => (
     <div className="h-full flex flex-col">
@@ -220,6 +254,11 @@ export default function Home() {
         />
       </div>
       {showMixControls && mixControls}
+      {!showMixControls && (
+        <div className="mt-8">
+          <MixCarousel mixes={mixes} onPlayMix={handlePlayMix} />
+        </div>
+      )}
     </>
   );
 
