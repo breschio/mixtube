@@ -28,27 +28,29 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
       <div className="space-y-3">
         {mixes.map((mix) => (
           <div key={mix.id} className="group cursor-pointer" onClick={() => onPlayMix?.(mix)}>
-            <div className="relative">
-              <div className="aspect-video w-full grid grid-cols-2 gap-0.5 bg-muted/20">
-                <div className="relative bg-muted/20">
-                  <img
-                    src={`https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = `https://img.youtube.com/vi/${mix.leftVideoId}/0.jpg`;
-                    }}
-                  />
-                </div>
-                <div className="relative bg-muted/20">
-                  <img
-                    src={`https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = `https://img.youtube.com/vi/${mix.rightVideoId}/0.jpg`;
-                    }}
-                  />
+            <div className="flex gap-2">
+              <div className="relative shrink-0" style={{ width: "180px" }}>
+                <div className="aspect-video grid grid-cols-2 gap-0.5 bg-muted/20">
+                  <div className="relative bg-muted/20">
+                    <img
+                      src={`https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = `https://img.youtube.com/vi/${mix.leftVideoId}/0.jpg`;
+                      }}
+                    />
+                  </div>
+                  <div className="relative bg-muted/20">
+                    <img
+                      src={`https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = `https://img.youtube.com/vi/${mix.rightVideoId}/0.jpg`;
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Button
@@ -60,8 +62,16 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
                   </Button>
                 </div>
               </div>
-              <div className="py-2">
-                <h3 className="text-sm font-medium truncate">{mix.title}</h3>
+              <div className="flex flex-col min-w-0">
+                <h3 className="text-sm font-medium line-clamp-2 leading-tight mb-1">{mix.title}</h3>
+                <div className="text-xs text-muted-foreground">
+                  <div>MixTube</div>
+                  <div className="flex items-center gap-1">
+                    <span>{Math.floor(Math.random() * 1000)}K views</span>
+                    <span>•</span>
+                    <span>{Math.floor(Math.random() * 7) + 1}d ago</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
