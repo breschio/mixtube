@@ -198,16 +198,6 @@ export default function Home() {
             onSelectTemplate={handleTemplateSelect}
             activeTemplate={activeTemplate}
           />
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5"
-            onClick={() => setShowSaveDialog(true)}
-            disabled={!user || !videos.left?.id || !videos.right?.id}
-          >
-            <Save className="h-4 w-4" />
-            Save Mix
-          </Button>
         </div>
         <DJControls
           crossFader={crossFader}
@@ -231,6 +221,8 @@ export default function Home() {
           channelTitle={videos.left?.channelTitle}
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
+          onSaveMix={() => setShowSaveDialog(true)}
+          user={user}
         />
       </div>
       {showMixControls && mixControls}
@@ -258,6 +250,8 @@ export default function Home() {
           channelTitle={videos.left?.channelTitle}
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
+          onSaveMix={() => setShowSaveDialog(true)}
+          user={user}
         />
       </div>
 

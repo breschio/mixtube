@@ -8,13 +8,17 @@ interface VideoInfoProps {
   channelTitle?: string;
   onToggleMixMode: () => void;
   mixMode?: boolean;
+  onSaveMix?: () => void;
+  user?: any;
 }
 
 export default function VideoInfo({ 
   title = 'Untitled Video',
   channelTitle = 'Unknown Channel',
   onToggleMixMode,
-  mixMode = false 
+  mixMode = false,
+  onSaveMix,
+  user
 }: VideoInfoProps) {
   if (mixMode) {
     return (
@@ -23,15 +27,26 @@ export default function VideoInfo({
           <h1 className="text-base font-medium leading-tight">
             {title}
           </h1>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="gap-1.5 h-8 px-3" 
-            onClick={onToggleMixMode}
-          >
-            <Monitor className="h-4 w-4" />
-            Watch
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 h-8 px-3"
+              onClick={() => onSaveMix?.()}
+              disabled={!user}
+            >
+              Save
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="gap-1.5 h-8 px-3" 
+              onClick={onToggleMixMode}
+            >
+              <Monitor className="h-4 w-4" />
+              Watch
+            </Button>
+          </div>
         </div>
       </div>
     );
