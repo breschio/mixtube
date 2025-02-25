@@ -1,4 +1,4 @@
-import { User, Share2, ThumbsUp, Shuffle, Monitor, Upload } from 'lucide-react';
+import { User, Share2, ThumbsUp, Shuffle, Monitor, Upload, ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -64,6 +64,7 @@ export default function VideoInfo({
             >
               <Monitor className="h-4 w-4" />
               Watch
+              <ChevronUp className="h-4 w-4 ml-1" />
             </Button>
           </div>
         </div>
@@ -99,6 +100,7 @@ export default function VideoInfo({
           <Button variant="ghost" size="sm" className="gap-1 h-8 px-2" onClick={onToggleMixMode}>
             <Shuffle className="h-4 w-4" />
             Mix
+            <ChevronDown className="h-4 w-4 ml-1" />
           </Button>
         </div>
       </div>
