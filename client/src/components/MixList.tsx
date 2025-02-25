@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
 
 interface Mix {
   id: number;
@@ -9,6 +10,8 @@ interface Mix {
   rightVideoId: string;
   crossFaderValue: number;
   template: string;
+  views: number;
+  createdAt: string;
 }
 
 interface MixListProps {
@@ -67,9 +70,9 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
                 <div className="text-[11px] text-muted-foreground leading-tight">
                   <div>MixTube</div>
                   <div className="flex items-center gap-1">
-                    <span>{Math.floor(Math.random() * 1000)}K views</span>
+                    <span>{mix.views.toLocaleString()} views</span>
                     <span>•</span>
-                    <span>{Math.floor(Math.random() * 7) + 1}d ago</span>
+                    <span>{formatDistanceToNow(new Date(mix.createdAt))} ago</span>
                   </div>
                 </div>
               </div>

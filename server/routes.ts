@@ -4,7 +4,7 @@ import { cache } from './cache';
 import { spawn } from 'child_process';
 import { db } from "@db/index";
 import { mixes } from "@db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000;
@@ -222,6 +222,7 @@ export function registerRoutes(app: Express): Server {
         rightVideoId,
         crossFaderValue,
         template,
+        views: 0, // Initialize views to 0
       }).returning();
 
       res.json(newMix);
@@ -238,6 +239,20 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error('Error fetching mixes:', error);
       res.status(500).json({ error: 'Failed to fetch mixes' });
+    }
+  });
+
+  // Add new endpoint to increment views
+  app.post('/api/mixes/:id/view', async (req, res) => {
+    try {
+      const mixId = parseInt(req.params.id);
+      await db.update(mixes)
+        .set({ views: sql`${mixes.views} + 1` })
+        .where(eq(mixes.id, mixId));
+      res.sendStatus(200);
+    } catch (error) {
+      console.error('Error incrementing views:', error);
+      res.status(500).json({ error: 'Failed to increment views' });
     }
   });
 

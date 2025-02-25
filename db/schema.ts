@@ -16,6 +16,7 @@ export const mixes = pgTable("mixes", {
   rightVideoId: text("right_video_id").notNull(),
   crossFaderValue: integer("cross_fader_value").notNull(),
   template: text("template").notNull(),
+  views: integer("views").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

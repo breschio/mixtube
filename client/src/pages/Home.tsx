@@ -111,7 +111,7 @@ export default function Home() {
     setCrossFader(value);
   };
 
-  const handlePlayMix = (mix: any) => {
+  const handlePlayMix = async (mix: any) => {
     setVideos({
       left: {
         id: mix.leftVideoId,
@@ -130,6 +130,15 @@ export default function Home() {
     setActiveTemplate(mix.template);
     // Don't enable mix mode when playing from sidebar
     setShowMixControls(false);
+
+    // Increment views
+    try {
+      await fetch(`/api/mixes/${mix.id}/view`, { method: 'POST' });
+      // Invalidate the mixes query to refresh the view count
+      queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
+    } catch (error) {
+      console.error('Error incrementing views:', error);
+    }
   };
 
 
