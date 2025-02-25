@@ -389,7 +389,7 @@ export default function Home() {
         minSize={20}
         className={cn(
           "transition-all duration-300 ease-in-out",
-          "hidden" 
+          !showMixControls && "!min-w-0 !w-0 !basis-0"
         )}
       >
         <div className="h-full flex flex-col pr-4">
@@ -397,46 +397,39 @@ export default function Home() {
         </div>
       </ResizablePanel>
 
-      <ResizableHandle withHandle className="hidden" />
+      <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
 
       <ResizablePanel
         defaultSize={50}
         minSize={30}
-        className="!basis-[70%]"
+        className={cn(
+          "transition-all duration-300 ease-in-out",
+          !showMixControls && "!basis-[70%]"
+        )}
       >
         <div className="h-full flex flex-col px-4">
-          <div className="relative w-full aspect-video">
-            {mainVideoPlayer}
-          </div>
-          <div className="border-t border-border/50">
-            <VideoInfo
-              title={currentMix?.title || `${videos.left?.title || "Untitled Mix"} × ${videos.right?.title || ""}`}
-              channelTitle="MixTube"
-              onToggleMixMode={() => setShowMixControls(!showMixControls)}
-              mixMode={showMixControls}
-              onSaveMix={() => setShowSaveDialog(true)}
-              user={user}
-              leftVideoSelected={!!videos.left?.id}
-              rightVideoSelected={!!videos.right?.id}
-            />
-          </div>
-          {showMixControls && mixControls}
+          {mainContent}
         </div>
       </ResizablePanel>
 
-      <ResizableHandle withHandle className="hidden" />
+      <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
 
       <ResizablePanel
         defaultSize={25}
         minSize={20}
-        className="!basis-[30%]"
+        className={cn(
+          "transition-all duration-300 ease-in-out",
+          !showMixControls && "!basis-[30%]"
+        )}
       >
         <div className="h-full flex flex-col pl-4">
-          <MixList 
-            mixes={mixes} 
-            onPlayMix={handlePlayMix}
-            className="h-full overflow-y-auto"
-          />
+          {showMixControls ? renderControls('right') : (
+            <MixList 
+              mixes={mixes} 
+              onPlayMix={handlePlayMix}
+              className="h-full overflow-y-auto"
+            />
+          )}
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
