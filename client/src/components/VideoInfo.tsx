@@ -10,6 +10,8 @@ interface VideoInfoProps {
   mixMode?: boolean;
   onSaveMix?: () => void;
   user?: any;
+  leftVideoSelected: boolean; // Added
+  rightVideoSelected: boolean; // Added
 }
 
 export default function VideoInfo({ 
@@ -18,7 +20,9 @@ export default function VideoInfo({
   onToggleMixMode,
   mixMode = false,
   onSaveMix,
-  user
+  user,
+  leftVideoSelected, // Added
+  rightVideoSelected // Added
 }: VideoInfoProps) {
   if (mixMode) {
     return (
@@ -33,7 +37,7 @@ export default function VideoInfo({
               size="sm"
               className="gap-1.5 h-8 px-3"
               onClick={() => onSaveMix?.()}
-              disabled={!user}
+              disabled={!user || !leftVideoSelected || !rightVideoSelected} // Modified
             >
               <Upload className="h-4 w-4" />
               Post

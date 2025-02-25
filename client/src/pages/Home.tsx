@@ -180,6 +180,7 @@ export default function Home() {
         title: "Success",
         description: "Your mix has been saved",
       });
+      setShowSaveDialog(false);
     } catch (error) {
       console.error('Error saving mix:', error);
       toast({
