@@ -413,66 +413,68 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
-        <div className="w-full px-6 sm:px-8 md:px-12 py-4 grid grid-cols-[2fr,5fr,2fr] items-center">
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-          </div>
-          <div className="flex justify-center">
-            {!isMobile && (
+        <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 py-4">
+          <div className="grid grid-cols-[1fr,auto] items-center gap-4">
+            <div className="flex items-center">
+              {!isMobile && (
+                <Button
+                  variant="ghost"
+                  className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent justify-start"
+                  onClick={handleResetView}
+                >
+                  mixtube
+                </Button>
+              )}
+              {isMobile && (
+                <Button
+                  variant="ghost"
+                  className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
+                  onClick={handleResetView}
+                >
+                  mixtube
+                </Button>
+              )}
+            </div>
+            <div className="flex items-center gap-4">
               <Button
-                variant="ghost"
-                className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent"
-                onClick={handleResetView}
+                variant="outline"
+                size="sm"
+                className="gap-1.5"
+                onClick={handleNewMix}
               >
-                mixtube
+                <Plus className="h-4 w-4" />
+                New
               </Button>
-            )}
-            {isMobile && (
-              <Button
-                variant="ghost"
-                className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
-                onClick={handleResetView}
-              >
-                mixtube
-              </Button>
-            )}
-          </div>
-          <div className="flex items-center justify-end gap-4">
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-1.5"
-              onClick={handleNewMix}
-            >
-              <Plus className="h-4 w-4" />
-              New
-            </Button>
-            {!user && (
-              <AuthModal 
-                defaultTab="sign-up"
-                trigger={
-                  <Button 
-                    variant="outline" 
-                    size="icon"
-                    className="hover:text-primary transition-colors duration-200"
-                  >
-                    <User className="h-5 w-5" />
-                  </Button>
-                } 
-              />
-            )}
-            {user && (
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user.user_metadata.avatar_url || ''} />
-                <AvatarFallback>{user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
-              </Avatar>
-            )}
+              <ThemeToggle />
+              {!user && (
+                <AuthModal 
+                  defaultTab="sign-up"
+                  trigger={
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      className="hover:text-primary transition-colors duration-200"
+                    >
+                      <User className="h-5 w-5" />
+                    </Button>
+                  } 
+                />
+              )}
+              {user && (
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user.user_metadata.avatar_url || ''} />
+                  <AvatarFallback>{user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
+                </Avatar>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 w-full px-6 sm:px-8 md:px-12 pb-8">
-        {isMobile ? renderMobileLayout() : renderDesktopLayout()}
+      <main className="flex-1 w-full">
+        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 pb-8">
+          {isMobile ? renderMobileLayout() : renderDesktopLayout()}
+        </div>
       </main>
       <SaveMixDialog
         open={showSaveDialog}
