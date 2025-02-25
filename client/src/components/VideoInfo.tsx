@@ -35,7 +35,8 @@ export default function VideoInfo({
               onClick={() => onSaveMix?.()}
               disabled={!user}
             >
-              Save
+              <Share2 className="h-4 w-4" />
+              Post
             </Button>
             <Button 
               variant="ghost" 
