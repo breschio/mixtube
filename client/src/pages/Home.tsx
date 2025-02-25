@@ -20,7 +20,7 @@ import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import VideoPreview from "@/components/VideoPreview";
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
 import MixCarousel from "@/components/MixCarousel";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
@@ -50,6 +50,8 @@ export default function Home() {
       thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
     }
   });
+
+  const queryClient = useQueryClient();
 
   const { data: mixes = [] } = useQuery({
     queryKey: ['/api/mixes'],
@@ -129,6 +131,53 @@ export default function Home() {
   };
 
 
+  const handleSaveMix = async (title: string) => {
+    if (!videos.left?.id || !videos.right?.id) {
+      toast({
+        title: "Incomplete Mix",
+        description: "Please select both videos before saving",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/mixes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          leftVideoId: videos.left.id,
+          rightVideoId: videos.right.id,
+          crossFaderValue: Math.round(crossFader * 100),
+          template: activeTemplate,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save mix');
+      }
+
+      // Invalidate and refetch mixes after successful save
+      await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
+
+      toast({
+        title: "Success",
+        description: "Your mix has been saved",
+      });
+      setShowSaveDialog(false);
+    } catch (error) {
+      console.error('Error saving mix:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save mix. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const renderControls = (side: 'left' | 'right') => (
     <div className="h-full flex flex-col">
       <VideoPreview
@@ -171,50 +220,6 @@ export default function Home() {
       />
     </div>
   );
-
-  const handleSaveMix = async (title: string) => {
-    if (!videos.left?.id || !videos.right?.id) {
-      toast({
-        title: "Incomplete Mix",
-        description: "Please select both videos before saving",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/mixes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title,
-          leftVideoId: videos.left.id,
-          rightVideoId: videos.right.id,
-          crossFaderValue: Math.round(crossFader * 100),
-          template: activeTemplate,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save mix');
-      }
-
-      toast({
-        title: "Success",
-        description: "Your mix has been saved",
-      });
-      setShowSaveDialog(false);
-    } catch (error) {
-      console.error('Error saving mix:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save mix. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
 
   const mixControls = (
     <Card className="mt-6">
