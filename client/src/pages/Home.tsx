@@ -98,7 +98,7 @@ export default function Home() {
     setPlaying(false);
     setCrossFader(0.5);
     setActiveTab("left");
-    setCurrentMix(null); // Clear current mix when starting new
+    setCurrentMix(null); 
   };
 
   const [playing, setPlaying] = useState(false);
@@ -158,7 +158,8 @@ export default function Home() {
     setCrossFader(mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
     setShowMixControls(false);
-    setCurrentMix(mix); // Set current mix when loading from sidebar
+    setCurrentMix(mix);
+    setPlaying(true); 
 
     try {
       await fetch(`/api/mixes/${mix.id}/view`, { method: 'POST' });
@@ -438,7 +439,7 @@ export default function Home() {
     setShowMixControls(false);
     setActiveTab("mix");
     setPlaying(false);
-    setCurrentMix(null); //added to clear currentMix on reset
+    setCurrentMix(null); 
   };
 
   return (
