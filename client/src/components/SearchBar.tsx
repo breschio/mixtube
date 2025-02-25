@@ -136,7 +136,7 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
 
   return (
     <div className="w-full">
-      <div className="relative group">
+      <div className="relative group p-0.5">
         <div className="relative flex items-center">
           <Input
             ref={inputRef}
