@@ -43,20 +43,15 @@ export default function VideoInfo({
         {title}
       </h1>
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Avatar className="h-8 w-8">
+        <div className="flex items-center gap-1.5">
+          <Avatar className="h-6 w-6">
             <AvatarFallback>
               {channelTitle.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col">
-            <span className="text-sm font-medium">
-              {channelTitle}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              Subscriber count
-            </span>
-          </div>
+          <span className="text-xs font-medium">
+            {channelTitle}
+          </span>
         </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm" className="gap-1 h-8 px-2">
