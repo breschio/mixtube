@@ -218,12 +218,14 @@ export default function Home() {
       </div>
       <div className="border-t border-border/50">
         <VideoInfo
-          title={videos.left?.title}
+          title={videos.left?.title || "Untitled Mix"}
           channelTitle={videos.left?.channelTitle}
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
           onSaveMix={() => setShowSaveDialog(true)}
           user={user}
+          leftVideoSelected={!!videos.left?.id}
+          rightVideoSelected={!!videos.right?.id}
         />
       </div>
       {showMixControls && mixControls}
@@ -247,12 +249,14 @@ export default function Home() {
 
       <div className="px-3 border-t border-border/50">
         <VideoInfo
-          title={videos.left?.title}
+          title={videos.left?.title || "Untitled Mix"}
           channelTitle={videos.left?.channelTitle}
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
           onSaveMix={() => setShowSaveDialog(true)}
           user={user}
+          leftVideoSelected={!!videos.left?.id}
+          rightVideoSelected={!!videos.right?.id}
         />
       </div>
 
