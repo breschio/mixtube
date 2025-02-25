@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { User, Plus } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
@@ -382,58 +381,89 @@ export default function Home() {
     </div>
   );
 
-  const renderDesktopLayout = () => (
-    <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
-      <ResizablePanel
-        defaultSize={25}
-        minSize={20}
-        className={cn(
-          "transition-all duration-300 ease-in-out",
-          !showMixControls && "!min-w-0 !w-0 !basis-0"
-        )}
-      >
-        <div className="h-full flex flex-col pr-4">
-          {renderControls('left')}
+  const renderMixMode = () => (
+    <div className="flex flex-col space-y-6">
+      <div className="relative w-full aspect-video">
+        <MixedVideoPlayer
+          leftVideoId={videos.left?.id || null}
+          rightVideoId={videos.right?.id || null}
+          crossFaderValue={crossFader}
+          playing={playing}
+          onPlayPause={handlePlayPause}
+          preview={false}
+          activeTemplate={activeTemplate}
+          mobileView={isMobile}
+          leftStartTime={videos.left?.startTime}
+          rightStartTime={videos.right?.startTime}
+        />
+      </div>
+      <div className="border-t border-border/50">
+        <VideoInfo
+          title={currentMix?.title || `${videos.left?.title || "Untitled Mix"} × ${videos.right?.title || ""}`}
+          channelTitle="MixTube"
+          onToggleMixMode={() => setShowMixControls(!showMixControls)}
+          mixMode={showMixControls}
+          onSaveMix={() => setShowSaveDialog(true)}
+          user={user}
+          leftVideoSelected={!!videos.left?.id}
+          rightVideoSelected={!!videos.right?.id}
+        />
+      </div>
+      <Card className="p-4">
+        <div className="space-y-4">
+          <MixTemplates
+            onSelectTemplate={handleTemplateSelect}
+            activeTemplate={activeTemplate}
+          />
+          <DJControls
+            crossFader={crossFader}
+            onCrossFaderChange={handleCrossFaderChange}
+            leftVideoId={videos.left?.id}
+            rightVideoId={videos.right?.id}
+            forceShowTooltip={showTransitionTooltip}
+          />
         </div>
-      </ResizablePanel>
-
-      <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
-
-      <ResizablePanel
-        defaultSize={50}
-        minSize={30}
-        className={cn(
-          "transition-all duration-300 ease-in-out",
-          !showMixControls && "!basis-[70%]"
-        )}
-      >
-        <div className="h-full flex flex-col px-4">
-          {mainContent}
-        </div>
-      </ResizablePanel>
-
-      <ResizableHandle withHandle className={cn(!showMixControls && "hidden")} />
-
-      <ResizablePanel
-        defaultSize={25}
-        minSize={20}
-        className={cn(
-          "transition-all duration-300 ease-in-out",
-          !showMixControls && "!basis-[30%]"
-        )}
-      >
-        <div className="h-full flex flex-col pl-4">
-          {showMixControls ? renderControls('right') : (
-            <MixList 
-              mixes={mixes} 
-              onPlayMix={handlePlayMix}
-              className="h-full overflow-y-auto"
-            />
-          )}
-        </div>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+      </Card>
+    </div>
   );
+
+  const renderDesktopLayout = () => {
+    if (!showMixControls && videos.left?.id && videos.right?.id) {
+      // Mix mode - single column layout
+      return (
+        <div className="h-[calc(100vh-5rem)]">
+          {renderMixMode()}
+        </div>
+      );
+    }
+
+    // New mode - three panel layout
+    return (
+      <ResizablePanelGroup direction="horizontal" className="h-[calc(100vh-5rem)]">
+        <ResizablePanel defaultSize={25} minSize={20}>
+          <div className="h-full flex flex-col pr-4">
+            {renderControls('left')}
+          </div>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        <ResizablePanel defaultSize={50} minSize={30}>
+          <div className="h-full flex flex-col px-4">
+            {mainContent}
+          </div>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        <ResizablePanel defaultSize={25} minSize={20}>
+          <div className="h-full flex flex-col pl-4">
+            {renderControls('right')}
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    );
+  };
 
   const handleResetView = () => {
     setShowMixControls(false);
