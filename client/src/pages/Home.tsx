@@ -40,14 +40,14 @@ export default function Home() {
   }>({
     left: {
       id: 'ApSCH4JXjQU',
-      title: 'Chilled Jazz House Music Mix - Cozy Playlist',
-      channelTitle: 'Default Channel',
+      title: 'Chill Jazz Hop Beats - 24/7 Jazzhop Radio',
+      channelTitle: 'Gentleman Music',
       thumbnail: `https://img.youtube.com/vi/ApSCH4JXjQU/mqdefault.jpg`
     },
     right: {
       id: 'Q_050nEIMqw',
-      title: 'How to Attract Money & Clients',
-      channelTitle: 'Unknown Channel',
+      title: 'Ambient DJ Mix - Deep Focus',
+      channelTitle: 'Deep Music Channel',
       thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
     }
   });
@@ -64,6 +64,20 @@ export default function Home() {
       return response.json();
     }
   });
+
+  // Helper function to get video info from mixes
+  const getVideoInfoFromMixes = (videoId: string): {title: string, channelTitle: string} | undefined => {
+    // Look through all mixes for matching video IDs
+    for (const mix of mixes) {
+      if (mix.leftVideoId === videoId) {
+        return { title: mix.leftTitle || "Untitled Video", channelTitle: mix.leftChannel || "Unknown Channel" };
+      }
+      if (mix.rightVideoId === videoId) {
+        return { title: mix.rightTitle || "Untitled Video", channelTitle: mix.rightChannel || "Unknown Channel" };
+      }
+    }
+    return undefined;
+  };
 
   const handleNewMix = () => {
     setVideos({
@@ -112,20 +126,24 @@ export default function Home() {
   };
 
   const handlePlayMix = async (mix: any) => {
+    const leftInfo = getVideoInfoFromMixes(mix.leftVideoId);
+    const rightInfo = getVideoInfoFromMixes(mix.rightVideoId);
+
     setVideos({
       left: {
         id: mix.leftVideoId,
-        title: "Loading...",
-        channelTitle: "Loading...",
+        title: leftInfo?.title || "Video",
+        channelTitle: leftInfo?.channelTitle || "Channel",
         thumbnail: `https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`
       },
       right: {
         id: mix.rightVideoId,
-        title: "Loading...",
-        channelTitle: "Loading...",
+        title: rightInfo?.title || "Video",
+        channelTitle: rightInfo?.channelTitle || "Channel",
         thumbnail: `https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`
       }
     });
+
     setCrossFader(mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
     // Don't enable mix mode when playing from sidebar
@@ -161,7 +179,11 @@ export default function Home() {
         body: JSON.stringify({
           title,
           leftVideoId: videos.left.id,
+          leftTitle: videos.left.title,
+          leftChannel: videos.left.channelTitle,
           rightVideoId: videos.right.id,
+          rightTitle: videos.right.title,
+          rightChannel: videos.right.channelTitle,
           crossFaderValue: Math.round(crossFader * 100),
           template: activeTemplate,
         }),
@@ -261,8 +283,8 @@ export default function Home() {
       </div>
       <div className="border-t border-border/50">
         <VideoInfo
-          title={videos.left?.title || "Untitled Mix"}
-          channelTitle={videos.left?.channelTitle}
+          title={crossFader > 0.5 ? videos.right?.title || "Untitled Mix" : videos.left?.title || "Untitled Mix"}
+          channelTitle={crossFader > 0.5 ? videos.right?.channelTitle : videos.left?.channelTitle}
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
           onSaveMix={() => setShowSaveDialog(true)}
