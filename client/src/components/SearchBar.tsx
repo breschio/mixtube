@@ -104,7 +104,7 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
   const handleClear = () => {
     setDisplayValue('');
     setIsValid(true);
-    startUrlRestorationTimer();
+    lastValidUrlRef.current = null;
   };
 
   useEffect(() => {
@@ -112,6 +112,9 @@ export default function SearchBar({ onVideoSelect, videoId }: SearchBarProps) {
       const newUrl = `https://youtube.com/watch?v=${videoId}`;
       setDisplayValue(newUrl);
       lastValidUrlRef.current = newUrl;
+    } else {
+      setDisplayValue('');
+      lastValidUrlRef.current = null;
     }
   }, [videoId]);
 
