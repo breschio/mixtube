@@ -389,6 +389,12 @@ export default function Home() {
     </ResizablePanelGroup>
   );
 
+  const handleResetView = () => {
+    setShowMixControls(false);
+    setActiveTab("mix");
+    setPlaying(false);
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
@@ -401,14 +407,19 @@ export default function Home() {
               <Button
                 variant="ghost"
                 className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent"
+                onClick={handleResetView}
               >
                 mixtube
               </Button>
             )}
             {isMobile && (
-              <div className="text-foreground font-mono font-light text-2xl tracking-wider">
+              <Button
+                variant="ghost"
+                className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
+                onClick={handleResetView}
+              >
                 mixtube
-              </div>
+              </Button>
             )}
           </div>
           <div className="flex items-center justify-end gap-4">
