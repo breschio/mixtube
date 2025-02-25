@@ -1,4 +1,4 @@
-import { User, Share2, ThumbsUp, Shuffle, Monitor } from 'lucide-react';
+import { User, Share2, ThumbsUp, Shuffle, Monitor, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -35,7 +35,7 @@ export default function VideoInfo({
               onClick={() => onSaveMix?.()}
               disabled={!user}
             >
-              <Share2 className="h-4 w-4" />
+              <Upload className="h-4 w-4" />
               Post
             </Button>
             <Button 
