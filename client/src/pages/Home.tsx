@@ -20,6 +20,7 @@ import VideoPreview from "@/components/VideoPreview";
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import MixList from "@/components/MixList";
+import DJControls from "@/components/DJControls";
 
 interface VideoInfo extends YouTubeVideo {
   channelTitle: string;
