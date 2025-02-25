@@ -27,6 +27,17 @@ interface VideoInfo extends YouTubeVideo {
   startTime?: number;
 }
 
+interface Mix {
+  id: number;
+  title: string;
+  leftVideoId: string;
+  rightVideoId: string;
+  crossFaderValue: number;
+  template: string;
+  views: number;
+  createdAt: string;
+}
+
 export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
@@ -34,6 +45,7 @@ export default function Home() {
   const [showMixControls, setShowMixControls] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("mix");
+  const [currentMix, setCurrentMix] = useState<Mix | null>(null);
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
@@ -65,9 +77,7 @@ export default function Home() {
     }
   });
 
-  // Helper function to get video info from mixes
   const getVideoInfoFromMixes = (videoId: string): {title: string, channelTitle: string} | undefined => {
-    // Look through all mixes for matching video IDs
     for (const mix of mixes) {
       if (mix.leftVideoId === videoId) {
         return { title: mix.leftTitle || "Untitled Video", channelTitle: mix.leftChannel || "Unknown Channel" };
@@ -88,6 +98,7 @@ export default function Home() {
     setPlaying(false);
     setCrossFader(0.5);
     setActiveTab("left");
+    setCurrentMix(null); // Clear current mix when starting new
   };
 
   const [playing, setPlaying] = useState(false);
@@ -125,7 +136,7 @@ export default function Home() {
     setCrossFader(value);
   };
 
-  const handlePlayMix = async (mix: any) => {
+  const handlePlayMix = async (mix: Mix) => {
     const leftInfo = getVideoInfoFromMixes(mix.leftVideoId);
     const rightInfo = getVideoInfoFromMixes(mix.rightVideoId);
 
@@ -146,13 +157,11 @@ export default function Home() {
 
     setCrossFader(mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
-    // Don't enable mix mode when playing from sidebar
     setShowMixControls(false);
+    setCurrentMix(mix); // Set current mix when loading from sidebar
 
-    // Increment views
     try {
       await fetch(`/api/mixes/${mix.id}/view`, { method: 'POST' });
-      // Invalidate the mixes query to refresh the view count
       queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
     } catch (error) {
       console.error('Error incrementing views:', error);
@@ -193,7 +202,6 @@ export default function Home() {
         throw new Error('Failed to save mix');
       }
 
-      // Invalidate and refetch mixes after successful save
       await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
 
       toast({
@@ -283,8 +291,8 @@ export default function Home() {
       </div>
       <div className="border-t border-border/50">
         <VideoInfo
-          title={crossFader > 0.5 ? videos.right?.title || "Untitled Mix" : videos.left?.title || "Untitled Mix"}
-          channelTitle={crossFader > 0.5 ? videos.right?.channelTitle : videos.left?.channelTitle}
+          title={currentMix?.title || `${videos.left?.title || "Untitled Mix"} × ${videos.right?.title || ""}`}
+          channelTitle="MixTube"
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
           onSaveMix={() => setShowSaveDialog(true)}
@@ -430,6 +438,7 @@ export default function Home() {
     setShowMixControls(false);
     setActiveTab("mix");
     setPlaying(false);
+    setCurrentMix(null); //added to clear currentMix on reset
   };
 
   return (
