@@ -127,7 +127,8 @@ export default function Home() {
     });
     setCrossFader(mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
-    setShowMixControls(true);
+    // Don't enable mix mode when playing from sidebar
+    setShowMixControls(false);
   };
 
 
