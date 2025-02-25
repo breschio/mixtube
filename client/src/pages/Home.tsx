@@ -4,22 +4,20 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { User, Plus, Save } from "lucide-react"; 
+import { User, Plus } from "lucide-react"; 
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import DJControls from "@/components/DJControls";
+import { useToast } from "@/hooks/use-toast";
 import AuthModal from "@/components/AuthModal";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useMobile } from '@/hooks/use-mobile';
 import SaveMixDialog from "@/components/SaveMixDialog";
-import { useToast } from "@/hooks/use-toast";
 import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import VideoPreview from "@/components/VideoPreview";
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
-import MixCarousel from "@/components/MixCarousel";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import MixList from "@/components/MixList";
 
@@ -260,11 +258,6 @@ export default function Home() {
         />
       </div>
       {showMixControls && mixControls}
-      {!showMixControls && (
-        <div className="mt-16 px-4 md:px-8 lg:px-16 max-w-[1400px] mx-auto">
-          <MixCarousel mixes={mixes} onPlayMix={handlePlayMix} />
-        </div>
-      )}
     </>
   );
 
@@ -364,19 +357,11 @@ export default function Home() {
         minSize={30}
         className={cn(
           "transition-all duration-300 ease-in-out",
-          !showMixControls && "!basis-full"
+          !showMixControls && "!basis-[70%]"
         )}
       >
-        <div className={cn(
-          "h-full flex flex-col px-4",
-          !showMixControls && "pb-32" 
-        )}>
-          <div className={cn(
-            "max-w-[600px] mx-auto w-full transition-all duration-300 ease-in-out",
-            !showMixControls && "scale-125 origin-center mt-16" 
-          )}>
-            {mainContent}
-          </div>
+        <div className="h-full flex flex-col px-4">
+          {mainContent}
         </div>
       </ResizablePanel>
 
@@ -387,7 +372,7 @@ export default function Home() {
         minSize={20}
         className={cn(
           "transition-all duration-300 ease-in-out",
-          !showMixControls && "!min-w-0 !w-0 !basis-0"
+          !showMixControls && "!basis-[30%]"
         )}
       >
         <div className="h-full flex flex-col pl-4">
