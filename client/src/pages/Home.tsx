@@ -300,7 +300,6 @@ export default function Home() {
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
-          showSaveButton={!currentMix}
         />
       </div>
       {showMixControls && mixControls}
@@ -334,7 +333,6 @@ export default function Home() {
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
-          showSaveButton={!currentMix}
         />
       </div>
 
@@ -344,13 +342,42 @@ export default function Home() {
           showMixControls ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
         )}
         style={{
-          height: showMixControls ? 'auto' : '0',
+          height: showMixControls ? 'calc(100% - 56.25vw - 4rem)' : '0',
           marginTop: showMixControls ? '1rem' : '0'
         }}
       >
-        <div className="px-0">
-          {mixControls}
-        </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
+          <TabsList className="w-full grid grid-cols-3 gap-1 p-1">
+            <TabsTrigger value="left" className="flex-1 px-8 py-3">Left</TabsTrigger>
+            <TabsTrigger value="mix" className="flex-1 px-8 py-3">Mix</TabsTrigger>
+            <TabsTrigger value="right" className="flex-1 px-8 py-3">Right</TabsTrigger>
+          </TabsList>
+          <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
+            <div className="px-0">
+              <div className="mt-6">
+                <SearchBar
+                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
+                  videoId={videos.left?.id || null}
+                />
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
+            <div className="px-0">
+              {mixControls}
+            </div>
+          </TabsContent>
+          <TabsContent value="right" className="h-[calc(100%-3rem)] overflow-auto">
+            <div className="px-0">
+              <div className="mt-6">
+                <SearchBar
+                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
+                  videoId={videos.right?.id || null}
+                />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
@@ -391,7 +418,6 @@ export default function Home() {
               user={user}
               leftVideoSelected={!!videos.left?.id}
               rightVideoSelected={!!videos.right?.id}
-              showSaveButton={!currentMix} 
             />
           </div>
           {showMixControls && mixControls}
