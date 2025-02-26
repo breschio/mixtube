@@ -2,41 +2,25 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { User, Plus } from "lucide-react"; 
+import { Plus } from "lucide-react";
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useToast } from "@/hooks/use-toast";
-import AuthModal from "@/components/AuthModal";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import AuthModal from "@/components/AuthModal";
 import { useMobile } from '@/hooks/use-mobile';
 import SaveMixDialog from "@/components/SaveMixDialog";
 import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import VideoPreview from "@/components/VideoPreview";
-import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ResizablePanels";
+import { ResizablePanel, ResizablePanelGroup } from "@/components/ResizablePanels";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import MixList from "@/components/MixList";
 import DJControls from "@/components/DJControls";
+import { User, Avatar, AvatarImage, AvatarFallback } from "lucide-react";
 
-interface VideoInfo extends YouTubeVideo {
-  channelTitle: string;
-  startTime?: number;
-}
-
-interface Mix {
-  id: number;
-  title: string;
-  leftVideoId: string;
-  rightVideoId: string;
-  crossFaderValue: number;
-  template: string;
-  views: number;
-  createdAt: string;
-}
+// ... [Keep existing interfaces and type definitions] ...
 
 export default function Home() {
   const user = useUser();
@@ -357,7 +341,7 @@ export default function Home() {
         />
       </div>
 
-      <div 
+      <div
         className={cn(
           "overflow-hidden transition-all duration-300 ease-in-out transform",
           showMixControls ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
@@ -404,71 +388,65 @@ export default function Home() {
   );
 
   const renderDesktopLayout = () => (
-    <ResizablePanelGroup 
-      direction="horizontal" 
+    <ResizablePanelGroup
+      direction="horizontal"
       className={cn(
         "h-[calc(100vh-5rem)]",
-        !isNewMode && "border-none" 
+        !isNewMode && "border-none"
       )}
     >
       <ResizablePanel
-        defaultSize={25}
-        minSize={20}
-        className={cn(
-          "transition-all duration-300 ease-in-out",
-          (!showMixControls || !isNewMode) && "!min-w-0 !w-0 !basis-0"
-        )}
+        defaultSize={70}
+        minSize={65}
+        className="transition-all duration-300 ease-in-out"
       >
         <div className="h-full flex flex-col pr-4">
-          {renderControls('left')}
+          <div className="relative w-full aspect-video">
+            {mainVideoPlayer}
+          </div>
+          <div className="border-t border-border/50">
+            <VideoInfo
+              title={currentMix?.title || `${videos.left?.title || "Untitled Mix"} × ${videos.right?.title || ""}`}
+              channelTitle="MixTube"
+              onToggleMixMode={() => setShowMixControls(!showMixControls)}
+              mixMode={showMixControls}
+              onSaveMix={() => setShowSaveDialog(true)}
+              user={user}
+              leftVideoSelected={!!videos.left?.id}
+              rightVideoSelected={!!videos.right?.id}
+            />
+          </div>
+          {showMixControls && !isNewMode && (
+            <Card className="mt-6">
+              <div className="p-4">
+                <MixTemplates
+                  onSelectTemplate={handleTemplateSelect}
+                  activeTemplate={activeTemplate}
+                />
+                <DJControls
+                  crossFader={crossFader}
+                  onCrossFaderChange={handleCrossFaderChange}
+                  leftVideoId={videos.left?.id}
+                  rightVideoId={videos.right?.id}
+                  forceShowTooltip={showTransitionTooltip}
+                />
+              </div>
+            </Card>
+          )}
         </div>
       </ResizablePanel>
 
-      <ResizableHandle 
-        withHandle 
-        className={cn(
-          (!showMixControls || !isNewMode) && "hidden",
-          !isNewMode && "border-none" 
-        )} 
-      />
-
       <ResizablePanel
-        defaultSize={50}
-        minSize={30}
-        className={cn(
-          "transition-all duration-300 ease-in-out",
-          (!showMixControls || !isNewMode) && "!basis-[70%]"
-        )}
-      >
-        <div className="h-full flex flex-col px-4">
-          {mainContent}
-        </div>
-      </ResizablePanel>
-
-      <ResizableHandle 
-        withHandle 
-        className={cn(
-          (!showMixControls || !isNewMode) && "hidden",
-          !isNewMode && "border-none" 
-        )} 
-      />
-
-      <ResizablePanel
-        defaultSize={25}
-        minSize={20}
-        className={cn(
-          "transition-all duration-300 ease-in-out",
-          (!showMixControls || !isNewMode) && "!basis-[30%]"
-        )}
+        defaultSize={30}
+        minSize={25}
+        className="transition-all duration-300 ease-in-out"
       >
         <div className="h-full flex flex-col pl-4">
-          {isNewMode && showMixControls ? renderControls('right') : (
-            <MixList 
-              mixes={mixes} 
-              onPlayMix={handlePlayMix}
-              className="h-full overflow-y-auto"
-            />
-          )}
+          <MixList
+            mixes={mixes}
+            onPlayMix={handlePlayMix}
+            className="h-full overflow-y-auto"
+          />
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
@@ -484,29 +462,16 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="w-full bg-background">
+      <header className="w-full bg-background border-b border-border/50">
         <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 py-4">
-          <div className="grid grid-cols-[1fr,auto] items-center gap-4">
-            <div className="flex items-center">
-              {!isMobile && (
-                <Button
-                  variant="ghost"
-                  className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent justify-start"
-                  onClick={handleResetView}
-                >
-                  mixtube
-                </Button>
-              )}
-              {isMobile && (
-                <Button
-                  variant="ghost"
-                  className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
-                  onClick={handleResetView}
-                >
-                  mixtube
-                </Button>
-              )}
-            </div>
+          <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
+              onClick={handleResetView}
+            >
+              mixtube
+            </Button>
             <div className="flex items-center gap-4">
               <Button
                 variant="outline"
@@ -518,21 +483,16 @@ export default function Home() {
                 New
               </Button>
               <ThemeToggle />
-              {!user && (
-                <AuthModal 
+              {!user ? (
+                <AuthModal
                   defaultTab="sign-up"
                   trigger={
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      className="hover:text-primary transition-colors duration-200"
-                    >
+                    <Button variant="outline" size="icon">
                       <User className="h-5 w-5" />
                     </Button>
-                  } 
+                  }
                 />
-              )}
-              {user && (
+              ) : (
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={user.user_metadata.avatar_url || ''} />
                   <AvatarFallback>{user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>

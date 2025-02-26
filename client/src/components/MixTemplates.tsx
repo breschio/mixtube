@@ -14,13 +14,13 @@ export const mixTemplates: MixTemplate[] = [
     id: "side-by-side",
     name: "Side by Side",
     icon: SplitSquareHorizontalIcon,
-    crossFaderValue: 0.6, // Setting to 0.6 to give exactly 40% to the right side
+    crossFaderValue: 0.6,
   },
   {
     id: "fade-through",
     name: "Fade Through",
     icon: LayersIcon,
-    crossFaderValue: 0.6, // Maintaining same 40% right balance
+    crossFaderValue: 0.6,
   },
 ];
 
@@ -34,7 +34,7 @@ export default function MixTemplates({
   activeTemplate,
 }: MixTemplatesProps) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-3 mb-6">
       {mixTemplates.map((template) => {
         const Icon = template.icon;
         const isActive = activeTemplate === template.id;
@@ -42,14 +42,14 @@ export default function MixTemplates({
         return (
           <Card
             key={template.id}
-            className={`p-3 cursor-pointer transition-colors hover:bg-accent/5 ${
-              isActive ? "border-primary" : "border-border/50"
+            className={`p-3 cursor-pointer transition-all hover:bg-accent/10 ${
+              isActive ? "bg-accent/20 border-primary/50" : "border-border/50"
             }`}
             onClick={() => onSelectTemplate(template)}
           >
             <div className="flex flex-col items-center text-center space-y-1.5">
               <Icon className={`h-6 w-6 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
-              <h3 className="text-sm font-medium">{template.name}</h3>
+              <h3 className={`text-sm font-medium ${isActive ? "text-primary" : ""}`}>{template.name}</h3>
             </div>
           </Card>
         );
