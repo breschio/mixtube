@@ -1,7 +1,8 @@
-import { User, Share2, ThumbsUp, Shuffle, Monitor, Upload, ChevronUp, ChevronDown } from 'lucide-react';
+import { User, Share2, ThumbsUp, Shuffle, Monitor, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 
 interface VideoInfoProps {
@@ -56,16 +57,14 @@ export default function VideoInfo({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="gap-1.5 h-8 px-3" 
-              onClick={onToggleMixMode}
-            >
-              <Monitor className="h-4 w-4" />
-              Watch
-              <ChevronUp className="h-4 w-4 ml-1" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Monitor className="h-4 w-4 text-muted-foreground" />
+              <Switch
+                checked={mixMode}
+                onCheckedChange={onToggleMixMode}
+                className="data-[state=checked]:bg-primary"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -97,11 +96,14 @@ export default function VideoInfo({
             <Share2 className="h-4 w-4" />
             Share
           </Button>
-          <Button variant="ghost" size="sm" className="gap-1 h-8 px-2" onClick={onToggleMixMode}>
-            <Shuffle className="h-4 w-4" />
-            Mix
-            <ChevronDown className="h-4 w-4 ml-1" />
-          </Button>
+          <div className="flex items-center gap-2 h-8 px-2">
+            <span className="text-sm text-muted-foreground">Mix</span>
+            <Switch
+              checked={mixMode}
+              onCheckedChange={onToggleMixMode}
+              className="data-[state=checked]:bg-primary"
+            />
+          </div>
         </div>
       </div>
     </div>
