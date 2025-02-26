@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, User } from "lucide-react";
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
@@ -18,7 +18,8 @@ import { ResizablePanel, ResizablePanelGroup } from "@/components/ResizablePanel
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import MixList from "@/components/MixList";
 import DJControls from "@/components/DJControls";
-import { User, Avatar, AvatarImage, AvatarFallback } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useToast } from "@/hooks/use-toast";
 
 // ... [Keep existing interfaces and type definitions] ...
 
