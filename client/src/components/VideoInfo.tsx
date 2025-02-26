@@ -1,4 +1,4 @@
-import { User, Share2, ThumbsUp, Shuffle, Monitor, Upload } from 'lucide-react';
+import { User, Share2, ThumbsUp, Monitor, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -26,14 +26,34 @@ export default function VideoInfo({
   leftVideoSelected,
   rightVideoSelected
 }: VideoInfoProps) {
-  if (mixMode) {
-    return (
-      <div className="py-3 px-1">
-        <div className="flex items-center justify-between">
-          <h1 className="text-base font-medium leading-tight">
-            {title}
-          </h1>
-          <div className="flex items-center gap-2">
+  return (
+    <div className="py-3 px-1">
+      <h1 className="text-base font-medium leading-tight mb-2">
+        {title}
+      </h1>
+      <div className="flex items-center gap-1.5 mb-2">
+        <Avatar className="h-6 w-6">
+          <AvatarFallback>
+            {channelTitle.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <span className="text-xs font-medium">
+          {channelTitle}
+        </span>
+      </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="sm" className="gap-1 h-8 px-2">
+            <ThumbsUp className="h-4 w-4" />
+            Like
+          </Button>
+          <Button variant="ghost" size="sm" className="gap-1 h-8 px-2">
+            <Share2 className="h-4 w-4" />
+            Share
+          </Button>
+        </div>
+        <div className="flex items-center gap-4">
+          {mixMode && (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -57,45 +77,7 @@ export default function VideoInfo({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            <div className="flex items-center gap-2">
-              <Monitor className="h-4 w-4 text-muted-foreground" />
-              <Switch
-                checked={mixMode}
-                onCheckedChange={onToggleMixMode}
-                className="data-[state=checked]:bg-primary"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="py-2">
-      <div className="flex items-center gap-1.5 mb-2">
-        <Avatar className="h-6 w-6">
-          <AvatarFallback>
-            {channelTitle.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        <span className="text-xs font-medium">
-          {channelTitle}
-        </span>
-      </div>
-      <h1 className="text-base font-medium leading-tight mb-2">
-        {title}
-      </h1>
-      <div className="flex items-center justify-end">
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" className="gap-1 h-8 px-2">
-            <ThumbsUp className="h-4 w-4" />
-            Like
-          </Button>
-          <Button variant="ghost" size="sm" className="gap-1 h-8 px-2">
-            <Share2 className="h-4 w-4" />
-            Share
-          </Button>
+          )}
           <div className="flex items-center gap-2 h-8 px-2">
             <span className="text-sm text-muted-foreground">Mix</span>
             <Switch
