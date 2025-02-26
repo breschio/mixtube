@@ -290,14 +290,12 @@ export default function Home() {
         />
       </div>
       {showMixControls && !isNewMode && (
-        <Card className="mt-6">
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <MixTemplates
-                onSelectTemplate={handleTemplateSelect}
-                activeTemplate={activeTemplate}
-              />
-            </div>
+        <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
+          <div className="p-6">
+            <MixTemplates
+              onSelectTemplate={handleTemplateSelect}
+              activeTemplate={activeTemplate}
+            />
             <DJControls
               crossFader={crossFader}
               onCrossFaderChange={handleCrossFaderChange}
@@ -417,8 +415,8 @@ export default function Home() {
             />
           </div>
           {showMixControls && !isNewMode && (
-            <Card className="mt-6">
-              <div className="p-4">
+            <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
+              <div className="p-6">
                 <MixTemplates
                   onSelectTemplate={handleTemplateSelect}
                   activeTemplate={activeTemplate}

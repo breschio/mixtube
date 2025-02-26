@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface DJControlsProps {
   crossFader: number;
-  onCrossFaderChange: (value: number, userInitiated?: boolean) => void;
+  onCrossFaderChange: (value: number) => void;
   leftVideoId?: string | null;
   rightVideoId?: string | null;
   forceShowTooltip?: boolean;
@@ -36,7 +36,7 @@ export default function DJControls({
   // Handle slider interaction
   const handleSliderChange = (value: number[]) => {
     showLabel();
-    onCrossFaderChange(value[0], true); // Add userInitiated flag
+    onCrossFaderChange(value[0]);
 
     // Set timeout to hide label after 3 seconds
     const newTimeoutId = setTimeout(() => {
@@ -69,40 +69,34 @@ export default function DJControls({
   const isRightSide = crossFader > 0.5;
 
   return (
-    <div 
-      className="flex items-center gap-4 flex-1 pt-1"
-      onMouseEnter={showLabel}
-      onMouseLeave={() => {
-        if (!forceShowTooltip) {
-          const newTimeoutId = setTimeout(() => {
-            setIsVisible(false);
-          }, 3000);
-          setTimeoutId(newTimeoutId);
-        }
-      }}
-    >
-      <div className="flex-1 flex flex-col items-center gap-2">
-        <div className="flex w-full justify-between items-center mb-2">
-          <span className="text-sm text-primary">Left</span>
-          <div 
-            className={cn(
-              "text-sm font-medium text-primary px-4 py-1 rounded-md border border-primary/20",
-              isVisible || forceShowTooltip ? "opacity-100" : "opacity-0",
-              isRightSide ? "bg-primary/5" : "bg-transparent"
-            )}
-          >
-            {percentage}% {isRightSide ? 'Right' : 'Left'}
-          </div>
-          <span className="text-sm text-primary">Right</span>
+    <div className="flex-1 flex flex-col items-center gap-2">
+      <div className="flex w-full justify-between items-center mb-2">
+        <span className="text-sm text-primary">Left</span>
+        <div 
+          className={cn(
+            "text-sm font-medium text-primary px-4 py-1 rounded-md border border-primary/20",
+            isVisible || forceShowTooltip ? "opacity-100" : "opacity-0",
+            isRightSide ? "bg-primary/5" : "bg-transparent",
+            "transition-opacity duration-200"
+          )}
+        >
+          {percentage}% {isRightSide ? 'Right' : 'Left'}
         </div>
-        <Slider
-          value={[crossFader]}
-          max={1}
-          step={0.01}
-          onValueChange={handleSliderChange}
-          className="flex-1"
-        />
+        <span className="text-sm text-primary">Right</span>
       </div>
+      <Slider
+        value={[crossFader]}
+        max={1}
+        step={0.01}
+        onValueChange={handleSliderChange}
+        className="flex-1 data-[state=active]:cursor-grabbing transition-all duration-200"
+        onMouseEnter={showLabel}
+        onMouseLeave={() => {
+          if (!forceShowTooltip) {
+            setIsVisible(false);
+          }
+        }}
+      />
     </div>
   );
 }
