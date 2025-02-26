@@ -73,20 +73,20 @@ export default function VideoInfo({
 
   return (
     <div className="py-2">
-      <h1 className="text-base font-medium mb-2 leading-tight">
+      <div className="flex items-center gap-1.5 mb-2">
+        <Avatar className="h-6 w-6">
+          <AvatarFallback>
+            {channelTitle.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <span className="text-xs font-medium">
+          {channelTitle}
+        </span>
+      </div>
+      <h1 className="text-base font-medium leading-tight mb-2">
         {title}
       </h1>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
-          <Avatar className="h-6 w-6">
-            <AvatarFallback>
-              {channelTitle.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-xs font-medium">
-            {channelTitle}
-          </span>
-        </div>
+      <div className="flex items-center justify-end">
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm" className="gap-1 h-8 px-2">
             <ThumbsUp className="h-4 w-4" />
