@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Search, Link } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { parseYouTubeStartTime } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
+import { cn } from '@/lib/utils';
 
 interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
@@ -15,6 +16,7 @@ interface SearchBarProps {
 export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchBarProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
+  const [isSearchMode, setIsSearchMode] = useState(true);
   const lastValidUrlRef = useRef<string | null>(null);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isTypingRef = useRef(false);
@@ -59,11 +61,19 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
       }
     }, 1000);
 
-    const videoId = extractVideoId(newValue);
-    if (videoId) {
-      handleVideoIdInput(videoId, newValue);
-      lastValidUrlRef.current = newValue;
+    if (!isSearchMode) {
+      const videoId = extractVideoId(newValue);
+      if (videoId) {
+        handleVideoIdInput(videoId, newValue);
+        lastValidUrlRef.current = newValue;
+      }
     }
+  };
+
+  const toggleMode = () => {
+    setIsSearchMode(!isSearchMode);
+    setDisplayValue('');
+    setIsValid(true);
   };
 
   const handleVideoIdInput = async (videoId: string, originalUrl: string) => {
@@ -144,27 +154,43 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
           <Input
             ref={inputRef}
             type="text"
-            placeholder="Paste YouTube URL"
+            placeholder={isSearchMode ? "Search YouTube videos" : "Paste YouTube URL"}
             value={displayValue}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            className={`pr-9 font-mono text-sm transition-all ${
-              !isValid && displayValue ? 'border-red-500' : ''
-            } animate-placeholder`}
+            className={cn(
+              "pr-16 font-mono text-sm transition-all",
+              !isValid && displayValue && !isSearchMode ? 'border-red-500' : '',
+              "animate-placeholder"
+            )}
           />
-          {displayValue && (
+          <div className="absolute right-1 flex gap-1">
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-accent/50"
-              onClick={handleClear}
+              className="h-7 w-7 hover:bg-accent/50"
+              onClick={toggleMode}
             >
-              <X className="h-4 w-4" />
+              {isSearchMode ? (
+                <Link className="h-4 w-4" />
+              ) : (
+                <Search className="h-4 w-4" />
+              )}
             </Button>
-          )}
+            {displayValue && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 hover:bg-accent/50"
+                onClick={handleClear}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
-      {!isValid && displayValue && (
+      {!isValid && displayValue && !isSearchMode && (
         <p className="text-xs text-red-500 mt-1">
           Please enter a valid YouTube URL or video ID
         </p>
