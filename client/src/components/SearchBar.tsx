@@ -17,9 +17,10 @@ interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
   videoId: string | null;
   autoFocus?: boolean;
+  isPromptMode?: boolean;
 }
 
-export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchBarProps) {
+export default function SearchBar({ onVideoSelect, videoId, autoFocus, isPromptMode = true }: SearchBarProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
   const [isSearchMode, setIsSearchMode] = useState(true);
@@ -153,6 +154,15 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
     };
   }, []);
 
+  const getPlaceholderText = () => {
+    if (isSearchMode) {
+      return isPromptMode 
+        ? "Describe what you're looking for..."
+        : "Search YouTube videos";
+    }
+    return "Paste YouTube URL";
+  };
+
   return (
     <div className="w-full">
       <div className="relative group p-1">
@@ -160,7 +170,7 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
           <Input
             ref={inputRef}
             type="text"
-            placeholder={isSearchMode ? "Search YouTube videos" : "Paste YouTube URL"}
+            placeholder={getPlaceholderText()}
             value={displayValue}
             onChange={handleInputChange}
             onBlur={handleBlur}
