@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, User } from "lucide-react";
+import { Plus, X, User } from "lucide-react";
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
@@ -395,7 +395,12 @@ export default function Home() {
       {isNewMode ? (
         <>
           <ResizablePanel defaultSize={25} minSize={20}>
-            <div className="h-full flex flex-col pr-4">
+            <div className={cn(
+              "h-full flex flex-col pr-4",
+              "transform transition-transform duration-300 ease-in-out",
+              isNewMode ? "translate-x-0" : "-translate-x-full",
+              "opacity-100"
+            )}>
               {renderControls('left')}
             </div>
           </ResizablePanel>
@@ -438,7 +443,12 @@ export default function Home() {
           </ResizablePanel>
 
           <ResizablePanel defaultSize={25} minSize={20}>
-            <div className="h-full flex flex-col pl-4">
+            <div className={cn(
+              "h-full flex flex-col pl-4",
+              "transform transition-transform duration-300 ease-in-out",
+              isNewMode ? "translate-x-0" : "translate-x-full",
+              "opacity-100"
+            )}>
               {renderControls('right')}
             </div>
           </ResizablePanel>
@@ -529,10 +539,14 @@ export default function Home() {
                 variant="outline"
                 size="sm"
                 className="gap-1.5"
-                onClick={handleNewMix}
+                onClick={isNewMode ? handleResetView : handleNewMix}
               >
-                <Plus className="h-4 w-4" />
-                New
+                {isNewMode ? (
+                  <X className="h-4 w-4 transition-transform duration-200" />
+                ) : (
+                  <Plus className="h-4 w-4 transition-transform duration-200" />
+                )}
+                {isNewMode ? 'Close' : 'New'}
               </Button>
               <ThemeToggle />
               {!user ? (
