@@ -168,13 +168,20 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 hover:bg-accent/50"
+              className={cn(
+                "h-7 w-7 transition-all duration-300",
+                "hover:bg-accent/50 hover:scale-105",
+                "group/button relative overflow-hidden",
+                "after:absolute after:inset-0 after:translate-x-[-100%]",
+                "after:animate-shimmer after:bg-gradient-to-r",
+                "after:from-transparent after:via-accent/10 after:to-transparent"
+              )}
               onClick={toggleMode}
             >
-              {isSearchMode ? (
-                <Link className="h-4 w-4" />
+              {!isSearchMode ? (
+                <Search className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
               ) : (
-                <Search className="h-4 w-4" />
+                <Link className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
               )}
             </Button>
             {displayValue && (
