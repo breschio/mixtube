@@ -178,7 +178,7 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
               )}
               onClick={toggleMode}
             >
-              {!isSearchMode ? (
+              {isSearchMode ? (
                 <Search className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
               ) : (
                 <Link className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
