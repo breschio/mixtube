@@ -50,6 +50,7 @@ export default function Home() {
     }
   });
   const [isNewMode, setIsNewMode] = useState(false);
+  const [isButtonActive, setIsButtonActive] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -77,6 +78,7 @@ export default function Home() {
   };
 
   const handleNewMix = () => {
+    setIsButtonActive(true);
     setVideos({
       left: null,
       right: null
@@ -515,6 +517,7 @@ export default function Home() {
   );
 
   const handleResetView = () => {
+    setIsButtonActive(false);
     setShowMixControls(false);
     setActiveTab("mix");
     setPlaying(false);
@@ -542,12 +545,11 @@ export default function Home() {
                 onClick={isNewMode ? handleResetView : handleNewMix}
               >
                 {isNewMode ? (
-                  <X className="h-4 w-4 transition-all duration-500 ease-in-out rotate-0" />
+                  <X className="h-4 w-4 transition-all duration-3000 ease-in-out rotate-0" />
                 ) : (
                   <Plus className={cn(
-                    "h-4 w-4 transition-all duration-500 ease-in-out",
-                    "hover:rotate-90",
-                    "active:rotate-135"
+                    "h-4 w-4 transition-all duration-3000 ease-in-out",
+                    isButtonActive ? "rotate-135" : "hover:rotate-90",
                   )} />
                 )}
                 {isNewMode ? 'Close' : 'New'}
