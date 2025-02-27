@@ -548,11 +548,11 @@ export default function Home() {
                 onClick={isNewMode ? handleResetView : handleNewMix}
               >
                 {isNewMode ? (
-                  <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-0" />
+                  <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-[360deg]" />
                 ) : (
                   <Plus className={cn(
                     "h-4 w-4 transition-all duration-300 ease-in-out",
-                    isButtonActive ? "rotate-135" : "rotate-0 hover:rotate-90"
+                    isButtonActive ? "rotate-[135deg]" : "rotate-0 hover:rotate-90"
                   )} />
                 )}
                 {isNewMode ? 'Close' : 'New'}
