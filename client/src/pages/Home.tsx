@@ -84,7 +84,7 @@ export default function Home() {
     setShowMixControls(true);
     setPlaying(false);
     setCrossFader(0.5);
-    setActiveTab("left");
+    setActiveTab("mix");
     setCurrentMix(null);
     setIsNewMode(true);
   };
@@ -390,65 +390,117 @@ export default function Home() {
   const renderDesktopLayout = () => (
     <ResizablePanelGroup
       direction="horizontal"
-      className={cn(
-        "h-[calc(100vh-5rem)]",
-        !isNewMode && "border-none"
-      )}
+      className="h-[calc(100vh-5rem)]"
     >
-      <ResizablePanel
-        defaultSize={70}
-        minSize={65}
-        className="transition-all duration-300 ease-in-out"
-      >
-        <div className="h-full flex flex-col pr-4">
-          <div className="relative w-full aspect-video">
-            {mainVideoPlayer}
-          </div>
-          <div className="border-t border-border/50">
-            <VideoInfo
-              title={currentMix?.title || `${videos.left?.title || "Untitled Mix"} × ${videos.right?.title || ""}`}
-              channelTitle="MixTube"
-              onToggleMixMode={() => setShowMixControls(!showMixControls)}
-              mixMode={showMixControls}
-              onSaveMix={() => setShowSaveDialog(true)}
-              user={user}
-              leftVideoSelected={!!videos.left?.id}
-              rightVideoSelected={!!videos.right?.id}
-            />
-          </div>
-          {showMixControls && !isNewMode && (
-            <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
-              <div className="p-6">
-                <MixTemplates
-                  onSelectTemplate={handleTemplateSelect}
-                  activeTemplate={activeTemplate}
-                />
-                <DJControls
-                  crossFader={crossFader}
-                  onCrossFaderChange={handleCrossFaderChange}
-                  leftVideoId={videos.left?.id}
-                  rightVideoId={videos.right?.id}
-                  forceShowTooltip={showTransitionTooltip}
+      {isNewMode ? (
+        <>
+          <ResizablePanel defaultSize={25} minSize={20}>
+            <div className="h-full flex flex-col pr-4">
+              {renderControls('left')}
+            </div>
+          </ResizablePanel>
+
+          <ResizablePanel defaultSize={50} minSize={30}>
+            <div className="h-full flex flex-col px-4">
+              <div className="relative w-full aspect-video">
+                {mainVideoPlayer}
+              </div>
+              <div className="border-t border-border/50">
+                <VideoInfo
+                  title="New Mix"
+                  channelTitle="MixTube"
+                  onToggleMixMode={() => setShowMixControls(!showMixControls)}
+                  mixMode={showMixControls}
+                  onSaveMix={() => setShowSaveDialog(true)}
+                  user={user}
+                  leftVideoSelected={!!videos.left?.id}
+                  rightVideoSelected={!!videos.right?.id}
                 />
               </div>
-            </Card>
-          )}
-        </div>
-      </ResizablePanel>
+              {showMixControls && (
+                <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
+                  <div className="p-6">
+                    <MixTemplates
+                      onSelectTemplate={handleTemplateSelect}
+                      activeTemplate={activeTemplate}
+                    />
+                    <DJControls
+                      crossFader={crossFader}
+                      onCrossFaderChange={handleCrossFaderChange}
+                      leftVideoId={videos.left?.id}
+                      rightVideoId={videos.right?.id}
+                      forceShowTooltip={showTransitionTooltip}
+                    />
+                  </div>
+                </Card>
+              )}
+            </div>
+          </ResizablePanel>
 
-      <ResizablePanel
-        defaultSize={30}
-        minSize={25}
-        className="transition-all duration-300 ease-in-out"
-      >
-        <div className="h-full flex flex-col pl-4">
-          <MixList
-            mixes={mixes}
-            onPlayMix={handlePlayMix}
-            className="h-full overflow-y-auto"
-          />
-        </div>
-      </ResizablePanel>
+          <ResizablePanel defaultSize={25} minSize={20}>
+            <div className="h-full flex flex-col pl-4">
+              {renderControls('right')}
+            </div>
+          </ResizablePanel>
+        </>
+      ) : (
+        <>
+          <ResizablePanel
+            defaultSize={70}
+            minSize={65}
+            className="transition-all duration-300 ease-in-out"
+          >
+            <div className="h-full flex flex-col pr-4">
+              <div className="relative w-full aspect-video">
+                {mainVideoPlayer}
+              </div>
+              <div className="border-t border-border/50">
+                <VideoInfo
+                  title={currentMix?.title || `${videos.left?.title || "Untitled Mix"} × ${videos.right?.title || ""}`}
+                  channelTitle="MixTube"
+                  onToggleMixMode={() => setShowMixControls(!showMixControls)}
+                  mixMode={showMixControls}
+                  onSaveMix={() => setShowSaveDialog(true)}
+                  user={user}
+                  leftVideoSelected={!!videos.left?.id}
+                  rightVideoSelected={!!videos.right?.id}
+                />
+              </div>
+              {showMixControls && (
+                <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
+                  <div className="p-6">
+                    <MixTemplates
+                      onSelectTemplate={handleTemplateSelect}
+                      activeTemplate={activeTemplate}
+                    />
+                    <DJControls
+                      crossFader={crossFader}
+                      onCrossFaderChange={handleCrossFaderChange}
+                      leftVideoId={videos.left?.id}
+                      rightVideoId={videos.right?.id}
+                      forceShowTooltip={showTransitionTooltip}
+                    />
+                  </div>
+                </Card>
+              )}
+            </div>
+          </ResizablePanel>
+
+          <ResizablePanel
+            defaultSize={30}
+            minSize={25}
+            className="transition-all duration-300 ease-in-out"
+          >
+            <div className="h-full flex flex-col pl-4">
+              <MixList
+                mixes={mixes}
+                onPlayMix={handlePlayMix}
+                className="h-full overflow-y-auto"
+              />
+            </div>
+          </ResizablePanel>
+        </>
+      )}
     </ResizablePanelGroup>
   );
 
