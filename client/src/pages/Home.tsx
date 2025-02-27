@@ -541,15 +541,18 @@ export default function Home() {
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-1.5"
+                className={cn(
+                  "gap-1.5",
+                  isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
+                )}
                 onClick={isNewMode ? handleResetView : handleNewMix}
               >
                 {isNewMode ? (
-                  <X className="h-4 w-4 transition-all duration-3000 ease-in-out rotate-0" />
+                  <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-0" />
                 ) : (
                   <Plus className={cn(
-                    "h-4 w-4 transition-all duration-3000 ease-in-out",
-                    isButtonActive ? "rotate-135" : "hover:rotate-90",
+                    "h-4 w-4 transition-all duration-300 ease-in-out",
+                    isButtonActive ? "rotate-135" : "rotate-0 hover:rotate-90"
                   )} />
                 )}
                 {isNewMode ? 'Close' : 'New'}
