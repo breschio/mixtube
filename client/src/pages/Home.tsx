@@ -51,6 +51,7 @@ export default function Home() {
   });
   const [isNewMode, setIsNewMode] = useState(false);
   const [isButtonActive, setIsButtonActive] = useState(false);
+  const [isPromptMode, setIsPromptMode] = useState(true); // Added state
 
   const queryClient = useQueryClient();
 
@@ -332,7 +333,7 @@ export default function Home() {
 
       <div className="px-3 border-t border-border/50">
         <VideoInfo
-          title={videos.left?.title || "Untitled Mix"}
+          title={isNewMode ? (isPromptMode ? "Describe your mix" : "Name your mix") : videos.left?.title || "Untitled Mix"}
           channelTitle={videos.left?.channelTitle}
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
@@ -340,6 +341,8 @@ export default function Home() {
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
+          isPromptMode={isPromptMode}
+          onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
         />
       </div>
 
@@ -414,7 +417,7 @@ export default function Home() {
               </div>
               <div className="border-t border-border/50">
                 <VideoInfo
-                  title="New Mix"
+                  title={isNewMode ? (isPromptMode ? "Describe your mix" : "Name your mix") : "New Mix"}
                   channelTitle="MixTube"
                   onToggleMixMode={() => setShowMixControls(!showMixControls)}
                   mixMode={showMixControls}
@@ -422,6 +425,8 @@ export default function Home() {
                   user={user}
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
+                  isPromptMode={isPromptMode}
+                  onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
                 />
               </div>
               {showMixControls && (

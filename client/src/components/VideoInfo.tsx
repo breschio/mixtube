@@ -1,4 +1,4 @@
-import { Share2, ThumbsUp } from 'lucide-react';
+import { Share2, ThumbsUp, Sparkles, PenLine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -13,6 +13,8 @@ interface VideoInfoProps {
   user?: any;
   leftVideoSelected: boolean;
   rightVideoSelected: boolean;
+  isPromptMode?: boolean;
+  onTogglePromptMode?: () => void;
 }
 
 export default function VideoInfo({ 
@@ -23,13 +25,40 @@ export default function VideoInfo({
   onSaveMix,
   user,
   leftVideoSelected,
-  rightVideoSelected
+  rightVideoSelected,
+  isPromptMode = true,
+  onTogglePromptMode
 }: VideoInfoProps) {
   return (
     <div className="py-4 px-1">
-      <h1 className="text-lg font-medium leading-tight mb-2.5">
-        {title}
-      </h1>
+      <div className="flex items-center justify-between mb-2.5">
+        <h1 className="text-lg font-medium leading-tight flex items-center gap-2">
+          {title}
+          {mixMode && onTogglePromptMode && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 hover:bg-accent/50"
+                    onClick={onTogglePromptMode}
+                  >
+                    {isPromptMode ? (
+                      <Sparkles className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
+                    ) : (
+                      <PenLine className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {isPromptMode ? "Switch to manual mode" : "Switch to AI prompt mode"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </h1>
+      </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
