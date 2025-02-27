@@ -527,7 +527,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="w-full bg-background border-b border-border/50">
+      <header className="w-full bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 py-4">
           <div className="flex items-center justify-between">
             <Button
