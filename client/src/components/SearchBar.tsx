@@ -6,6 +6,12 @@ import { useToast } from '@/hooks/use-toast';
 import { parseYouTubeStartTime } from '@/lib/youtube';
 import type { YouTubeVideo } from '@/lib/youtube';
 import { cn } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
@@ -165,25 +171,34 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus }: SearchB
             )}
           />
           <div className="absolute right-1 flex gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn(
-                "h-7 w-7 transition-all duration-300",
-                "hover:bg-accent/50 hover:scale-105",
-                "group/button relative overflow-hidden",
-                "after:absolute after:inset-0 after:translate-x-[-100%]",
-                "after:animate-shimmer after:bg-gradient-to-r",
-                "after:from-transparent after:via-accent/10 after:to-transparent"
-              )}
-              onClick={toggleMode}
-            >
-              {isSearchMode ? (
-                <Search className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
-              ) : (
-                <Link className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
-              )}
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={cn(
+                      "h-7 w-7 transition-all duration-300",
+                      "hover:bg-accent/50 hover:scale-105",
+                      "group/button relative overflow-hidden",
+                      "after:absolute after:inset-0 after:translate-x-[-100%]",
+                      "after:animate-shimmer after:bg-gradient-to-r",
+                      "after:from-transparent after:via-accent/10 after:to-transparent"
+                    )}
+                    onClick={toggleMode}
+                  >
+                    {isSearchMode ? (
+                      <Search className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
+                    ) : (
+                      <Link className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  {isSearchMode ? "Switch to URL mode" : "Switch to search mode"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {displayValue && (
               <Button
                 variant="ghost"
