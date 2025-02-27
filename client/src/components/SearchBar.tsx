@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, Search, Link } from 'lucide-react';
+import { X, Search, Link, Sparkles } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -20,10 +20,12 @@ interface SearchBarProps {
   isPromptMode?: boolean;
 }
 
+type InputMode = 'url' | 'search' | 'prompt';
+
 export default function SearchBar({ onVideoSelect, videoId, autoFocus, isPromptMode = true }: SearchBarProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
-  const [isSearchMode, setIsSearchMode] = useState(true);
+  const [inputMode, setInputMode] = useState<InputMode>('prompt');
   const lastValidUrlRef = useRef<string | null>(null);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isTypingRef = useRef(false);
@@ -68,7 +70,7 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus, isPromptM
       }
     }, 1000);
 
-    if (!isSearchMode) {
+    if (inputMode === 'url') {
       const videoId = extractVideoId(newValue);
       if (videoId) {
         handleVideoIdInput(videoId, newValue);
@@ -78,7 +80,11 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus, isPromptM
   };
 
   const toggleMode = () => {
-    setIsSearchMode(!isSearchMode);
+    // Cycle through modes: url -> search -> prompt -> url
+    const modes: InputMode[] = ['url', 'search', 'prompt'];
+    const currentIndex = modes.indexOf(inputMode);
+    const nextIndex = (currentIndex + 1) % modes.length;
+    setInputMode(modes[nextIndex]);
     setDisplayValue('');
     setIsValid(true);
   };
@@ -155,12 +161,36 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus, isPromptM
   }, []);
 
   const getPlaceholderText = () => {
-    if (isSearchMode) {
-      return isPromptMode 
-        ? "Describe what you're looking for..."
-        : "Search YouTube videos";
+    switch (inputMode) {
+      case 'url':
+        return "Paste YouTube URL";
+      case 'search':
+        return "Search YouTube videos";
+      case 'prompt':
+        return "Describe a video";
     }
-    return "Paste YouTube URL";
+  };
+
+  const getToggleIcon = () => {
+    switch (inputMode) {
+      case 'url':
+        return <Link className="h-4 w-4 transition-transform duration-200 hover:scale-110" />;
+      case 'search':
+        return <Search className="h-4 w-4 transition-transform duration-200 hover:scale-110" />;
+      case 'prompt':
+        return <Sparkles className="h-4 w-4 transition-transform duration-200 hover:scale-110" />;
+    }
+  };
+
+  const getTooltipText = () => {
+    switch (inputMode) {
+      case 'url':
+        return "Switch to search mode";
+      case 'search':
+        return "Switch to prompt mode";
+      case 'prompt':
+        return "Switch to URL mode";
+    }
   };
 
   return (
@@ -176,7 +206,7 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus, isPromptM
             onBlur={handleBlur}
             className={cn(
               "pr-16 font-mono text-sm transition-all",
-              !isValid && displayValue && !isSearchMode ? 'border-red-500' : '',
+              !isValid && displayValue && inputMode === 'url' ? 'border-red-500' : '',
               "animate-placeholder"
             )}
           />
@@ -197,15 +227,11 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus, isPromptM
                     )}
                     onClick={toggleMode}
                   >
-                    {isSearchMode ? (
-                      <Search className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
-                    ) : (
-                      <Link className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
-                    )}
+                    {getToggleIcon()}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  {isSearchMode ? "Switch to URL mode" : "Switch to search mode"}
+                  {getTooltipText()}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -222,7 +248,7 @@ export default function SearchBar({ onVideoSelect, videoId, autoFocus, isPromptM
           </div>
         </div>
       </div>
-      {!isValid && displayValue && !isSearchMode && (
+      {!isValid && displayValue && inputMode === 'url' && (
         <p className="text-xs text-red-500 mt-1">
           Please enter a valid YouTube URL or video ID
         </p>
