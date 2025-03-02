@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
 
 interface VideoInfoProps {
   title: string;
@@ -19,7 +21,7 @@ interface VideoInfoProps {
 }
 
 export default function VideoInfo({ 
-  title = 'Untitled Video',
+  title,
   channelTitle = 'Unknown Channel',
   onToggleMixMode,
   mixMode = false,
@@ -31,6 +33,59 @@ export default function VideoInfo({
   onTogglePromptMode,
   isCreateMode = false
 }: VideoInfoProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [mixName, setMixName] = useState("");
+
+  if (isCreateMode) {
+    return (
+      <div className="py-4 px-1">
+        <div className="flex items-center justify-between">
+          <div className="flex-1 mr-4">
+            {isEditing ? (
+              <Input
+                value={mixName}
+                onChange={(e) => setMixName(e.target.value)}
+                onBlur={() => setIsEditing(false)}
+                placeholder="Name your mix"
+                className="text-lg font-medium"
+                autoFocus
+              />
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors w-full text-left"
+              >
+                {mixName || "Name your mix"}
+              </button>
+            )}
+          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-9 px-4"
+                    onClick={() => onSaveMix?.()}
+                    disabled={!leftVideoSelected || !rightVideoSelected}
+                  >
+                    Post
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                {(!leftVideoSelected || !rightVideoSelected) 
+                  ? "Select both videos to save" 
+                  : "Save your mix"}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-4 px-1">
       <div className="flex items-center justify-between mb-2.5">
@@ -86,40 +141,13 @@ export default function VideoInfo({
             </>
           )}
         </div>
-        <div className="flex items-center gap-4">
-          {isCreateMode ? (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-9 px-4"
-                      onClick={() => onSaveMix?.()}
-                      disabled={!leftVideoSelected || !rightVideoSelected}
-                    >
-                      Post
-                    </Button>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {(!leftVideoSelected || !rightVideoSelected) 
-                    ? "Select both videos to save" 
-                    : "Save your mix"}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ) : (
-            <div className="flex items-center gap-1">
-              <span className="text-sm text-muted-foreground">Mix</span>
-              <Switch
-                checked={mixMode}
-                onCheckedChange={onToggleMixMode}
-                className="data-[state=checked]:bg-primary"
-              />
-            </div>
-          )}
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-muted-foreground">Mix</span>
+          <Switch
+            checked={mixMode}
+            onCheckedChange={onToggleMixMode}
+            className="data-[state=checked]:bg-primary"
+          />
         </div>
       </div>
     </div>

@@ -300,10 +300,6 @@ export default function Home() {
       {showMixControls && !isNewMode && (
         <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
           <div className="p-6">
-            <MixTemplates
-              onSelectTemplate={handleTemplateSelect}
-              activeTemplate={activeTemplate}
-            />
             <DJControls
               crossFader={crossFader}
               onCrossFaderChange={handleCrossFaderChange}
@@ -311,6 +307,12 @@ export default function Home() {
               rightVideoId={videos.right?.id}
               forceShowTooltip={showTransitionTooltip}
             />
+            <div className="mt-6">
+              <MixTemplates
+                onSelectTemplate={handleTemplateSelect}
+                activeTemplate={activeTemplate}
+              />
+            </div>
           </div>
         </Card>
       )}
@@ -441,10 +443,6 @@ export default function Home() {
               {showMixControls && (
                 <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
                   <div className="p-6">
-                    <MixTemplates
-                      onSelectTemplate={handleTemplateSelect}
-                      activeTemplate={activeTemplate}
-                    />
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -452,6 +450,12 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
                     />
+                    <div className="mt-6">
+                      <MixTemplates
+                        onSelectTemplate={handleTemplateSelect}
+                        activeTemplate={activeTemplate}
+                      />
+                    </div>
                   </div>
                 </Card>
               )}
@@ -496,10 +500,6 @@ export default function Home() {
               {showMixControls && (
                 <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
                   <div className="p-6">
-                    <MixTemplates
-                      onSelectTemplate={handleTemplateSelect}
-                      activeTemplate={activeTemplate}
-                    />
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -507,6 +507,12 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
                     />
+                    <div className="mt-6">
+                      <MixTemplates
+                        onSelectTemplate={handleTemplateSelect}
+                        activeTemplate={activeTemplate}
+                      />
+                    </div>
                   </div>
                 </Card>
               )}
