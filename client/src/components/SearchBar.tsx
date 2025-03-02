@@ -12,7 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import VideoFilters from './VideoFilters';
+import RecommendedVideos from './RecommendedVideos';
 
 interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
@@ -20,6 +20,7 @@ interface SearchBarProps {
   autoFocus?: boolean;
   isPromptMode?: boolean;
   defaultMode?: InputMode;
+  side?: 'left' | 'right';
 }
 
 type InputMode = 'url' | 'search' | 'prompt';
@@ -29,7 +30,8 @@ export default function SearchBar({
   videoId, 
   autoFocus, 
   isPromptMode = true,
-  defaultMode = 'prompt'
+  defaultMode = 'prompt',
+  side = 'left'
 }: SearchBarProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
@@ -39,7 +41,6 @@ export default function SearchBar({
   const isTypingRef = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const [activeFilter, setActiveFilter] = useState('all');
 
   const patterns = [
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
@@ -261,11 +262,14 @@ export default function SearchBar({
           Please enter a valid YouTube URL or video ID
         </p>
       )}
-      {(inputMode === 'search' || inputMode === 'prompt') && (
-        <VideoFilters
-          onFilterSelect={setActiveFilter}
-          activeFilter={activeFilter}
-        />
+      {inputMode === 'url' && (
+        <div className="mt-4">
+          <RecommendedVideos
+            videoId={videoId}
+            onVideoSelect={onVideoSelect}
+            side={side}
+          />
+        </div>
       )}
     </div>
   );
