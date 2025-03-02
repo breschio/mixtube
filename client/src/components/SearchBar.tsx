@@ -12,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import VideoFilters from './VideoFilters';
 
 interface SearchBarProps {
   onVideoSelect: (video: YouTubeVideo) => void;
@@ -38,6 +39,7 @@ export default function SearchBar({
   const isTypingRef = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const [activeFilter, setActiveFilter] = useState('all');
 
   const patterns = [
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
@@ -87,7 +89,6 @@ export default function SearchBar({
   };
 
   const toggleMode = () => {
-    // Cycle through modes: url -> search -> prompt -> url
     const modes: InputMode[] = ['url', 'search', 'prompt'];
     const currentIndex = modes.indexOf(inputMode);
     const nextIndex = (currentIndex + 1) % modes.length;
@@ -259,6 +260,12 @@ export default function SearchBar({
         <p className="text-xs text-red-500 mt-1">
           Please enter a valid YouTube URL or video ID
         </p>
+      )}
+      {(inputMode === 'search' || inputMode === 'prompt') && (
+        <VideoFilters
+          onFilterSelect={setActiveFilter}
+          activeFilter={activeFilter}
+        />
       )}
     </div>
   );
