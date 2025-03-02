@@ -307,7 +307,7 @@ export default function Home() {
               rightVideoId={videos.right?.id}
               forceShowTooltip={showTransitionTooltip}
             />
-            <div className="mt-6">
+            <div className="mt-8">
               <MixTemplates
                 onSelectTemplate={handleTemplateSelect}
                 activeTemplate={activeTemplate}
@@ -450,7 +450,7 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
                     />
-                    <div className="mt-6">
+                    <div className="mt-8">
                       <MixTemplates
                         onSelectTemplate={handleTemplateSelect}
                         activeTemplate={activeTemplate}
@@ -507,7 +507,7 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
                     />
-                    <div className="mt-6">
+                    <div className="mt-8">
                       <MixTemplates
                         onSelectTemplate={handleTemplateSelect}
                         activeTemplate={activeTemplate}

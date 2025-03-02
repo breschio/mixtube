@@ -5,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface VideoInfoProps {
   title: string;
@@ -38,7 +39,7 @@ export default function VideoInfo({
 
   if (isCreateMode) {
     return (
-      <div className="py-4 px-1">
+      <div className="py-2 px-1">
         <div className="flex items-center justify-between">
           <div className="flex-1 mr-4">
             {isEditing ? (
@@ -64,9 +65,12 @@ export default function VideoInfo({
               <TooltipTrigger asChild>
                 <div>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
-                    className="h-9 px-4"
+                    className={cn(
+                      "gap-1.5",
+                      (!leftVideoSelected || !rightVideoSelected) ? "opacity-50" : "hover:bg-accent/90"
+                    )}
                     onClick={() => onSaveMix?.()}
                     disabled={!leftVideoSelected || !rightVideoSelected}
                   >
