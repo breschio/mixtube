@@ -54,9 +54,12 @@ export default function VideoInfo({
             ) : (
               <button
                 onClick={() => setIsEditing(true)}
-                className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors w-full text-left"
+                className="flex items-center gap-2 group w-full"
               >
-                {mixName || "Name your mix"}
+                <span className="text-lg font-medium text-muted-foreground/60 group-hover:text-muted-foreground transition-colors text-left flex-1">
+                  {mixName || "Name your mix"}
+                </span>
+                <PenLine className="h-4 w-4 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors" />
               </button>
             )}
           </div>
