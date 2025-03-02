@@ -22,18 +22,21 @@ export default function RecommendedVideos({
   const { data: recommendedVideos, isLoading } = useQuery({
     queryKey: ['related-videos', videoId],
     queryFn: async () => {
-      if (!videoId) return [];
-      return fetch(`/api/youtube/related?v=${videoId}`)
+      const endpoint = videoId 
+        ? `/api/youtube/related?v=${videoId}`
+        : '/api/youtube/trending';
+
+      return fetch(endpoint)
         .then(res => {
-          if (!res.ok) throw new Error('Failed to fetch related videos');
+          if (!res.ok) throw new Error('Failed to fetch videos');
           return res.json();
         })
         .catch(err => {
-          console.error('Error fetching related videos:', err);
+          console.error('Error fetching videos:', err);
           return [];
         });
     },
-    enabled: !isSearching && !!videoId,
+    enabled: !isSearching,
     staleTime: 60 * 1000,
     gcTime: 2 * 60 * 1000,
   });
