@@ -294,6 +294,7 @@ export default function Home() {
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
+          isCreateMode={isNewMode}
         />
       </div>
       {showMixControls && !isNewMode && (
@@ -345,6 +346,7 @@ export default function Home() {
           rightVideoSelected={!!videos.right?.id}
           isPromptMode={isPromptMode}
           onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
+          isCreateMode={isNewMode}
         />
       </div>
 
@@ -433,6 +435,7 @@ export default function Home() {
                   rightVideoSelected={!!videos.right?.id}
                   isPromptMode={isPromptMode}
                   onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
+                  isCreateMode={isNewMode}
                 />
               </div>
               {showMixControls && (
@@ -487,6 +490,7 @@ export default function Home() {
                   user={user}
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
+                  isCreateMode={isNewMode}
                 />
               </div>
               {showMixControls && (

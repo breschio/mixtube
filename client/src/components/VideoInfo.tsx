@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Switch } from '@/components/ui/switch';
 
 interface VideoInfoProps {
-  title?: string;
+  title: string;
   channelTitle?: string;
   onToggleMixMode: () => void;
   mixMode?: boolean;
@@ -15,6 +15,7 @@ interface VideoInfoProps {
   rightVideoSelected: boolean;
   isPromptMode?: boolean;
   onTogglePromptMode?: () => void;
+  isCreateMode?: boolean;
 }
 
 export default function VideoInfo({ 
@@ -27,7 +28,8 @@ export default function VideoInfo({
   leftVideoSelected,
   rightVideoSelected,
   isPromptMode = true,
-  onTogglePromptMode
+  onTogglePromptMode,
+  isCreateMode = false
 }: VideoInfoProps) {
   return (
     <div className="py-4 px-1">
@@ -61,25 +63,31 @@ export default function VideoInfo({
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback>
-                {channelTitle.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-sm font-medium">
-              {channelTitle}
-            </span>
-          </div>
-          <Button variant="ghost" size="sm" className="h-9 px-4">
-            <ThumbsUp className="h-4 w-4 mr-2" />
-            Like
-          </Button>
-          <Button variant="ghost" size="sm" className="h-9 px-4">
-            <Share2 className="h-4 w-4 mr-2" />
-            Share
-          </Button>
-          {mixMode && (
+          {!isCreateMode && (
+            <>
+              <div className="flex items-center gap-2">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>
+                    {channelTitle.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm font-medium">
+                  {channelTitle}
+                </span>
+              </div>
+              <Button variant="ghost" size="sm" className="h-9 px-4">
+                <ThumbsUp className="h-4 w-4 mr-2" />
+                Like
+              </Button>
+              <Button variant="ghost" size="sm" className="h-9 px-4">
+                <Share2 className="h-4 w-4 mr-2" />
+                Share
+              </Button>
+            </>
+          )}
+        </div>
+        <div className="flex items-center gap-4">
+          {isCreateMode ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -102,15 +110,16 @@ export default function VideoInfo({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+          ) : (
+            <div className="flex items-center gap-1">
+              <span className="text-sm text-muted-foreground">Mix</span>
+              <Switch
+                checked={mixMode}
+                onCheckedChange={onToggleMixMode}
+                className="data-[state=checked]:bg-primary"
+              />
+            </div>
           )}
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="text-sm text-muted-foreground">Mix</span>
-          <Switch
-            checked={mixMode}
-            onCheckedChange={onToggleMixMode}
-            className="data-[state=checked]:bg-primary"
-          />
         </div>
       </div>
     </div>
