@@ -236,7 +236,8 @@ export default function Home() {
         onVideoSelect={(video) => handleVideoSelect(video, side)}
         videoId={videos[side]?.id || null}
         autoFocus={side === 'left' && !videos.left?.id}
-        isPromptMode={isPromptMode} // Added isPromptMode prop
+        isPromptMode={isPromptMode}
+        defaultMode="url"
       />
     </div>
   );
@@ -369,7 +370,8 @@ export default function Home() {
                 <SearchBar
                   onVideoSelect={(video) => handleVideoSelect(video, 'left')}
                   videoId={videos.left?.id || null}
-                  isPromptMode={isPromptMode} // Added isPromptMode prop
+                  isPromptMode={isPromptMode}
+                  defaultMode="url"
                 />
               </div>
             </div>
@@ -385,7 +387,8 @@ export default function Home() {
                 <SearchBar
                   onVideoSelect={(video) => handleVideoSelect(video, 'right')}
                   videoId={videos.right?.id || null}
-                  isPromptMode={isPromptMode} // Added isPromptMode prop
+                  isPromptMode={isPromptMode}
+                  defaultMode="url"
                 />
               </div>
             </div>
@@ -428,7 +431,7 @@ export default function Home() {
                   user={user}
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
-                  isPromptMode={isPromptMode} // Added isPromptMode prop
+                  isPromptMode={isPromptMode}
                   onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
                 />
               </div>

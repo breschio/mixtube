@@ -18,14 +18,21 @@ interface SearchBarProps {
   videoId: string | null;
   autoFocus?: boolean;
   isPromptMode?: boolean;
+  defaultMode?: InputMode;
 }
 
 type InputMode = 'url' | 'search' | 'prompt';
 
-export default function SearchBar({ onVideoSelect, videoId, autoFocus, isPromptMode = true }: SearchBarProps) {
+export default function SearchBar({ 
+  onVideoSelect, 
+  videoId, 
+  autoFocus, 
+  isPromptMode = true,
+  defaultMode = 'prompt'
+}: SearchBarProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [isValid, setIsValid] = useState(true);
-  const [inputMode, setInputMode] = useState<InputMode>('prompt');
+  const [inputMode, setInputMode] = useState<InputMode>(defaultMode);
   const lastValidUrlRef = useRef<string | null>(null);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isTypingRef = useRef(false);
