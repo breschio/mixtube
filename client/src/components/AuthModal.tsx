@@ -12,9 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { signInWithEmail, signUpWithEmail, signInWithGoogle } from "@/lib/supabase";
-import { SiGoogle } from "react-icons/si";
-import { Separator } from "@/components/ui/separator";
+import { signInWithEmail, signUpWithEmail } from "@/lib/supabase";
 
 interface AuthModalProps {
   trigger?: React.ReactNode;
@@ -64,21 +62,6 @@ export default function AuthModal({ trigger, defaultTab = 'sign-in' }: AuthModal
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setIsLoading(true);
-      await signInWithGoogle();
-      // Note: We don't need to show a success toast here as the page will redirect
-    } catch (error) {
-      toast({
-        title: "Google sign in failed",
-        description: error instanceof Error ? error.message : "An error occurred",
-        variant: "destructive",
-      });
-      setIsLoading(false);
-    }
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -93,83 +76,60 @@ export default function AuthModal({ trigger, defaultTab = 'sign-in' }: AuthModal
               : "Sign in to access your saved mixes"}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
-          <Button 
-            variant="outline" 
-            onClick={handleGoogleSignIn}
-            disabled={isLoading}
-            className="w-full"
-          >
-            <SiGoogle className="w-4 h-4 mr-2" />
-            Continue with Google
-          </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with email
-              </span>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              required
+            />
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="newsletter"
-                checked={formData.newsletter}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, newsletter: checked as boolean })
-                }
-              />
-              <Label
-                htmlFor="newsletter"
-                className="text-sm text-muted-foreground leading-none cursor-pointer"
-              >
-                Send me news about Mixtube. No spam.
-              </Label>
-            </div>
-            <div className="flex justify-between items-center pt-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setIsRegister(!isRegister)}
-                disabled={isLoading}
-              >
-                {isRegister ? "Have an account?" : "Need an account?"}
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Loading..." : isRegister ? "Create Account" : "Sign In"}
-              </Button>
-            </div>
-          </form>
-        </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="newsletter"
+              checked={formData.newsletter}
+              onCheckedChange={(checked) =>
+                setFormData({ ...formData, newsletter: checked as boolean })
+              }
+            />
+            <Label
+              htmlFor="newsletter"
+              className="text-sm text-muted-foreground leading-none cursor-pointer"
+            >
+              Send me news about Mixtube. No spam.
+            </Label>
+          </div>
+          <div className="flex justify-between items-center pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsRegister(!isRegister)}
+              disabled={isLoading}
+            >
+              {isRegister ? "Have an account?" : "Need an account?"}
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Loading..." : isRegister ? "Create Account" : "Sign In"}
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
