@@ -1,3 +1,4 @@
+import { useLocation } from 'wouter'; // Added import statement
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
@@ -66,6 +67,7 @@ export default function Home() {
   const [isPromptMode, setIsPromptMode] = useState(true); // Added state
 
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation(); // Added useLocation hook
 
   const { data: mixes = [] } = useQuery({
     queryKey: ['/api/mixes'],
@@ -192,7 +194,11 @@ export default function Home() {
         throw new Error('Failed to save mix');
       }
 
+      const newMix = await response.json();
       await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
+
+      // Update URL with the new mix ID
+      setLocation(`/mix/${newMix.id}`);
 
       toast({
         title: "Success",
@@ -557,13 +563,18 @@ export default function Home() {
 
   useEffect(() => {
     if (mixId) {
+      console.log('Loading mix with ID:', mixId);
       // Load mix by ID
       fetch(`/api/mixes/${mixId}`)
         .then(res => {
-          if (!res.ok) throw new Error('Mix not found');
+          if (!res.ok) {
+            console.error('Error response:', res.status, res.statusText);
+            throw new Error('Mix not found');
+          }
           return res.json();
         })
         .then(mix => {
+          console.log('Loaded mix:', mix);
           handlePlayMix(mix);
         })
         .catch(err => {

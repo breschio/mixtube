@@ -61,6 +61,15 @@ export default function VideoInfo({
   });
 
   const handleShare = async () => {
+    if (!mixId) {
+      toast({
+        title: "Cannot share",
+        description: "Save the mix first to generate a shareable link.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const url = `${window.location.origin}/mix/${mixId}`;
     try {
       await navigator.clipboard.writeText(url);

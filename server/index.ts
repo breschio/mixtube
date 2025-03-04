@@ -90,11 +90,17 @@ app.use((req, res, next) => {
     }
 
     // Start server
-    const PORT = 5000;
-    server.listen(PORT, "0.0.0.0", () => {
-      log(`Server is running on http://0.0.0.0:${PORT}`);
-      log('Server initialization complete');
-    });
+    const PORT = parseInt(process.env.PORT || '5000');
+    const MAX_RETRIES = 3;
+    let currentPort = PORT;
+    let retries = 0;
+
+    const startServer = () => {
+      server.listen(currentPort, "0.0.0.0", () => {
+        log(`Server is running on http://0.0.0.0:${currentPort}`);
+        log('Server initialization complete');
+      });
+    };
 
     // Handle server errors
     server.on('error', (error: any) => {
@@ -104,17 +110,26 @@ app.use((req, res, next) => {
 
       switch (error.code) {
         case 'EACCES':
-          console.error(`Port ${PORT} requires elevated privileges`);
+          console.error(`Port ${currentPort} requires elevated privileges`);
           process.exit(1);
           break;
         case 'EADDRINUSE':
-          console.error(`Port ${PORT} is already in use`);
-          process.exit(1);
+          if (retries < MAX_RETRIES) {
+            retries++;
+            currentPort++;
+            console.log(`Port ${currentPort - 1} is in use, trying port ${currentPort}`);
+            startServer();
+          } else {
+            console.error(`Could not find an available port after ${MAX_RETRIES} attempts`);
+            process.exit(1);
+          }
           break;
         default:
           throw error;
       }
     });
+
+    startServer();
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
