@@ -61,7 +61,7 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
 
   return (
     <div className={cn("h-full flex flex-col", className)}>
-      <div className="shrink-0 mb-6 flex justify-center">
+      <div className="shrink-0 mb-6 flex justify-start">
         <ToggleGroup type="single" value={activeSort} onValueChange={(value) => value && setActiveSort(value as SortType)} className="border border-border/50 rounded-md">
           <ToggleGroupItem value="hot" size="sm">Hot</ToggleGroupItem>
           <ToggleGroupItem value="new" size="sm">New</ToggleGroupItem>
