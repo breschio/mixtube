@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { PenLine, Sparkles, Layers } from 'lucide-react';
+import { PenLine, Sparkles, SplitSquareHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface VideoInfoProps {
@@ -161,7 +161,7 @@ export default function VideoInfo({
           )}
           onClick={onToggleMixMode}
         >
-          <Layers className="h-4 w-4" />
+          <SplitSquareHorizontal className="h-4 w-4" />
           Mix
         </Button>
       </div>
