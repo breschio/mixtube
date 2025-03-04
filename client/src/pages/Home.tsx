@@ -84,11 +84,16 @@ export default function Home() {
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [mixName, setMixName] = useState(''); 
-  const [databaseConnected, setDatabaseConnected] = useState(false); // We'll get this from the API response instead
+  const [databaseConnected, setDatabaseConnected] = useState(false); 
 
 
-  const { data: mixes = [] } = useQuery({
+  const { data: mixesResponse } = useQuery({
     queryKey: ['/api/mixes'],
+    onSuccess: (data) => {
+      if (data && 'databaseConnected' !== undefined) {
+        setDatabaseConnected(!!data.databaseConnected);
+      }
+    },
     queryFn: async () => {
       const response = await fetch('/api/mixes');
       if (!response.ok) {
@@ -97,6 +102,9 @@ export default function Home() {
       return response.json();
     }
   });
+
+  // Extract mixes from response
+  const mixes = mixesResponse?.mixes || [];
 
   useEffect(() => {
     if (mixes.length > 0 && !currentMix && !isNewMode) {
