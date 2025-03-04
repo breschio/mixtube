@@ -244,16 +244,19 @@ export function registerRoutes(app: Express): Server {
   app.get('/api/mixes', async (req, res) => {
     // Check if database is available
     if (!process.env.DATABASE_URL) {
-      return res.status(503).json({ 
-        error: 'Database not available', 
-        message: 'The database is not configured. Please add DATABASE_URL to your deployment configuration.',
-        mixes: [] // Return empty array so frontend doesn't crash
+      return res.json({ 
+        mixes: [], // Return empty array so frontend doesn't crash
+        databaseConnected: false,
+        message: 'The database is not configured. Please add DATABASE_URL to your deployment configuration.'
       });
     }
     
     try {
       const recentMixes = await db.select().from(mixes).orderBy(desc(mixes.createdAt)).limit(10);
-      res.json(recentMixes);
+      res.json({
+        mixes: recentMixes,
+        databaseConnected: true
+      });
     } catch (error) {
       console.error('Error fetching mixes:', error);
       res.status(500).json({ error: 'Failed to fetch mixes' });
