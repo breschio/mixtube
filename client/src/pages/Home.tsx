@@ -635,7 +635,7 @@ export default function Home() {
                   )} />
                 )}
                 {isNewMode ? 'Close' : 'New'}
-                {!isNewMode && <BorderBeam size={100} duration={8} delay={2} />}
+                {!isNewMode && <BorderBeam size={150} duration={4} delay={0} />}
               </Button>
               <ThemeToggle />
               {!user ? (
