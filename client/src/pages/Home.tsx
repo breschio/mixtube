@@ -79,6 +79,7 @@ export default function Home() {
   const [crossFader, setCrossFader] = useState(0.6);
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
+  const [mixName, setMixName] = useState(''); // Added state for mix name
 
   // Data fetching
   const { data: mixes = [] } = useQuery({
@@ -182,6 +183,7 @@ export default function Home() {
     });
     // Reset current mix
     setCurrentMix(null);
+    setMixName(''); // Reset mix name
   };
 
   const handleVideoSelect = (video: YouTubeVideo, target: 'left' | 'right') => {
@@ -259,7 +261,7 @@ export default function Home() {
 
   // Update the hasMixTitle function to properly check for mix titles
   const hasMixTitle = () => {
-    return currentMix?.title || 
+    return currentMix?.title ||
            (isNewMode && videos.left?.title && videos.right?.title && `${videos.left.title} × ${videos.right.title}`) ||
            false;
   };
