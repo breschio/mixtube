@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { PenLine, Sparkles, SplitSquareHorizontal, ThumbsUp } from 'lucide-react';
+import { PenLine, Sparkles, Shuffle, ThumbsUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
@@ -213,7 +213,7 @@ const VideoInfo = ({
             )}
             onClick={onToggleMixMode}
           >
-            <SplitSquareHorizontal className="h-4 w-4" />
+            <Shuffle className="h-4 w-4" />
             Mix
           </Button>
         </div>
