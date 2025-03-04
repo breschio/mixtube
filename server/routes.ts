@@ -3,8 +3,8 @@ import { createServer, type Server } from "http";
 import { cache } from './cache';
 import { spawn } from 'child_process';
 import { db } from "@db/index";
-import { mixes, mixLikes } from "@db/schema";
-import { eq, desc, sql, and } from "drizzle-orm";
+import { mixes } from "@db/schema";
+import { eq, desc, sql } from "drizzle-orm";
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000;
@@ -223,7 +223,6 @@ export function registerRoutes(app: Express): Server {
         crossFaderValue,
         template,
         views: 0, // Initialize views to 0
-        likes: 0, // Initialize likes to 0
       }).returning();
 
       res.json(newMix);
@@ -254,54 +253,6 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error('Error incrementing views:', error);
       res.status(500).json({ error: 'Failed to increment views' });
-    }
-  });
-
-  // Add new like endpoint
-  app.post('/api/mixes/:id/like', async (req, res) => {
-    try {
-      const mixId = parseInt(req.params.id);
-      const defaultUserId = 1; // Using default user for now
-
-      // Check if user already liked this mix
-      const existingLike = await db.select()
-        .from(mixLikes)
-        .where(and(
-          eq(mixLikes.mixId, mixId),
-          eq(mixLikes.userId, defaultUserId)
-        ))
-        .limit(1);
-
-      if (existingLike.length > 0) {
-        // Unlike: Remove like and decrement count
-        await db.delete(mixLikes)
-          .where(and(
-            eq(mixLikes.mixId, mixId),
-            eq(mixLikes.userId, defaultUserId)
-          ));
-
-        await db.update(mixes)
-          .set({ likes: sql`${mixes.likes} - 1` })
-          .where(eq(mixes.id, mixId));
-
-        res.json({ liked: false });
-      } else {
-        // Like: Add like and increment count
-        await db.insert(mixLikes)
-          .values({
-            mixId,
-            userId: defaultUserId,
-          });
-
-        await db.update(mixes)
-          .set({ likes: sql`${mixes.likes} + 1` })
-          .where(eq(mixes.id, mixId));
-
-        res.json({ liked: true });
-      }
-    } catch (error) {
-      console.error('Error handling like:', error);
-      res.status(500).json({ error: 'Failed to update like' });
     }
   });
 

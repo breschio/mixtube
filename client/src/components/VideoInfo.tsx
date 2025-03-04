@@ -3,9 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { PenLine, Sparkles, SplitSquareHorizontal, ThumbsUp } from 'lucide-react';
+import { PenLine, Sparkles, SplitSquareHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface VideoInfoProps {
   title: string;
@@ -19,56 +18,24 @@ interface VideoInfoProps {
   isPromptMode?: boolean;
   onTogglePromptMode?: () => void;
   isCreateMode?: boolean;
-  mixId?: number;
 }
 
 const VideoInfo = ({ 
   title,
   channelTitle = 'Unknown Channel',
   onToggleMixMode,
-  mixMode = true,
+  mixMode = true, // Default to true
   onSaveMix,
   user,
   leftVideoSelected,
   rightVideoSelected,
   isPromptMode = true,
   onTogglePromptMode,
-  isCreateMode = false,
-  mixId
+  isCreateMode = false
 }: VideoInfoProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [mixName, setMixName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const queryClient = useQueryClient();
-
-  const { data: likeStatus } = useQuery({
-    queryKey: [`/api/mixes/${mixId}/like`, mixId],
-    queryFn: async () => {
-      if (!mixId) return null;
-      const response = await fetch(`/api/mixes/${mixId}/like`);
-      if (!response.ok) throw new Error('Failed to fetch like status');
-      return response.json();
-    },
-    enabled: !!mixId
-  });
-
-  const handleLike = async () => {
-    if (!mixId) return;
-
-    try {
-      const response = await fetch(`/api/mixes/${mixId}/like`, {
-        method: 'POST',
-      });
-
-      if (!response.ok) throw new Error('Failed to update like');
-
-      // Invalidate queries to refetch updated data
-      await queryClient.invalidateQueries({ queryKey: [`/api/mixes/${mixId}/like`] });
-      await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
-    } catch (error) {
-      console.error('Error updating like:', error);
-    }
-  };
 
   const handleSave = async () => {
     if (!mixName.trim() || isSubmitting) return;
@@ -185,34 +152,18 @@ const VideoInfo = ({
             </>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          {mixId && (
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn(
-                "gap-1.5",
-                likeStatus?.liked && "bg-accent text-accent-foreground hover:bg-accent/90"
-              )}
-              onClick={handleLike}
-            >
-              <ThumbsUp className="h-4 w-4" />
-              {likeStatus?.likes > 0 ? likeStatus.likes : "Like"}
-            </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "gap-1.5",
+            mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
           )}
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn(
-              "gap-1.5",
-              mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
-            )}
-            onClick={onToggleMixMode}
-          >
-            <SplitSquareHorizontal className="h-4 w-4" />
-            Mix
-          </Button>
-        </div>
+          onClick={onToggleMixMode}
+        >
+          <SplitSquareHorizontal className="h-4 w-4" />
+          Mix
+        </Button>
       </div>
     </div>
   );
