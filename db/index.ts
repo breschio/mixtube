@@ -1,9 +1,12 @@
+
 import { drizzle } from "drizzle-orm/neon-serverless";
 import ws from "ws";
 import * as schema from "@db/schema";
 
 // Check for DATABASE_URL based on environment
 const isDev = process.env.NODE_ENV !== 'production';
+
+let db: any;
 
 if (!process.env.DATABASE_URL) {
   console.error("⚠️ DATABASE_URL environment variable is missing.");
@@ -28,21 +31,20 @@ if (!process.env.DATABASE_URL) {
       }
     }
   });
-  module.exports = { db: mockDb };
-  // Don't exit, allowing the application to start even without a DB
-  // This allows the frontend to load, even if DB operations won't work
+  db = mockDb;
 } else {
   try {
     console.log("🔌 Connecting to database...");
-    const db = drizzle({
+    db = drizzle({
       connection: process.env.DATABASE_URL,
       schema,
       ws: ws,
     });
     console.log("✅ Database connection established");
-    module.exports = { db };
   } catch (error) {
     console.error("❌ Failed to connect to database:", error);
     process.exit(1);
   }
 }
+
+export { db };
