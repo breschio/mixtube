@@ -75,7 +75,7 @@ export default function VideoInfo({
       await navigator.clipboard.writeText(url);
       toast({
         title: "Link copied!",
-        description: "Share this URL with friends to show them your mix!",
+        description: "The mix URL has been copied to your clipboard.",
       });
     } catch (err) {
       toast({

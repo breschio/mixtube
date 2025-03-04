@@ -1,24 +1,3 @@
-
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Mix from './pages/Mix';
-import { ThemeProvider } from './components/theme-provider';
-import { Toaster } from './components/ui/toaster';
-
-export default function App() {
-  return (
-    <ThemeProvider defaultTheme="dark" storageKey="mixtube-theme">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/mix/:id" element={<Mix />} />
-        </Routes>
-        <Toaster />
-      </BrowserRouter>
-    </ThemeProvider>
-  );
-}
-
 import { useState, useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
