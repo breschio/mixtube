@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { PenLine, Sparkles, SplitSquareHorizontal, Heart } from 'lucide-react';
+import { PenLine, Sparkles, SplitSquareHorizontal, HandMetal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
@@ -163,7 +163,7 @@ const VideoInfo = ({
             )}
             onClick={() => setIsLiked(!isLiked)}
           >
-            <Heart className={cn("h-4 w-4", isLiked && "fill-current")} />
+            <HandMetal className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
             Like
           </Button>
           <Button
