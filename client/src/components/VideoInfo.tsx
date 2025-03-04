@@ -3,8 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Switch } from '@/components/ui/switch';
-import { PenLine, Sparkles } from 'lucide-react';
+import { PenLine, Sparkles, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface VideoInfoProps {
@@ -25,7 +24,7 @@ export default function VideoInfo({
   title,
   channelTitle = 'Unknown Channel',
   onToggleMixMode,
-  mixMode = false,
+  mixMode = true,
   onSaveMix,
   user,
   leftVideoSelected,
@@ -153,14 +152,18 @@ export default function VideoInfo({
             </>
           )}
         </div>
-        <div className="flex items-center gap-1">
-          <span className="text-sm text-muted-foreground">Mix</span>
-          <Switch
-            checked={mixMode}
-            onCheckedChange={onToggleMixMode}
-            className="data-[state=checked]:bg-primary"
-          />
-        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "gap-1.5",
+            mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
+          )}
+          onClick={onToggleMixMode}
+        >
+          <Layers className="h-4 w-4" />
+          Mix
+        </Button>
       </div>
     </div>
   );

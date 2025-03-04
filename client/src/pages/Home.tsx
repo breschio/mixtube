@@ -51,7 +51,7 @@ export default function Home() {
   const queryClient = useQueryClient();
 
   // All state declarations first
-  const [showMixControls, setShowMixControls] = useState(false);
+  const [showMixControls, setShowMixControls] = useState(true); // Updated initial state
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("mix");
   const [currentMix, setCurrentMix] = useState<Mix | null>(null);
