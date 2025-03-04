@@ -36,7 +36,7 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
 
   return (
     <div className={cn("space-y-4", className)}>
-      <h2 className="text-lg font-semibold mb-6">Recent Mixes</h2>
+      <h2 className="text-lg font-[400] mb-6">Recent Mixes</h2>
       <div className="space-y-4">
         {mixes.map((mix) => (
           <div key={mix.id} className="group cursor-pointer hover:bg-accent/5 rounded-lg p-2" onClick={() => onPlayMix?.(mix)}>
@@ -75,7 +75,7 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
                 </div>
               </div>
               <div className="flex flex-col min-w-0 flex-1">
-                <h3 className="text-sm font-medium line-clamp-2 leading-[1.1] mb-0.5">{mix.title}</h3>
+                <h3 className="text-sm font-[400] line-clamp-2 leading-[1.1] mb-0.5">{mix.title}</h3>
                 <div className="text-[11px] text-muted-foreground leading-tight mt-1">
                   <div className="truncate">MixTube</div>
                   <div className="flex items-center gap-1 mt-0.5 truncate">

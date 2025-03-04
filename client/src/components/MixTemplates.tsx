@@ -48,7 +48,7 @@ export default function MixTemplates({
           >
             <div className="flex flex-col items-center text-center space-y-2">
               <Icon className={`h-6 w-6 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
-              <h3 className={`text-sm font-medium ${isActive ? "text-primary" : ""}`}>{template.name}</h3>
+              <h3 className={`text-sm font-[400] ${isActive ? "text-primary" : ""}`}>{template.name}</h3>
             </div>
           </Card>
         );
