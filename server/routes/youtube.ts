@@ -6,6 +6,10 @@ const youtube = google.youtube('v3');
 
 router.get('/youtube/trending', async (req, res) => {
   try {
+    if (!process.env.YOUTUBE_API_KEY) {
+      return res.json([]);
+    }
+
     const response = await youtube.videos.list({
       part: ['snippet'],
       chart: 'mostPopular',
@@ -25,7 +29,8 @@ router.get('/youtube/trending', async (req, res) => {
     res.json(videos);
   } catch (error) {
     console.error('Error fetching trending videos:', error);
-    res.status(500).json({ error: 'Failed to fetch trending videos' });
+    // Return empty array instead of error to prevent HTML error page
+    res.json([]);
   }
 });
 
@@ -33,10 +38,14 @@ router.get('/youtube/related', async (req, res) => {
   const { v: videoId } = req.query;
 
   if (!videoId) {
-    return res.status(400).json({ error: 'Video ID is required' });
+    return res.json([]);
   }
 
   try {
+    if (!process.env.YOUTUBE_API_KEY) {
+      return res.json([]);
+    }
+
     const response = await youtube.search.list({
       part: ['snippet'],
       relatedToVideoId: videoId as string,
@@ -55,7 +64,8 @@ router.get('/youtube/related', async (req, res) => {
     res.json(videos);
   } catch (error) {
     console.error('Error fetching related videos:', error);
-    res.status(500).json({ error: 'Failed to fetch related videos' });
+    // Return empty array instead of error to prevent HTML error page
+    res.json([]);
   }
 });
 
