@@ -63,6 +63,7 @@ export default function Home() {
   const [isNewMode, setIsNewMode] = useState(false);
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [isPromptMode, setIsPromptMode] = useState(true);
+  const [mixHasBeenNamed, setMixHasBeenNamed] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -81,7 +82,7 @@ export default function Home() {
   useEffect(() => {
     if (mixes.length > 0 && !currentMix && !isNewMode) {
       // Sort mixes by creation date and get the latest one
-      const latestMix = [...mixes].sort((a, b) => 
+      const latestMix = [...mixes].sort((a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )[0];
 
@@ -109,6 +110,7 @@ export default function Home() {
     setCrossFader(0.5);
     setActiveTab("mix");
     setIsNewMode(true);
+    setMixHasBeenNamed(false);
     // Clear both video decks
     setVideos({
       left: null,
@@ -222,6 +224,7 @@ export default function Home() {
       }
 
       await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
+      setMixHasBeenNamed(true);
 
       toast({
         title: "Success",
@@ -575,7 +578,7 @@ export default function Home() {
       handlePlayMix(currentMix);
     } else if (mixes.length > 0) {
       // If no current mix but we have mixes, show the latest one
-      const latestMix = [...mixes].sort((a, b) => 
+      const latestMix = [...mixes].sort((a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )[0];
       handlePlayMix(latestMix);
@@ -641,7 +644,7 @@ export default function Home() {
         </div>
       </main>
       <SaveMixDialog
-        open={showSaveDialog}
+        open={showSaveDialog && !mixHasBeenNamed}
         onOpenChange={setShowSaveDialog}
         onSave={handleSaveMix}
       />
