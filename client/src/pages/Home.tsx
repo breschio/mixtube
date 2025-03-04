@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,28 @@ import DJControls from "@/components/DJControls";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 
-// ... [Keep existing interfaces and type definitions] ...
+interface Mix {
+  id: string;
+  title: string;
+  leftVideoId: string;
+  leftTitle: string;
+  leftChannel: string;
+  rightVideoId: string;
+  rightTitle: string;
+  rightChannel: string;
+  crossFaderValue: number;
+  template: string;
+  createdAt: string;
+}
+
+interface VideoInfo {
+  id: string;
+  title: string;
+  channelTitle: string;
+  thumbnail: string;
+  startTime?: number;
+}
+
 
 export default function Home() {
   const user = useUser();
@@ -36,22 +57,12 @@ export default function Home() {
     left: VideoInfo | null;
     right: VideoInfo | null;
   }>({
-    left: {
-      id: 'ApSCH4JXjQU',
-      title: 'Chill Jazz Hop Beats - 24/7 Jazzhop Radio',
-      channelTitle: 'Gentleman Music',
-      thumbnail: `https://img.youtube.com/vi/ApSCH4JXjQU/mqdefault.jpg`
-    },
-    right: {
-      id: 'Q_050nEIMqw',
-      title: 'Ambient DJ Mix - Deep Focus',
-      channelTitle: 'Deep Music Channel',
-      thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
-    }
+    left: null,
+    right: null
   });
   const [isNewMode, setIsNewMode] = useState(false);
   const [isButtonActive, setIsButtonActive] = useState(false);
-  const [isPromptMode, setIsPromptMode] = useState(true); // Added state
+  const [isPromptMode, setIsPromptMode] = useState(true);
 
   const queryClient = useQueryClient();
 
@@ -65,6 +76,18 @@ export default function Home() {
       return response.json();
     }
   });
+
+  // Load the latest mix on initial render
+  useEffect(() => {
+    if (mixes.length > 0 && !currentMix && !isNewMode) {
+      // Sort mixes by creation date and get the latest one
+      const latestMix = [...mixes].sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )[0];
+
+      handlePlayMix(latestMix);
+    }
+  }, [mixes]);
 
   const getVideoInfoFromMixes = (videoId: string): {title: string, channelTitle: string} | undefined => {
     for (const mix of mixes) {
