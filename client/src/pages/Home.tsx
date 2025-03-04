@@ -592,7 +592,7 @@ export default function Home() {
               <MixList
                 mixes={mixes}
                 onPlayMix={handlePlayMix}
-                className="h-full overflow-y-auto"
+                className="h-full"
               />
             </div>
           </ResizablePanel>

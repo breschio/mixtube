@@ -36,9 +36,9 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
   };
 
   return (
-    <div className={cn("space-y-4", className)}>
-      <h2 className="text-lg font-[400] mb-6">Recent Mixes</h2>
-      <div className="space-y-4">
+    <div className={cn("h-full flex flex-col", className)}>
+      <h2 className="text-lg font-[400] mb-6 shrink-0">Recent Mixes</h2>
+      <div className="space-y-4 overflow-y-auto flex-1">
         {mixes.map((mix) => (
           <div key={mix.id} className="group cursor-pointer hover:bg-accent/5 rounded-lg p-2" onClick={() => onPlayMix?.(mix)}>
             <div className="flex gap-3">
@@ -79,17 +79,17 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
                 <h3 className="text-sm font-[400] line-clamp-2 leading-[1.1] mb-0.5">{mix.title}</h3>
                 <div className="text-[11px] text-muted-foreground leading-tight mt-1">
                   <div className="truncate">MixTube</div>
-                  <div className="flex items-center gap-1 mt-0.5 truncate">
-                    <span className="min-w-fit">{mix.views.toLocaleString()} views</span>
-                    <span className="min-w-fit">•</span>
-                    <span className="truncate">{formatTimeAgo(new Date(mix.createdAt))} ago</span>
-                  </div>
-                  {mix.likes > 0 && (
-                    <div className="flex items-center gap-1 mt-0.5">
+                  <div className="flex items-center gap-2 mt-0.5 truncate">
+                    <span className="flex items-center gap-0.5 min-w-fit">
                       <ThumbsUp className="h-3 w-3" />
-                      <span>{mix.likes} {mix.likes === 1 ? 'like' : 'likes'}</span>
-                    </div>
-                  )}
+                      {mix.likes}
+                    </span>
+                    <span className="flex items-center gap-0.5 min-w-fit">
+                      <Play className="h-3 w-3" />
+                      {mix.views.toLocaleString()}
+                    </span>
+                    <span className="truncate">• {formatTimeAgo(new Date(mix.createdAt))} ago</span>
+                  </div>
                 </div>
               </div>
             </div>
