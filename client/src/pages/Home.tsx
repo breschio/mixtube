@@ -400,7 +400,7 @@ export default function Home() {
           playing={playing}
           onPlayPause={handlePlayPause}
           preview={false}
-          activeTemplate={showMixControls ? activeTemplate : "single"}
+          activeTemplate={activeTemplate}
           mobileView={true}
           leftStartTime={videos.left?.startTime}
           rightStartTime={videos.right?.startTime}
