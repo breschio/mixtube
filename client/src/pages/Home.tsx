@@ -85,7 +85,8 @@ export default function Home() {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )[0];
 
-      handlePlayMix(latestMix);
+      // Load the mix but don't auto-play on initial page load
+      handlePlayMix(latestMix, false);
     }
   }, [mixes]);
 
@@ -145,7 +146,7 @@ export default function Home() {
     setCrossFader(value);
   };
 
-  const handlePlayMix = async (mix: Mix) => {
+  const handlePlayMix = async (mix: Mix, shouldAutoPlay: boolean = true) => {
     const leftInfo = getVideoInfoFromMixes(mix.leftVideoId);
     const rightInfo = getVideoInfoFromMixes(mix.rightVideoId);
 
@@ -168,7 +169,7 @@ export default function Home() {
     setActiveTemplate(mix.template);
     setShowMixControls(false);
     setCurrentMix(mix);
-    setPlaying(true);
+    setPlaying(shouldAutoPlay);
     setIsNewMode(false);
 
     try {
