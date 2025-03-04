@@ -34,7 +34,7 @@ interface Mix {
   crossFaderValue: number;
   template: string;
   createdAt: string;
-  likes?: number; // Added likes property to Mix interface
+  likes?: number; 
 }
 
 interface VideoInfo {
@@ -43,8 +43,8 @@ interface VideoInfo {
   channelTitle: string;
   thumbnail: string;
   startTime?: number;
-  mixId?: string; // Added mixId prop
-  initialLikes?: number; // Added initialLikes prop
+  mixId?: string; 
+  initialLikes?: number; 
 }
 
 export default function Home() {
@@ -53,8 +53,7 @@ export default function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // All state declarations first
-  const [showMixControls, setShowMixControls] = useState(true); // Updated initial state
+  const [showMixControls, setShowMixControls] = useState(true); 
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("mix");
   const [currentMix, setCurrentMix] = useState<Mix | null>(null);
@@ -82,9 +81,8 @@ export default function Home() {
   const [crossFader, setCrossFader] = useState(0.6);
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
-  const [mixName, setMixName] = useState(''); // Added state for mix name
+  const [mixName, setMixName] = useState(''); 
 
-  // Data fetching
   const { data: mixes = [] } = useQuery({
     queryKey: ['/api/mixes'],
     queryFn: async () => {
@@ -96,15 +94,11 @@ export default function Home() {
     }
   });
 
-  // Load the latest mix on initial render
   useEffect(() => {
     if (mixes.length > 0 && !currentMix && !isNewMode) {
-      // Sort mixes by creation date and get the latest one
       const latestMix = [...mixes].sort((a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )[0];
-
-      // Load the mix but don't auto-play on initial page load
       handlePlayMix(latestMix, false);
     }
   }, [mixes]);
@@ -182,14 +176,12 @@ export default function Home() {
     setCrossFader(0.5);
     setActiveTab("mix");
     setIsNewMode(true);
-    // Clear both video decks
     setVideos({
       left: null,
       right: null
     });
-    // Reset current mix
     setCurrentMix(null);
-    setMixName(''); // Reset mix name
+    setMixName(''); 
   };
 
   const handleVideoSelect = (video: YouTubeVideo, target: 'left' | 'right') => {
@@ -212,7 +204,6 @@ export default function Home() {
     setCrossFader(value);
   };
 
-  // Update the handlePlayMix function to keep mix controls visible
   const handlePlayMix = async (mix: Mix, shouldAutoPlay: boolean = true) => {
     const leftInfo = getVideoInfoFromMixes(mix.leftVideoId);
     const rightInfo = getVideoInfoFromMixes(mix.rightVideoId);
@@ -234,7 +225,7 @@ export default function Home() {
 
     setCrossFader(mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
-    setShowMixControls(true); // Keep mix controls visible
+    setShowMixControls(true); 
     setCurrentMix(mix);
     setPlaying(shouldAutoPlay);
     setIsNewMode(false);
@@ -247,19 +238,16 @@ export default function Home() {
     }
   };
 
-  // Update handleResetView to maintain mix controls visibility
   const handleResetView = () => {
     setIsButtonActive(false);
-    setShowMixControls(true); // Keep mix controls visible
+    setShowMixControls(true); 
     setActiveTab("mix");
     setPlaying(false);
     setIsNewMode(false);
 
-    // If we have a current mix, keep it displayed
     if (currentMix) {
       handlePlayMix(currentMix);
     } else if (mixes.length > 0) {
-      // If no current mix but we have mixes, show the latest one
       const latestMix = [...mixes].sort((a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       )[0];
@@ -267,7 +255,6 @@ export default function Home() {
     }
   };
 
-  // Update hasMixTitle function to use mixName
   const hasMixTitle = () => {
     return currentMix?.title || mixName || false;
   };
@@ -344,7 +331,7 @@ export default function Home() {
       <div className="relative w-full aspect-video">
         {mainVideoPlayer}
       </div>
-      <div className="border-t border-border/50">
+      <div>
         <VideoInfo
           title={currentMix?.title || mixName || "New Mix"}
           channelTitle="MixTube"
@@ -358,12 +345,12 @@ export default function Home() {
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
           isCreateMode={isNewMode}
-          mixId={currentMix?.id} // Added mixId prop
-          initialLikes={currentMix?.likes} // Added initialLikes prop
+          mixId={currentMix?.id} 
+          initialLikes={currentMix?.likes} 
         />
       </div>
       {showMixControls && !isNewMode && (
-        <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
+        <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
           <div className="p-6">
             <DJControls
               crossFader={crossFader}
@@ -414,8 +401,8 @@ export default function Home() {
           isPromptMode={isPromptMode}
           onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
           isCreateMode={isNewMode}
-          mixId={currentMix?.id} // Added mixId prop
-          initialLikes={currentMix?.likes} // Added initialLikes prop
+          mixId={currentMix?.id} 
+          initialLikes={currentMix?.likes} 
         />
       </div>
 
@@ -492,7 +479,7 @@ export default function Home() {
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div className="border-t border-border/50">
+              <div>
                 <VideoInfo
                   title={isNewMode ? (isPromptMode ? "Describe your mix" : "Name your mix") : "New Mix"}
                   channelTitle="MixTube"
@@ -508,12 +495,12 @@ export default function Home() {
                   isPromptMode={isPromptMode}
                   onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
                   isCreateMode={isNewMode}
-                  mixId={currentMix?.id} // Added mixId prop
-                  initialLikes={currentMix?.likes} // Added initialLikes prop
+                  mixId={currentMix?.id} 
+                  initialLikes={currentMix?.likes} 
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
+                <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
                   <div className="p-6">
                     <DJControls
                       crossFader={crossFader}
@@ -556,7 +543,7 @@ export default function Home() {
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div className="border-t border-border/50">
+              <div>
                 <VideoInfo
                   title={currentMix?.title || mixName || "New Mix"}
                   channelTitle="MixTube"
@@ -570,12 +557,12 @@ export default function Home() {
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
                   isCreateMode={isNewMode}
-                  mixId={currentMix?.id} // Added mixId prop
-                  initialLikes={currentMix?.likes} // Added initialLikes prop
+                  mixId={currentMix?.id} 
+                  initialLikes={currentMix?.likes} 
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-6 bg-background border-l-[3px] border-l-primary border-y border-r border-border/50 rounded-r-lg">
+                <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
                   <div className="p-6">
                     <DJControls
                       crossFader={crossFader}
@@ -621,7 +608,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
-              className="font-mono font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
+              className="font-sans font-light text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
               onClick={handleResetView}
             >
               mixtube
