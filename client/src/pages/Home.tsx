@@ -21,6 +21,7 @@ import MixList from "@/components/MixList";
 import DJControls from "@/components/DJControls";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import BorderBeam from "@/components/BorderBeam"; // Assuming this import is correct
 
 interface Mix {
   id: string;
@@ -589,7 +590,7 @@ export default function Home() {
             className="transition-all duration-300 ease-in-out"
           >
             <div className="h-[calc(100vh-5rem)] flex flex-col pl-4">
-              <div className="h-full overflow-auto"> {/*Corrected line */}
+              <div className="h-full overflow-auto"> 
                 <MixList
                   mixes={mixes}
                   onPlayMix={handlePlayMix}
@@ -620,7 +621,7 @@ export default function Home() {
                 variant="outline"
                 size="sm"
                 className={cn(
-                  "gap-1.5",
+                  "gap-1.5 relative",
                   isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
                 )}
                 onClick={isNewMode ? handleResetView : handleNewMix}
@@ -634,6 +635,7 @@ export default function Home() {
                   )} />
                 )}
                 {isNewMode ? 'Close' : 'New'}
+                {!isNewMode && <BorderBeam size={100} duration={8} delay={2} />}
               </Button>
               <ThemeToggle />
               {!user ? (

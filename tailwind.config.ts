@@ -83,11 +83,17 @@ export default {
           '50%': { transform: 'rotate3d(0, 1, 0, 180deg)' },
           '75%': { transform: 'rotate3d(0, 1, 0, 270deg)' },
           '100%': { transform: 'rotate3d(0, 1, 0, 360deg)' }
-        }
+        },
+        "border-beam": {
+          "100%": {
+            "offset-distance": "100%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
       },
       transformStyle: {
         '3d': 'preserve-3d',
