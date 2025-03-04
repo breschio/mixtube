@@ -1,10 +1,10 @@
-import { Share2, ThumbsUp, Sparkles, PenLine } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { PenLine, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface VideoInfoProps {
@@ -12,7 +12,7 @@ interface VideoInfoProps {
   channelTitle?: string;
   onToggleMixMode: () => void;
   mixMode?: boolean;
-  onSaveMix?: () => void;
+  onSaveMix?: (title: string) => void;
   user?: any;
   leftVideoSelected: boolean;
   rightVideoSelected: boolean;
@@ -46,7 +46,12 @@ export default function VideoInfo({
               <Input
                 value={mixName}
                 onChange={(e) => setMixName(e.target.value)}
-                onBlur={() => setIsEditing(false)}
+                onBlur={() => {
+                  setIsEditing(false);
+                  if (mixName.trim()) {
+                    onSaveMix?.(mixName);
+                  }
+                }}
                 placeholder="Name your mix"
                 className="text-lg font-medium"
                 autoFocus
@@ -74,7 +79,7 @@ export default function VideoInfo({
                       "gap-1.5",
                       (!leftVideoSelected || !rightVideoSelected) ? "opacity-50" : "hover:bg-accent/90"
                     )}
-                    onClick={() => onSaveMix?.()}
+                    onClick={() => mixName.trim() ? onSaveMix?.(mixName) : setIsEditing(true)}
                     disabled={!leftVideoSelected || !rightVideoSelected}
                   >
                     Post

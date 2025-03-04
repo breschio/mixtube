@@ -44,11 +44,13 @@ interface VideoInfo {
   startTime?: number;
 }
 
-
 export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // All state declarations first
   const [showMixControls, setShowMixControls] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("mix");
@@ -63,8 +65,22 @@ export default function Home() {
   const [isNewMode, setIsNewMode] = useState(false);
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [isPromptMode, setIsPromptMode] = useState(true);
-  const queryClient = useQueryClient();
+  const [playing, setPlaying] = useState(false);
+  const [videoStates, setVideoStates] = useState({
+    left: {
+      playing: false,
+      volume: 0.5
+    },
+    right: {
+      playing: false,
+      volume: 0.5
+    }
+  });
+  const [crossFader, setCrossFader] = useState(0.6);
+  const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
+  const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
 
+  // Data fetching
   const { data: mixes = [] } = useQuery({
     queryKey: ['/api/mixes'],
     queryFn: async () => {
@@ -76,18 +92,57 @@ export default function Home() {
     }
   });
 
-  // Load the latest mix on initial render
-  useEffect(() => {
-    if (mixes.length > 0 && !currentMix && !isNewMode) {
-      // Sort mixes by creation date and get the latest one
-      const latestMix = [...mixes].sort((a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )[0];
-
-      // Load the mix but don't auto-play on initial page load
-      handlePlayMix(latestMix, false);
+  // Define handlePost early, after all state declarations
+  const handlePost = async (title: string) => {
+    if (!videos.left?.id || !videos.right?.id) {
+      toast({
+        title: "Incomplete Mix",
+        description: "Please select both videos before saving",
+        variant: "destructive"
+      });
+      return;
     }
-  }, [mixes]);
+
+    try {
+      const response = await fetch('/api/mixes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          leftVideoId: videos.left.id,
+          leftTitle: videos.left.title,
+          leftChannel: videos.left.channelTitle,
+          rightVideoId: videos.right.id,
+          rightTitle: videos.right.title,
+          rightChannel: videos.right.channelTitle,
+          crossFaderValue: Math.round(crossFader * 100),
+          template: activeTemplate,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save mix');
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
+
+      toast({
+        title: "Success",
+        description: "Your mix has been saved",
+      });
+      setShowSaveDialog(false);
+      setIsNewMode(false);
+    } catch (error) {
+      console.error('Error saving mix:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save mix. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const getVideoInfoFromMixes = (videoId: string): {title: string, channelTitle: string} | undefined => {
     for (const mix of mixes) {
@@ -116,21 +171,6 @@ export default function Home() {
     // Reset current mix
     setCurrentMix(null);
   };
-
-  const [playing, setPlaying] = useState(false);
-  const [videoStates, setVideoStates] = useState({
-    left: {
-      playing: false,
-      volume: 0.5
-    },
-    right: {
-      playing: false,
-      volume: 0.5
-    }
-  });
-  const [crossFader, setCrossFader] = useState(0.6);
-  const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
-  const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
 
   const handleVideoSelect = (video: YouTubeVideo, target: 'left' | 'right') => {
     setVideos(prev => ({
@@ -314,7 +354,7 @@ export default function Home() {
           channelTitle="MixTube"
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
-          onSaveMix={() => setShowSaveDialog(true)}
+          onSaveMix={handlePost}
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
@@ -366,7 +406,7 @@ export default function Home() {
           channelTitle={videos.left?.channelTitle}
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
-          onSaveMix={() => setShowSaveDialog(true)}
+          onSaveMix={handlePost}
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
@@ -455,7 +495,7 @@ export default function Home() {
                   channelTitle="MixTube"
                   onToggleMixMode={() => setShowMixControls(!showMixControls)}
                   mixMode={showMixControls}
-                  onSaveMix={() => setShowSaveDialog(true)}
+                  onSaveMix={handlePost}
                   user={user}
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
@@ -514,7 +554,7 @@ export default function Home() {
                   channelTitle="MixTube"
                   onToggleMixMode={() => setShowMixControls(!showMixControls)}
                   mixMode={showMixControls}
-                  onSaveMix={() => setShowSaveDialog(true)}
+                  onSaveMix={handlePost}
                   user={user}
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
@@ -580,10 +620,11 @@ export default function Home() {
     }
   };
 
-  // Add function to check if mix has a title
+  // Update the hasMixTitle function to properly check for mix titles
   const hasMixTitle = () => {
-    return currentMix?.title || 
-           (videos.left?.title && videos.right?.title && `${videos.left.title} × ${videos.right.title}`);
+    return currentMix?.title ||
+           (isNewMode && videos.left?.title && videos.right?.title && `${videos.left.title} × ${videos.right.title}`) ||
+           false;
   };
 
 
