@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Play, ThumbsUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState, useMemo } from "react";
 
 interface Mix {
   id: number;
@@ -21,7 +23,29 @@ interface MixListProps {
   className?: string;
 }
 
+type SortType = "hot" | "new" | "top";
+
 export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
+  const [activeSort, setActiveSort] = useState<SortType>("hot");
+
+  const sortedMixes = useMemo(() => {
+    if (!mixes?.length) return [];
+
+    const sortedArray = [...mixes];
+    switch (activeSort) {
+      case "hot":
+        return sortedArray.sort((a, b) => b.likes - a.likes);
+      case "new":
+        return sortedArray.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      case "top":
+        return sortedArray.sort((a, b) => b.views - a.views);
+      default:
+        return sortedArray;
+    }
+  }, [mixes, activeSort]);
+
   if (!mixes?.length) {
     return null;
   }
@@ -37,9 +61,17 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
 
   return (
     <div className={cn("h-full flex flex-col", className)}>
-      <h2 className="text-lg font-[400] mb-6 shrink-0">Recent Mixes</h2>
+      <div className="shrink-0 mb-6">
+        <Tabs value={activeSort} onValueChange={(value) => setActiveSort(value as SortType)}>
+          <TabsList className="w-full grid grid-cols-3">
+            <TabsTrigger value="hot">Hot</TabsTrigger>
+            <TabsTrigger value="new">New</TabsTrigger>
+            <TabsTrigger value="top">Top</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
       <div className="space-y-4 overflow-y-auto flex-1">
-        {mixes.map((mix) => (
+        {sortedMixes.map((mix) => (
           <div key={mix.id} className="group cursor-pointer hover:bg-accent/5 rounded-lg p-2" onClick={() => onPlayMix?.(mix)}>
             <div className="flex gap-3">
               <div className="relative shrink-0" style={{ width: "120px" }}>
