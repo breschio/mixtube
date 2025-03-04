@@ -84,8 +84,8 @@ export default function Home() {
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [mixName, setMixName] = useState(''); 
-  const [databaseConnected, setDatabaseConnected] = useState(false); 
-  const [showDatabaseWarning, setShowDatabaseWarning] = useState(true);
+  const [databaseConnected, setDatabaseConnected] = useState(false);
+  const [showDatabaseWarning, setShowDatabaseWarning] = useState(false);
 
 
   const { data: mixesResponse } = useQuery({

@@ -253,15 +253,17 @@ export function registerRoutes(app: Express): Server {
     
     try {
       const recentMixes = await db.select().from(mixes).orderBy(desc(mixes.createdAt)).limit(10);
-      // If we successfully got mixes, we're definitely connected
-      const isConnected = Array.isArray(recentMixes) && recentMixes.length > 0;
       res.json({
         mixes: recentMixes,
         databaseConnected: true // Always true if we get here without error
       });
     } catch (error) {
       console.error('Error fetching mixes:', error);
-      res.status(500).json({ error: 'Failed to fetch mixes' });
+      return res.json({ 
+        mixes: [], 
+        databaseConnected: false,
+        message: 'Error connecting to database: ' + (error instanceof Error ? error.message : String(error))
+      });
     }
   });
 
