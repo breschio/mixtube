@@ -63,8 +63,6 @@ export default function Home() {
   const [isNewMode, setIsNewMode] = useState(false);
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [isPromptMode, setIsPromptMode] = useState(true);
-  const [mixHasBeenNamed, setMixHasBeenNamed] = useState(false);
-
   const queryClient = useQueryClient();
 
   const { data: mixes = [] } = useQuery({
@@ -110,7 +108,6 @@ export default function Home() {
     setCrossFader(0.5);
     setActiveTab("mix");
     setIsNewMode(true);
-    setMixHasBeenNamed(false);
     // Clear both video decks
     setVideos({
       left: null,
@@ -189,7 +186,6 @@ export default function Home() {
     }
   };
 
-
   const handleSaveMix = async (title: string) => {
     if (!videos.left?.id || !videos.right?.id) {
       toast({
@@ -224,7 +220,6 @@ export default function Home() {
       }
 
       await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
-      setMixHasBeenNamed(true);
 
       toast({
         title: "Success",
@@ -585,6 +580,13 @@ export default function Home() {
     }
   };
 
+  // Add function to check if mix has a title
+  const hasMixTitle = () => {
+    return currentMix?.title || 
+           (videos.left?.title && videos.right?.title && `${videos.left.title} × ${videos.right.title}`);
+  };
+
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
@@ -644,7 +646,7 @@ export default function Home() {
         </div>
       </main>
       <SaveMixDialog
-        open={showSaveDialog && !mixHasBeenNamed}
+        open={showSaveDialog && !hasMixTitle()}
         onOpenChange={setShowSaveDialog}
         onSave={handleSaveMix}
       />
