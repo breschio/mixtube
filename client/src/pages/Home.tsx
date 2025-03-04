@@ -84,7 +84,7 @@ export default function Home() {
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [mixName, setMixName] = useState(''); 
-  const [databaseConnected, setDatabaseConnected] = useState(!!process.env.DATABASE_URL); // Added state for database connection status
+  const [databaseConnected, setDatabaseConnected] = useState(false); // We'll get this from the API response instead
 
 
   const { data: mixes = [] } = useQuery({
