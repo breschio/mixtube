@@ -109,6 +109,13 @@ export default function Home() {
     setCrossFader(0.5);
     setActiveTab("mix");
     setIsNewMode(true);
+    // Clear both video decks
+    setVideos({
+      left: null,
+      right: null
+    });
+    // Reset current mix
+    setCurrentMix(null);
   };
 
   const [playing, setPlaying] = useState(false);
