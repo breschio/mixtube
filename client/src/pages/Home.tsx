@@ -409,8 +409,8 @@ export default function Home() {
 
       <div className="px-3 border-t border-border/50">
         <VideoInfo
-          title={isNewMode ? (isPromptMode ? "Describe your mix" : "Name your mix") : videos.left?.title || "Untitled Mix"}
-          channelTitle={videos.left?.channelTitle}
+          title={currentMix?.title || mixName || "New Mix"}
+          channelTitle="MixTube"
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
           onSaveMix={handlePost}
@@ -656,28 +656,12 @@ export default function Home() {
                 {isNewMode ? 'Close' : 'New'}
               </MovingBorderButton>
               <ThemeToggle />
-              {!user ? (
-                <AuthModal
-                  defaultTab="sign-up"
-                  trigger={
-                    <Button variant="outline" size="icon">
-                      <User className="h-5 w-5" />
-                    </Button>
-                  }
-                />
-              ) : (
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.user_metadata.avatar_url || ''} />
-                  <AvatarFallback>{user.email?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
-                </Avatar>
-              )}
             </div>
           </div>
         </div>
       </header>
 
-      <main className="min-h-screen p-4 pb-20">
-        {/* Database connection warning - only show if explicitly not connected AND no mixes */}
+      <main className="min-h-screen p-2 pb-20 sm:p-4">
         {showDatabaseWarning && (
           <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded shadow-sm">
             <div className="flex items-center">
@@ -693,7 +677,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 pb-8">
+        <div className="max-w-[1600px] mx-auto px-2 sm:px-8 md:px-12 pb-8">
           {isMobile ? renderMobileLayout() : renderDesktopLayout()}
         </div>
       </main>
