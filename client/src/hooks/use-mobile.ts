@@ -5,7 +5,7 @@ export function useMobile() {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024); // Match lg breakpoint
+      setIsMobile(window.innerWidth < 800); // Changed from 1024 to 800px
     };
 
     checkMobile();
