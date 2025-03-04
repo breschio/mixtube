@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,10 +21,13 @@ import MixList from "@/components/MixList";
 import DJControls from "@/components/DJControls";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { useParams } from "wouter";
+
 
 // ... [Keep existing interfaces and type definitions] ...
 
 export default function Home() {
+  const { id: mixId } = useParams<{ id: string }>();
   const user = useUser();
   const isMobile = useMobile();
   const { toast } = useToast();
@@ -557,6 +560,27 @@ export default function Home() {
     setCurrentMix(null);
     setIsNewMode(false);
   };
+
+  useEffect(() => {
+    if (mixId) {
+      // Load mix by ID
+      fetch(`/api/mixes/${mixId}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Mix not found');
+          return res.json();
+        })
+        .then(mix => {
+          handlePlayMix(mix);
+        })
+        .catch(err => {
+          toast({
+            title: "Error",
+            description: "Could not load the mix. It may have been deleted or is unavailable.",
+            variant: "destructive"
+          });
+        });
+    }
+  }, [mixId]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

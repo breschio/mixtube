@@ -26,7 +26,7 @@ interface VideoInfoProps {
   isLiked?: boolean;
 }
 
-export default function VideoInfo({ 
+export default function VideoInfo({
   title,
   channelTitle = 'Unknown Channel',
   onToggleMixMode,
@@ -78,14 +78,6 @@ export default function VideoInfo({
   };
 
   const handleLike = () => {
-    if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to like mixes",
-        variant: "destructive"
-      });
-      return;
-    }
     likeMutation.mutate();
   };
 
@@ -134,8 +126,8 @@ export default function VideoInfo({
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                {(!leftVideoSelected || !rightVideoSelected) 
-                  ? "Select both videos to save" 
+                {(!leftVideoSelected || !rightVideoSelected)
+                  ? "Select both videos to save"
                   : "Save your mix"}
               </TooltipContent>
             </Tooltip>
@@ -189,9 +181,9 @@ export default function VideoInfo({
                   {channelTitle}
                 </span>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className={cn(
                   "h-9 px-4 group",
                   isLiked && "text-primary"
@@ -202,11 +194,15 @@ export default function VideoInfo({
                   "h-4 w-4 mr-2 transition-transform group-hover:scale-125",
                   isLiked && "fill-current"
                 )} />
-                <span className="tabular-nums">{likes}</span>
+                {!isLiked ? (
+                  "Like"
+                ) : (
+                  <span className="tabular-nums">{likes}</span>
+                )}
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="h-9 px-4"
                 onClick={handleShare}
               >
