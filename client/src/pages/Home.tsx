@@ -103,15 +103,10 @@ export default function Home() {
 
   const handleNewMix = () => {
     setIsButtonActive(true);
-    setVideos({
-      left: null,
-      right: null
-    });
     setShowMixControls(true);
     setPlaying(false);
     setCrossFader(0.5);
     setActiveTab("mix");
-    setCurrentMix(null);
     setIsNewMode(true);
   };
 
@@ -565,8 +560,18 @@ export default function Home() {
     setShowMixControls(false);
     setActiveTab("mix");
     setPlaying(false);
-    setCurrentMix(null);
     setIsNewMode(false);
+
+    // If we have a current mix, keep it displayed
+    if (currentMix) {
+      handlePlayMix(currentMix);
+    } else if (mixes.length > 0) {
+      // If no current mix but we have mixes, show the latest one
+      const latestMix = [...mixes].sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )[0];
+      handlePlayMix(latestMix);
+    }
   };
 
   return (
