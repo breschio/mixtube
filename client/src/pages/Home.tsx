@@ -209,6 +209,7 @@ export default function Home() {
     setCrossFader(value);
   };
 
+  // Update the handlePlayMix function to keep mix controls visible
   const handlePlayMix = async (mix: Mix, shouldAutoPlay: boolean = true) => {
     const leftInfo = getVideoInfoFromMixes(mix.leftVideoId);
     const rightInfo = getVideoInfoFromMixes(mix.rightVideoId);
@@ -230,7 +231,7 @@ export default function Home() {
 
     setCrossFader(mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
-    setShowMixControls(false);
+    setShowMixControls(true); // Keep mix controls visible
     setCurrentMix(mix);
     setPlaying(shouldAutoPlay);
     setIsNewMode(false);
@@ -243,9 +244,10 @@ export default function Home() {
     }
   };
 
+  // Update handleResetView to maintain mix controls visibility
   const handleResetView = () => {
     setIsButtonActive(false);
-    setShowMixControls(false);
+    setShowMixControls(true); // Keep mix controls visible
     setActiveTab("mix");
     setPlaying(false);
     setIsNewMode(false);

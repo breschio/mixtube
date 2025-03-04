@@ -20,11 +20,11 @@ interface VideoInfoProps {
   isCreateMode?: boolean;
 }
 
-export default function VideoInfo({ 
+const VideoInfo = ({ 
   title,
   channelTitle = 'Unknown Channel',
   onToggleMixMode,
-  mixMode = true,
+  mixMode = true, // Default to true
   onSaveMix,
   user,
   leftVideoSelected,
@@ -32,7 +32,7 @@ export default function VideoInfo({
   isPromptMode = true,
   onTogglePromptMode,
   isCreateMode = false
-}: VideoInfoProps) {
+}: VideoInfoProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [mixName, setMixName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -167,4 +167,6 @@ export default function VideoInfo({
       </div>
     </div>
   );
-}
+};
+
+export default VideoInfo;
