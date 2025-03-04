@@ -36,6 +36,19 @@ export default function VideoInfo({
 }: VideoInfoProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [mixName, setMixName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSave = async () => {
+    if (!mixName.trim() || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      await onSaveMix?.(mixName);
+      setIsEditing(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (isCreateMode) {
     return (
@@ -46,12 +59,7 @@ export default function VideoInfo({
               <Input
                 value={mixName}
                 onChange={(e) => setMixName(e.target.value)}
-                onBlur={() => {
-                  setIsEditing(false);
-                  if (mixName.trim()) {
-                    onSaveMix?.(mixName);
-                  }
-                }}
+                onBlur={handleSave}
                 placeholder="Name your mix"
                 className="text-lg font-medium"
                 autoFocus
@@ -79,10 +87,10 @@ export default function VideoInfo({
                       "gap-1.5",
                       (!leftVideoSelected || !rightVideoSelected) ? "opacity-50" : "hover:bg-accent/90"
                     )}
-                    onClick={() => mixName.trim() ? onSaveMix?.(mixName) : setIsEditing(true)}
-                    disabled={!leftVideoSelected || !rightVideoSelected}
+                    onClick={() => mixName.trim() ? handleSave() : setIsEditing(true)}
+                    disabled={!leftVideoSelected || !rightVideoSelected || isSubmitting}
                   >
-                    Post
+                    {isSubmitting ? "Saving..." : "Post"}
                   </Button>
                 </div>
               </TooltipTrigger>
