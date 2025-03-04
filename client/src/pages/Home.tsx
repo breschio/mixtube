@@ -27,7 +27,11 @@ import { useParams } from "wouter";
 
 // ... [Keep existing interfaces and type definitions] ...
 
-export default function Home() {
+interface HomeProps {
+  initialMixId?: string;
+}
+
+export default function Home({ initialMixId }: HomeProps = {}) {
   const { id: mixId } = useParams<{ id: string }>();
   const user = useUser();
   const isMobile = useMobile();
@@ -562,10 +566,13 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (mixId) {
-      console.log('Loading mix with ID:', mixId);
+    // If an initialMixId is provided, use it
+    const idToLoad = initialMixId || mixId;
+    
+    if (idToLoad) {
+      console.log('Loading mix with ID:', idToLoad);
       // Load mix by ID
-      fetch(`/api/mixes/${mixId}`)
+      fetch(`/api/mixes/${idToLoad}`)
         .then(res => {
           if (!res.ok) {
             console.error('Error response:', res.status, res.statusText);
@@ -586,7 +593,7 @@ export default function Home() {
           });
         });
     }
-  }, [mixId]);
+  }, [mixId, initialMixId]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
