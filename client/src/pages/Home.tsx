@@ -426,16 +426,19 @@ export default function Home() {
 
       <div
         className={cn(
-          "overflow-hidden transition-all duration-300 ease-in-out transform",
+          "flex-1 overflow-hidden transition-all duration-300 ease-in-out transform",
           showMixControls ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
         )}
-        style={{
-          height: showMixControls ? 'calc(100% - 56.25vw - 4rem)' : '0',
-          marginTop: showMixControls ? '1rem' : '0'
-        }}
       >
-        <div className="h-full">
+        <div className="h-full flex flex-col">
           {mixControls}
+          <div className="mt-4 flex-1 overflow-auto">
+            <MixList
+              mixes={mixes}
+              onPlayMix={handlePlayMix}
+              className="h-full"
+            />
+          </div>
         </div>
       </div>
     </div>
