@@ -139,6 +139,8 @@ export default function Home() {
         throw new Error('Failed to save mix');
       }
 
+      const newMix = await response.json();
+      setCurrentMix(newMix);
       await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
 
       toast({
@@ -147,7 +149,7 @@ export default function Home() {
       });
       setShowSaveDialog(false);
       setIsNewMode(false);
-      setMixName(''); // Clear mix name after successful post
+      setMixName(title);
     } catch (error) {
       console.error('Error saving mix:', error);
       toast({
@@ -339,7 +341,7 @@ export default function Home() {
       </div>
       <div className="border-t border-border/50">
         <VideoInfo
-          title={mixName || "New Mix"}  //Update here
+          title={currentMix?.title || mixName || "New Mix"}
           channelTitle="MixTube"
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
@@ -545,7 +547,7 @@ export default function Home() {
               </div>
               <div className="border-t border-border/50">
                 <VideoInfo
-                  title={mixName || "New Mix"} //Update here
+                  title={currentMix?.title || mixName || "New Mix"}
                   channelTitle="MixTube"
                   onToggleMixMode={() => setShowMixControls(!showMixControls)}
                   mixMode={showMixControls}
