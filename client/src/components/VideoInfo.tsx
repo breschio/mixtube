@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { PenLine, Sparkles, SplitSquareHorizontal, HandMetal } from 'lucide-react';
+import { PenLine, Sparkles, SplitSquareHorizontal, Headphones } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
@@ -70,7 +70,7 @@ const VideoInfo = ({
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to like the mix",
+        description: "Failed to bump the mix",
       });
     }
   };
@@ -201,8 +201,8 @@ const VideoInfo = ({
             onClick={handleLike}
             disabled={!mixId}
           >
-            <HandMetal className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
-            {likes > 0 ? `${likes} Likes` : "Like"}
+            <Headphones className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
+            {likes > 0 ? `${likes} Bumps` : "Bump"}
           </Button>
           <Button
             variant="outline"
