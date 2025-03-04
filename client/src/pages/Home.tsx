@@ -85,13 +85,15 @@ export default function Home() {
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [mixName, setMixName] = useState(''); 
   const [databaseConnected, setDatabaseConnected] = useState(false); 
+  const [showDatabaseWarning, setShowDatabaseWarning] = useState(true); // Added state
 
 
   const { data: mixesResponse } = useQuery({
     queryKey: ['/api/mixes'],
     onSuccess: (data) => {
-      if (data && 'databaseConnected' !== undefined) {
+      if (data && 'databaseConnected' in data) {
         setDatabaseConnected(!!data.databaseConnected);
+        setShowDatabaseWarning(!data.databaseConnected && data.mixes.length ===0); // Update warning based on data
       }
     },
     queryFn: async () => {
@@ -670,7 +672,8 @@ export default function Home() {
       </header>
 
       <main className="min-h-screen p-4 pb-20">
-        {!databaseConnected && (
+        {/* Database connection warning - only show if explicitly not connected AND no mixes */}
+        {showDatabaseWarning && (
           <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded shadow-sm">
             <div className="flex items-center">
               <div className="py-1">
