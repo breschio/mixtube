@@ -202,7 +202,7 @@ const VideoInfo = ({
             disabled={!mixId}
           >
             <ThumbsUp className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
-            {likes > 0 ? `${likes} ${likes === 1 ? 'Like' : 'Likes'}` : "Like"}
+            {likes > 0 ? likes : "Like"}
           </Button>
           <Button
             variant="outline"

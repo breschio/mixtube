@@ -21,7 +21,8 @@ import MixList from "@/components/MixList";
 import DJControls from "@/components/DJControls";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import BorderBeam from "@/components/BorderBeam"; // Assuming this import is correct
+import BorderBeam from "@/components/BorderBeam";
+import { Button as MovingBorderButton } from "@/components/ui/moving-border";
 
 interface Mix {
   id: string;
@@ -617,13 +618,14 @@ export default function Home() {
               mixtube
             </Button>
             <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                size="sm"
+              <MovingBorderButton
+                containerClassName="h-8 w-auto p-[1px]"
                 className={cn(
-                  "gap-1.5 relative",
+                  "text-sm font-normal h-full px-3 gap-1.5",
                   isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
                 )}
+                borderRadius="0.375rem"
+                duration={4000}
                 onClick={isNewMode ? handleResetView : handleNewMix}
               >
                 {isNewMode ? (
@@ -635,8 +637,7 @@ export default function Home() {
                   )} />
                 )}
                 {isNewMode ? 'Close' : 'New'}
-                {!isNewMode && <BorderBeam size={80} duration={3.5} delay={0} />}
-              </Button>
+              </MovingBorderButton>
               <ThemeToggle />
               {!user ? (
                 <AuthModal
