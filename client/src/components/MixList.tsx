@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Play, ThumbsUp, Plus } from "lucide-react";
+import { Play, ThumbsUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -61,16 +61,7 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
 
   return (
     <div className={cn("h-full flex flex-col", className)}>
-      <div className="shrink-0 mb-6 flex items-center gap-4">
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-1.5"
-          onClick={() => {}}
-        >
-          <Plus className="h-4 w-4" />
-          New
-        </Button>
+      <div className="shrink-0 mb-6">
         <ToggleGroup type="single" value={activeSort} onValueChange={(value) => value && setActiveSort(value as SortType)} className="border border-border/50 rounded-md w-full">
           <ToggleGroupItem value="hot" size="sm" className="flex-1">Hot</ToggleGroupItem>
           <ToggleGroupItem value="new" size="sm" className="flex-1">New</ToggleGroupItem>
