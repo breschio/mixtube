@@ -59,7 +59,7 @@ export default function VideoInfo({
               <Input
                 value={mixName}
                 onChange={(e) => setMixName(e.target.value)}
-                onBlur={handleSave}
+                onBlur={() => setIsEditing(false)}
                 placeholder="Name your mix"
                 className="text-lg font-medium"
                 autoFocus
