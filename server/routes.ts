@@ -203,6 +203,14 @@ export function registerRoutes(app: Express): Server {
   });
 
   app.post('/api/mixes', async (req, res) => {
+    // Check if database is available
+    if (!process.env.DATABASE_URL) {
+      return res.status(503).json({ 
+        error: 'Database not available', 
+        message: 'The database is not configured. Please add DATABASE_URL to your deployment configuration.' 
+      });
+    }
+    
     try {
       const { title, leftVideoId, rightVideoId, crossFaderValue, template } = req.body;
 
@@ -234,6 +242,15 @@ export function registerRoutes(app: Express): Server {
   });
 
   app.get('/api/mixes', async (req, res) => {
+    // Check if database is available
+    if (!process.env.DATABASE_URL) {
+      return res.status(503).json({ 
+        error: 'Database not available', 
+        message: 'The database is not configured. Please add DATABASE_URL to your deployment configuration.',
+        mixes: [] // Return empty array so frontend doesn't crash
+      });
+    }
+    
     try {
       const recentMixes = await db.select().from(mixes).orderBy(desc(mixes.createdAt)).limit(10);
       res.json(recentMixes);

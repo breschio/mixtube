@@ -17,24 +17,20 @@ if (!process.env.DATABASE_URL) {
     console.error("   - Go to the Deployments tab → Secrets → Add DATABASE_URL");
   }
   
-  // In development, we can provide a fake DB for testing UI
-  if (isDev) {
-    console.warn("🧪 Running in development mode with mock database");
-    // Export a dummy DB object that won't crash but will log operations
-    const mockDb = new Proxy({}, {
-      get: function(target, prop) {
-        return (...args: any[]) => {
-          console.log(`[MOCK DB] Called ${String(prop)} with args:`, args);
-          return Promise.resolve([]);
-        };
+  // Provide a fake DB for testing UI in both dev and prod if DATABASE_URL is missing
+  console.warn("🧪 Running with mock database - limited functionality");
+  // Export a dummy DB object that won't crash but will log operations
+  const mockDb = new Proxy({}, {
+    get: function(target, prop) {
+      return (...args: any[]) => {
+        console.log(`[MOCK DB] Called ${String(prop)} with args:`, args);
+        return Promise.resolve([]);
       }
-    });
-    module.exports = { db: mockDb };
-    // Don't exit in development, allowing UI testing without DB
-  } else {
-    // Exit in production since we need a real DB
-    process.exit(1);
-  }
+    }
+  });
+  module.exports = { db: mockDb };
+  // Don't exit, allowing the application to start even without a DB
+  // This allows the frontend to load, even if DB operations won't work
 } else {
   try {
     console.log("🔌 Connecting to database...");
