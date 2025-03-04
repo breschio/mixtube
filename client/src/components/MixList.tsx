@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Play, Headphones } from "lucide-react";
+import { Play, ThumbsUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -82,17 +82,14 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
                   <div className="flex items-center gap-1 mt-0.5 truncate">
                     <span className="min-w-fit">{mix.views.toLocaleString()} views</span>
                     <span className="min-w-fit">•</span>
-                    {mix.likes > 0 && (
-                      <>
-                        <span className="flex items-center gap-0.5 min-w-fit">
-                          <Headphones className="h-3 w-3" />
-                          {mix.likes}
-                        </span>
-                        <span className="min-w-fit">•</span>
-                      </>
-                    )}
                     <span className="truncate">{formatTimeAgo(new Date(mix.createdAt))} ago</span>
                   </div>
+                  {mix.likes > 0 && (
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <ThumbsUp className="h-3 w-3" />
+                      <span>{mix.likes} {mix.likes === 1 ? 'like' : 'likes'}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
