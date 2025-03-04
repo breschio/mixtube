@@ -147,6 +147,7 @@ export default function Home() {
       });
       setShowSaveDialog(false);
       setIsNewMode(false);
+      setMixName(''); // Clear mix name after successful post
     } catch (error) {
       console.error('Error saving mix:', error);
       toast({
@@ -259,11 +260,9 @@ export default function Home() {
     }
   };
 
-  // Update the hasMixTitle function to properly check for mix titles
+  // Update hasMixTitle function to use mixName
   const hasMixTitle = () => {
-    return currentMix?.title ||
-           (isNewMode && videos.left?.title && videos.right?.title && `${videos.left.title} × ${videos.right.title}`) ||
-           false;
+    return currentMix?.title || mixName || false;
   };
 
   const renderControls = (side: 'left' | 'right') => (
@@ -340,11 +339,14 @@ export default function Home() {
       </div>
       <div className="border-t border-border/50">
         <VideoInfo
-          title={currentMix?.title || `${videos.left?.title || "Untitled Mix"} × ${videos.right?.title || ""}`}
+          title={mixName || "New Mix"}  //Update here
           channelTitle="MixTube"
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
-          onSaveMix={handlePost}
+          onSaveMix={(title) => {
+            setMixName(title);
+            handlePost(title);
+          }}
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
@@ -485,7 +487,10 @@ export default function Home() {
                   channelTitle="MixTube"
                   onToggleMixMode={() => setShowMixControls(!showMixControls)}
                   mixMode={showMixControls}
-                  onSaveMix={handlePost}
+                  onSaveMix={(title) => {
+                    setMixName(title);
+                    handlePost(title);
+                  }}
                   user={user}
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
@@ -540,11 +545,14 @@ export default function Home() {
               </div>
               <div className="border-t border-border/50">
                 <VideoInfo
-                  title={currentMix?.title || `${videos.left?.title || "Untitled Mix"} × ${videos.right?.title || ""}`}
+                  title={mixName || "New Mix"} //Update here
                   channelTitle="MixTube"
                   onToggleMixMode={() => setShowMixControls(!showMixControls)}
                   mixMode={showMixControls}
-                  onSaveMix={handlePost}
+                  onSaveMix={(title) => {
+                    setMixName(title);
+                    handlePost(title);
+                  }}
                   user={user}
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
