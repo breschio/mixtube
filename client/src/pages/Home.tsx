@@ -588,12 +588,14 @@ export default function Home() {
             minSize={25}
             className="transition-all duration-300 ease-in-out"
           >
-            <div className="h-full flex flex-col pl-4">
-              <MixList
-                mixes={mixes}
-                onPlayMix={handlePlayMix}
-                className="h-full"
-              />
+            <div className="h-[calc(100vh-5rem)] flex flex-col pl-4">
+              <div className="h-full overflow-auto"> {/*Corrected line */}
+                <MixList
+                  mixes={mixes}
+                  onPlayMix={handlePlayMix}
+                  className="h-full"
+                />
+              </div>
             </div>
           </ResizablePanel>
         </>
