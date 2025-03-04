@@ -89,11 +89,25 @@ app.use((req, res, next) => {
       serveStatic(app);
     }
 
-    // Start server
-    const PORT = 5000;
+    // Start server with fallback port handling
+    const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+    const FALLBACK_PORT = 3333;
+    
+    // Try the primary port first
     server.listen(PORT, "0.0.0.0", () => {
       log(`Server is running on http://0.0.0.0:${PORT}`);
       log('Server initialization complete');
+    }).on('error', (e: any) => {
+      if (e.code === 'EADDRINUSE') {
+        // If primary port is in use, try the fallback port
+        log(`Port ${PORT} is in use, trying alternative port ${FALLBACK_PORT}`);
+        server.listen(FALLBACK_PORT, "0.0.0.0", () => {
+          log(`Server is running on http://0.0.0.0:${FALLBACK_PORT}`);
+          log('Server initialization complete with fallback port');
+        });
+      } else {
+        throw e;
+      }
     });
 
     // Handle server errors
