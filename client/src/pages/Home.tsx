@@ -85,7 +85,7 @@ export default function Home() {
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [mixName, setMixName] = useState(''); 
   const [databaseConnected, setDatabaseConnected] = useState(false); 
-  const [showDatabaseWarning, setShowDatabaseWarning] = useState(true); // Added state
+  const [showDatabaseWarning, setShowDatabaseWarning] = useState(true);
 
 
   const { data: mixesResponse } = useQuery({
@@ -93,7 +93,12 @@ export default function Home() {
     onSuccess: (data) => {
       if (data && 'databaseConnected' in data) {
         setDatabaseConnected(!!data.databaseConnected);
-        setShowDatabaseWarning(!data.databaseConnected && data.mixes.length ===0); // Update warning based on data
+        // Hide warning if we have mixes, regardless of the connection flag
+        setShowDatabaseWarning(!data.databaseConnected && data.mixes.length === 0);
+      } else if (data && Array.isArray(data.mixes) && data.mixes.length > 0) {
+        // If we have mixes, we must be connected to a database
+        setDatabaseConnected(true);
+        setShowDatabaseWarning(false);
       }
     },
     queryFn: async () => {
