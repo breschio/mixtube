@@ -223,6 +223,7 @@ export function registerRoutes(app: Express): Server {
         crossFaderValue,
         template,
         views: 0, // Initialize views to 0
+        likes: 0, // Initialize likes to 0
       }).returning();
 
       res.json(newMix);
@@ -253,6 +254,29 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error('Error incrementing views:', error);
       res.status(500).json({ error: 'Failed to increment views' });
+    }
+  });
+
+  // Add new endpoint to like/unlike a mix
+  app.post('/api/mixes/:id/like', async (req, res) => {
+    try {
+      const mixId = parseInt(req.params.id);
+
+      // Get current mix to check likes
+      const [mix] = await db.select().from(mixes).where(eq(mixes.id, mixId));
+      if (!mix) {
+        return res.status(404).json({ error: 'Mix not found' });
+      }
+
+      // Toggle like (increment)
+      await db.update(mixes)
+        .set({ likes: sql`${mixes.likes} + 1` })
+        .where(eq(mixes.id, mixId));
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error updating likes:', error);
+      res.status(500).json({ error: 'Failed to update likes' });
     }
   });
 

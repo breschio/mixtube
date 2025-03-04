@@ -5,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { PenLine, Sparkles, SplitSquareHorizontal, HandMetal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { useToast } from "@/hooks/use-toast";
 
 interface VideoInfoProps {
   title: string;
@@ -18,25 +19,55 @@ interface VideoInfoProps {
   isPromptMode?: boolean;
   onTogglePromptMode?: () => void;
   isCreateMode?: boolean;
+  mixId?: number;
+  initialLikes?: number;
 }
 
 const VideoInfo = ({ 
   title,
   channelTitle = 'Unknown Channel',
   onToggleMixMode,
-  mixMode = true, // Default to true
+  mixMode = true,
   onSaveMix,
   user,
   leftVideoSelected,
   rightVideoSelected,
   isPromptMode = true,
   onTogglePromptMode,
-  isCreateMode = false
+  isCreateMode = false,
+  mixId,
+  initialLikes = 0
 }: VideoInfoProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [mixName, setMixName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [likes, setLikes] = useState(initialLikes);
+  const { toast } = useToast();
+
+  const handleLike = async () => {
+    if (!mixId) return;
+
+    try {
+      const response = await fetch(`/api/mixes/${mixId}/like`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update like');
+      }
+
+      setIsLiked(true);
+      setLikes(prev => prev + 1);
+    } catch (error) {
+      console.error('Error liking mix:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to like the mix",
+      });
+    }
+  };
 
   const handleSave = async () => {
     if (!mixName.trim() || isSubmitting) return;
@@ -161,10 +192,11 @@ const VideoInfo = ({
               "gap-1.5",
               isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
-            onClick={() => setIsLiked(!isLiked)}
+            onClick={handleLike}
+            disabled={!mixId}
           >
             <HandMetal className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
-            Like
+            {likes > 0 ? `${likes} Likes` : "Like"}
           </Button>
           <Button
             variant="outline"

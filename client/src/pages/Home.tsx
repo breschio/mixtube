@@ -34,6 +34,7 @@ interface Mix {
   crossFaderValue: number;
   template: string;
   createdAt: string;
+  likes?: number; // Added likes property to Mix interface
 }
 
 interface VideoInfo {
@@ -42,6 +43,8 @@ interface VideoInfo {
   channelTitle: string;
   thumbnail: string;
   startTime?: number;
+  mixId?: string; // Added mixId prop
+  initialLikes?: number; // Added initialLikes prop
 }
 
 export default function Home() {
@@ -355,6 +358,8 @@ export default function Home() {
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
           isCreateMode={isNewMode}
+          mixId={currentMix?.id} // Added mixId prop
+          initialLikes={currentMix?.likes} // Added initialLikes prop
         />
       </div>
       {showMixControls && !isNewMode && (
@@ -409,6 +414,8 @@ export default function Home() {
           isPromptMode={isPromptMode}
           onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
           isCreateMode={isNewMode}
+          mixId={currentMix?.id} // Added mixId prop
+          initialLikes={currentMix?.likes} // Added initialLikes prop
         />
       </div>
 
@@ -501,6 +508,8 @@ export default function Home() {
                   isPromptMode={isPromptMode}
                   onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
                   isCreateMode={isNewMode}
+                  mixId={currentMix?.id} // Added mixId prop
+                  initialLikes={currentMix?.likes} // Added initialLikes prop
                 />
               </div>
               {showMixControls && (
@@ -561,6 +570,8 @@ export default function Home() {
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
                   isCreateMode={isNewMode}
+                  mixId={currentMix?.id} // Added mixId prop
+                  initialLikes={currentMix?.likes} // Added initialLikes prop
                 />
               </div>
               {showMixControls && (
