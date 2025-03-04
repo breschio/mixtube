@@ -6,8 +6,6 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface VideoInfoProps {
   title: string;
@@ -21,12 +19,9 @@ interface VideoInfoProps {
   isPromptMode?: boolean;
   onTogglePromptMode?: () => void;
   isCreateMode?: boolean;
-  mixId?: number;
-  likes?: number;
-  isLiked?: boolean;
 }
 
-export default function VideoInfo({
+export default function VideoInfo({ 
   title,
   channelTitle = 'Unknown Channel',
   onToggleMixMode,
@@ -37,58 +32,10 @@ export default function VideoInfo({
   rightVideoSelected,
   isPromptMode = true,
   onTogglePromptMode,
-  isCreateMode = false,
-  mixId,
-  likes = 0,
-  isLiked = false
+  isCreateMode = false
 }: VideoInfoProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [mixName, setMixName] = useState("");
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const likeMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch(`/api/mixes/${mixId}/like`, {
-        method: 'POST'
-      });
-      if (!response.ok) throw new Error('Failed to like mix');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
-    }
-  });
-
-  const handleShare = async () => {
-    if (!mixId) {
-      toast({
-        title: "Cannot share",
-        description: "Save the mix first to generate a shareable link.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const url = `${window.location.origin}/mix/${mixId}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      toast({
-        title: "Link copied!",
-        description: "The mix URL has been copied to your clipboard.",
-      });
-    } catch (err) {
-      toast({
-        title: "Failed to copy",
-        description: "Please try copying the URL manually.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleLike = () => {
-    likeMutation.mutate();
-  };
 
   if (isCreateMode) {
     return (
@@ -135,8 +82,8 @@ export default function VideoInfo({
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                {(!leftVideoSelected || !rightVideoSelected)
-                  ? "Select both videos to save"
+                {(!leftVideoSelected || !rightVideoSelected) 
+                  ? "Select both videos to save" 
                   : "Save your mix"}
               </TooltipContent>
             </Tooltip>
@@ -190,31 +137,11 @@ export default function VideoInfo({
                   {channelTitle}
                 </span>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "h-9 px-4 group",
-                  isLiked && "text-primary"
-                )}
-                onClick={handleLike}
-              >
-                <ThumbsUp className={cn(
-                  "h-4 w-4 mr-2 transition-transform group-hover:scale-125",
-                  isLiked && "fill-current"
-                )} />
-                {!isLiked ? (
-                  "Like"
-                ) : (
-                  <span className="tabular-nums">{likes}</span>
-                )}
+              <Button variant="ghost" size="sm" className="h-9 px-4">
+                <ThumbsUp className="h-4 w-4 mr-2" />
+                Like
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-9 px-4"
-                onClick={handleShare}
-              >
+              <Button variant="ghost" size="sm" className="h-9 px-4">
                 <Share2 className="h-4 w-4 mr-2" />
                 Share
               </Button>

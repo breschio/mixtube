@@ -1,7 +1,6 @@
-import { useLocation } from 'wouter'; // Added import statement
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,13 +21,10 @@ import MixList from "@/components/MixList";
 import DJControls from "@/components/DJControls";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { useParams } from "wouter";
-
 
 // ... [Keep existing interfaces and type definitions] ...
 
 export default function Home() {
-  const { id: mixId } = useParams<{ id: string }>();
   const user = useUser();
   const isMobile = useMobile();
   const { toast } = useToast();
@@ -39,35 +35,25 @@ export default function Home() {
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
-  }>(() => {
-    // Only set default videos if there's no mixId
-    if (!mixId) {
-      return {
-        left: {
-          id: 'ApSCH4JXjQU',
-          title: 'Chill Jazz Hop Beats - 24/7 Jazzhop Radio',
-          channelTitle: 'Gentleman Music',
-          thumbnail: `https://img.youtube.com/vi/ApSCH4JXjQU/mqdefault.jpg`
-        },
-        right: {
-          id: 'Q_050nEIMqw',
-          title: 'Ambient DJ Mix - Deep Focus',
-          channelTitle: 'Deep Music Channel',
-          thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
-        }
-      };
+  }>({
+    left: {
+      id: 'ApSCH4JXjQU',
+      title: 'Chill Jazz Hop Beats - 24/7 Jazzhop Radio',
+      channelTitle: 'Gentleman Music',
+      thumbnail: `https://img.youtube.com/vi/ApSCH4JXjQU/mqdefault.jpg`
+    },
+    right: {
+      id: 'Q_050nEIMqw',
+      title: 'Ambient DJ Mix - Deep Focus',
+      channelTitle: 'Deep Music Channel',
+      thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
     }
-    return {
-      left: null,
-      right: null
-    };
   });
   const [isNewMode, setIsNewMode] = useState(false);
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [isPromptMode, setIsPromptMode] = useState(true); // Added state
 
   const queryClient = useQueryClient();
-  const [, setLocation] = useLocation(); // Added useLocation hook
 
   const { data: mixes = [] } = useQuery({
     queryKey: ['/api/mixes'],
@@ -79,6 +65,18 @@ export default function Home() {
       return response.json();
     }
   });
+
+  const getVideoInfoFromMixes = (videoId: string): {title: string, channelTitle: string} | undefined => {
+    for (const mix of mixes) {
+      if (mix.leftVideoId === videoId) {
+        return { title: mix.leftTitle || "Untitled Video", channelTitle: mix.leftChannel || "Unknown Channel" };
+      }
+      if (mix.rightVideoId === videoId) {
+        return { title: mix.rightTitle || "Untitled Video", channelTitle: mix.rightChannel || "Unknown Channel" };
+      }
+    }
+    return undefined;
+  };
 
   const handleNewMix = () => {
     setIsButtonActive(true);
@@ -130,17 +128,20 @@ export default function Home() {
   };
 
   const handlePlayMix = async (mix: Mix) => {
+    const leftInfo = getVideoInfoFromMixes(mix.leftVideoId);
+    const rightInfo = getVideoInfoFromMixes(mix.rightVideoId);
+
     setVideos({
       left: {
         id: mix.leftVideoId,
-        title: mix.leftTitle || "Untitled Video",
-        channelTitle: mix.leftChannel || "Unknown Channel",
+        title: leftInfo?.title || "Video",
+        channelTitle: leftInfo?.channelTitle || "Channel",
         thumbnail: `https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`
       },
       right: {
         id: mix.rightVideoId,
-        title: mix.rightTitle || "Untitled Video",
-        channelTitle: mix.rightChannel || "Unknown Channel",
+        title: rightInfo?.title || "Video",
+        channelTitle: rightInfo?.channelTitle || "Channel",
         thumbnail: `https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`
       }
     });
@@ -194,11 +195,7 @@ export default function Home() {
         throw new Error('Failed to save mix');
       }
 
-      const newMix = await response.json();
       await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
-
-      // Update URL with the new mix ID
-      setLocation(`/mix/${newMix.id}`);
 
       toast({
         title: "Success",
@@ -298,9 +295,6 @@ export default function Home() {
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
           isCreateMode={isNewMode}
-          mixId={currentMix?.id}
-          likes={currentMix?.likes || 0}
-          isLiked={currentMix?.isLiked}
         />
       </div>
       {showMixControls && !isNewMode && (
@@ -355,9 +349,6 @@ export default function Home() {
           isPromptMode={isPromptMode}
           onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
           isCreateMode={isNewMode}
-          mixId={currentMix?.id}
-          likes={currentMix?.likes || 0}
-          isLiked={currentMix?.isLiked}
         />
       </div>
 
@@ -447,9 +438,6 @@ export default function Home() {
                   isPromptMode={isPromptMode}
                   onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
                   isCreateMode={isNewMode}
-                  mixId={currentMix?.id}
-                  likes={currentMix?.likes || 0}
-                  isLiked={currentMix?.isLiked}
                 />
               </div>
               {showMixControls && (
@@ -507,9 +495,6 @@ export default function Home() {
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
                   isCreateMode={isNewMode}
-                  mixId={currentMix?.id}
-                  likes={currentMix?.likes || 0}
-                  isLiked={currentMix?.isLiked}
                 />
               </div>
               {showMixControls && (
@@ -560,33 +545,6 @@ export default function Home() {
     setCurrentMix(null);
     setIsNewMode(false);
   };
-
-  useEffect(() => {
-    if (mixId) {
-      console.log('Loading mix with ID:', mixId);
-      // Load mix by ID
-      fetch(`/api/mixes/${mixId}`)
-        .then(res => {
-          if (!res.ok) {
-            console.error('Error response:', res.status, res.statusText);
-            throw new Error('Mix not found');
-          }
-          return res.json();
-        })
-        .then(mix => {
-          console.log('Loaded mix:', mix);
-          handlePlayMix(mix);
-        })
-        .catch(err => {
-          console.error('Error loading mix:', err);
-          toast({
-            title: "Error",
-            description: "Could not load the mix. It may have been deleted or is unavailable.",
-            variant: "destructive"
-          });
-        });
-    }
-  }, [mixId]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

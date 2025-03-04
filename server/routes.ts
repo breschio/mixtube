@@ -256,30 +256,6 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.get('/api/mixes/:id', async (req, res) => {
-    try {
-      const mixId = parseInt(req.params.id);
-      if (isNaN(mixId)) {
-        console.error('Invalid mix ID received:', req.params.id);
-        return res.status(400).json({ error: 'Invalid mix ID' });
-      }
-
-      console.log('Fetching mix with ID:', mixId);
-      const [mix] = await db.select().from(mixes).where(eq(mixes.id, mixId)).limit(1);
-
-      if (!mix) {
-        console.log('No mix found with ID:', mixId);
-        return res.status(404).json({ error: 'Mix not found' });
-      }
-
-      console.log('Successfully retrieved mix:', mix);
-      res.json(mix);
-    } catch (error) {
-      console.error('Error fetching mix:', error);
-      res.status(500).json({ error: 'Failed to fetch mix' });
-    }
-  });
-
   const httpServer = createServer(app);
   return httpServer;
 }
