@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { PenLine, Sparkles, SplitSquareHorizontal } from 'lucide-react';
+import { PenLine, Sparkles, SplitSquareHorizontal, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 interface VideoInfoProps {
   title: string;
@@ -36,6 +36,7 @@ const VideoInfo = ({
   const [isEditing, setIsEditing] = useState(false);
   const [mixName, setMixName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   const handleSave = async () => {
     if (!mixName.trim() || isSubmitting) return;
@@ -152,18 +153,32 @@ const VideoInfo = ({
             </>
           )}
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn(
-            "gap-1.5",
-            mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
-          )}
-          onClick={onToggleMixMode}
-        >
-          <SplitSquareHorizontal className="h-4 w-4" />
-          Mix
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn(
+              "gap-1.5",
+              isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
+            )}
+            onClick={() => setIsLiked(!isLiked)}
+          >
+            <Heart className={cn("h-4 w-4", isLiked && "fill-current")} />
+            Like
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn(
+              "gap-1.5",
+              mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
+            )}
+            onClick={onToggleMixMode}
+          >
+            <SplitSquareHorizontal className="h-4 w-4" />
+            Mix
+          </Button>
+        </div>
       </div>
     </div>
   );
