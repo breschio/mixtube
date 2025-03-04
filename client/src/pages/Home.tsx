@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import { useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, X, User } from "lucide-react";
@@ -92,7 +92,19 @@ export default function Home() {
     }
   });
 
-  // Define handlePost early, after all state declarations
+  // Load the latest mix on initial render
+  useEffect(() => {
+    if (mixes.length > 0 && !currentMix && !isNewMode) {
+      // Sort mixes by creation date and get the latest one
+      const latestMix = [...mixes].sort((a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )[0];
+
+      // Load the mix but don't auto-play on initial page load
+      handlePlayMix(latestMix, false);
+    }
+  }, [mixes]);
+
   const handlePost = async (title: string) => {
     if (!videos.left?.id || !videos.right?.id) {
       toast({
@@ -226,54 +238,30 @@ export default function Home() {
     }
   };
 
-  const handleSaveMix = async (title: string) => {
-    if (!videos.left?.id || !videos.right?.id) {
-      toast({
-        title: "Incomplete Mix",
-        description: "Please select both videos before saving",
-        variant: "destructive"
-      });
-      return;
+  const handleResetView = () => {
+    setIsButtonActive(false);
+    setShowMixControls(false);
+    setActiveTab("mix");
+    setPlaying(false);
+    setIsNewMode(false);
+
+    // If we have a current mix, keep it displayed
+    if (currentMix) {
+      handlePlayMix(currentMix);
+    } else if (mixes.length > 0) {
+      // If no current mix but we have mixes, show the latest one
+      const latestMix = [...mixes].sort((a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )[0];
+      handlePlayMix(latestMix);
     }
+  };
 
-    try {
-      const response = await fetch('/api/mixes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title,
-          leftVideoId: videos.left.id,
-          leftTitle: videos.left.title,
-          leftChannel: videos.left.channelTitle,
-          rightVideoId: videos.right.id,
-          rightTitle: videos.right.title,
-          rightChannel: videos.right.channelTitle,
-          crossFaderValue: Math.round(crossFader * 100),
-          template: activeTemplate,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save mix');
-      }
-
-      await queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
-
-      toast({
-        title: "Success",
-        description: "Your mix has been saved",
-      });
-      setShowSaveDialog(false);
-    } catch (error) {
-      console.error('Error saving mix:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save mix. Please try again.",
-        variant: "destructive"
-      });
-    }
+  // Update the hasMixTitle function to properly check for mix titles
+  const hasMixTitle = () => {
+    return currentMix?.title || 
+           (isNewMode && videos.left?.title && videos.right?.title && `${videos.left.title} × ${videos.right.title}`) ||
+           false;
   };
 
   const renderControls = (side: 'left' | 'right') => (
@@ -601,33 +589,6 @@ export default function Home() {
     </ResizablePanelGroup>
   );
 
-  const handleResetView = () => {
-    setIsButtonActive(false);
-    setShowMixControls(false);
-    setActiveTab("mix");
-    setPlaying(false);
-    setIsNewMode(false);
-
-    // If we have a current mix, keep it displayed
-    if (currentMix) {
-      handlePlayMix(currentMix);
-    } else if (mixes.length > 0) {
-      // If no current mix but we have mixes, show the latest one
-      const latestMix = [...mixes].sort((a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )[0];
-      handlePlayMix(latestMix);
-    }
-  };
-
-  // Update the hasMixTitle function to properly check for mix titles
-  const hasMixTitle = () => {
-    return currentMix?.title ||
-           (isNewMode && videos.left?.title && videos.right?.title && `${videos.left.title} × ${videos.right.title}`) ||
-           false;
-  };
-
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="w-full bg-background">
@@ -689,7 +650,7 @@ export default function Home() {
       <SaveMixDialog
         open={showSaveDialog && !hasMixTitle()}
         onOpenChange={setShowSaveDialog}
-        onSave={handleSaveMix}
+        onSave={handlePost}
       />
     </div>
   );

@@ -142,14 +142,6 @@ export default function VideoInfo({
                   {channelTitle}
                 </span>
               </div>
-              <Button variant="ghost" size="sm" className="h-9 px-4">
-                <ThumbsUp className="h-4 w-4 mr-2" />
-                Like
-              </Button>
-              <Button variant="ghost" size="sm" className="h-9 px-4">
-                <Share2 className="h-4 w-4 mr-2" />
-                Share
-              </Button>
             </>
           )}
         </div>
