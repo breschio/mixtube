@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { PenLine, Sparkles, SplitSquareHorizontal, HandMetal } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 
 interface VideoInfoProps {
@@ -44,6 +44,12 @@ const VideoInfo = ({
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(initialLikes);
   const { toast } = useToast();
+
+  // Reset like state when mix changes
+  useEffect(() => {
+    setIsLiked(false);
+    setLikes(initialLikes);
+  }, [mixId, initialLikes]);
 
   const handleLike = async () => {
     if (!mixId) return;
