@@ -38,19 +38,28 @@ export default function Home() {
   const [videos, setVideos] = useState<{
     left: VideoInfo | null;
     right: VideoInfo | null;
-  }>({
-    left: {
-      id: 'ApSCH4JXjQU',
-      title: 'Chill Jazz Hop Beats - 24/7 Jazzhop Radio',
-      channelTitle: 'Gentleman Music',
-      thumbnail: `https://img.youtube.com/vi/ApSCH4JXjQU/mqdefault.jpg`
-    },
-    right: {
-      id: 'Q_050nEIMqw',
-      title: 'Ambient DJ Mix - Deep Focus',
-      channelTitle: 'Deep Music Channel',
-      thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
+  }>(() => {
+    // Only set default videos if there's no mixId
+    if (!mixId) {
+      return {
+        left: {
+          id: 'ApSCH4JXjQU',
+          title: 'Chill Jazz Hop Beats - 24/7 Jazzhop Radio',
+          channelTitle: 'Gentleman Music',
+          thumbnail: `https://img.youtube.com/vi/ApSCH4JXjQU/mqdefault.jpg`
+        },
+        right: {
+          id: 'Q_050nEIMqw',
+          title: 'Ambient DJ Mix - Deep Focus',
+          channelTitle: 'Deep Music Channel',
+          thumbnail: `https://img.youtube.com/vi/Q_050nEIMqw/mqdefault.jpg`
+        }
+      };
     }
+    return {
+      left: null,
+      right: null
+    };
   });
   const [isNewMode, setIsNewMode] = useState(false);
   const [isButtonActive, setIsButtonActive] = useState(false);
@@ -68,18 +77,6 @@ export default function Home() {
       return response.json();
     }
   });
-
-  const getVideoInfoFromMixes = (videoId: string): {title: string, channelTitle: string} | undefined => {
-    for (const mix of mixes) {
-      if (mix.leftVideoId === videoId) {
-        return { title: mix.leftTitle || "Untitled Video", channelTitle: mix.leftChannel || "Unknown Channel" };
-      }
-      if (mix.rightVideoId === videoId) {
-        return { title: mix.rightTitle || "Untitled Video", channelTitle: mix.rightChannel || "Unknown Channel" };
-      }
-    }
-    return undefined;
-  };
 
   const handleNewMix = () => {
     setIsButtonActive(true);
@@ -131,20 +128,17 @@ export default function Home() {
   };
 
   const handlePlayMix = async (mix: Mix) => {
-    const leftInfo = getVideoInfoFromMixes(mix.leftVideoId);
-    const rightInfo = getVideoInfoFromMixes(mix.rightVideoId);
-
     setVideos({
       left: {
         id: mix.leftVideoId,
-        title: leftInfo?.title || "Video",
-        channelTitle: leftInfo?.channelTitle || "Channel",
+        title: mix.leftTitle || "Untitled Video",
+        channelTitle: mix.leftChannel || "Unknown Channel",
         thumbnail: `https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`
       },
       right: {
         id: mix.rightVideoId,
-        title: rightInfo?.title || "Video",
-        channelTitle: rightInfo?.channelTitle || "Channel",
+        title: mix.rightTitle || "Untitled Video",
+        channelTitle: mix.rightChannel || "Unknown Channel",
         thumbnail: `https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`
       }
     });
@@ -573,6 +567,7 @@ export default function Home() {
           handlePlayMix(mix);
         })
         .catch(err => {
+          console.error('Error loading mix:', err);
           toast({
             title: "Error",
             description: "Could not load the mix. It may have been deleted or is unavailable.",
