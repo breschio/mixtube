@@ -79,7 +79,7 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
                 <h3 className="text-sm font-[400] line-clamp-2 leading-[1.1] mb-0.5">{mix.title}</h3>
                 <div className="text-[11px] text-muted-foreground leading-tight mt-1">
                   <div className="truncate">MixTube</div>
-                  <div className="flex items-center gap-2 mt-0.5 truncate">
+                  <div className="flex items-center gap-2 mt-2 truncate">
                     <span className="flex items-center gap-0.5 min-w-fit">
                       <ThumbsUp className="h-3 w-3" />
                       {mix.likes}

@@ -307,7 +307,7 @@ export default function Home() {
   );
 
   const mixControls = (
-    <Card className="mt-4"> {/* Updated mt-6 to mt-4 */}
+    <Card className="mt-4"> 
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <MixTemplates
@@ -500,7 +500,7 @@ export default function Home() {
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-4 bg-background border-y border-r border-border/50 rounded-r-lg"> {/* Updated mt-6 to mt-4 */}
+                <Card className="mt-4 bg-background border-y border-r border-border/50 rounded-r-lg"> 
                   <div className="p-6">
                     <DJControls
                       crossFader={crossFader}
@@ -562,7 +562,7 @@ export default function Home() {
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-4 bg-background border-y border-r border-border/50 rounded-r-lg"> {/* Updated mt-6 to mt-4 */}
+                <Card className="mt-4 bg-background border-y border-r border-border/50 rounded-r-lg"> 
                   <div className="p-6">
                     <DJControls
                       crossFader={crossFader}
