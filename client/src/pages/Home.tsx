@@ -326,14 +326,8 @@ export default function Home() {
   );
 
   const mixControls = (
-    <Card className="mt-4"> 
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <MixTemplates
-            onSelectTemplate={handleTemplateSelect}
-            activeTemplate={activeTemplate}
-          />
-        </div>
+    <Card className="bg-background"> 
+      <div className="space-y-6 p-6">
         <DJControls
           crossFader={crossFader}
           onCrossFaderChange={handleCrossFaderChange}
@@ -341,6 +335,12 @@ export default function Home() {
           rightVideoId={videos.right?.id}
           forceShowTooltip={showTransitionTooltip}
         />
+        <div className="grid grid-cols-2 gap-2 w-full">
+          <MixTemplates
+            onSelectTemplate={handleTemplateSelect}
+            activeTemplate={activeTemplate}
+          />
+        </div>
       </div>
     </Card>
   );
@@ -407,7 +407,7 @@ export default function Home() {
         />
       </div>
 
-      <div className="border-t border-border/50">
+      <div>
         <VideoInfo
           title={currentMix?.title || mixName || "New Mix"}
           channelTitle="MixTube"
@@ -435,9 +435,7 @@ export default function Home() {
         }}
       >
         <div className="h-full">
-          <div className="px-0">
-            {mixControls}
-          </div>
+          {mixControls}
         </div>
       </div>
     </div>
