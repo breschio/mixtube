@@ -407,7 +407,7 @@ export default function Home() {
         />
       </div>
 
-      <div className="px-3 border-t border-border/50">
+      <div className="border-t border-border/50">
         <VideoInfo
           title={currentMix?.title || mixName || "New Mix"}
           channelTitle="MixTube"
@@ -417,8 +417,7 @@ export default function Home() {
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
-          isPromptMode={isPromptMode}
-          onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
+          isPromptMode={false}
           isCreateMode={isNewMode}
           mixId={currentMix?.id} 
           initialLikes={currentMix?.likes} 
@@ -435,42 +434,11 @@ export default function Home() {
           marginTop: showMixControls ? '1rem' : '0'
         }}
       >
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-          <TabsList className="w-full grid grid-cols-3 gap-1 p-1">
-            <TabsTrigger value="left" className="flex-1 px-8 py-3">Left</TabsTrigger>
-            <TabsTrigger value="mix" className="flex-1 px-8 py-3">Mix</TabsTrigger>
-            <TabsTrigger value="right" className="flex-1 px-8 py-3">Right</TabsTrigger>
-          </TabsList>
-          <TabsContent value="left" className="h-[calc(100%-3rem)] overflow-auto">
-            <div className="px-0">
-              <div className="mt-6">
-                <SearchBar
-                  onVideoSelect={(video) => handleVideoSelect(video, 'left')}
-                  videoId={videos.left?.id || null}
-                  isPromptMode={isPromptMode}
-                  defaultMode="url"
-                />
-              </div>
-            </div>
-          </TabsContent>
-          <TabsContent value="mix" className="h-[calc(100%-3rem)] overflow-auto">
-            <div className="px-0">
-              {mixControls}
-            </div>
-          </TabsContent>
-          <TabsContent value="right" className="h-[calc(100%-3rem)] overflow-auto">
-            <div className="px-0">
-              <div className="mt-6">
-                <SearchBar
-                  onVideoSelect={(video) => handleVideoSelect(video, 'right')}
-                  videoId={videos.right?.id || null}
-                  isPromptMode={isPromptMode}
-                  defaultMode="url"
-                />
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
+        <div className="h-full">
+          <div className="px-0">
+            {mixControls}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -661,7 +629,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="min-h-screen p-2 pb-20 sm:p-4">
+      <main className="min-h-screen pb-20">
         {showDatabaseWarning && (
           <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded shadow-sm">
             <div className="flex items-center">
@@ -677,7 +645,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        <div className="max-w-[1600px] mx-auto px-2 sm:px-8 md:px-12 pb-8">
+        <div className="max-w-[1600px] mx-auto px-6 pb-8">
           {isMobile ? renderMobileLayout() : renderDesktopLayout()}
         </div>
       </main>
