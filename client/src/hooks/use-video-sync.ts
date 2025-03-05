@@ -27,7 +27,7 @@ export function useVideoSync() {
   const initialPlayAttemptRef = useRef<boolean>(false);
   const syncRetryCountRef = useRef<number>(0);
   const MAX_SYNC_RETRIES = 3;
-  const MOBILE_PLAY_DELAY = 500; // Increased delay for mobile devices
+  const MOBILE_PLAY_DELAY = 250; // Reduced from 500ms to 250ms for better sync
 
   const handleStateChange = (player: 'left' | 'right', state: number) => {
     console.log(`${player} player state changed to:`, state);
@@ -134,63 +134,47 @@ export function useVideoSync() {
           await seekAllPlayers(0);
         }
 
-        // Special handling for mobile
-        if (isMobile) {
-          // On mobile, we need to ensure both players are ready before attempting playback
-          if (!leftReady || !rightReady) {
-            console.log('Waiting for both players to be ready on mobile');
-            return;
-          }
-
-          // Start left player first with a longer delay
-          if (leftPlayer) {
-            console.log('Starting left player on mobile');
-            leftPlayer.playVideo();
-            await new Promise(resolve => setTimeout(resolve, MOBILE_PLAY_DELAY));
-          }
-
-          // Then start right player
-          if (rightPlayer) {
-            console.log('Starting right player on mobile');
-            rightPlayer.playVideo();
-            await new Promise(resolve => setTimeout(resolve, MOBILE_PLAY_DELAY));
-          }
-
-          // Double-check playback state after delay
-          setTimeout(() => {
-            if (leftPlayer && leftReady) {
-              console.log('Checking left player state');
-              const state = leftPlayer.getPlayerState();
-              if (state !== 1) { // 1 is playing
-                console.log('Retrying left player playback');
-                leftPlayer.playVideo();
-              }
-            }
-            if (rightPlayer && rightReady) {
-              console.log('Checking right player state');
-              const state = rightPlayer.getPlayerState();
-              if (state !== 1) {
-                console.log('Retrying right player playback');
-                rightPlayer.playVideo();
-              }
-            }
-          }, MOBILE_PLAY_DELAY * 2);
-        } else {
-          // Desktop behavior - start simultaneously
+        // Handle both mobile and desktop playback similarly
+        if (leftReady && rightReady) {
+          // Start both players with a minimal delay
           const playPromises = [];
-          if (leftPlayer && leftReady) {
+
+          if (leftPlayer) {
             playPromises.push(new Promise<void>((resolve) => {
               leftPlayer.playVideo();
               resolve();
             }));
           }
-          if (rightPlayer && rightReady) {
+
+          if (rightPlayer) {
             playPromises.push(new Promise<void>((resolve) => {
               rightPlayer.playVideo();
               resolve();
             }));
           }
+
           await Promise.all(playPromises);
+
+          // Additional sync check after delay
+          setTimeout(() => {
+            if (leftPlayer) {
+              const leftState = leftPlayer.getPlayerState();
+              if (leftState !== 1) { // 1 is playing
+                console.log('Re-syncing left player');
+                leftPlayer.playVideo();
+              }
+            }
+            if (rightPlayer) {
+              const rightState = rightPlayer.getPlayerState();
+              if (rightState !== 1) {
+                console.log('Re-syncing right player');
+                rightPlayer.playVideo();
+              }
+            }
+          }, isMobile ? MOBILE_PLAY_DELAY : 100);
+        } else {
+          console.log('Waiting for both players to be ready');
+          return;
         }
       } else {
         console.log('Pausing all videos');
