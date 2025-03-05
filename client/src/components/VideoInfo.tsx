@@ -22,7 +22,7 @@ interface VideoInfoProps {
   isCreateMode?: boolean;
   mixId?: number;
   initialLikes?: number;
-  className?: string; // Added className prop
+  className?: string; 
 }
 
 const VideoInfo = ({ 
@@ -174,7 +174,7 @@ const VideoInfo = ({
             variant="outline"
             size="sm"
             className={cn(
-              "gap-1.5 px-3",
+              "gap-1.5 px-3 h-9",
               isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             onClick={handleLike}
@@ -183,20 +183,18 @@ const VideoInfo = ({
             <ThumbsUp className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
             {likes > 0 ? likes : "Like"}
           </Button>
-          <MovingBorderButton
-            containerClassName="inline-flex items-center justify-center h-9"
+          <Button
+            variant="outline"
+            size="sm"
             className={cn(
-              "gap-1.5 text-sm font-medium px-3",
+              "gap-1.5 px-3 h-9",
               mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
-            borderRadius="0.375rem"
-            duration={4000}
             onClick={onToggleMixMode}
-            showBorder={mixMode}
           >
             <Shuffle className="h-4 w-4" />
             Mix
-          </MovingBorderButton>
+          </Button>
         </div>
       </div>
     </div>

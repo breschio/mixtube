@@ -22,7 +22,6 @@ import DJControls from "@/components/DJControls";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import BorderBeam from "@/components/BorderBeam";
-import { Button as MovingBorderButton } from "@/components/ui/moving-border";
 
 interface Mix {
   id: string;
@@ -430,7 +429,6 @@ export default function Home() {
             showMixControls ? "translate-y-0" : "-translate-y-full opacity-0 pointer-events-none"
           )}
         >
-          {/* REPLACEMENT START */}
           <Card className="bg-background"> 
             <div className="space-y-8 p-6">
               <DJControls
@@ -446,7 +444,6 @@ export default function Home() {
               />
             </div>
           </Card>
-          {/* REPLACEMENT END */}
         </div>
 
         <div 
@@ -627,16 +624,14 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-4">
               <ThemeToggle />
-              <MovingBorderButton
-                containerClassName="inline-flex items-center justify-center h-9"
+              <Button
+                variant="outline"
+                size="sm"
                 className={cn(
-                  "text-sm font-medium px-3 gap-1.5",
+                  "gap-1.5 px-3 h-9",
                   isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
                 )}
-                borderRadius="0.375rem"
-                duration={4000}
                 onClick={isNewMode ? handleResetView : handleNewMix}
-                showBorder={isNewMode}
               >
                 {isNewMode ? (
                   <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-[360deg]" />
@@ -647,7 +642,7 @@ export default function Home() {
                   )} />
                 )}
                 {isNewMode ? 'Close' : 'New'}
-              </MovingBorderButton>
+              </Button>
             </div>
           </div>
         </div>
