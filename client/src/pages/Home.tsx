@@ -112,10 +112,19 @@ export default function Home() {
 
   useEffect(() => {
     if (mixes.length > 0 && !currentMix && !isNewMode) {
-      const latestMix = [...mixes].sort((a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )[0];
-      handlePlayMix(latestMix, false);
+      const mostLikedMix = [...mixes].sort((a, b) => {
+        // Handle undefined likes by treating them as 0
+        const likesA = a.likes || 0;
+        const likesB = b.likes || 0;
+
+        // Sort by likes descending, if equal sort by date
+        if (likesB !== likesA) {
+          return likesB - likesA;
+        }
+        // Secondary sort by date if likes are equal
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      })[0];
+      handlePlayMix(mostLikedMix, false);
     }
   }, [mixes]);
 
