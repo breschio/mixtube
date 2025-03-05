@@ -39,7 +39,7 @@ export default function MixTemplates({
   return (
     <div className={cn(
       "grid gap-2 w-full",
-      isMobile ? "grid-cols-2" : "grid-cols-1"
+      isMobile ? "grid-cols-2" : "grid-cols-2"
     )}>
       {mixTemplates.map((template) => {
         const Icon = template.icon;
