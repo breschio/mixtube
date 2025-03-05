@@ -437,7 +437,7 @@ export default function Home() {
         <div 
           className={cn(
             "absolute w-full transition-all duration-300 ease-in-out",
-            showMixControls ? "translate-y-[280px]" : "translate-y-0"
+            showMixControls ? "translate-y-[220px]" : "translate-y-0"
           )}
         >
           <MixList
