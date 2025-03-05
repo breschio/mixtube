@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Button as MovingBorderButton } from "@/components/ui/moving-border";
+import { useMobile } from '@/hooks/use-mobile';
 
 interface VideoInfoProps {
   title: string;
@@ -22,7 +23,7 @@ interface VideoInfoProps {
   isCreateMode?: boolean;
   mixId?: number;
   initialLikes?: number;
-  className?: string; // Added className prop
+  className?: string;
 }
 
 const VideoInfo = ({ 
@@ -47,6 +48,7 @@ const VideoInfo = ({
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(initialLikes);
   const { toast } = useToast();
+  const isMobile = useMobile();
 
   useEffect(() => {
     setIsLiked(false);
@@ -169,12 +171,16 @@ const VideoInfo = ({
             </>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className={cn(
+          "flex items-center",
+          isMobile ? "gap-1 w-full justify-end" : "gap-2"
+        )}>
           <Button
             variant="outline"
-            size="sm"
+            size={isMobile ? "default" : "sm"}
             className={cn(
-              "gap-1.5 px-3",
+              "gap-1.5",
+              isMobile ? "flex-1" : "px-3",
               isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             onClick={handleLike}
@@ -184,9 +190,13 @@ const VideoInfo = ({
             {likes > 0 ? likes : "Like"}
           </Button>
           <MovingBorderButton
-            containerClassName="inline-flex items-center justify-center h-9"
+            containerClassName={cn(
+              "inline-flex items-center justify-center",
+              isMobile ? "flex-1 h-10" : "h-9"
+            )}
             className={cn(
-              "gap-1.5 text-sm font-medium px-3",
+              "gap-1.5 text-sm font-medium",
+              isMobile ? "w-full" : "px-3",
               mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             borderRadius="0.375rem"
