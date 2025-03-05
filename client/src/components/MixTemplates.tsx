@@ -37,10 +37,7 @@ export default function MixTemplates({
   const isMobile = useMobile();
 
   return (
-    <div className={cn(
-      "grid grid-cols-2 gap-2 w-full",
-      isMobile && "min-h-[48px]"
-    )}>
+    <div className="grid grid-cols-2 gap-2">
       {mixTemplates.map((template) => {
         const Icon = template.icon;
         const isActive = activeTemplate === template.id;
@@ -49,24 +46,22 @@ export default function MixTemplates({
           <Card
             key={template.id}
             className={cn(
-              "cursor-pointer transition-all w-full hover:bg-accent/10",
-              isActive ? "bg-accent/20 border-primary/50" : "border-border/50 hover:border-border",
-              isMobile && "min-h-[48px] flex items-stretch"
+              "cursor-pointer transition-all",
+              isActive ? "bg-accent/20 border-primary/50" : "border-border/50 hover:border-border"
             )}
             onClick={() => onSelectTemplate(template)}
           >
             <div className={cn(
-              "flex items-center gap-2 w-full",
-              isMobile 
-                ? "flex-row justify-center px-3" 
-                : "flex-col justify-center text-center py-3 px-4"
+              "flex items-center gap-2 p-3",
+              isMobile ? "justify-center" : "flex-col text-center"
             )}>
               <Icon className={cn(
-                isMobile ? "h-4 w-4" : "h-6 w-6 mb-2",
+                "shrink-0",
+                isMobile ? "h-4 w-4" : "h-6 w-6",
                 isActive ? "text-primary" : "text-muted-foreground"
               )} />
               <span className={cn(
-                "text-sm font-[400]",
+                "text-sm",
                 isActive && "text-primary"
               )}>
                 {template.name}
