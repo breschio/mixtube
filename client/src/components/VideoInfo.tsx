@@ -46,7 +46,6 @@ const VideoInfo = ({
   const [likes, setLikes] = useState(initialLikes);
   const { toast } = useToast();
 
-  // Reset like state when mix changes
   useEffect(() => {
     setIsLiked(false);
     setLikes(initialLikes);
@@ -183,9 +182,9 @@ const VideoInfo = ({
             {likes > 0 ? likes : "Like"}
           </Button>
           <MovingBorderButton
-            containerClassName="h-8 w-auto p-[1px]"
+            containerClassName="inline-flex items-center justify-center h-9 p-[1px]"
             className={cn(
-              "gap-1.5 text-sm font-normal h-full px-3",
+              "gap-1.5 text-sm font-medium h-full px-3",
               mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             borderRadius="0.375rem"
