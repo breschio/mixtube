@@ -169,15 +169,15 @@ const VideoInfo = ({
         </div>
         <div className="flex items-center gap-2">
           <MovingBorderButton
-            containerClassName="inline-flex items-center justify-center h-9 p-[1px]"
+            containerClassName="inline-flex items-center justify-center h-9 py-0 px-[1px]"
             className={cn(
-              "gap-1.5 text-sm font-medium h-full px-3 whitespace-nowrap",
+              "gap-1.5 text-sm font-medium inline-flex items-center px-2",
               mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             borderRadius="0.375rem"
             duration={4000}
             onClick={onToggleMixMode}
-            showBorder={mixMode} // Only show border when active
+            showBorder={mixMode}
           >
             <Shuffle className="h-4 w-4" />
             Mix
@@ -186,7 +186,7 @@ const VideoInfo = ({
             variant="outline"
             size="sm"
             className={cn(
-              "gap-1.5 whitespace-nowrap",
+              "gap-1.5 inline-flex items-center px-2",
               isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             onClick={handleLike}
