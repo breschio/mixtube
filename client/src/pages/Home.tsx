@@ -327,7 +327,7 @@ export default function Home() {
 
   const mixControls = (
     <Card className="bg-background"> 
-      <div className="space-y-6 p-6">
+      <div className="space-y-8 p-6">
         <DJControls
           crossFader={crossFader}
           onCrossFaderChange={handleCrossFaderChange}

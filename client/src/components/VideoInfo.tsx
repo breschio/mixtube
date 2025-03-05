@@ -144,13 +144,13 @@ const VideoInfo = ({
   }
 
   return (
-    <div className="py-4 px-6">
-      <div className="flex items-center justify-between mb-2.5">
+    <div className="py-4">
+      <div className="flex items-center justify-between mb-2.5 px-6">
         <h1 className="text-lg font-medium leading-tight">
           {title}
         </h1>
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-6">
         <div className="flex items-center gap-6">
           {!isCreateMode && (
             <>
