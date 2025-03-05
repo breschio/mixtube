@@ -362,7 +362,8 @@ export default function Home() {
           rightVideoSelected={!!videos.right?.id}
           isCreateMode={isNewMode}
           mixId={currentMix?.id} 
-          initialLikes={currentMix?.likes} 
+          initialLikes={currentMix?.likes}
+          className="px-0" // Added className to remove default padding
         />
       </div>
       {showMixControls && !isNewMode && (
@@ -418,6 +419,7 @@ export default function Home() {
           isCreateMode={isNewMode}
           mixId={currentMix?.id} 
           initialLikes={currentMix?.likes} 
+          className="px-0" // Added className to remove default padding
         />
       </div>
 
@@ -488,6 +490,7 @@ export default function Home() {
                   isCreateMode={isNewMode}
                   mixId={currentMix?.id}
                   initialLikes={currentMix?.likes}
+                  className="px-0" // Added className to remove default padding
                 />
               </div>
               {showMixControls && (
@@ -550,6 +553,8 @@ export default function Home() {
                   isCreateMode={isNewMode}
                   mixId={currentMix?.id}
                   initialLikes={currentMix?.likes}
+                  className="px-0" // Added className to remove default padding
+
                 />
               </div>
               {showMixControls && (
