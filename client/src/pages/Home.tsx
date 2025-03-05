@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, X, User } from "lucide-react";
+import { Plus, X, User, Shuffle } from "lucide-react"; // Added Shuffle import
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
@@ -93,10 +93,8 @@ export default function Home() {
     onSuccess: (data) => {
       if (data && 'databaseConnected' in data) {
         setDatabaseConnected(!!data.databaseConnected);
-        // Hide warning if we have mixes, regardless of the connection flag
         setShowDatabaseWarning(!data.databaseConnected && data.mixes.length === 0);
       } else if (data && Array.isArray(data.mixes) && data.mixes.length > 0) {
-        // If we have mixes, we must be connected to a database
         setDatabaseConnected(true);
         setShowDatabaseWarning(false);
       }
@@ -110,7 +108,6 @@ export default function Home() {
     }
   });
 
-  // Extract mixes from response
   const mixes = mixesResponse?.mixes || [];
 
   useEffect(() => {
@@ -602,13 +599,16 @@ export default function Home() {
       <header className="w-full bg-background">
         <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 py-4">
           <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
-              onClick={handleResetView}
-            >
-              mixtube
-            </Button>
+            <div className="flex items-center gap-3"> {/* Replaced this div */}
+              <Shuffle className="h-5 w-5 text-[#455A7D]" />
+              <Button
+                variant="ghost"
+                className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
+                onClick={handleResetView}
+              >
+                mixtube
+              </Button>
+            </div>
             <div className="flex items-center gap-4">
               <ThemeToggle />
               <MovingBorderButton
