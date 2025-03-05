@@ -424,21 +424,28 @@ export default function Home() {
         />
       </div>
 
-      <div
-        className={cn(
-          "transition-all duration-300 ease-in-out transform",
-          showMixControls ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
-        )}
-      >
-        {mixControls}
-      </div>
+      <div className="relative flex-1 overflow-hidden">
+        <div
+          className={cn(
+            "absolute w-full transition-all duration-300 ease-in-out",
+            showMixControls ? "translate-y-0" : "-translate-y-full opacity-0 pointer-events-none"
+          )}
+        >
+          {mixControls}
+        </div>
 
-      <div className="mt-4 flex-1 overflow-auto">
-        <MixList
-          mixes={mixes}
-          onPlayMix={handlePlayMix}
-          className="h-full"
-        />
+        <div 
+          className={cn(
+            "absolute w-full transition-all duration-300 ease-in-out",
+            showMixControls ? "translate-y-[280px]" : "translate-y-0"
+          )}
+        >
+          <MixList
+            mixes={mixes}
+            onPlayMix={handlePlayMix}
+            className="h-full"
+          />
+        </div>
       </div>
     </div>
   );
