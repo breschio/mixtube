@@ -458,7 +458,7 @@ export default function Home() {
         </div>
       )}
 
-      <div className="relative flex-1 overflow-hidden">
+      <div className="relative">
         {!isNewMode && (
           <>
             {showMixControls && (
@@ -480,8 +480,8 @@ export default function Home() {
             )}
             <div 
               className={cn(
-                "absolute w-full transition-all duration-300 ease-in-out",
-                showMixControls ? "translate-y-[220px]" : "translate-y-0"
+                "w-full transition-all duration-300 ease-in-out",
+                showMixControls ? "mt-4" : "mt-0"
               )}
             >
               <MixList
