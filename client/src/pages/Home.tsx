@@ -363,7 +363,7 @@ export default function Home() {
           isCreateMode={isNewMode}
           mixId={currentMix?.id} 
           initialLikes={currentMix?.likes}
-          className="px-0" // Added className to remove default padding
+          className="px-0" 
         />
       </div>
       {showMixControls && !isNewMode && (
@@ -419,7 +419,7 @@ export default function Home() {
           isCreateMode={isNewMode}
           mixId={currentMix?.id} 
           initialLikes={currentMix?.likes} 
-          className="px-0" // Added className to remove default padding
+          className="px-0" 
         />
       </div>
 
@@ -490,7 +490,7 @@ export default function Home() {
                   isCreateMode={isNewMode}
                   mixId={currentMix?.id}
                   initialLikes={currentMix?.likes}
-                  className="px-0" // Added className to remove default padding
+                  className="px-0" 
                 />
               </div>
               {showMixControls && (
@@ -553,8 +553,7 @@ export default function Home() {
                   isCreateMode={isNewMode}
                   mixId={currentMix?.id}
                   initialLikes={currentMix?.likes}
-                  className="px-0" // Added className to remove default padding
-
+                  className="px-0" 
                 />
               </div>
               {showMixControls && (
