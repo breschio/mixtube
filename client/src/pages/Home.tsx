@@ -456,7 +456,7 @@ export default function Home() {
         <>
           <ResizablePanel defaultSize={25} minSize={20}>
             <div className={cn(
-              "h-full flex flex-col pr-4",
+              "h-full flex flex-col pr-6",
               "transform transition-transform duration-300 ease-in-out",
               isNewMode ? "translate-x-0" : "-translate-x-full",
               "opacity-100"
@@ -466,7 +466,7 @@ export default function Home() {
           </ResizablePanel>
 
           <ResizablePanel defaultSize={50} minSize={30}>
-            <div className="h-full flex flex-col px-4">
+            <div className="h-full flex flex-col px-6 space-y-6">
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
@@ -486,13 +486,13 @@ export default function Home() {
                   isPromptMode={isPromptMode}
                   onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
                   isCreateMode={isNewMode}
-                  mixId={currentMix?.id} 
-                  initialLikes={currentMix?.likes} 
+                  mixId={currentMix?.id}
+                  initialLikes={currentMix?.likes}
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-4 bg-background border-y border-r border-border/50 rounded-r-lg"> 
-                  <div className="p-6">
+                <Card className="bg-background border-y border-r border-border/50 rounded-r-lg">
+                  <div className="p-8">
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -500,7 +500,7 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
                     />
-                    <div className="mt-8">
+                    <div className="mt-10">
                       <MixTemplates
                         onSelectTemplate={handleTemplateSelect}
                         activeTemplate={activeTemplate}
@@ -514,7 +514,7 @@ export default function Home() {
 
           <ResizablePanel defaultSize={25} minSize={20}>
             <div className={cn(
-              "h-full flex flex-col pl-4",
+              "h-full flex flex-col pl-6",
               "transform transition-transform duration-300 ease-in-out",
               isNewMode ? "translate-x-0" : "translate-x-full",
               "opacity-100"
@@ -530,11 +530,11 @@ export default function Home() {
             minSize={65}
             className="transition-all duration-300 ease-in-out"
           >
-            <div className="h-full flex flex-col pr-4">
+            <div className="h-full flex flex-col pr-6">
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div>
+              <div className="mt-6">
                 <VideoInfo
                   title={currentMix?.title || mixName || "New Mix"}
                   channelTitle="MixTube"
@@ -548,13 +548,13 @@ export default function Home() {
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
                   isCreateMode={isNewMode}
-                  mixId={currentMix?.id} 
-                  initialLikes={currentMix?.likes} 
+                  mixId={currentMix?.id}
+                  initialLikes={currentMix?.likes}
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-4 bg-background border-y border-r border-border/50 rounded-r-lg"> 
-                  <div className="p-6">
+                <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
+                  <div className="p-8">
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -562,7 +562,7 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
                     />
-                    <div className="mt-8">
+                    <div className="mt-10">
                       <MixTemplates
                         onSelectTemplate={handleTemplateSelect}
                         activeTemplate={activeTemplate}
@@ -579,8 +579,8 @@ export default function Home() {
             minSize={25}
             className="transition-all duration-300 ease-in-out"
           >
-            <div className="h-[calc(100vh-5rem)] flex flex-col pl-4">
-              <div className="h-full overflow-auto"> 
+            <div className="h-[calc(100vh-5rem)] flex flex-col pl-6">
+              <div className="h-full overflow-auto">
                 <MixList
                   mixes={mixes}
                   onPlayMix={handlePlayMix}
