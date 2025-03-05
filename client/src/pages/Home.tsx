@@ -495,7 +495,7 @@ export default function Home() {
               </div>
               {showMixControls && (
                 <Card className="bg-background border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8 flex flex-col gap-8">
+                  <div className="p-8 flex flex-col gap-8"> {/* UPDATED */}
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -556,7 +556,7 @@ export default function Home() {
               </div>
               {showMixControls && (
                 <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8 flex flex-col gap-8">
+                  <div className="p-8 flex flex-col gap-8"> {/* UPDATED */}
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -603,14 +603,10 @@ export default function Home() {
               <Shuffle className="h-7 w-7 text-[#455A7D] my-auto" />
               <Button
                 variant="ghost"
-                className="flex items-center hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
+                className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
                 onClick={handleResetView}
               >
-                <img 
-                  src="/attached_assets/mixtube-logo@4x.png" 
-                  alt="MixTube"
-                  className="h-7 w-auto object-contain transition-opacity hover:opacity-80"
-                />
+                mixtube
               </Button>
             </div>
             <div className="flex items-center gap-4">
