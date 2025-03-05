@@ -39,7 +39,7 @@ export default function MixTemplates({
   return (
     <div className={cn(
       "grid gap-2 w-full",
-      isMobile ? "grid-cols-2" : "grid-cols-2"
+      "grid-cols-2" // Always 2 columns for both mobile and desktop
     )}>
       {mixTemplates.map((template) => {
         const Icon = template.icon;
@@ -56,11 +56,10 @@ export default function MixTemplates({
           >
             <div className={cn(
               "flex items-center gap-2 py-3 px-4",
-              !isMobile && "flex-col justify-center text-center"
+              isMobile ? "flex-row" : "flex-col justify-center text-center"
             )}>
               <Icon className={cn(
-                !isMobile && "h-6 w-6 mb-2",
-                isMobile && "h-4 w-4",
+                isMobile ? "h-4 w-4" : "h-6 w-6 mb-2",
                 isActive ? "text-primary" : "text-muted-foreground"
               )} />
               <span className={cn(
