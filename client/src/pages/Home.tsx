@@ -611,9 +611,9 @@ export default function Home() {
             </Button>
             <div className="flex items-center gap-4">
               <MovingBorderButton
-                containerClassName="inline-flex items-center justify-center h-9 py-0 px-[1px]"
+                containerClassName="inline-flex items-center justify-center h-9 py-0"
                 className={cn(
-                  "text-sm font-medium inline-flex items-center px-2 gap-1.5",
+                  "text-sm font-medium whitespace-nowrap gap-1.5",
                   isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
                 )}
                 borderRadius="0.375rem"

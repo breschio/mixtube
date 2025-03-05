@@ -169,9 +169,9 @@ const VideoInfo = ({
         </div>
         <div className="flex items-center gap-2">
           <MovingBorderButton
-            containerClassName="inline-flex items-center justify-center h-9 py-0 px-[1px]"
+            containerClassName="inline-flex items-center justify-center h-9 py-0"
             className={cn(
-              "gap-1.5 text-sm font-medium inline-flex items-center px-2",
+              "gap-1.5 text-sm font-medium whitespace-nowrap",
               mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             borderRadius="0.375rem"
@@ -186,7 +186,7 @@ const VideoInfo = ({
             variant="outline"
             size="sm"
             className={cn(
-              "gap-1.5 inline-flex items-center px-2",
+              "gap-1.5 whitespace-nowrap",
               isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             onClick={handleLike}
