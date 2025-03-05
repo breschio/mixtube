@@ -37,7 +37,7 @@ export default function MixTemplates({
   const isMobile = useMobile();
 
   return (
-    <div className="grid grid-cols-2 gap-3 w-full">
+    <div className="grid grid-cols-2 gap-2 w-full">
       {mixTemplates.map((template) => {
         const Icon = template.icon;
         const isActive = activeTemplate === template.id;
@@ -46,14 +46,14 @@ export default function MixTemplates({
           <Card
             key={template.id}
             className={cn(
-              "cursor-pointer transition-all h-full",
+              "cursor-pointer transition-all",
               isActive ? "bg-accent/20 border-primary/50" : "border-border/50 hover:border-border"
             )}
             onClick={() => onSelectTemplate(template)}
           >
             <div className={cn(
-              "flex items-center gap-2.5 px-4 py-3.5",
-              isMobile ? "justify-center" : "flex-col text-center h-full"
+              "flex items-center gap-2.5",
+              isMobile ? "justify-center px-3 py-2.5" : "flex-col text-center p-4"
             )}>
               <Icon className={cn(
                 "shrink-0",

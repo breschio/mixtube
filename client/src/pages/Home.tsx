@@ -430,7 +430,23 @@ export default function Home() {
             showMixControls ? "translate-y-0" : "-translate-y-full opacity-0 pointer-events-none"
           )}
         >
-          {mixControls}
+          {/* REPLACEMENT START */}
+          <Card className="bg-background"> 
+            <div className="space-y-8 p-6">
+              <DJControls
+                crossFader={crossFader}
+                onCrossFaderChange={handleCrossFaderChange}
+                leftVideoId={videos.left?.id}
+                rightVideoId={videos.right?.id}
+                forceShowTooltip={showTransitionTooltip}
+              />
+              <MixTemplates
+                onSelectTemplate={handleTemplateSelect}
+                activeTemplate={activeTemplate}
+              />
+            </div>
+          </Card>
+          {/* REPLACEMENT END */}
         </div>
 
         <div 
@@ -495,7 +511,7 @@ export default function Home() {
               </div>
               {showMixControls && (
                 <Card className="bg-background border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8 flex flex-col gap-8"> {/* UPDATED */}
+                  <div className="p-8 flex flex-col gap-8"> 
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -556,7 +572,7 @@ export default function Home() {
               </div>
               {showMixControls && (
                 <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8 flex flex-col gap-8"> {/* UPDATED */}
+                  <div className="p-8 flex flex-col gap-8"> 
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
