@@ -50,13 +50,14 @@ export default function MixTemplates({
             key={template.id}
             className={cn(
               "cursor-pointer transition-all w-full hover:bg-accent/10",
-              isActive ? "bg-accent/20 border-primary/50" : "border-border/50 hover:border-border"
+              isActive ? "bg-accent/20 border-primary/50" : "border-border/50 hover:border-border",
+              isMobile && "h-full" // Make cards fill height on mobile
             )}
             onClick={() => onSelectTemplate(template)}
           >
             <div className={cn(
-              "flex items-center gap-2 py-3 px-4",
-              isMobile ? "flex-row" : "flex-col justify-center text-center"
+              "flex items-center gap-2",
+              isMobile ? "h-full px-3 py-2" : "flex-col justify-center text-center py-3 px-4" // Adjusted padding for mobile
             )}>
               <Icon className={cn(
                 isMobile ? "h-4 w-4" : "h-6 w-6 mb-2",
