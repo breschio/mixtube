@@ -495,7 +495,7 @@ export default function Home() {
               </div>
               {showMixControls && (
                 <Card className="bg-background border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8">
+                  <div className="p-8 flex flex-col gap-8"> {/* UPDATED */}
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -503,12 +503,10 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
                     />
-                    <div className="mt-10">
-                      <MixTemplates
-                        onSelectTemplate={handleTemplateSelect}
-                        activeTemplate={activeTemplate}
-                      />
-                    </div>
+                    <MixTemplates
+                      onSelectTemplate={handleTemplateSelect}
+                      activeTemplate={activeTemplate}
+                    />
                   </div>
                 </Card>
               )}
@@ -558,7 +556,7 @@ export default function Home() {
               </div>
               {showMixControls && (
                 <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8">
+                  <div className="p-8 flex flex-col gap-8"> {/* UPDATED */}
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -566,12 +564,10 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
                     />
-                    <div className="mt-10">
-                      <MixTemplates
-                        onSelectTemplate={handleTemplateSelect}
-                        activeTemplate={activeTemplate}
-                      />
-                    </div>
+                    <MixTemplates
+                      onSelectTemplate={handleTemplateSelect}
+                      activeTemplate={activeTemplate}
+                    />
                   </div>
                 </Card>
               )}
