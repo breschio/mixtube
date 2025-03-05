@@ -47,17 +47,18 @@ export default function MixTemplates({
             key={template.id}
             className={cn(
               "cursor-pointer transition-all",
-              isActive ? "bg-accent/20 border-primary/50" : "border-border/50"
+              isActive ? "bg-accent/20 border-primary/50" : "border-border/50 hover:border-border"
             )}
             onClick={() => onSelectTemplate(template)}
           >
             <div className={cn(
-              "flex items-center p-4",
-              isMobile ? "justify-center gap-2" : "flex-col gap-3"
+              "flex items-center gap-2 p-3",
+              isMobile ? "justify-center" : "flex-col text-center"
             )}>
               <Icon className={cn(
-                isActive ? "text-primary" : "text-muted-foreground",
-                isMobile ? "h-4 w-4" : "h-6 w-6"
+                "shrink-0",
+                isMobile ? "h-4 w-4" : "h-6 w-6",
+                isActive ? "text-primary" : "text-muted-foreground"
               )} />
               <span className={cn(
                 "text-sm",
