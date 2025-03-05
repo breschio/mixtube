@@ -85,6 +85,7 @@ export default function Home() {
   const [mixName, setMixName] = useState(''); 
   const [databaseConnected, setDatabaseConnected] = useState(false);
   const [showDatabaseWarning, setShowDatabaseWarning] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'left' | 'mix' | 'right'>('left');
 
 
   const { data: mixesResponse } = useQuery({
@@ -416,11 +417,46 @@ export default function Home() {
           rightVideoSelected={!!videos.right?.id}
           isPromptMode={false}
           isCreateMode={isNewMode}
-          mixId={currentMix?.id} 
-          initialLikes={currentMix?.likes} 
-          className="px-0" 
+          mixId={currentMix?.id}
+          initialLikes={currentMix?.likes}
+          className="px-0"
         />
       </div>
+
+      {isNewMode && (
+        <div className="px-4 pt-4">
+          <Tabs value={mobileTab} onValueChange={(value) => setMobileTab(value as 'left' | 'mix' | 'right')}>
+            <TabsList className="w-full grid grid-cols-3">
+              <TabsTrigger value="left">Left</TabsTrigger>
+              <TabsTrigger value="mix">Mix</TabsTrigger>
+              <TabsTrigger value="right">Right</TabsTrigger>
+            </TabsList>
+            <TabsContent value="left" className="mt-4">
+              {renderControls('left')}
+            </TabsContent>
+            <TabsContent value="mix" className="mt-4">
+              <Card className="bg-background">
+                <div className="space-y-8 p-6">
+                  <DJControls
+                    crossFader={crossFader}
+                    onCrossFaderChange={handleCrossFaderChange}
+                    leftVideoId={videos.left?.id}
+                    rightVideoId={videos.right?.id}
+                    forceShowTooltip={showTransitionTooltip}
+                  />
+                  <MixTemplates
+                    onSelectTemplate={handleTemplateSelect}
+                    activeTemplate={activeTemplate}
+                  />
+                </div>
+              </Card>
+            </TabsContent>
+            <TabsContent value="right" className="mt-4">
+              {renderControls('right')}
+            </TabsContent>
+          </Tabs>
+        </div>
+      )}
 
       <div className="relative flex-1 overflow-hidden">
         <div
@@ -429,7 +465,7 @@ export default function Home() {
             showMixControls ? "translate-y-0" : "-translate-y-full opacity-0 pointer-events-none"
           )}
         >
-          <Card className="bg-background"> 
+          <Card className="bg-background">
             <div className="space-y-8 p-6">
               <DJControls
                 crossFader={crossFader}
