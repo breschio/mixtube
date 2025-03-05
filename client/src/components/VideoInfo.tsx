@@ -6,6 +6,7 @@ import { PenLine, Shuffle, ThumbsUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { Button as MovingBorderButton } from "@/components/ui/moving-border";
 
 interface VideoInfoProps {
   title: string;
@@ -181,18 +182,19 @@ const VideoInfo = ({
             <ThumbsUp className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
             {likes > 0 ? likes : "Like"}
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
+          <MovingBorderButton
+            containerClassName="h-8 w-auto p-[1px]"
             className={cn(
-              "gap-1.5",
+              "gap-1.5 text-sm font-normal h-full px-3",
               mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
+            borderRadius="0.375rem"
+            duration={4000}
             onClick={onToggleMixMode}
           >
             <Shuffle className="h-4 w-4" />
             Mix
-          </Button>
+          </MovingBorderButton>
         </div>
       </div>
     </div>
