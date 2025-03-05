@@ -446,18 +446,20 @@ export default function Home() {
           </Card>
         </div>
 
-        <div 
-          className={cn(
-            "absolute w-full transition-all duration-300 ease-in-out",
-            showMixControls ? "translate-y-[220px]" : "translate-y-0"
-          )}
-        >
-          <MixList
-            mixes={mixes}
-            onPlayMix={handlePlayMix}
-            className="h-full"
-          />
-        </div>
+        {!isNewMode && (
+          <div 
+            className={cn(
+              "absolute w-full transition-all duration-300 ease-in-out",
+              showMixControls ? "translate-y-[220px]" : "translate-y-0"
+            )}
+          >
+            <MixList
+              mixes={mixes}
+              onPlayMix={handlePlayMix}
+              className="h-full"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
