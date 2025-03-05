@@ -458,41 +458,22 @@ export default function Home() {
         </div>
       )}
 
-      {!isNewMode && (
-        <div className="relative flex-1 overflow-hidden">
+      <div className="relative flex-1 overflow-hidden">
+        {!isNewMode && (
           <div 
             className={cn(
               "absolute w-full transition-all duration-300 ease-in-out",
               showMixControls ? "translate-y-[220px]" : "translate-y-0"
             )}
           >
-            {showMixControls && (
-              <Card className="mb-4 bg-background">
-                <div className="space-y-8 p-6">
-                  <DJControls
-                    crossFader={crossFader}
-                    onCrossFaderChange={handleCrossFaderChange}
-                    leftVideoId={videos.left?.id}
-                    rightVideoId={videos.right?.id}
-                    forceShowTooltip={showTransitionTooltip}
-                  />
-                  <div className="grid grid-cols-2 gap-2 w-full">
-                    <MixTemplates
-                      onSelectTemplate={handleTemplateSelect}
-                      activeTemplate={activeTemplate}
-                    />
-                  </div>
-                </div>
-              </Card>
-            )}
             <MixList
               mixes={mixes}
               onPlayMix={handlePlayMix}
               className="h-full"
             />
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 
