@@ -1,0 +1,38 @@
+Warning: React does not recognize the &#x60;showBorder&#x60; prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase &#x60;showborder&#x60; instead. If you accidentally passed it from a parent component, remove it from the DOM element.
+    at button
+    at Button (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/src/components/ui/moving-border.tsx:29:3)
+    at div
+    at div
+    at div
+    at header
+    at div
+    at Home (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/src/pages/Home.tsx:40:16)
+    at Route (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=8d8180be:323:16)
+    at Switch (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=8d8180be:379:17)
+    at Router
+    at QueryClientProvider (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=8d8180be:2805:3)
+    at SessionContextProvider (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@supabase_auth-helpers-react.js?v=8d8180be:69:7)
+    at ThemeProvider (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/src/components/ThemeProvider.tsx:33:3)
+    at App (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/src/App.tsx?v=jz181vjVilu07pyQBUNML:49:47)
+at button
+at Button (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/src/components/ui/moving-border.tsx:29:3)
+at div
+at div
+at div
+at header
+at div
+at Home (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/src/pages/Home.tsx:40:16)
+at Route (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=8d8180be:323:16)
+at Switch (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=8d8180be:379:17)
+at Router
+at QueryClientProvider (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=8d8180be:2805:3)
+at SessionContextProvider (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@supabase_auth-helpers-react.js?v=8d8180be:69:7)
+at ThemeProvider (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/src/components/ThemeProvider.tsx:33:3)
+at App (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/src/App.tsx?v=jz181vjVilu07pyQBUNML:49:47)
+at t.value (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+WARNING: Missing resize handle for PanelGroup ":r1:"
+right player ready
+left player ready

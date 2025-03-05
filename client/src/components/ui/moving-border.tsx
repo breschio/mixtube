@@ -18,6 +18,7 @@ export function Button({
   borderClassName,
   duration,
   className,
+  showBorder,
   ...otherProps
 }: {
   borderRadius?: string;
@@ -27,12 +28,13 @@ export function Button({
   borderClassName?: string;
   duration?: number;
   className?: string;
+  showBorder?: boolean;
   [key: string]: any;
 }) {
   return (
     <Component
       className={cn(
-        "bg-transparent relative text-xl h-16 w-40 p-[1px] overflow-hidden",
+        "bg-transparent relative h-9 p-[1px] overflow-hidden",
         containerClassName
       )}
       style={{
@@ -40,19 +42,21 @@ export function Button({
       }}
       {...otherProps}
     >
-      <div
-        className="absolute inset-0"
-        style={{ borderRadius: `calc(${borderRadius} * 0.96)` }}
-      >
-        <MovingBorder duration={duration} rx="30%" ry="30%">
-          <div
-            className={cn(
-              "h-20 w-20 opacity-[0.8] bg-[radial-gradient(hsl(var(--primary))_40%,transparent_60%)]",
-              borderClassName
-            )}
-          />
-        </MovingBorder>
-      </div>
+      {showBorder && (
+        <div
+          className="absolute inset-0"
+          style={{ borderRadius: `calc(${borderRadius} * 0.96)` }}
+        >
+          <MovingBorder duration={duration} rx="30%" ry="30%">
+            <div
+              className={cn(
+                "h-20 w-20 opacity-[0.8] bg-[radial-gradient(hsl(var(--primary))_40%,transparent_60%)]",
+                borderClassName
+              )}
+            />
+          </MovingBorder>
+        </div>
+      )}
 
       <div
         className={cn(

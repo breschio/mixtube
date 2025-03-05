@@ -168,10 +168,23 @@ const VideoInfo = ({
           )}
         </div>
         <div className="flex items-center gap-2">
-          <MovingBorderButton
-            containerClassName="inline-flex items-center justify-center h-9 py-0"
+          <Button
+            variant="outline"
+            size="sm"
             className={cn(
-              "gap-1.5 text-sm font-medium px-4",
+              "gap-1.5 px-3",
+              isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
+            )}
+            onClick={handleLike}
+            disabled={!mixId}
+          >
+            <ThumbsUp className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
+            {likes > 0 ? likes : "Like"}
+          </Button>
+          <MovingBorderButton
+            containerClassName="inline-flex items-center justify-center h-9"
+            className={cn(
+              "gap-1.5 text-sm font-medium px-3",
               mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             borderRadius="0.375rem"
@@ -182,19 +195,6 @@ const VideoInfo = ({
             <Shuffle className="h-4 w-4" />
             Mix
           </MovingBorderButton>
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn(
-              "gap-1.5 px-4",
-              isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
-            )}
-            onClick={handleLike}
-            disabled={!mixId}
-          >
-            <ThumbsUp className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
-            {likes > 0 ? likes : "Like"}
-          </Button>
         </div>
       </div>
     </div>

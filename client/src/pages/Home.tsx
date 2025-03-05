@@ -610,10 +610,11 @@ export default function Home() {
               mixtube
             </Button>
             <div className="flex items-center gap-4">
+              <ThemeToggle />
               <MovingBorderButton
-                containerClassName="inline-flex items-center justify-center h-9 py-0"
+                containerClassName="inline-flex items-center justify-center h-9"
                 className={cn(
-                  "text-sm font-medium px-4 gap-1.5",
+                  "text-sm font-medium px-3 gap-1.5",
                   isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
                 )}
                 borderRadius="0.375rem"
@@ -631,7 +632,6 @@ export default function Home() {
                 )}
                 {isNewMode ? 'Close' : 'New'}
               </MovingBorderButton>
-              <ThemeToggle />
             </div>
           </div>
         </div>
