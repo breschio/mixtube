@@ -613,12 +613,13 @@ export default function Home() {
               <MovingBorderButton
                 containerClassName="inline-flex items-center justify-center h-9 p-[1px]"
                 className={cn(
-                  "text-sm font-medium h-full px-3 gap-1.5",
+                  "text-sm font-medium h-full px-3 gap-1.5 whitespace-nowrap",
                   isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
                 )}
                 borderRadius="0.375rem"
                 duration={4000}
                 onClick={isNewMode ? handleResetView : handleNewMix}
+                showBorder={isNewMode} // Only show border when active
               >
                 {isNewMode ? (
                   <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-[360deg]" />
