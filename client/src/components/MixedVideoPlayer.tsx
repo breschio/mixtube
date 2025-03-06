@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
@@ -29,12 +29,10 @@ export default function MixedVideoPlayer({
   leftStartTime,
   rightStartTime
 }: MixedVideoPlayerProps) {
-  const {
-    leftPlayerRef,
-    rightPlayerRef,
-    handlePlayPause,
-    handleReady,
-  } = useVideoSync();
+  const [ytApiReady, setYtApiReady] = useState(false);
+  const [playersReady, setPlayersReady] = useState({ left: false, right: false });
+  const leftPlayerRef = useRef<ReactPlayer>(null);
+  const rightPlayerRef = useRef<ReactPlayer>(null);
 
   // Common player config
   const playerConfig = {
@@ -72,12 +70,70 @@ export default function MixedVideoPlayer({
     return startTime ? `${url}&start=${startTime}` : url;
   };
 
-  const handlePlayerClick = async () => {
+  // Initialize YouTube IFrame API
+  useEffect(() => {
+    if (window.YT) {
+      setYtApiReady(true);
+      return;
+    }
+
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+
+    const handleYTApiReady = () => {
+      setYtApiReady(true);
+    };
+
+    // Add the callback expected by YouTube
+    window.onYouTubeIframeAPIReady = handleYTApiReady;
+
+    return () => {
+      window.onYouTubeIframeAPIReady = null;
+    };
+  }, []);
+
+  const handleReady = (player: 'left' | 'right') => {
+    console.log(`${player} player ready`);
+    setPlayersReady(prev => ({ ...prev, [player]: true }));
+  };
+
+  const handlePlayPause = async () => {
+    if (!ytApiReady) {
+      console.log('YouTube API not ready');
+      return;
+    }
+
+    if (!playersReady.left || !playersReady.right) {
+      console.log('Players not ready', playersReady);
+      return;
+    }
+
     try {
-      await handlePlayPause(!isPlaying);
+      const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
+      const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
+
+      if (!leftPlayer || !rightPlayer) {
+        console.log('Players not initialized');
+        return;
+      }
+
+      if (!isPlaying) {
+        // Starting playback
+        await Promise.all([
+          leftPlayer.playVideo(),
+          rightPlayer.playVideo()
+        ]);
+      } else {
+        // Pausing playback
+        leftPlayer.pauseVideo();
+        rightPlayer.pauseVideo();
+      }
+
       onPlayPause();
     } catch (error) {
-      console.error('Error in handlePlayerClick:', error);
+      console.error('Error in handlePlayPause:', error);
     }
   };
 
@@ -154,7 +210,7 @@ export default function MixedVideoPlayer({
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {rightPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayerClick} />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
       </div>
     );
   }
@@ -163,7 +219,7 @@ export default function MixedVideoPlayer({
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {leftPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayerClick} />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
       </div>
     );
   }
@@ -173,7 +229,7 @@ export default function MixedVideoPlayer({
       {renderTemplate()}
       <VideoOverlay 
         isPlaying={isPlaying} 
-        onPlayPause={handlePlayerClick}
+        onPlayPause={handlePlayPause}
       />
     </div>
   );
