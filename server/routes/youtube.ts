@@ -11,7 +11,7 @@ router.get('/youtube/trending', async (req, res) => {
     }
 
     const response = await youtube.videos.list({
-      part: ['snippet'],
+      part: 'snippet',
       chart: 'mostPopular',
       maxResults: 10,
       regionCode: 'US',
@@ -29,7 +29,6 @@ router.get('/youtube/trending', async (req, res) => {
     res.json(videos);
   } catch (error) {
     console.error('Error fetching trending videos:', error);
-    // Return empty array instead of error to prevent HTML error page
     res.json([]);
   }
 });
@@ -37,7 +36,7 @@ router.get('/youtube/trending', async (req, res) => {
 router.get('/youtube/related', async (req, res) => {
   const { v: videoId } = req.query;
 
-  if (!videoId) {
+  if (!videoId || typeof videoId !== 'string') {
     return res.json([]);
   }
 
@@ -47,24 +46,29 @@ router.get('/youtube/related', async (req, res) => {
     }
 
     const response = await youtube.search.list({
-      part: ['snippet'],
-      relatedToVideoId: videoId as string,
+      part: 'snippet',
+      relatedToVideoId: videoId,
       type: 'video',
       maxResults: 10,
       key: process.env.YOUTUBE_API_KEY,
     });
 
-    const videos = response.data.items?.map(item => ({
-      id: item.id?.videoId,
-      title: item.snippet?.title,
-      channelTitle: item.snippet?.channelTitle,
-      thumbnail: item.snippet?.thumbnails?.medium?.url,
-    })).filter(video => video.id) || [];
+    if (!response.data.items) {
+      return res.json([]);
+    }
+
+    const videos = response.data.items
+      .filter(item => item.id?.videoId)
+      .map(item => ({
+        id: item.id?.videoId,
+        title: item.snippet?.title,
+        channelTitle: item.snippet?.channelTitle,
+        thumbnail: item.snippet?.thumbnails?.medium?.url,
+      }));
 
     res.json(videos);
   } catch (error) {
     console.error('Error fetching related videos:', error);
-    // Return empty array instead of error to prevent HTML error page
     res.json([]);
   }
 });
