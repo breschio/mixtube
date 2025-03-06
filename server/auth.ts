@@ -1,39 +1,50 @@
-
-import { google } from 'googleapis';
+import { createClient } from '@supabase/supabase-js';
 import { Request, Response } from 'express';
 
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  'https://your-repl-url.replit.dev/auth/callback' // Update this with your Repl URL
+// Create a single Supabase client instance
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL || '',
+  process.env.VITE_SUPABASE_ANON_KEY || ''
 );
 
 export const authRoutes = {
-  login: (_req: Request, res: Response) => {
-    const url = oauth2Client.generateAuthUrl({
-      access_type: 'offline',
-      scope: [
-        'https://www.googleapis.com/auth/youtube.readonly',
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email'
-      ]
-    });
-    res.redirect(url);
+  login: async (_req: Request, res: Response) => {
+    try {
+      const { data } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${process.env.VITE_APP_URL}/auth/callback`
+        }
+      });
+
+      if (data.url) {
+        res.redirect(data.url);
+      } else {
+        res.redirect('/auth/error');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      res.redirect('/auth/error');
+    }
   },
 
   callback: async (req: Request, res: Response) => {
     try {
-      const { code } = req.query;
-      const { tokens } = await oauth2Client.getToken(code as string);
-      oauth2Client.setCredentials(tokens);
+      const code = req.query.code as string;
 
-      // Get user info
-      const oauth2 = google.oauth2('v2');
-      const userInfo = await oauth2.userinfo.get({ auth: oauth2Client });
+      if (!code) {
+        throw new Error('No code provided');
+      }
+
+      const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code);
+
+      if (error || !session) {
+        throw error || new Error('Failed to get session');
+      }
 
       if (req.session) {
-        req.session.tokens = tokens;
-        req.session.user = userInfo.data;
+        req.session.user = session.user;
+        req.session.access_token = session.access_token;
       }
 
       res.redirect('/');
@@ -43,12 +54,19 @@ export const authRoutes = {
     }
   },
 
-  logout: (req: Request, res: Response) => {
-    if (req.session) {
-      req.session.destroy(() => {
+  logout: async (req: Request, res: Response) => {
+    try {
+      await supabase.auth.signOut();
+
+      if (req.session) {
+        req.session.destroy(() => {
+          res.redirect('/');
+        });
+      } else {
         res.redirect('/');
-      });
-    } else {
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
       res.redirect('/');
     }
   }
