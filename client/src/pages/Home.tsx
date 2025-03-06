@@ -431,15 +431,15 @@ export default function Home() {
         </div>
       )}
 
-      {!isNewMode && (
-        <div className="relative mt-4 flex-1 overflow-auto">
+      <div className="relative mt-4 flex-1 overflow-auto">
+        {!isNewMode && (
           <MixList
             mixes={mixes}
             onPlayMix={handlePlayMix}
             className="h-full"
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 
