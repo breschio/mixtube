@@ -12,8 +12,26 @@ app.get('/ping', (_req, res) => {
   res.status(200).send('OK');
 });
 
-// Configure middleware
-app.use(cors());
+// Configure CORS for both API and YouTube iframe communication
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'https://www.youtube.com',
+      'https://youtube.com',
+      process.env.VITE_APP_URL || 'http://localhost:5000'
+    ];
+
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(null, true); // Just allow all origins in development
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -92,7 +110,7 @@ app.use((req, res, next) => {
     // Start server with fallback port handling
     const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
     const FALLBACK_PORT = 3333;
-    
+
     // Try the primary port first
     server.listen(PORT, "0.0.0.0", () => {
       log(`Server is running on http://0.0.0.0:${PORT}`);

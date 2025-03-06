@@ -1,0 +1,46 @@
+www-widgetapi.js:199 Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev').
+(anonymous) @ www-widgetapi.js:199
+(anonymous) @ www-widgetapi.js:195
+setInterval
+Db @ www-widgetapi.js:196
+X @ www-widgetapi.js:182
+(anonymous) @ chunk-NA5PRIKB.js?v=8d8180be:155
+Promise.then
+load @ chunk-NA5PRIKB.js?v=8d8180be:152
+(anonymous) @ chunk-AUMAT7F6.js?v=8d8180be:1251
+componentDidMount @ chunk-NA5PRIKB.js?v=8d8180be:128
+commitLayoutEffectOnFiber @ chunk-276SZO74.js?v=8d8180be:17030
+commitLayoutMountEffects_complete @ chunk-276SZO74.js?v=8d8180be:17980
+commitLayoutEffects_begin @ chunk-276SZO74.js?v=8d8180be:17969
+commitLayoutEffects_begin @ chunk-276SZO74.js?v=8d8180be:17950
+commitLayoutEffects @ chunk-276SZO74.js?v=8d8180be:17920
+commitRootImpl @ chunk-276SZO74.js?v=8d8180be:19353
+commitRoot @ chunk-276SZO74.js?v=8d8180be:19277
+finishConcurrentRender @ chunk-276SZO74.js?v=8d8180be:18805
+performConcurrentWorkOnRoot @ chunk-276SZO74.js?v=8d8180be:18718
+workLoop @ chunk-276SZO74.js?v=8d8180be:197
+flushWork @ chunk-276SZO74.js?v=8d8180be:176
+performWorkUntilDeadline @ chunk-276SZO74.js?v=8d8180be:384Understand this warningAI
+www-widgetapi.js:199 Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('https://fe144eb6-5bfc-41f2-b220-9f08d72677a3-00-2elvm9ezhp6dm.riker.replit.dev').
+(anonymous) @ www-widgetapi.js:199
+(anonymous) @ www-widgetapi.js:195
+setInterval
+Db @ www-widgetapi.js:196
+X @ www-widgetapi.js:182
+(anonymous) @ chunk-NA5PRIKB.js?v=8d8180be:155
+Promise.then
+load @ chunk-NA5PRIKB.js?v=8d8180be:152
+(anonymous) @ chunk-AUMAT7F6.js?v=8d8180be:1251
+componentDidMount @ chunk-NA5PRIKB.js?v=8d8180be:128
+commitLayoutEffectOnFiber @ chunk-276SZO74.js?v=8d8180be:17030
+commitLayoutMountEffects_complete @ chunk-276SZO74.js?v=8d8180be:17980
+commitLayoutEffects_begin @ chunk-276SZO74.js?v=8d8180be:17969
+commitLayoutEffects_begin @ chunk-276SZO74.js?v=8d8180be:17950
+commitLayoutEffects @ chunk-276SZO74.js?v=8d8180be:17920
+commitRootImpl @ chunk-276SZO74.js?v=8d8180be:19353
+commitRoot @ chunk-276SZO74.js?v=8d8180be:19277
+finishConcurrentRender @ chunk-276SZO74.js?v=8d8180be:18805
+performConcurrentWorkOnRoot @ chunk-276SZO74.js?v=8d8180be:18718
+workLoop @ chunk-276SZO74.js?v=8d8180be:197
+flushWork @ chunk-276SZO74.js?v=8d8180be:176
+performWorkUntilDeadline @ chunk-276SZO74.js?v=8d8180be:384Understand this warningAI
