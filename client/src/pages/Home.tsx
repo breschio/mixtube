@@ -23,6 +23,12 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import BorderBeam from "@/components/BorderBeam";
 
+const ResizeHandle = () => {
+  return (
+    <div className="w-1 bg-border/50 rounded-full mx-2 transition-colors hover:bg-primary/50" />
+  );
+};
+
 interface Mix {
   id: string;
   title: string;
@@ -35,7 +41,7 @@ interface Mix {
   crossFaderValue: number;
   template: string;
   createdAt: string;
-  likes?: number; 
+  likes?: number;
 }
 
 interface VideoInfo {
@@ -44,8 +50,8 @@ interface VideoInfo {
   channelTitle: string;
   thumbnail: string;
   startTime?: number;
-  mixId?: string; 
-  initialLikes?: number; 
+  mixId?: string;
+  initialLikes?: number;
 }
 
 interface MixesResponse {
@@ -60,7 +66,7 @@ export default function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const [showMixControls, setShowMixControls] = useState(true); 
+  const [showMixControls, setShowMixControls] = useState(true);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("mix");
   const [currentMix, setCurrentMix] = useState<Mix | null>(null);
@@ -88,7 +94,7 @@ export default function Home() {
   const [crossFader, setCrossFader] = useState(0.6);
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
-  const [mixName, setMixName] = useState(''); 
+  const [mixName, setMixName] = useState('');
   const [databaseConnected, setDatabaseConnected] = useState(false);
   const [showDatabaseWarning, setShowDatabaseWarning] = useState(false);
   const [mobileTab, setMobileTab] = useState<'left' | 'mix' | 'right'>('left');
@@ -211,7 +217,7 @@ export default function Home() {
       right: null
     });
     setCurrentMix(null);
-    setMixName(''); 
+    setMixName('');
   };
 
   const handleVideoSelect = (video: YouTubeVideo, target: 'left' | 'right') => {
@@ -270,7 +276,7 @@ export default function Home() {
 
   const handleResetView = () => {
     setIsButtonActive(false);
-    setShowMixControls(true); 
+    setShowMixControls(true);
     setActiveTab("mix");
     setPlaying(false);
     setIsNewMode(false);
@@ -336,7 +342,7 @@ export default function Home() {
   );
 
   const mixControls = (
-    <Card className="bg-background"> 
+    <Card className="bg-background">
       <div className="space-y-8 p-6">
         <DJControls
           crossFader={crossFader}
@@ -466,6 +472,8 @@ export default function Home() {
             </div>
           </ResizablePanel>
 
+          <ResizeHandle />
+
           <ResizablePanel defaultSize={50} minSize={30}>
             <div className="h-full flex flex-col px-6 space-y-6">
               <div className="relative w-full aspect-video">
@@ -489,12 +497,12 @@ export default function Home() {
                   isCreateMode={isNewMode}
                   mixId={currentMix?.id}
                   initialLikes={currentMix?.likes}
-                  className="px-0" 
+                  className="px-0"
                 />
               </div>
               {showMixControls && (
                 <Card className="bg-background border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8 flex flex-col gap-8"> 
+                  <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -511,6 +519,8 @@ export default function Home() {
               )}
             </div>
           </ResizablePanel>
+
+          <ResizeHandle />
 
           <ResizablePanel defaultSize={25} minSize={20}>
             <div className={cn(
@@ -550,12 +560,12 @@ export default function Home() {
                   isCreateMode={isNewMode}
                   mixId={currentMix?.id}
                   initialLikes={currentMix?.likes}
-                  className="px-0" 
+                  className="px-0"
                 />
               </div>
               {showMixControls && (
                 <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8 flex flex-col gap-8"> 
+                  <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
                       onCrossFaderChange={handleCrossFaderChange}
@@ -572,6 +582,8 @@ export default function Home() {
               )}
             </div>
           </ResizablePanel>
+
+          <ResizeHandle />
 
           <ResizablePanel
             defaultSize={30}

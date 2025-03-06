@@ -9,6 +9,18 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { ThemeProvider } from "@/components/ThemeProvider";
 
+// Create a single Supabase client instance
+const createSupabaseClient = () => {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase configuration');
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey);
+};
+
 function Router() {
   return (
     <Switch>
@@ -24,14 +36,7 @@ function App() {
 
   useEffect(() => {
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-      if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error('Missing Supabase configuration');
-      }
-
-      const client = createClient(supabaseUrl, supabaseAnonKey);
+      const client = createSupabaseClient();
       setSupabaseClient(client);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to initialize Supabase client');
