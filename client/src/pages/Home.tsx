@@ -365,7 +365,7 @@ export default function Home() {
           rightStartTime={videos.right?.startTime}
         />
       </div>
-      <div>
+      <div className="mt-4">
         <VideoInfo
           title={currentMix?.title || mixName || "New Mix"}
           channelTitle="MixTube"
@@ -379,9 +379,9 @@ export default function Home() {
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
           isCreateMode={isNewMode}
-          mixId={currentMix?.id} 
+          mixId={currentMix?.id}
           initialLikes={currentMix?.likes}
-          className="px-0" 
+          className="px-0"
         />
       </div>
       {showMixControls && !isNewMode && (
@@ -422,21 +422,7 @@ export default function Home() {
               {renderControls('left')}
             </TabsContent>
             <TabsContent value="mix" className="mt-4">
-              <Card className="bg-background">
-                <div className="space-y-8 p-6">
-                  <DJControls
-                    crossFader={crossFader}
-                    onCrossFaderChange={handleCrossFaderChange}
-                    leftVideoId={videos.left?.id}
-                    rightVideoId={videos.right?.id}
-                    forceShowTooltip={showTransitionTooltip}
-                  />
-                  <MixTemplates
-                    onSelectTemplate={handleTemplateSelect}
-                    activeTemplate={activeTemplate}
-                  />
-                </div>
-              </Card>
+              {mixControls}
             </TabsContent>
             <TabsContent value="right" className="mt-4">
               {renderControls('right')}
@@ -445,7 +431,7 @@ export default function Home() {
         </div>
       )}
 
-      <div className="relative mt-4">
+      <div className="relative mt-4 flex-1 overflow-auto">
         {!isNewMode && (
           <MixList
             mixes={mixes}
