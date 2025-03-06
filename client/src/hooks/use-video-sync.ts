@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import type ReactPlayer from 'react-player/youtube';
 
 interface VideoSyncState {
@@ -57,7 +57,7 @@ export function useVideoSync() {
         ]);
 
         // Play both videos simultaneously
-        const playPromises = await Promise.all([
+        await Promise.all([
           new Promise<void>((resolve) => {
             leftPlayer.playVideo();
             const checkPlay = setInterval(() => {
@@ -77,15 +77,12 @@ export function useVideoSync() {
             }, 10);
           })
         ]);
-
       } else {
-        // Pause both videos
         leftPlayer.pauseVideo();
         rightPlayer.pauseVideo();
       }
     } catch (error) {
       console.error('Error during video sync:', error);
-      // Ensure both videos are paused on error
       if (leftPlayer) leftPlayer.pauseVideo();
       if (rightPlayer) rightPlayer.pauseVideo();
       throw error;

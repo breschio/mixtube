@@ -5,9 +5,9 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
+import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { supabase } from './lib/supabase';
 
 function Router() {
   return (
@@ -19,12 +19,18 @@ function Router() {
 }
 
 function App() {
+  const [supabaseClient, setSupabaseClient] = useState<ReturnType<typeof createClient> | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if Supabase credentials are configured properly
-    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-      setError('Supabase credentials not configured properly');
+    try {
+      const client = createClient(
+        import.meta.env.VITE_SUPABASE_URL ?? '',
+        import.meta.env.VITE_SUPABASE_ANON_KEY ?? ''
+      );
+      setSupabaseClient(client);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to initialize Supabase client');
     }
   }, []);
 
@@ -39,9 +45,17 @@ function App() {
     );
   }
 
+  if (!supabaseClient) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="mixtube-ui-theme">
-      <SessionContextProvider supabaseClient={supabase}>
+      <SessionContextProvider supabaseClient={supabaseClient}>
         <QueryClientProvider client={queryClient}>
           <Router />
           <Toaster />
