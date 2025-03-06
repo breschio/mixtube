@@ -1,8 +1,7 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
-import { useVideoSync } from '@/hooks/use-video-sync';
 
 interface MixedVideoPlayerProps {
   leftVideoId: string | null;
@@ -72,34 +71,37 @@ export default function MixedVideoPlayer({
 
   // Initialize YouTube IFrame API
   useEffect(() => {
-    if (window.YT) {
-      setYtApiReady(true);
-      return;
-    }
+    const loadYouTubeAPI = () => {
+      if (window.YT) {
+        setYtApiReady(true);
+        return;
+      }
 
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
-    const handleYTApiReady = () => {
-      setYtApiReady(true);
+      // Add the callback expected by YouTube
+      window.onYouTubeIframeAPIReady = () => {
+        console.log('YouTube API Ready');
+        setYtApiReady(true);
+      };
     };
 
-    // Add the callback expected by YouTube
-    window.onYouTubeIframeAPIReady = handleYTApiReady;
+    loadYouTubeAPI();
 
     return () => {
       window.onYouTubeIframeAPIReady = null;
     };
   }, []);
 
-  const handleReady = (player: 'left' | 'right') => {
+  const handleReady = useCallback((player: 'left' | 'right') => {
     console.log(`${player} player ready`);
     setPlayersReady(prev => ({ ...prev, [player]: true }));
-  };
+  }, []);
 
-  const handlePlayPause = async () => {
+  const handlePlayPause = useCallback(async () => {
     if (!ytApiReady) {
       console.log('YouTube API not ready');
       return;
@@ -120,13 +122,30 @@ export default function MixedVideoPlayer({
       }
 
       if (!isPlaying) {
-        // Starting playback
+        // Start both players synchronously
+        console.log('Starting both players');
         await Promise.all([
-          leftPlayer.playVideo(),
-          rightPlayer.playVideo()
+          new Promise<void>((resolve) => {
+            leftPlayer.playVideo();
+            resolve();
+          }),
+          new Promise<void>((resolve) => {
+            rightPlayer.playVideo();
+            resolve();
+          })
         ]);
+
+        // Verify both are playing
+        setTimeout(() => {
+          const leftState = leftPlayer.getPlayerState();
+          const rightState = rightPlayer.getPlayerState();
+          console.log('Player states after play:', { left: leftState, right: rightState });
+
+          if (leftState !== 1) leftPlayer.playVideo();
+          if (rightState !== 1) rightPlayer.playVideo();
+        }, 100);
       } else {
-        // Pausing playback
+        console.log('Pausing both players');
         leftPlayer.pauseVideo();
         rightPlayer.pauseVideo();
       }
@@ -135,7 +154,7 @@ export default function MixedVideoPlayer({
     } catch (error) {
       console.error('Error in handlePlayPause:', error);
     }
-  };
+  }, [ytApiReady, playersReady, isPlaying, onPlayPause]);
 
   // Base player components that stay mounted
   const leftPlayer = (
