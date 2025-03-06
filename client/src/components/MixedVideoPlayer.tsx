@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
@@ -28,10 +28,9 @@ export default function MixedVideoPlayer({
   leftStartTime,
   rightStartTime
 }: MixedVideoPlayerProps) {
-  const [ytApiReady, setYtApiReady] = useState(false);
-  const [playersReady, setPlayersReady] = useState({ left: false, right: false });
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
+  const [isReady, setIsReady] = useState({ left: false, right: false });
 
   // Common player config
   const playerConfig = {
@@ -51,16 +50,11 @@ export default function MixedVideoPlayer({
     }
   };
 
-  // Calculate audio levels based on crossfader and preview state
-  const getAudioLevels = () => {
-    if (preview) return { left: 0, right: 0 };
-    return {
-      left: Math.max(0, 1 - crossFaderValue),
-      right: Math.max(0, crossFaderValue)
-    };
+  // Calculate audio levels based on crossfader
+  const audioLevels = preview ? { left: 0, right: 0 } : {
+    left: Math.max(0, 1 - crossFaderValue),
+    right: Math.max(0, crossFaderValue)
   };
-
-  const audioLevels = getAudioLevels();
 
   // Create URLs with start times if provided
   const getVideoUrl = (videoId: string | null, startTime?: number) => {
@@ -69,137 +63,29 @@ export default function MixedVideoPlayer({
     return startTime ? `${url}&start=${startTime}` : url;
   };
 
-  // Initialize YouTube IFrame API
-  useEffect(() => {
-    const loadYouTubeAPI = () => {
-      if (window.YT) {
-        setYtApiReady(true);
-        return;
-      }
-
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
-
-      window.onYouTubeIframeAPIReady = () => {
-        console.log('YouTube API Ready');
-        setYtApiReady(true);
-      };
-    };
-
-    loadYouTubeAPI();
-
-    return () => {
-      window.onYouTubeIframeAPIReady = null;
-    };
-  }, []);
-
-  const handleReady = useCallback((player: 'left' | 'right') => {
-    console.log(`${player} player ready`);
-    setPlayersReady(prev => ({ ...prev, [player]: true }));
-  }, []);
-
-  const waitForPlayerState = (player: any, targetState: number, timeout = 5000): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      const checkState = () => {
-        const currentState = player.getPlayerState();
-        if (currentState === targetState) {
-          resolve();
-        }
-      };
-
-      // Check immediately
-      checkState();
-
-      // Set up interval to check state
-      const interval = setInterval(checkState, 100);
-
-      // Set timeout
-      const timeoutId = setTimeout(() => {
-        clearInterval(interval);
-        reject(new Error('Timeout waiting for player state'));
-      }, timeout);
-
-      // Clear interval when state is reached
-      const clearTimers = () => {
-        clearInterval(interval);
-        clearTimeout(timeoutId);
-      };
-
-      // Also check for state change events
-      player.addEventListener('onStateChange', (event: any) => {
-        if (event.data === targetState) {
-          clearTimers();
-          resolve();
-        }
-      });
-    });
+  const handleReady = (side: 'left' | 'right') => {
+    console.log(`${side} player ready`);
+    setIsReady(prev => ({ ...prev, [side]: true }));
   };
 
-  const handlePlayPause = useCallback(async () => {
-    if (!ytApiReady) {
-      console.log('YouTube API not ready');
-      return;
-    }
+  const handleError = (error: any, side: string) => {
+    console.error(`${side} player error:`, error);
+  };
 
-    if (!playersReady.left || !playersReady.right) {
-      console.log('Players not ready', playersReady);
+  const handlePlayPause = () => {
+    if (!isReady.left || !isReady.right) {
+      console.log('Players not ready yet');
       return;
     }
 
     try {
-      const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
-      const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
-
-      if (!leftPlayer || !rightPlayer) {
-        console.log('Players not initialized');
-        return;
-      }
-
-      if (!isPlaying) {
-        console.log('Starting playback...');
-
-        // First ensure both players are ready to play
-        const readyPromises = [
-          waitForPlayerState(leftPlayer, YT.PlayerState.CUED),
-          waitForPlayerState(rightPlayer, YT.PlayerState.CUED)
-        ];
-
-        await Promise.all(readyPromises);
-        console.log('Both players ready to play');
-
-        // Start playback
-        leftPlayer.playVideo();
-        rightPlayer.playVideo();
-
-        // Wait for both players to actually start playing
-        const playPromises = [
-          waitForPlayerState(leftPlayer, YT.PlayerState.PLAYING),
-          waitForPlayerState(rightPlayer, YT.PlayerState.PLAYING)
-        ];
-
-        await Promise.all(playPromises);
-        console.log('Both players now playing');
-
-      } else {
-        console.log('Pausing both players');
-        leftPlayer.pauseVideo();
-        rightPlayer.pauseVideo();
-      }
-
       onPlayPause();
     } catch (error) {
-      console.error('Error in handlePlayPause:', error);
-      // On error, ensure both players are paused
-      const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
-      const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
-      if (leftPlayer) leftPlayer.pauseVideo();
-      if (rightPlayer) rightPlayer.pauseVideo();
+      console.error('Error in play/pause:', error);
     }
-  }, [ytApiReady, playersReady, isPlaying, onPlayPause]);
+  };
 
-  // Base player components that stay mounted
+  // Base player components
   const leftPlayer = (
     <ReactPlayer
       ref={leftPlayerRef}
@@ -210,6 +96,7 @@ export default function MixedVideoPlayer({
       volume={audioLevels.left}
       muted={preview}
       onReady={() => handleReady('left')}
+      onError={(e) => handleError(e, 'left')}
       config={playerConfig}
     />
   );
@@ -224,9 +111,37 @@ export default function MixedVideoPlayer({
       volume={audioLevels.right}
       muted={preview}
       onReady={() => handleReady('right')}
+      onError={(e) => handleError(e, 'right')}
       config={playerConfig}
     />
   );
+
+  // Handle single video display
+  if (!leftVideoId && !rightVideoId) {
+    return (
+      <Card className="aspect-video bg-muted/50 flex items-center justify-center">
+        <p className="text-muted-foreground">Load videos to start mixing</p>
+      </Card>
+    );
+  }
+
+  if (!leftVideoId && rightVideoId) {
+    return (
+      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+        {rightPlayer}
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
+      </div>
+    );
+  }
+
+  if (leftVideoId && !rightVideoId) {
+    return (
+      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+        {leftPlayer}
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
+      </div>
+    );
+  }
 
   // Handle different layout templates
   const renderTemplate = () => {
@@ -258,41 +173,10 @@ export default function MixedVideoPlayer({
     );
   };
 
-  // Handle case when no videos are loaded
-  if (!leftVideoId && !rightVideoId) {
-    return (
-      <Card className="aspect-video bg-muted/50 flex items-center justify-center">
-        <p className="text-muted-foreground">Load videos to start mixing</p>
-      </Card>
-    );
-  }
-
-  // For single video display
-  if (!leftVideoId && rightVideoId) {
-    return (
-      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-        {rightPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
-      </div>
-    );
-  }
-
-  if (leftVideoId && !rightVideoId) {
-    return (
-      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-        {leftPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
-      </div>
-    );
-  }
-
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
       {renderTemplate()}
-      <VideoOverlay 
-        isPlaying={isPlaying} 
-        onPlayPause={handlePlayPause}
-      />
+      <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
     </div>
   );
 }
