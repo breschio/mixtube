@@ -82,7 +82,6 @@ export default function MixedVideoPlayer({
       const firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
-      // Add the callback expected by YouTube
       window.onYouTubeIframeAPIReady = () => {
         console.log('YouTube API Ready');
         setYtApiReady(true);
@@ -100,6 +99,43 @@ export default function MixedVideoPlayer({
     console.log(`${player} player ready`);
     setPlayersReady(prev => ({ ...prev, [player]: true }));
   }, []);
+
+  const waitForPlayerState = (player: any, targetState: number, timeout = 5000): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const checkState = () => {
+        const currentState = player.getPlayerState();
+        if (currentState === targetState) {
+          resolve();
+        }
+      };
+
+      // Check immediately
+      checkState();
+
+      // Set up interval to check state
+      const interval = setInterval(checkState, 100);
+
+      // Set timeout
+      const timeoutId = setTimeout(() => {
+        clearInterval(interval);
+        reject(new Error('Timeout waiting for player state'));
+      }, timeout);
+
+      // Clear interval when state is reached
+      const clearTimers = () => {
+        clearInterval(interval);
+        clearTimeout(timeoutId);
+      };
+
+      // Also check for state change events
+      player.addEventListener('onStateChange', (event: any) => {
+        if (event.data === targetState) {
+          clearTimers();
+          resolve();
+        }
+      });
+    });
+  };
 
   const handlePlayPause = useCallback(async () => {
     if (!ytApiReady) {
@@ -122,28 +158,30 @@ export default function MixedVideoPlayer({
       }
 
       if (!isPlaying) {
-        // Start both players synchronously
-        console.log('Starting both players');
-        await Promise.all([
-          new Promise<void>((resolve) => {
-            leftPlayer.playVideo();
-            resolve();
-          }),
-          new Promise<void>((resolve) => {
-            rightPlayer.playVideo();
-            resolve();
-          })
-        ]);
+        console.log('Starting playback...');
 
-        // Verify both are playing
-        setTimeout(() => {
-          const leftState = leftPlayer.getPlayerState();
-          const rightState = rightPlayer.getPlayerState();
-          console.log('Player states after play:', { left: leftState, right: rightState });
+        // First ensure both players are ready to play
+        const readyPromises = [
+          waitForPlayerState(leftPlayer, YT.PlayerState.CUED),
+          waitForPlayerState(rightPlayer, YT.PlayerState.CUED)
+        ];
 
-          if (leftState !== 1) leftPlayer.playVideo();
-          if (rightState !== 1) rightPlayer.playVideo();
-        }, 100);
+        await Promise.all(readyPromises);
+        console.log('Both players ready to play');
+
+        // Start playback
+        leftPlayer.playVideo();
+        rightPlayer.playVideo();
+
+        // Wait for both players to actually start playing
+        const playPromises = [
+          waitForPlayerState(leftPlayer, YT.PlayerState.PLAYING),
+          waitForPlayerState(rightPlayer, YT.PlayerState.PLAYING)
+        ];
+
+        await Promise.all(playPromises);
+        console.log('Both players now playing');
+
       } else {
         console.log('Pausing both players');
         leftPlayer.pauseVideo();
@@ -153,6 +191,11 @@ export default function MixedVideoPlayer({
       onPlayPause();
     } catch (error) {
       console.error('Error in handlePlayPause:', error);
+      // On error, ensure both players are paused
+      const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
+      const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
+      if (leftPlayer) leftPlayer.pauseVideo();
+      if (rightPlayer) rightPlayer.pauseVideo();
     }
   }, [ytApiReady, playersReady, isPlaying, onPlayPause]);
 
