@@ -1,8 +1,21 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
 import { useVideoSync } from '@/hooks/use-video-sync';
+
+// Helper to detect iOS
+const isIOS = () => {
+  return [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ].includes(navigator.platform)
+  || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+};
 
 interface MixedVideoPlayerProps {
   leftVideoId: string | null;
@@ -35,7 +48,11 @@ export default function MixedVideoPlayer({
     handleStateChange,
     handleReady,
     syncPlay,
+    unmute
   } = useVideoSync();
+
+  const isIOSDevice = useRef(isIOS());
+  const hasInteracted = useRef(false);
 
   // Common player config
   const playerConfig = {
@@ -50,18 +67,16 @@ export default function MixedVideoPlayer({
       cc_lang_pref: 'none',
       origin: window.location.origin,
       enablejsapi: 1,
-      mute: 0,
+      mute: isIOSDevice.current && !hasInteracted.current ? 1 : 0,
       fs: 0,
       disablekb: 1,
-      start: 0 // This will be overridden by the url if needed
+      start: 0
     }
   };
 
   // Calculate audio levels based on crossfader and preview state
   const getAudioLevels = () => {
     if (preview) return { left: 0, right: 0 };
-
-    // Use smooth crossfade for both mobile and desktop
     return {
       left: Math.max(0, 1 - crossFaderValue),
       right: Math.max(0, crossFaderValue)
@@ -77,6 +92,35 @@ export default function MixedVideoPlayer({
     return startTime ? `${url}&start=${startTime}` : url;
   };
 
+  const handleMixedPlayPause = async () => {
+    try {
+      if (isIOSDevice.current && !hasInteracted.current) {
+        hasInteracted.current = true;
+        await unmute();
+      }
+      await syncPlay(!isPlaying);
+      onPlayPause();
+    } catch (error) {
+      console.error('Error in handleMixedPlayPause:', error);
+    }
+  };
+
+  // Handle touch events
+  useEffect(() => {
+    const overlay = document.querySelector('.video-overlay');
+    if (!overlay) return;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      handleMixedPlayPause();
+    };
+
+    overlay.addEventListener('touchstart', handleTouchStart, { passive: false });
+    return () => {
+      overlay.removeEventListener('touchstart', handleTouchStart);
+    };
+  }, [isPlaying]);
+
   // Base player components that stay mounted
   const leftPlayer = (
     <ReactPlayer
@@ -86,7 +130,7 @@ export default function MixedVideoPlayer({
       height="100%"
       playing={isPlaying}
       volume={audioLevels.left}
-      muted={preview}
+      muted={preview || (isIOSDevice.current && !hasInteracted.current)}
       onReady={() => handleReady('left')}
       onPlay={() => handleStateChange('left', 1)}
       onPause={() => handleStateChange('left', 2)}
@@ -103,7 +147,7 @@ export default function MixedVideoPlayer({
       height="100%"
       playing={isPlaying}
       volume={audioLevels.right}
-      muted={preview}
+      muted={preview || (isIOSDevice.current && !hasInteracted.current)}
       onReady={() => handleReady('right')}
       onPlay={() => handleStateChange('right', 1)}
       onPause={() => handleStateChange('right', 2)}
@@ -156,7 +200,7 @@ export default function MixedVideoPlayer({
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {rightPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={handleMixedPlayPause} />
       </div>
     );
   }
@@ -165,24 +209,19 @@ export default function MixedVideoPlayer({
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {leftPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={handleMixedPlayPause} />
       </div>
     );
   }
 
-  const handleMixedPlayPause = async () => {
-    try {
-      await syncPlay(!isPlaying);
-      onPlayPause();
-    } catch (error) {
-      console.error('Error in handleMixedPlayPause:', error);
-    }
-  };
-
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
       {renderTemplate()}
-      <VideoOverlay isPlaying={isPlaying} onPlayPause={preview ? onPlayPause : handleMixedPlayPause} />
+      <VideoOverlay 
+        isPlaying={isPlaying} 
+        onPlayPause={preview ? onPlayPause : handleMixedPlayPause}
+        className="video-overlay"
+      />
     </div>
   );
 }

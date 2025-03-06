@@ -22,8 +22,6 @@ export function useVideoSync() {
   const rightPlayerRef = useRef<ReactPlayer>(null);
   const lastSyncTime = useRef<number>(0);
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const syncRetryCountRef = useRef<number>(0);
-  const MAX_SYNC_RETRIES = 3;
 
   const handleStateChange = (player: 'left' | 'right', state: number) => {
     setSyncState(prev => ({
@@ -36,7 +34,6 @@ export function useVideoSync() {
   };
 
   const handleReady = (player: 'left' | 'right') => {
-    console.log(`${player} player ready`);
     setSyncState(prev => ({
       ...prev,
       [`${player}Ready`]: true
@@ -47,24 +44,29 @@ export function useVideoSync() {
     const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
     const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
 
-    if (Date.now() - lastSyncTime.current < 250) {
-      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
-      syncTimeoutRef.current = setTimeout(() => seekAllPlayers(time), 250);
-      return;
-    }
-    lastSyncTime.current = Date.now();
+    if (!leftPlayer && !rightPlayer) return;
 
     try {
-      if (leftPlayer?.seekTo) await leftPlayer.seekTo(time);
-      if (rightPlayer?.seekTo) await rightPlayer.seekTo(time);
+      const promises = [];
+      if (leftPlayer?.seekTo) promises.push(leftPlayer.seekTo(time));
+      if (rightPlayer?.seekTo) promises.push(rightPlayer.seekTo(time));
+
+      await Promise.all(promises);
       setSyncState(prev => ({ ...prev, currentTime: time }));
-      syncRetryCountRef.current = 0;
     } catch (error) {
       console.error('Error seeking players:', error);
-      if (syncRetryCountRef.current < MAX_SYNC_RETRIES) {
-        syncRetryCountRef.current++;
-        setTimeout(() => seekAllPlayers(time), 500);
-      }
+    }
+  };
+
+  const unmute = async () => {
+    const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
+    const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
+
+    try {
+      if (leftPlayer) leftPlayer.unMute();
+      if (rightPlayer) rightPlayer.unMute();
+    } catch (error) {
+      console.error('Error unmuting players:', error);
     }
   };
 
@@ -99,7 +101,7 @@ export function useVideoSync() {
         setTimeout(() => {
           if (leftPlayer && leftPlayer.getPlayerState() !== 1) leftPlayer.playVideo();
           if (rightPlayer && rightPlayer.getPlayerState() !== 1) rightPlayer.playVideo();
-        }, 100);
+        }, 50);
       } else {
         if (leftPlayer) leftPlayer.pauseVideo();
         if (rightPlayer) rightPlayer.pauseVideo();
@@ -127,5 +129,6 @@ export function useVideoSync() {
     handleStateChange,
     handleReady,
     syncPlay,
+    unmute
   };
 }
