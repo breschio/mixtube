@@ -82,6 +82,7 @@ export default function MixedVideoPlayer({
       const firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
+      // Add the callback expected by YouTube
       window.onYouTubeIframeAPIReady = () => {
         console.log('YouTube API Ready');
         setYtApiReady(true);
@@ -95,40 +96,8 @@ export default function MixedVideoPlayer({
     };
   }, []);
 
-  const waitForPlayerState = async (player: any, targetState: number, timeout = 5000) => {
-    return new Promise<boolean>((resolve) => {
-      const startTime = Date.now();
-
-      const checkState = () => {
-        const currentState = player.getPlayerState();
-        if (currentState === targetState) {
-          resolve(true);
-          return;
-        }
-
-        if (Date.now() - startTime > timeout) {
-          resolve(false);
-          return;
-        }
-
-        setTimeout(checkState, 100);
-      };
-
-      checkState();
-    });
-  };
-
   const handleReady = useCallback((player: 'left' | 'right') => {
     console.log(`${player} player ready`);
-    const playerRef = player === 'left' ? leftPlayerRef.current : rightPlayerRef.current;
-    const internalPlayer = playerRef?.getInternalPlayer();
-
-    if (internalPlayer) {
-      // Ensure the player is properly initialized
-      internalPlayer.playVideo();
-      internalPlayer.pauseVideo();
-    }
-
     setPlayersReady(prev => ({ ...prev, [player]: true }));
   }, []);
 
@@ -153,30 +122,28 @@ export default function MixedVideoPlayer({
       }
 
       if (!isPlaying) {
+        // Start both players synchronously
         console.log('Starting both players');
-
-        // First pause both to ensure clean state
-        leftPlayer.pauseVideo();
-        rightPlayer.pauseVideo();
-
-        // Wait a brief moment
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-        // Start both players
-        leftPlayer.playVideo();
-        rightPlayer.playVideo();
-
-        // Verify both players started
-        const [leftStarted, rightStarted] = await Promise.all([
-          waitForPlayerState(leftPlayer, 1),  // 1 = playing
-          waitForPlayerState(rightPlayer, 1)
+        await Promise.all([
+          new Promise<void>((resolve) => {
+            leftPlayer.playVideo();
+            resolve();
+          }),
+          new Promise<void>((resolve) => {
+            rightPlayer.playVideo();
+            resolve();
+          })
         ]);
 
-        if (!leftStarted || !rightStarted) {
-          console.log('Retrying play...');
-          leftPlayer.playVideo();
-          rightPlayer.playVideo();
-        }
+        // Verify both are playing
+        setTimeout(() => {
+          const leftState = leftPlayer.getPlayerState();
+          const rightState = rightPlayer.getPlayerState();
+          console.log('Player states after play:', { left: leftState, right: rightState });
+
+          if (leftState !== 1) leftPlayer.playVideo();
+          if (rightState !== 1) rightPlayer.playVideo();
+        }, 100);
       } else {
         console.log('Pausing both players');
         leftPlayer.pauseVideo();
