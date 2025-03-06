@@ -48,6 +48,12 @@ interface VideoInfo {
   initialLikes?: number; 
 }
 
+interface MixesResponse {
+  mixes: Mix[];
+  databaseConnected: boolean;
+  message?: string;
+}
+
 export default function Home() {
   const user = useUser();
   const isMobile = useMobile();
@@ -88,17 +94,8 @@ export default function Home() {
   const [mobileTab, setMobileTab] = useState<'left' | 'mix' | 'right'>('left');
 
 
-  const { data: mixesResponse } = useQuery({
+  const { data: mixesResponse } = useQuery<MixesResponse>({
     queryKey: ['/api/mixes'],
-    onSuccess: (data) => {
-      if (data && 'databaseConnected' in data) {
-        setDatabaseConnected(!!data.databaseConnected);
-        setShowDatabaseWarning(!data.databaseConnected && data.mixes.length === 0);
-      } else if (data && Array.isArray(data.mixes) && data.mixes.length > 0) {
-        setDatabaseConnected(true);
-        setShowDatabaseWarning(false);
-      }
-    },
     queryFn: async () => {
       const response = await fetch('/api/mixes');
       if (!response.ok) {
@@ -107,6 +104,14 @@ export default function Home() {
       return response.json();
     }
   });
+
+  // Handle database connection status in an effect
+  useEffect(() => {
+    if (mixesResponse) {
+      setDatabaseConnected(!!mixesResponse.databaseConnected);
+      setShowDatabaseWarning(!mixesResponse.databaseConnected && mixesResponse.mixes.length === 0);
+    }
+  }, [mixesResponse]);
 
   const mixes = mixesResponse?.mixes || [];
 
