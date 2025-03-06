@@ -230,31 +230,31 @@ export default function Home() {
   };
 
   const handlePlayMix = async (mix: Mix, shouldAutoPlay: boolean = true) => {
-    const leftInfo = getVideoInfoFromMixes(mix.leftVideoId);
-    const rightInfo = getVideoInfoFromMixes(mix.rightVideoId);
-
+    // Set video info immediately
     setVideos({
       left: {
         id: mix.leftVideoId,
-        title: leftInfo?.title || "Video",
-        channelTitle: leftInfo?.channelTitle || "Channel",
+        title: mix.leftTitle || "Video",
+        channelTitle: mix.leftChannel || "Channel",
         thumbnail: `https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`
       },
       right: {
         id: mix.rightVideoId,
-        title: rightInfo?.title || "Video",
-        channelTitle: rightInfo?.channelTitle || "Channel",
+        title: mix.rightTitle || "Video",
+        channelTitle: mix.rightChannel || "Channel",
         thumbnail: `https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`
       }
     });
 
+    // Update mix state immediately
     setCrossFader(mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
-    setShowMixControls(true); 
+    setShowMixControls(true);
     setCurrentMix(mix);
     setPlaying(shouldAutoPlay);
     setIsNewMode(false);
 
+    // Increment view count in background
     try {
       await fetch(`/api/mixes/${mix.id}/view`, { method: 'POST' });
       queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
