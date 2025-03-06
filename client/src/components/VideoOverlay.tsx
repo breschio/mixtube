@@ -23,16 +23,13 @@ const VideoOverlay: React.FC<VideoOverlayProps> = ({ isPlaying, onPlayPause }) =
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
-      onTouchEnd={handleClick}
     >
-      <div className="transform transition-all duration-500 hover:scale-110">
-        <div className="rounded-xl bg-gradient-to-r from-primary to-primary/80 p-4 shadow-lg ring-1 ring-white/10 cursor-pointer">
-          {isPlaying ? (
-            <Pause className="h-12 w-12 text-primary-foreground" />
-          ) : (
-            <Play className="h-12 w-12 text-primary-foreground" />
-          )}
-        </div>
+      <div className="rounded-xl bg-gradient-to-r from-primary to-primary/80 p-4 shadow-lg ring-1 ring-white/10 cursor-pointer">
+        {isPlaying ? (
+          <Pause className="h-12 w-12 text-primary-foreground" />
+        ) : (
+          <Play className="h-12 w-12 text-primary-foreground" />
+        )}
       </div>
     </div>
   );

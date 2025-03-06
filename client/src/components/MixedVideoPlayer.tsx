@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
+import { useVideoSync } from '@/hooks/use-video-sync';
 
 interface MixedVideoPlayerProps {
   leftVideoId: string | null;
@@ -26,9 +27,12 @@ export default function MixedVideoPlayer({
   leftStartTime,
   rightStartTime
 }: MixedVideoPlayerProps) {
-  const leftPlayerRef = useRef<ReactPlayer>(null);
-  const rightPlayerRef = useRef<ReactPlayer>(null);
-  const [isReady, setIsReady] = useState({ left: false, right: false });
+  const {
+    leftPlayerRef,
+    rightPlayerRef,
+    handleReady,
+    syncPlay,
+  } = useVideoSync();
 
   // Common player config
   const playerConfig = {
@@ -61,8 +65,13 @@ export default function MixedVideoPlayer({
     return startTime ? `${url}&start=${startTime}` : url;
   };
 
-  const handleReady = (side: 'left' | 'right') => {
-    setIsReady(prev => ({ ...prev, [side]: true }));
+  const handleVideoPlayPause = async () => {
+    try {
+      await syncPlay(!isPlaying);
+      onPlayPause();
+    } catch (error) {
+      console.error('Error in handleVideoPlayPause:', error);
+    }
   };
 
   // Base player components
@@ -108,7 +117,7 @@ export default function MixedVideoPlayer({
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {rightPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={handleVideoPlayPause} />
       </div>
     );
   }
@@ -117,44 +126,33 @@ export default function MixedVideoPlayer({
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {leftPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={handleVideoPlayPause} />
       </div>
     );
   }
 
-  // Handle layout templates
-  const renderTemplate = () => {
-    if (activeTemplate === 'side-by-side') {
-      const leftWidth = Math.max(20, Math.min(80, (1 - crossFaderValue) * 100));
-      const rightWidth = 100 - leftWidth;
-      return (
+  return (
+    <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
+      {activeTemplate === 'side-by-side' ? (
         <>
-          <div className="h-full transition-[width] duration-200" style={{ width: `${leftWidth}%` }}>
+          <div className="h-full transition-[width] duration-200" style={{ width: `${Math.max(20, Math.min(80, (1 - crossFaderValue) * 100))}%` }}>
             {leftPlayer}
           </div>
-          <div className="h-full transition-[width] duration-200" style={{ width: `${rightWidth}%` }}>
+          <div className="h-full transition-[width] duration-200" style={{ width: `${Math.max(20, Math.min(80, crossFaderValue * 100))}%` }}>
             {rightPlayer}
           </div>
         </>
-      );
-    }
-
-    return (
-      <>
-        <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: 1 - crossFaderValue }}>
-          {leftPlayer}
-        </div>
-        <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: crossFaderValue }}>
-          {rightPlayer}
-        </div>
-      </>
-    );
-  };
-
-  return (
-    <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
-      {renderTemplate()}
-      <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
+      ) : (
+        <>
+          <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: 1 - crossFaderValue }}>
+            {leftPlayer}
+          </div>
+          <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: crossFaderValue }}>
+            {rightPlayer}
+          </div>
+        </>
+      )}
+      <VideoOverlay isPlaying={isPlaying} onPlayPause={handleVideoPlayPause} />
     </div>
   );
 }
