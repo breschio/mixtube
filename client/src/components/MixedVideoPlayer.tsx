@@ -36,19 +36,21 @@ export default function MixedVideoPlayer({
 
   // Common player config
   const playerConfig = {
-    playerVars: {
-      controls: 0,
-      modestbranding: 1,
-      playsinline: 1,
-      rel: 0,
-      showinfo: 0,
-      iv_load_policy: 3,
-      cc_load_policy: 3,
-      cc_lang_pref: 'none',
-      origin: window.location.origin,
-      enablejsapi: 1,
-      fs: 0,
-      disablekb: 1,
+    youtube: {
+      playerVars: {
+        controls: 0,
+        modestbranding: 1,
+        playsinline: 1,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3,
+        cc_load_policy: 3,
+        cc_lang_pref: 'none',
+        origin: window.location.origin,
+        enablejsapi: 1,
+        fs: 0,
+        disablekb: 1,
+      }
     }
   };
 
@@ -74,7 +76,7 @@ export default function MixedVideoPlayer({
     }
   };
 
-  // Base player components
+  // Base player components with playsinline enabled for mobile
   const leftPlayer = (
     <ReactPlayer
       ref={leftPlayerRef}
@@ -86,6 +88,7 @@ export default function MixedVideoPlayer({
       muted={preview}
       onReady={() => handleReady('left')}
       config={playerConfig}
+      playsinline={true}
     />
   );
 
@@ -100,6 +103,7 @@ export default function MixedVideoPlayer({
       muted={preview}
       onReady={() => handleReady('right')}
       config={playerConfig}
+      playsinline={true}
     />
   );
 

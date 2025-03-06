@@ -27,7 +27,10 @@ export function useVideoSync() {
     const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
     const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
 
-    if (!leftPlayer || !rightPlayer) return;
+    if (!leftPlayer || !rightPlayer) {
+      console.log('Players not initialized');
+      return;
+    }
 
     try {
       if (shouldPlay) {
@@ -36,8 +39,25 @@ export function useVideoSync() {
           return;
         }
 
-        // Ensure both players start at the same time
-        const playPromises = [
+        // Ensure both players are at the same timestamp
+        const leftTime = leftPlayer.getCurrentTime();
+        const rightTime = rightPlayer.getCurrentTime();
+        const targetTime = Math.min(leftTime, rightTime);
+
+        // Seek both players to the same timestamp
+        await Promise.all([
+          new Promise<void>((resolve) => {
+            leftPlayer.seekTo(targetTime);
+            resolve();
+          }),
+          new Promise<void>((resolve) => {
+            rightPlayer.seekTo(targetTime);
+            resolve();
+          })
+        ]);
+
+        // Play both videos simultaneously
+        await Promise.all([
           new Promise<void>((resolve) => {
             leftPlayer.playVideo();
             const checkPlay = setInterval(() => {
@@ -56,9 +76,7 @@ export function useVideoSync() {
               }
             }, 10);
           })
-        ];
-
-        await Promise.all(playPromises);
+        ]);
       } else {
         leftPlayer.pauseVideo();
         rightPlayer.pauseVideo();
