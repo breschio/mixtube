@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
@@ -40,7 +40,7 @@ export default function MixedVideoPlayer({
       playerVars: {
         controls: 0,
         modestbranding: 1,
-        playsinline: 1,
+        playsinline: 1, // Added for mobile compatibility
         rel: 0,
         showinfo: 0,
         iv_load_policy: 3,
@@ -76,6 +76,17 @@ export default function MixedVideoPlayer({
     }
   };
 
+  // Mobile detection
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    setIsMobile(checkMobile());
+    const handleResize = () => setIsMobile(checkMobile());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+
   // Base player components with playsinline enabled for mobile
   const leftPlayer = (
     <ReactPlayer
@@ -88,7 +99,6 @@ export default function MixedVideoPlayer({
       muted={preview}
       onReady={() => handleReady('left')}
       config={playerConfig}
-      playsinline={true}
     />
   );
 
@@ -103,7 +113,6 @@ export default function MixedVideoPlayer({
       muted={preview}
       onReady={() => handleReady('right')}
       config={playerConfig}
-      playsinline={true}
     />
   );
 

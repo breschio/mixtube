@@ -10,7 +10,7 @@ import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import AuthModal from "@/components/AuthModal";
-import { useMobile } from '@/hooks/use-mobile';
+import { useMobileDetection } from '@/hooks/use-mobile-detection'; // Import the mobile detection hook
 import SaveMixDialog from "@/components/SaveMixDialog";
 import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
@@ -22,6 +22,8 @@ import DJControls from "@/components/DJControls";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import BorderBeam from "@/components/BorderBeam";
+import Logo from "@/components/Logo"; // Import the Logo component
+
 
 interface Mix {
   id: string;
@@ -50,7 +52,6 @@ interface VideoInfo {
 
 export default function Home() {
   const user = useUser();
-  const isMobile = useMobile();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -86,6 +87,23 @@ export default function Home() {
   const [databaseConnected, setDatabaseConnected] = useState(false);
   const [showDatabaseWarning, setShowDatabaseWarning] = useState(false);
   const [mobileTab, setMobileTab] = useState<'left' | 'mix' | 'right'>('left');
+
+
+  // Add mobile detection
+  const { isMobile, isIOS, supportsMultipleVideos } = useMobileDetection();
+
+  useEffect(() => {
+    // Show a toast for mobile users about potential limitations
+    if (isMobile && !supportsMultipleVideos) {
+      toast({
+        title: "Mobile Browser Detected",
+        description: isIOS ? 
+          "iOS may limit simultaneous video playback. For best experience, use Chrome or Safari in desktop mode." : 
+          "Some mobile browsers may limit video playback. For best experience, use desktop mode.",
+        duration: 5000
+      });
+    }
+  }, [isMobile, isIOS, supportsMultipleVideos, toast]);
 
 
   const { data: mixesResponse } = useQuery({
@@ -600,7 +618,8 @@ export default function Home() {
                 className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
                 onClick={handleResetView}
               >
-                mixtube
+                {/* Replaced text logo with Logo component */}
+                <Logo className="ml-2" />
               </Button>
             </div>
             <div className="flex items-center gap-4">

@@ -18,19 +18,16 @@ function Router() {
   );
 }
 
+// Use a single Supabase client instance across the app
+import { supabase } from './lib/supabase';
+
 function App() {
-  const [supabaseClient, setSupabaseClient] = useState<ReturnType<typeof createClient> | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const client = createClient(
-        import.meta.env.VITE_SUPABASE_URL ?? '',
-        import.meta.env.VITE_SUPABASE_ANON_KEY ?? ''
-      );
-      setSupabaseClient(client);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to initialize Supabase client');
+    // Check if Supabase credentials are configured properly
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      setError('Supabase credentials not configured properly');
     }
   }, []);
 
@@ -55,7 +52,7 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="mixtube-ui-theme">
-      <SessionContextProvider supabaseClient={supabaseClient}>
+      <SessionContextProvider supabaseClient={supabase}>
         <QueryClientProvider client={queryClient}>
           <Router />
           <Toaster />
