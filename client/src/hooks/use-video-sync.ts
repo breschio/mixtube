@@ -22,8 +22,8 @@ export function useVideoSync() {
     }));
   };
 
+  // Simplified sync play logic
   const syncPlay = async (shouldPlay: boolean) => {
-    const { leftReady, rightReady } = syncState;
     const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
     const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
 
@@ -34,49 +34,9 @@ export function useVideoSync() {
 
     try {
       if (shouldPlay) {
-        if (!leftReady || !rightReady) {
-          console.log('Waiting for players to be ready');
-          return;
-        }
-
-        // Ensure both players are at the same timestamp
-        const leftTime = leftPlayer.getCurrentTime();
-        const rightTime = rightPlayer.getCurrentTime();
-        const targetTime = Math.min(leftTime, rightTime);
-
-        // Seek both players to the same timestamp
-        await Promise.all([
-          new Promise<void>((resolve) => {
-            leftPlayer.seekTo(targetTime);
-            resolve();
-          }),
-          new Promise<void>((resolve) => {
-            rightPlayer.seekTo(targetTime);
-            resolve();
-          })
-        ]);
-
-        // Play both videos simultaneously
-        await Promise.all([
-          new Promise<void>((resolve) => {
-            leftPlayer.playVideo();
-            const checkPlay = setInterval(() => {
-              if (leftPlayer.getPlayerState() === 1) {
-                clearInterval(checkPlay);
-                resolve();
-              }
-            }, 10);
-          }),
-          new Promise<void>((resolve) => {
-            rightPlayer.playVideo();
-            const checkPlay = setInterval(() => {
-              if (rightPlayer.getPlayerState() === 1) {
-                clearInterval(checkPlay);
-                resolve();
-              }
-            }, 10);
-          })
-        ]);
+        // Basic play synchronization
+        leftPlayer.playVideo();
+        rightPlayer.playVideo();
       } else {
         leftPlayer.pauseVideo();
         rightPlayer.pauseVideo();
@@ -85,7 +45,6 @@ export function useVideoSync() {
       console.error('Error during video sync:', error);
       if (leftPlayer) leftPlayer.pauseVideo();
       if (rightPlayer) rightPlayer.pauseVideo();
-      throw error;
     }
   };
 

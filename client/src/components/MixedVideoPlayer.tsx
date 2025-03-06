@@ -49,7 +49,7 @@ export default function MixedVideoPlayer({
         origin: window.location.origin,
         enablejsapi: 1,
         fs: 0,
-        disablekb: 1,
+        disablekb: 1
       }
     }
   };
@@ -58,13 +58,6 @@ export default function MixedVideoPlayer({
   const audioLevels = preview ? { left: 0, right: 0 } : {
     left: Math.max(0, 1 - crossFaderValue),
     right: Math.max(0, crossFaderValue)
-  };
-
-  // Create URLs with start times if provided
-  const getVideoUrl = (videoId: string | null, startTime?: number) => {
-    if (!videoId) return '';
-    const url = `https://www.youtube.com/watch?v=${videoId}`;
-    return startTime ? `${url}&start=${startTime}` : url;
   };
 
   const handleVideoPlayPause = async () => {
@@ -76,86 +69,67 @@ export default function MixedVideoPlayer({
     }
   };
 
-  // Base player components with playsinline enabled for mobile
-  const leftPlayer = (
-    <ReactPlayer
-      ref={leftPlayerRef}
-      url={getVideoUrl(leftVideoId, leftStartTime)}
-      width="100%"
-      height="100%"
-      playing={isPlaying}
-      volume={audioLevels.left}
-      muted={preview}
-      onReady={() => handleReady('left')}
-      config={playerConfig}
-      playsinline={true}
-    />
-  );
-
-  const rightPlayer = (
-    <ReactPlayer
-      ref={rightPlayerRef}
-      url={getVideoUrl(rightVideoId, rightStartTime)}
-      width="100%"
-      height="100%"
-      playing={isPlaying}
-      volume={audioLevels.right}
-      muted={preview}
-      onReady={() => handleReady('right')}
-      config={playerConfig}
-      playsinline={true}
-    />
-  );
-
   // Handle empty state
   if (!leftVideoId && !rightVideoId) {
     return (
       <Card className="aspect-video bg-muted/50 flex items-center justify-center">
-        <p className="text-muted-foreground">Load videos to start mixing</p>
+        <p className="text-muted-foreground">Load videos to play</p>
       </Card>
     );
   }
 
   // Handle single video states
-  if (!leftVideoId && rightVideoId) {
+  if (!leftVideoId || !rightVideoId) {
+    const videoId = leftVideoId || rightVideoId;
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-        {rightPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={handleVideoPlayPause} />
-      </div>
-    );
-  }
-
-  if (leftVideoId && !rightVideoId) {
-    return (
-      <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
-        {leftPlayer}
+        <ReactPlayer
+          ref={leftVideoId ? leftPlayerRef : rightPlayerRef}
+          url={`https://www.youtube.com/watch?v=${videoId}`}
+          width="100%"
+          height="100%"
+          playing={isPlaying}
+          volume={leftVideoId ? audioLevels.left : audioLevels.right}
+          muted={preview}
+          config={playerConfig}
+          playsinline
+          onReady={() => handleReady(leftVideoId ? 'left' : 'right')}
+        />
         <VideoOverlay isPlaying={isPlaying} onPlayPause={handleVideoPlayPause} />
       </div>
     );
   }
 
   return (
-    <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
-      {activeTemplate === 'side-by-side' ? (
-        <>
-          <div className="h-full transition-[width] duration-200" style={{ width: `${Math.max(20, Math.min(80, (1 - crossFaderValue) * 100))}%` }}>
-            {leftPlayer}
-          </div>
-          <div className="h-full transition-[width] duration-200" style={{ width: `${Math.max(20, Math.min(80, crossFaderValue * 100))}%` }}>
-            {rightPlayer}
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: 1 - crossFaderValue }}>
-            {leftPlayer}
-          </div>
-          <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: crossFaderValue }}>
-            {rightPlayer}
-          </div>
-        </>
-      )}
+    <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+      <div className="absolute inset-0">
+        <ReactPlayer
+          ref={leftPlayerRef}
+          url={`https://www.youtube.com/watch?v=${leftVideoId}`}
+          width="100%"
+          height="100%"
+          playing={isPlaying}
+          volume={audioLevels.left}
+          muted={preview}
+          config={playerConfig}
+          playsinline
+          onReady={() => handleReady('left')}
+        />
+      </div>
+      <div className="absolute inset-0">
+        <ReactPlayer
+          ref={rightPlayerRef}
+          url={`https://www.youtube.com/watch?v=${rightVideoId}`}
+          width="100%"
+          height="100%"
+          playing={isPlaying}
+          volume={audioLevels.right}
+          muted={preview}
+          config={playerConfig}
+          playsinline
+          onReady={() => handleReady('right')}
+        />
+      </div>
       <VideoOverlay isPlaying={isPlaying} onPlayPause={handleVideoPlayPause} />
     </div>
   );
