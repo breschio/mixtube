@@ -14,6 +14,8 @@ export function useVideoSync() {
 
   const leftPlayerRef = useRef<ReactPlayer>(null);
   const rightPlayerRef = useRef<ReactPlayer>(null);
+  const retryCount = useRef(0);
+  const maxRetries = 3;
 
   const handleReady = (player: 'left' | 'right') => {
     setSyncState(prev => ({
@@ -22,69 +24,95 @@ export function useVideoSync() {
     }));
   };
 
+  const attemptPlayback = async (player: any): Promise<void> => {
+    try {
+      await player.playVideo();
+      let attempts = 0;
+      // Wait for playback to actually start
+      while (attempts < 50 && player.getPlayerState() !== 1) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+      }
+      if (player.getPlayerState() !== 1) {
+        throw new Error('Failed to start playback');
+      }
+    } catch (error) {
+      console.error('Playback attempt failed:', error);
+      throw error;
+    }
+  };
+
   const syncPlay = async (shouldPlay: boolean) => {
     const { leftReady, rightReady } = syncState;
     const leftPlayer = leftPlayerRef.current?.getInternalPlayer();
     const rightPlayer = rightPlayerRef.current?.getInternalPlayer();
 
     if (!leftPlayer || !rightPlayer) {
-      console.log('Players not initialized');
+      console.error('Players not initialized');
+      return;
+    }
+
+    if (shouldPlay && (!leftReady || !rightReady)) {
+      console.error('Players not ready');
       return;
     }
 
     try {
       if (shouldPlay) {
-        if (!leftReady || !rightReady) {
-          console.log('Waiting for players to be ready');
-          return;
+        // Reset retry count on new play attempt
+        retryCount.current = 0;
+
+        // Ensure both videos are at the same timestamp
+        const currentTime = Math.min(
+          leftPlayer.getCurrentTime(), 
+          rightPlayer.getCurrentTime()
+        );
+
+        // Seek both to the same position
+        leftPlayer.seekTo(currentTime);
+        rightPlayer.seekTo(currentTime);
+
+        // Small delay to ensure seek is complete
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        while (retryCount.current < maxRetries) {
+          try {
+            // Start both videos simultaneously
+            await Promise.all([
+              attemptPlayback(leftPlayer),
+              attemptPlayback(rightPlayer)
+            ]);
+
+            // If successful, unmute the videos
+            leftPlayer.unMute();
+            rightPlayer.unMute();
+
+            // Successfully started both videos
+            return;
+          } catch (error) {
+            console.error(`Playback attempt ${retryCount.current + 1} failed:`, error);
+            retryCount.current++;
+
+            // Pause both before retry
+            leftPlayer.pauseVideo();
+            rightPlayer.pauseVideo();
+
+            // Wait before retry
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
         }
 
-        // Ensure both players are at the same timestamp
-        const leftTime = leftPlayer.getCurrentTime();
-        const rightTime = rightPlayer.getCurrentTime();
-        const targetTime = Math.min(leftTime, rightTime);
-
-        // Seek both players to the same timestamp
-        await Promise.all([
-          new Promise<void>((resolve) => {
-            leftPlayer.seekTo(targetTime);
-            resolve();
-          }),
-          new Promise<void>((resolve) => {
-            rightPlayer.seekTo(targetTime);
-            resolve();
-          })
-        ]);
-
-        // Play both videos simultaneously
-        await Promise.all([
-          new Promise<void>((resolve) => {
-            leftPlayer.playVideo();
-            const checkPlay = setInterval(() => {
-              if (leftPlayer.getPlayerState() === 1) {
-                clearInterval(checkPlay);
-                resolve();
-              }
-            }, 10);
-          }),
-          new Promise<void>((resolve) => {
-            rightPlayer.playVideo();
-            const checkPlay = setInterval(() => {
-              if (rightPlayer.getPlayerState() === 1) {
-                clearInterval(checkPlay);
-                resolve();
-              }
-            }, 10);
-          })
-        ]);
+        throw new Error('Failed to start videos after maximum retries');
       } else {
+        // For pause, just pause both immediately
         leftPlayer.pauseVideo();
         rightPlayer.pauseVideo();
       }
     } catch (error) {
       console.error('Error during video sync:', error);
-      if (leftPlayer) leftPlayer.pauseVideo();
-      if (rightPlayer) rightPlayer.pauseVideo();
+      // Ensure both are paused on error
+      leftPlayer.pauseVideo();
+      rightPlayer.pauseVideo();
       throw error;
     }
   };
