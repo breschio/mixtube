@@ -48,6 +48,15 @@ const sessionConfig = {
 
 app.use(session(sessionConfig));
 
+// Service Worker headers
+app.use((req, res, next) => {
+  // Add Service-Worker-Navigation-Preload header
+  res.setHeader('Service-Worker-Navigation-Preload', 'true');
+  // Add Service-Worker-Allowed header
+  res.setHeader('Service-Worker-Allowed', '/');
+  next();
+});
+
 // Auth routes
 app.get('/auth/login', authRoutes.login);
 app.get('/auth/callback', authRoutes.callback);
