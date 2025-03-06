@@ -7,7 +7,7 @@ const youtube = google.youtube('v3');
 router.get('/youtube/trending', async (req, res) => {
   try {
     if (!process.env.YOUTUBE_API_KEY) {
-      return res.json([]);
+      return res.status(400).json({ error: 'YouTube API key not configured' });
     }
 
     const response = await youtube.videos.list({
@@ -29,20 +29,20 @@ router.get('/youtube/trending', async (req, res) => {
     res.json(videos);
   } catch (error) {
     console.error('Error fetching trending videos:', error);
-    res.json([]);
+    res.status(500).json({ error: 'Failed to fetch trending videos' });
   }
 });
 
 router.get('/youtube/related', async (req, res) => {
-  const { v: videoId } = req.query;
-
-  if (!videoId || typeof videoId !== 'string') {
-    return res.json([]);
-  }
-
   try {
+    const { v: videoId } = req.query;
+
+    if (!videoId || typeof videoId !== 'string') {
+      return res.status(400).json({ error: 'Video ID is required' });
+    }
+
     if (!process.env.YOUTUBE_API_KEY) {
-      return res.json([]);
+      return res.status(400).json({ error: 'YouTube API key not configured' });
     }
 
     const response = await youtube.search.list({
@@ -69,7 +69,8 @@ router.get('/youtube/related', async (req, res) => {
     res.json(videos);
   } catch (error) {
     console.error('Error fetching related videos:', error);
-    res.json([]);
+    // Always return JSON, even for errors
+    res.status(500).json({ error: 'Failed to fetch related videos' });
   }
 });
 
