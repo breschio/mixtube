@@ -5,9 +5,9 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
-import { createClient } from '@supabase/supabase-js';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { supabase } from './lib/supabase';
 
 function Router() {
   return (
@@ -17,9 +17,6 @@ function Router() {
     </Switch>
   );
 }
-
-// Use a single Supabase client instance across the app
-import { supabase } from './lib/supabase';
 
 function App() {
   const [error, setError] = useState<string | null>(null);
@@ -38,14 +35,6 @@ function App() {
           <h1 className="text-2xl font-bold text-destructive">Configuration Error</h1>
           <p className="text-muted-foreground">{error}</p>
         </div>
-      </div>
-    );
-  }
-
-  if (!supabaseClient) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }

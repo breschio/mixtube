@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import { useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, X, User, Shuffle } from "lucide-react"; // Added Shuffle import
+import { Plus, X, User, Shuffle } from "lucide-react";
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import AuthModal from "@/components/AuthModal";
-import { useMobileDetection } from '@/hooks/use-mobile-detection'; // Import the mobile detection hook
+import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import SaveMixDialog from "@/components/SaveMixDialog";
 import type { YouTubeVideo } from '@/lib/youtube';
 import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
@@ -22,8 +22,7 @@ import DJControls from "@/components/DJControls";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import BorderBeam from "@/components/BorderBeam";
-import Logo from "@/components/Logo"; // Import the Logo component
-
+import { Logo } from "@/components/Logo"; 
 
 interface Mix {
   id: string;
@@ -89,11 +88,9 @@ export default function Home() {
   const [mobileTab, setMobileTab] = useState<'left' | 'mix' | 'right'>('left');
 
 
-  // Add mobile detection
   const { isMobile, isIOS, supportsMultipleVideos } = useMobileDetection();
 
   useEffect(() => {
-    // Show a toast for mobile users about potential limitations
     if (isMobile && !supportsMultipleVideos) {
       toast({
         title: "Mobile Browser Detected",
@@ -104,7 +101,6 @@ export default function Home() {
       });
     }
   }, [isMobile, isIOS, supportsMultipleVideos, toast]);
-
 
   const { data: mixesResponse } = useQuery({
     queryKey: ['/api/mixes'],
@@ -131,15 +127,12 @@ export default function Home() {
   useEffect(() => {
     if (mixes.length > 0 && !currentMix && !isNewMode) {
       const mostLikedMix = [...mixes].sort((a, b) => {
-        // Handle undefined likes by treating them as 0
         const likesA = a.likes || 0;
         const likesB = b.likes || 0;
 
-        // Sort by likes descending, if equal sort by date
         if (likesB !== likesA) {
           return likesB - likesA;
         }
-        // Secondary sort by date if likes are equal
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       })[0];
       handlePlayMix(mostLikedMix, false);
@@ -248,7 +241,6 @@ export default function Home() {
   };
 
   const handlePlayMix = async (mix: Mix, shouldAutoPlay: boolean = true) => {
-    // Set video info immediately
     setVideos({
       left: {
         id: mix.leftVideoId,
@@ -264,7 +256,6 @@ export default function Home() {
       }
     });
 
-    // Update mix state immediately
     setCrossFader(mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
     setShowMixControls(true);
@@ -272,7 +263,6 @@ export default function Home() {
     setPlaying(shouldAutoPlay);
     setIsNewMode(false);
 
-    // Increment view count in background
     try {
       await fetch(`/api/mixes/${mix.id}/view`, { method: 'POST' });
       queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
@@ -389,10 +379,7 @@ export default function Home() {
           channelTitle="MixTube"
           onToggleMixMode={() => setShowMixControls(!showMixControls)}
           mixMode={showMixControls}
-          onSaveMix={(title) => {
-            setMixName(title);
-            handlePost(title);
-          }}
+          onSaveMix={handlePost}
           user={user}
           leftVideoSelected={!!videos.left?.id}
           rightVideoSelected={!!videos.right?.id}
@@ -402,7 +389,7 @@ export default function Home() {
           className="px-0"
         />
       </div>
-      {showMixControls && !isNewMode && (
+      {showMixControls && (
         <Card className="mt-4 bg-background border-y border-r border-border/50 rounded-r-lg">
           <div className="p-6">
             <DJControls
@@ -426,21 +413,62 @@ export default function Home() {
 
   const renderMobileLayout = () => (
     <div className="h-[calc(100vh-5rem)] flex flex-col">
-      {mainContent}
+      <div className="w-full mb-4">
+        <MixedVideoPlayer
+          leftVideoId={videos.left?.id || null}
+          rightVideoId={videos.right?.id || null}
+          crossFaderValue={crossFader}
+          playing={playing}
+          onPlayPause={handlePlayPause}
+          preview={false}
+          activeTemplate={activeTemplate}
+          leftStartTime={videos.left?.startTime}
+          rightStartTime={videos.right?.startTime}
+        />
+        <VideoInfo
+          title={currentMix?.title || mixName || "New Mix"}
+          channelTitle="MixTube"
+          onToggleMixMode={() => setShowMixControls(!showMixControls)}
+          mixMode={showMixControls}
+          onSaveMix={handlePost}
+          user={user}
+          leftVideoSelected={!!videos.left?.id}
+          rightVideoSelected={!!videos.right?.id}
+          isCreateMode={isNewMode}
+          mixId={currentMix?.id}
+          initialLikes={currentMix?.likes}
+          className="px-0"
+        />
+        {showMixControls && (
+          <Card className="mt-4 bg-background border-y border-r border-border/50 rounded-r-lg">
+            <div className="p-6">
+              <DJControls
+                crossFader={crossFader}
+                onCrossFaderChange={handleCrossFaderChange}
+                leftVideoId={videos.left?.id}
+                rightVideoId={videos.right?.id}
+                forceShowTooltip={showTransitionTooltip}
+              />
+              <div className="mt-8">
+                <MixTemplates
+                  onSelectTemplate={handleTemplateSelect}
+                  activeTemplate={activeTemplate}
+                />
+              </div>
+            </div>
+          </Card>
+        )}
+      </div>
 
       {isNewMode && (
         <div className="px-4 pt-4">
           <Tabs value={mobileTab} onValueChange={(value) => setMobileTab(value as 'left' | 'mix' | 'right')}>
-            <TabsList className="w-full grid grid-cols-3">
-              <TabsTrigger value="left">Left</TabsTrigger>
-              <TabsTrigger value="mix">Mix</TabsTrigger>
-              <TabsTrigger value="right">Right</TabsTrigger>
+            <TabsList className="w-full grid grid-cols-2">
+              <TabsTrigger value="left">Left Video</TabsTrigger>
+              <TabsTrigger value="right">Right Video</TabsTrigger>
             </TabsList>
             <TabsContent value="left" className="mt-4">
               {renderControls('left')}
-            </TabsContent>
-            <TabsContent value="mix" className="mt-4">
-              {mixControls}
             </TabsContent>
             <TabsContent value="right" className="mt-4">
               {renderControls('right')}
@@ -618,7 +646,6 @@ export default function Home() {
                 className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
                 onClick={handleResetView}
               >
-                {/* Replaced text logo with Logo component */}
                 <Logo className="ml-2" />
               </Button>
             </div>
