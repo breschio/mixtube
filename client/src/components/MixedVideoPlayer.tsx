@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
@@ -11,7 +11,6 @@ interface MixedVideoPlayerProps {
   onPlayPause: () => void;
   preview?: boolean;
   activeTemplate?: string;
-  mobileView?: boolean;
   leftStartTime?: number;
   rightStartTime?: number;
 }
@@ -24,7 +23,6 @@ export default function MixedVideoPlayer({
   onPlayPause,
   preview = false,
   activeTemplate = 'side-by-side',
-  mobileView = false,
   leftStartTime,
   rightStartTime
 }: MixedVideoPlayerProps) {
@@ -64,25 +62,7 @@ export default function MixedVideoPlayer({
   };
 
   const handleReady = (side: 'left' | 'right') => {
-    console.log(`${side} player ready`);
     setIsReady(prev => ({ ...prev, [side]: true }));
-  };
-
-  const handleError = (error: any, side: string) => {
-    console.error(`${side} player error:`, error);
-  };
-
-  const handlePlayPause = () => {
-    if (!isReady.left || !isReady.right) {
-      console.log('Players not ready yet');
-      return;
-    }
-
-    try {
-      onPlayPause();
-    } catch (error) {
-      console.error('Error in play/pause:', error);
-    }
   };
 
   // Base player components
@@ -96,7 +76,6 @@ export default function MixedVideoPlayer({
       volume={audioLevels.left}
       muted={preview}
       onReady={() => handleReady('left')}
-      onError={(e) => handleError(e, 'left')}
       config={playerConfig}
     />
   );
@@ -111,12 +90,11 @@ export default function MixedVideoPlayer({
       volume={audioLevels.right}
       muted={preview}
       onReady={() => handleReady('right')}
-      onError={(e) => handleError(e, 'right')}
       config={playerConfig}
     />
   );
 
-  // Handle single video display
+  // Handle empty state
   if (!leftVideoId && !rightVideoId) {
     return (
       <Card className="aspect-video bg-muted/50 flex items-center justify-center">
@@ -125,11 +103,12 @@ export default function MixedVideoPlayer({
     );
   }
 
+  // Handle single video states
   if (!leftVideoId && rightVideoId) {
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {rightPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
     );
   }
@@ -138,12 +117,12 @@ export default function MixedVideoPlayer({
     return (
       <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
         {leftPlayer}
-        <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
+        <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
       </div>
     );
   }
 
-  // Handle different layout templates
+  // Handle layout templates
   const renderTemplate = () => {
     if (activeTemplate === 'side-by-side') {
       const leftWidth = Math.max(20, Math.min(80, (1 - crossFaderValue) * 100));
@@ -160,7 +139,6 @@ export default function MixedVideoPlayer({
       );
     }
 
-    // Default to fade-through
     return (
       <>
         <div className="absolute inset-0 transition-opacity duration-100" style={{ opacity: 1 - crossFaderValue }}>
@@ -176,7 +154,7 @@ export default function MixedVideoPlayer({
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
       {renderTemplate()}
-      <VideoOverlay isPlaying={isPlaying} onPlayPause={handlePlayPause} />
+      <VideoOverlay isPlaying={isPlaying} onPlayPause={onPlayPause} />
     </div>
   );
 }
