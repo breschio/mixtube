@@ -324,7 +324,6 @@ export default function Home() {
         onPlayPause={handlePlayPause}
         preview={false}
         activeTemplate={activeTemplate}
-        mobileView={isMobile}
         leftStartTime={videos.left?.startTime}
         rightStartTime={videos.right?.startTime}
       />
@@ -354,7 +353,17 @@ export default function Home() {
   const mainContent = (
     <>
       <div className="relative w-full aspect-video">
-        {mainVideoPlayer}
+        <MixedVideoPlayer
+          leftVideoId={videos.left?.id || null}
+          rightVideoId={videos.right?.id || null}
+          crossFaderValue={crossFader}
+          playing={playing}
+          onPlayPause={handlePlayPause}
+          preview={false}
+          activeTemplate={activeTemplate}
+          leftStartTime={videos.left?.startTime}
+          rightStartTime={videos.right?.startTime}
+        />
       </div>
       <div>
         <VideoInfo
@@ -399,38 +408,7 @@ export default function Home() {
 
   const renderMobileLayout = () => (
     <div className="h-[calc(100vh-5rem)] flex flex-col">
-      <div className="relative">
-        <MixedVideoPlayer
-          leftVideoId={videos.left?.id || null}
-          rightVideoId={videos.right?.id || null}
-          crossFaderValue={crossFader}
-          playing={playing}
-          onPlayPause={handlePlayPause}
-          preview={false}
-          activeTemplate={activeTemplate}
-          mobileView={true}
-          leftStartTime={videos.left?.startTime}
-          rightStartTime={videos.right?.startTime}
-        />
-      </div>
-
-      <div>
-        <VideoInfo
-          title={currentMix?.title || mixName || "New Mix"}
-          channelTitle="MixTube"
-          onToggleMixMode={() => setShowMixControls(!showMixControls)}
-          mixMode={showMixControls}
-          onSaveMix={handlePost}
-          user={user}
-          leftVideoSelected={!!videos.left?.id}
-          rightVideoSelected={!!videos.right?.id}
-          isPromptMode={false}
-          isCreateMode={isNewMode}
-          mixId={currentMix?.id}
-          initialLikes={currentMix?.likes}
-          className="px-0"
-        />
-      </div>
+      {mainContent}
 
       {isNewMode && (
         <div className="px-4 pt-4">
@@ -467,39 +445,13 @@ export default function Home() {
         </div>
       )}
 
-      <div className="relative">
+      <div className="relative mt-4">
         {!isNewMode && (
-          <>
-            {showMixControls && (
-              <Card className="bg-background mb-4">
-                <div className="space-y-8 p-6">
-                  <DJControls
-                    crossFader={crossFader}
-                    onCrossFaderChange={handleCrossFaderChange}
-                    leftVideoId={videos.left?.id}
-                    rightVideoId={videos.right?.id}
-                    forceShowTooltip={showTransitionTooltip}
-                  />
-                  <MixTemplates
-                    onSelectTemplate={handleTemplateSelect}
-                    activeTemplate={activeTemplate}
-                  />
-                </div>
-              </Card>
-            )}
-            <div 
-              className={cn(
-                "w-full transition-all duration-300 ease-in-out",
-                showMixControls ? "mt-4" : "mt-0"
-              )}
-            >
-              <MixList
-                mixes={mixes}
-                onPlayMix={handlePlayMix}
-                className="h-full"
-              />
-            </div>
-          </>
+          <MixList
+            mixes={mixes}
+            onPlayMix={handlePlayMix}
+            className="h-full"
+          />
         )}
       </div>
     </div>
