@@ -162,6 +162,7 @@ export default function Home() {
           rightTitle: videos.right.title,
           rightChannel: videos.right.channelTitle,
           crossFaderValue: Math.round(crossFader * 100),
+          audioFaderValue: Math.round(audioFader * 100), // Add audioFaderValue
           template: activeTemplate,
         }),
       });
