@@ -142,14 +142,14 @@ export default function DJControls({
       {mixTemplates}
 
       {/* Main controls container with three columns */}
-      <div className="grid grid-cols-[auto_1fr] gap-8 bg-background rounded-lg p-4">
+      <div className="grid grid-cols-[auto_1fr] gap-8 bg-background rounded-lg p-4 w-full"> {/* Added w-full class here */}
         {/* Left video */}
         <div className="hidden md:flex items-start"> {/* Added hidden class for mobile */}
           {renderVideoThumbnail(leftVideoId, leftVideoTitle, leftChannelTitle)}
         </div>
 
         {/* Center sliders */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 w-full"> {/* Added w-full class here */}
           {/* Video Opacity Slider */}
           <div>
             <div className="flex items-center gap-2">
@@ -182,7 +182,7 @@ export default function DJControls({
                   step={0.01}
                   onValueChange={(value) => handleSliderChange('video', value)}
                   className={cn(
-                    "flex-1 w-full", // Added w-full to the slider class
+                    "flex-1 w-full", 
                     "data-[state=active]:cursor-grabbing",
                     "transition-all duration-200"
                   )}
@@ -229,7 +229,7 @@ export default function DJControls({
                   step={0.01}
                   onValueChange={(value) => handleSliderChange('audio', value)}
                   className={cn(
-                    "w-full", // Added w-full to the slider class
+                    "w-full", 
                     "data-[state=active]:cursor-grabbing",
                     "transition-all duration-200"
                   )}
