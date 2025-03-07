@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-import { Video, Volume2 } from "lucide-react";
+import { Video, Volume2, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DJControlsProps {
   crossFader: number;
@@ -10,6 +11,8 @@ interface DJControlsProps {
   onAudioFaderChange: (value: number) => void;
   leftVideoId?: string | null;
   rightVideoId?: string | null;
+  leftVideoTitle?: string;
+  rightVideoTitle?: string;
   forceShowTooltip?: boolean;
   mixTemplates?: React.ReactNode;
 }
@@ -21,6 +24,8 @@ export default function DJControls({
   onAudioFaderChange,
   leftVideoId,
   rightVideoId,
+  leftVideoTitle,
+  rightVideoTitle,
   forceShowTooltip = false,
   mixTemplates
 }: DJControlsProps) {
@@ -81,6 +86,47 @@ export default function DJControls({
   const isRightVideo = crossFader > 0.5;
   const isRightAudio = audioFader > 0.5;
 
+  const renderVideoThumbnail = (videoId: string | null | undefined, title?: string, side: 'left' | 'right') => {
+    if (!videoId) return null;
+    return (
+      <div className={cn(
+        "flex items-start gap-2 mb-4",
+        side === 'right' ? 'justify-end' : 'justify-start'
+      )}>
+        <div className={cn(
+          "flex flex-col gap-2",
+          side === 'right' && "items-end"
+        )}>
+          <div className="relative w-24 aspect-video rounded-md overflow-hidden group">
+            <img 
+              src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
+              alt="Video thumbnail"
+              className="w-full h-full object-cover"
+            />
+            <a 
+              href={`https://www.youtube.com/watch?v=${videoId}`} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+            >
+              <ExternalLink className="w-5 h-5 text-white" />
+            </a>
+          </div>
+          {title && (
+            <a 
+              href={`https://www.youtube.com/watch?v=${videoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground hover:text-foreground line-clamp-2 max-w-[12rem] transition-colors"
+            >
+              {title}
+            </a>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex-1 flex flex-col gap-6">
       {/* Mix Templates at the top */}
@@ -88,6 +134,16 @@ export default function DJControls({
 
       {/* Sliders stacked vertically */}
       <div className="flex flex-col gap-6 bg-background rounded-lg p-4">
+        {/* Video Sources */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            {renderVideoThumbnail(leftVideoId, leftVideoTitle, 'left')}
+          </div>
+          <div>
+            {renderVideoThumbnail(rightVideoId, rightVideoTitle, 'right')}
+          </div>
+        </div>
+
         {/* Video Opacity Slider */}
         <div>
           <div className="flex items-center gap-2">
