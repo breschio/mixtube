@@ -596,11 +596,19 @@ export default function Home() {
           >
             <div className="h-[calc(100vh-5rem)] flex flex-col pl-6">
               <div className="h-full overflow-auto">
-                <MixList
-                  mixes={mixes}
-                  onPlayMix={handlePlayMix}
-                  className="h-full"
-                />
+                <MixList mixes={mixes} onPlayMix={handlePlayMix} className="h-full" />
+                {mixes.length > 0 && !isNewMode && (
+                  <div className="mt-6">
+                    <h2 className="text-lg font-semibold mb-4">Recent mixes</h2>
+                    <div className="space-y-3">
+                      {mixes.slice(0, 5).map((mix) => (
+                        <div key={mix.id} onClick={() => handlePlayMix(mix)}> {/* Added onClick handler */}
+                          <p>{mix.title}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </ResizablePanel>
