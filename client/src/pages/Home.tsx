@@ -627,11 +627,11 @@ export default function Home() {
               <div className="flex items-center gap-4">
                 <ThemeToggle />
                 <Button
-                  variant="outline"
+                  variant="default"
                   size="sm"
                   className={cn(
                     "gap-1.5 px-3 h-9",
-                    isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
+                    !isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
                   )}
                   onClick={isNewMode ? handleResetView : handleNewMix}
                 >
