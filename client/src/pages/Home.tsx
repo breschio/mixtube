@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useUser } from '@supabase/auth-helpers-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, X, User, Shuffle } from "lucide-react"; // Added Shuffle import
+import { Plus, X, User, Shuffle } from "lucide-react";
 import SearchBar from "@/components/SearchBar";
 import MixedVideoPlayer from "@/components/MixedVideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
@@ -606,8 +606,8 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="w-full bg-background">
+    <div className="min-h-screen bg-background flex flex-col h-screen">
+      <header className="w-full bg-background flex-none">
         <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -646,7 +646,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="min-h-screen pb-20">
+      <main className="flex-1 overflow-hidden">
         {showDatabaseWarning && (
           <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded shadow-sm">
             <div className="flex items-center">
@@ -662,10 +662,11 @@ export default function Home() {
             </div>
           </div>
         )}
-        <div className="max-w-[1600px] mx-auto px-6 pb-8">
+        <div className="max-w-[1600px] mx-auto px-6 h-full">
           {isMobile ? renderMobileLayout() : renderDesktopLayout()}
         </div>
       </main>
+
       <SaveMixDialog
         open={showSaveDialog && !hasMixTitle()}
         onOpenChange={setShowSaveDialog}
