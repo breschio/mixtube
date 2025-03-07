@@ -30,7 +30,7 @@ const ResizeHandle = () => {
 };
 
 interface Mix {
-  id: string;
+  id: number;
   title: string;
   leftVideoId: string;
   leftTitle: string;
@@ -41,7 +41,8 @@ interface Mix {
   crossFaderValue: number;
   template: string;
   createdAt: string;
-  likes?: number;
+  likes: number;
+  views: number;
 }
 
 interface VideoInfo {
@@ -50,7 +51,7 @@ interface VideoInfo {
   channelTitle: string;
   thumbnail: string;
   startTime?: number;
-  mixId?: string;
+  mixId?: number;
   initialLikes?: number;
 }
 
@@ -124,13 +125,9 @@ export default function Home() {
   useEffect(() => {
     if (mixes.length > 0 && !currentMix && !isNewMode) {
       const mostLikedMix = [...mixes].sort((a, b) => {
-        // Handle undefined likes by treating them as 0
-        const likesA = a.likes || 0;
-        const likesB = b.likes || 0;
-
         // Sort by likes descending, if equal sort by date
-        if (likesB !== likesA) {
-          return likesB - likesA;
+        if (b.likes !== a.likes) {
+          return b.likes - a.likes;
         }
         // Secondary sort by date if likes are equal
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -247,13 +244,17 @@ export default function Home() {
         id: mix.leftVideoId,
         title: mix.leftTitle || "Video",
         channelTitle: mix.leftChannel || "Channel",
-        thumbnail: `https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`
+        thumbnail: `https://img.youtube.com/vi/${mix.leftVideoId}/mqdefault.jpg`,
+        mixId: mix.id,
+        initialLikes: mix.likes
       },
       right: {
         id: mix.rightVideoId,
         title: mix.rightTitle || "Video",
         channelTitle: mix.rightChannel || "Channel",
-        thumbnail: `https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`
+        thumbnail: `https://img.youtube.com/vi/${mix.rightVideoId}/mqdefault.jpg`,
+        mixId: mix.id,
+        initialLikes: mix.likes
       }
     });
 
@@ -391,7 +392,7 @@ export default function Home() {
           rightVideoSelected={!!videos.right?.id}
           isCreateMode={isNewMode}
           mixId={currentMix?.id}
-          initialLikes={currentMix?.likes}
+          initialLikes={currentMix?.likes || 0}
           className="px-0"
         />
       </div>
@@ -496,7 +497,7 @@ export default function Home() {
                   onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
                   isCreateMode={isNewMode}
                   mixId={currentMix?.id}
-                  initialLikes={currentMix?.likes}
+                  initialLikes={currentMix?.likes || 0}
                   className="px-0"
                 />
               </div>
@@ -562,7 +563,7 @@ export default function Home() {
                   rightVideoSelected={!!videos.right?.id}
                   isCreateMode={isNewMode}
                   mixId={currentMix?.id}
-                  initialLikes={currentMix?.likes}
+                  initialLikes={currentMix?.likes || 0}
                   className="px-0"
                 />
               </div>

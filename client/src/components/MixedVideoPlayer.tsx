@@ -16,6 +16,23 @@ interface MixedVideoPlayerProps {
   rightStartTime?: number;
 }
 
+interface PlayerConfig {
+  playerVars: {
+    controls: number;
+    modestbranding: number;
+    playsinline: number;
+    rel: number;
+    showinfo: number;
+    iv_load_policy: number;
+    cc_load_policy: number;
+    cc_lang_pref: string;
+    origin: string;
+    enablejsapi: number;
+    fs: number;
+    disablekb: number;
+  };
+}
+
 export default function MixedVideoPlayer({
   leftVideoId,
   rightVideoId,
@@ -36,23 +53,21 @@ export default function MixedVideoPlayer({
 
   // Common player config
   const playerConfig = {
-    youtube: {
-      playerVars: {
-        controls: 0,
-        modestbranding: 1,
-        playsinline: 1,
-        rel: 0,
-        showinfo: 0,
-        iv_load_policy: 3,
-        cc_load_policy: 3,
-        cc_lang_pref: 'none',
-        origin: window.location.origin,
-        enablejsapi: 1,
-        fs: 0,
-        disablekb: 1,
-      }
+    playerVars: {
+      controls: 0,
+      modestbranding: 1,
+      playsinline: 1,
+      rel: 0,
+      showinfo: 0,
+      iv_load_policy: 3,
+      cc_load_policy: 3,
+      cc_lang_pref: 'none',
+      origin: window.location.origin,
+      enablejsapi: 1,
+      fs: 0,
+      disablekb: 1,
     }
-  };
+  } as { youtube: PlayerConfig };
 
   // Calculate audio levels based on crossfader
   const audioLevels = preview ? { left: 0, right: 0 } : {
