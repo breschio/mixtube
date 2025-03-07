@@ -396,7 +396,7 @@ export default function Home() {
         />
       </div>
       {showMixControls && !isNewMode && (
-        <Card className="mt-4 bg-background border-y border-r border-border/50 rounded-r-lg">
+        <Card className="mt-4 bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
           <div className="p-6">
             <DJControls
               crossFader={crossFader}
@@ -501,7 +501,7 @@ export default function Home() {
                 />
               </div>
               {showMixControls && (
-                <Card className="bg-background border-y border-r border-border/50 rounded-r-lg">
+                <Card className="bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
@@ -567,7 +567,7 @@ export default function Home() {
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
+                <Card className="mt-6 bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}

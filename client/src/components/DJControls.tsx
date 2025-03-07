@@ -69,27 +69,27 @@ export default function DJControls({
   const isRightSide = crossFader > 0.5;
 
   return (
-    <div className="flex-1 flex flex-col items-center gap-2">
+    <div className="flex-1 flex flex-col items-center gap-2 bg-theme-background rounded-lg p-4"> {/* Added background and padding */}
       <div className="flex w-full justify-between items-center mb-2">
-        <span className="text-sm text-primary">Left</span>
-        <div 
+        <span className="text-sm text-theme-text">Left</span> {/* Adjusted text color */}
+        <div
           className={cn(
-            "text-sm font-medium text-primary px-4 py-1 rounded-md border border-primary/20",
+            "text-sm font-medium text-theme-text px-4 py-1 rounded-md border border-theme-border", {/* Adjusted colors and classes */}
             isVisible || forceShowTooltip ? "opacity-100" : "opacity-0",
-            isRightSide ? "bg-primary/5" : "bg-transparent",
+            isRightSide ? "bg-theme-accent/5" : "bg-transparent",
             "transition-opacity duration-200"
           )}
         >
-          {percentage}% {isRightSide ? 'Right' : 'Left'}
+          {percentage}% {isRightSide ? "Right" : "Left"}
         </div>
-        <span className="text-sm text-primary">Right</span>
+        <span className="text-sm text-theme-text">Right</span> {/* Adjusted text color */}
       </div>
       <Slider
         value={[crossFader]}
         max={1}
         step={0.01}
         onValueChange={handleSliderChange}
-        className="flex-1 data-[state=active]:cursor-grabbing transition-all duration-200"
+        className="flex-1 data-[state=active]:cursor-grabbing transition-all duration-200 accent-theme-accent" {/* Added theme accent */}
         onMouseEnter={showLabel}
         onMouseLeave={() => {
           if (!forceShowTooltip) {
