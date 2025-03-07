@@ -107,15 +107,12 @@ export function MixList({ mixes, onPlayMix, className }: MixListProps) {
     return formatted;
   };
 
-  const Label = () => (
-    <div className="text-sm font-medium mb-2 text-primary">
-      Recent mixes
-    </div>
-  );
-
   return (
     <div className={cn("h-full flex flex-col", className)}>
-      <div className="shrink-0 mb-6">
+      <div className="text-sm font-medium mb-2 text-primary">
+        Recent mixes
+      </div>
+      <div className="shrink-0 mb-4">
         <Tabs value={activeSort} onValueChange={(value) => setActiveSort(value as SortType)} className="w-full">
           <TabsList className="grid grid-cols-2 w-full bg-muted/30">
             <TabsTrigger value="hot" className="text-xs font-medium text-primary">
@@ -128,7 +125,6 @@ export function MixList({ mixes, onPlayMix, className }: MixListProps) {
         </Tabs>
       </div>
       <div className="space-y-4 overflow-y-auto flex-1">
-        <Label /> {/* Added label */}
         {sortedMixes.map((mix) => (
           <div key={mix.id} className="group cursor-pointer hover:bg-accent/5 rounded-lg p-2" onClick={() => onPlayMix?.(mix)}>
             <div className="flex gap-3">
