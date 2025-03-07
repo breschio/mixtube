@@ -360,12 +360,6 @@ export default function Home() {
           forceShowTooltip={showTransitionTooltip}
           mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
         />
-        <div className="grid grid-cols-2 gap-2 w-full">
-          <MixTemplates
-            onSelectTemplate={handleTemplateSelect}
-            activeTemplate={activeTemplate}
-          />
-        </div>
       </div>
     </Card>
   );

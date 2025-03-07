@@ -82,12 +82,12 @@ export default function DJControls({
   const isRightAudio = audioFader > 0.5;
 
   return (
-    <div className="flex-1 flex flex-col gap-8 bg-background rounded-lg p-4">
-      {/* Mix Templates */}
+    <div className="flex-1 flex flex-col gap-6">
+      {/* Mix Templates at the top */}
       {mixTemplates}
 
-      {/* Sliders Container */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Sliders below mix templates */}
+      <div className="grid grid-cols-2 gap-4 bg-background rounded-lg p-4">
         {/* Video Opacity Slider */}
         <div>
           <div className="flex items-center gap-2">
