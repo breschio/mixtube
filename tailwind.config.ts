@@ -35,6 +35,9 @@ const config: Config = {
         '150': '1.5',
       },
       colors: {
+        sky: colors.sky,
+        emerald: colors.emerald,
+        pink: colors.pink,
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
