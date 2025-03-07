@@ -238,55 +238,7 @@ const VideoInfo = ({
         </div>
       </div>
       
-      {/* Source Videos Information */}
-      {(leftVideoSelected || rightVideoSelected) && (
-        <div className="flex flex-col gap-2 mt-4 p-3 rounded-md bg-muted/30">
-          <h3 className="text-sm font-medium">Source Videos:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {leftVideoSelected && leftVideoInfo.videoId && (
-              <div className="flex flex-col">
-                <a 
-                  href={`https://www.youtube.com/watch?v=${leftVideoInfo.videoId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-medium hover:text-blue-500 transition-colors line-clamp-2"
-                >
-                  {leftVideoInfo.title || 'Loading...'}
-                </a>
-                <a 
-                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(leftVideoInfo.channelTitle)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {leftVideoInfo.channelTitle || 'Loading...'}
-                </a>
-              </div>
-            )}
-            
-            {rightVideoSelected && rightVideoInfo.videoId && (
-              <div className="flex flex-col">
-                <a 
-                  href={`https://www.youtube.com/watch?v=${rightVideoInfo.videoId}`}
-                  target="_blank"
-                  rel="noopener noreferrer" 
-                  className="text-xs font-medium hover:text-blue-500 transition-colors line-clamp-2"
-                >
-                  {rightVideoInfo.title || 'Loading...'}
-                </a>
-                <a 
-                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(rightVideoInfo.channelTitle)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {rightVideoInfo.channelTitle || 'Loading...'}
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Source Videos section removed */}
     </div>
   );
 };
