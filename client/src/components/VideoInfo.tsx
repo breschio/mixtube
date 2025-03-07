@@ -187,9 +187,9 @@ const VideoInfo = ({
             variant="outline"
             size="sm"
             className={cn(
-              "gap-1.5 px-3 h-9 border border-blue-600", 
+              "gap-1.5 px-3 h-9",
               mixMode 
-                ? "bg-blue-600 text-white hover:bg-blue-700" 
+                ? "bg-accent text-accent-foreground hover:bg-accent/90" 
                 : "text-blue-600 hover:bg-blue-100"
             )}
             onClick={onToggleMixMode}

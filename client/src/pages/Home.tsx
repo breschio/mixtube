@@ -639,7 +639,7 @@ export default function Home() {
                   size="sm"
                   className={cn(
                     "gap-1.5 px-3 h-9",
-                    !isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
+                    !isNewMode && "bg-blue-600 text-white hover:bg-blue-700"
                   )}
                   onClick={isNewMode ? handleResetView : handleNewMix}
                 >
