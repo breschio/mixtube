@@ -93,6 +93,7 @@ export default function Home() {
     }
   });
   const [crossFader, setCrossFader] = useState(0.6);
+  const [audioFader, setAudioFader] = useState(0.6); // Added audioFader state
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [mixName, setMixName] = useState('');
@@ -207,6 +208,7 @@ export default function Home() {
     setShowMixControls(true);
     setPlaying(false);
     setCrossFader(0.5);
+    setAudioFader(0.5); // Initialize audioFader
     setActiveTab("mix");
     setIsNewMode(true);
     setVideos({
@@ -231,10 +233,15 @@ export default function Home() {
   const handleTemplateSelect = (template: MixTemplate) => {
     setActiveTemplate(template.id);
     setCrossFader(template.crossFaderValue);
+    setAudioFader(template.crossFaderValue); // Initialize audioFader
   };
 
   const handleCrossFaderChange = (value: number) => {
     setCrossFader(value);
+  };
+
+  const handleAudioFaderChange = (value: number) => { // Added handleAudioFaderChange
+    setAudioFader(value);
   };
 
   const handlePlayMix = async (mix: Mix, shouldAutoPlay: boolean = true) => {
@@ -260,6 +267,7 @@ export default function Home() {
 
     // Update mix state immediately
     setCrossFader(mix.crossFaderValue / 100);
+    setAudioFader(mix.crossFaderValue / 100); // Initialize audio fader to match video
     setActiveTemplate(mix.template);
     setShowMixControls(true);
     setCurrentMix(mix);
@@ -332,6 +340,7 @@ export default function Home() {
         leftVideoId={videos.left?.id || null}
         rightVideoId={videos.right?.id || null}
         crossFaderValue={crossFader}
+        audioFaderValue={audioFader} // Added audioFaderValue prop
         playing={playing}
         onPlayPause={handlePlayPause}
         preview={false}
@@ -347,7 +356,9 @@ export default function Home() {
       <div className="space-y-8 p-6">
         <DJControls
           crossFader={crossFader}
+          audioFader={audioFader} // Added audioFader prop
           onCrossFaderChange={handleCrossFaderChange}
+          onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
           leftVideoId={videos.left?.id}
           rightVideoId={videos.right?.id}
           forceShowTooltip={showTransitionTooltip}
@@ -369,6 +380,7 @@ export default function Home() {
           leftVideoId={videos.left?.id || null}
           rightVideoId={videos.right?.id || null}
           crossFaderValue={crossFader}
+          audioFaderValue={audioFader} // Added audioFaderValue prop
           playing={playing}
           onPlayPause={handlePlayPause}
           preview={false}
@@ -401,7 +413,9 @@ export default function Home() {
           <div className="p-6">
             <DJControls
               crossFader={crossFader}
+              audioFader={audioFader} // Added audioFader prop
               onCrossFaderChange={handleCrossFaderChange}
+              onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
               leftVideoId={videos.left?.id}
               rightVideoId={videos.right?.id}
               forceShowTooltip={showTransitionTooltip}
@@ -506,7 +520,9 @@ export default function Home() {
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
+                      audioFader={audioFader} // Added audioFader prop
                       onCrossFaderChange={handleCrossFaderChange}
+                      onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
@@ -572,7 +588,9 @@ export default function Home() {
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
+                      audioFader={audioFader} // Added audioFader prop
                       onCrossFaderChange={handleCrossFaderChange}
+                      onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
@@ -620,43 +638,43 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col h-screen">
       <header className="w-full bg-background flex-none">
-          <div className="w-full max-w-[1200px] mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Shuffle className="h-7 w-7 text-[#455A7D] my-auto" />
-                <Button
-                  variant="ghost"
-                  className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
-                  onClick={handleResetView}
-                >
-                  mixtube
-                </Button>
-              </div>
-              <div className="flex items-center gap-4">
-                <ThemeToggle />
-                <Button
-                  variant="default"
-                  size="sm"
-                  className={cn(
-                    "gap-1.5 px-3 h-9",
-                    !isNewMode && "bg-blue-600 text-white hover:bg-blue-700"
-                  )}
-                  onClick={isNewMode ? handleResetView : handleNewMix}
-                >
-                  {isNewMode ? (
-                    <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-[360deg]" />
-                  ) : (
-                    <Plus className={cn(
-                      "h-4 w-4 transition-all duration-300 ease-in-out",
-                      isButtonActive ? "rotate-[135deg]" : "rotate-0 hover:rotate-90"
-                    )} />
-                  )}
-                  {isNewMode ? 'Close' : 'New'}
-                </Button>
-              </div>
+        <div className="w-full max-w-[1200px] mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Shuffle className="h-7 w-7 text-[#455A7D] my-auto" />
+              <Button
+                variant="ghost"
+                className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
+                onClick={handleResetView}
+              >
+                mixtube
+              </Button>
+            </div>
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <Button
+                variant="default"
+                size="sm"
+                className={cn(
+                  "gap-1.5 px-3 h-9",
+                  !isNewMode && "bg-blue-600 text-white hover:bg-blue-700"
+                )}
+                onClick={isNewMode ? handleResetView : handleNewMix}
+              >
+                {isNewMode ? (
+                  <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-[360deg]" />
+                ) : (
+                  <Plus className={cn(
+                    "h-4 w-4 transition-all duration-300 ease-in-out",
+                    isButtonActive ? "rotate-[135deg]" : "rotate-0 hover:rotate-90"
+                  )} />
+                )}
+                {isNewMode ? 'Close' : 'New'}
+              </Button>
             </div>
           </div>
-        </header>
+        </div>
+      </header>
 
       <main className="flex-1 overflow-hidden">
         {showDatabaseWarning && (

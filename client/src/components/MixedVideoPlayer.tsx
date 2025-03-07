@@ -8,6 +8,7 @@ interface MixedVideoPlayerProps {
   leftVideoId: string | null;
   rightVideoId: string | null;
   crossFaderValue: number;
+  audioFaderValue: number;
   playing: boolean;
   onPlayPause: () => void;
   preview?: boolean;
@@ -37,6 +38,7 @@ export default function MixedVideoPlayer({
   leftVideoId,
   rightVideoId,
   crossFaderValue,
+  audioFaderValue,
   playing: isPlaying,
   onPlayPause,
   preview = false,
@@ -53,26 +55,28 @@ export default function MixedVideoPlayer({
 
   // Common player config
   const playerConfig = {
-    playerVars: {
-      controls: 0,
-      modestbranding: 1,
-      playsinline: 1,
-      rel: 0,
-      showinfo: 0,
-      iv_load_policy: 3,
-      cc_load_policy: 3,
-      cc_lang_pref: 'none',
-      origin: window.location.origin,
-      enablejsapi: 1,
-      fs: 0,
-      disablekb: 1,
+    youtube: {
+      playerVars: {
+        controls: 0,
+        modestbranding: 1,
+        playsinline: 1,
+        rel: 0,
+        showinfo: 0,
+        iv_load_policy: 3,
+        cc_load_policy: 3,
+        cc_lang_pref: 'none',
+        origin: window.location.origin,
+        enablejsapi: 1,
+        fs: 0,
+        disablekb: 1,
+      }
     }
-  } as { youtube: PlayerConfig };
+  };
 
-  // Calculate audio levels based on crossfader
+  // Calculate audio levels based on audio fader
   const audioLevels = preview ? { left: 0, right: 0 } : {
-    left: Math.max(0, 1 - crossFaderValue),
-    right: Math.max(0, crossFaderValue)
+    left: Math.max(0, 1 - audioFaderValue),
+    right: Math.max(0, audioFaderValue)
   };
 
   // Create URLs with start times if provided
