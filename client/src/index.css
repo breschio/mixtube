@@ -30,15 +30,28 @@
 
 @layer base {
   :root {
+    --background: 98% 0.01 260;
+    --foreground: 25% 0.01 260;
+    --card: 100% 0 0;
+    --card-foreground: 25% 0.01 260;
+    --popover: 100% 0 0;
+    --popover-foreground: 25% 0.01 260;
+    --primary: 70% 0.1 260;
+    --primary-foreground: 98% 0.01 260;
+    --secondary: 95% 0.01 260;
+    --secondary-foreground: 25% 0.01 260;
+    --muted: 90% 0.01 260;
+    --muted-foreground: 50% 0.01 260;
+    --accent: 95% 0.01 260;
+    --accent-foreground: 25% 0.01 260;
+    --destructive: 65% 0.2 30;
+    --destructive-foreground: 98% 0.01 260;
+    --border: 90% 0.01 260;
+    --input: 90% 0.01 260;
+    --ring: 70% 0.1 260;
+    --radius: 0.5rem;
     --transition-duration: 800ms;
     --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Enhance theme transition with opacity */
-  :root[class*="theme-"] {
-    transition: 
-      background-color var(--transition-duration) var(--transition-timing),
-      color var(--transition-duration) var(--transition-timing);
   }
 
   body {

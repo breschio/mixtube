@@ -2,5 +2,24 @@
   "variant": "tint",
   "primary": "oklch(70% 0.1 260)",
   "appearance": "light",
-  "radius": 0.5
+  "radius": 0.5,
+  "colors": {
+    "background": "oklch(98% 0.01 260)",
+    "foreground": "oklch(25% 0.01 260)",
+    "muted": "oklch(90% 0.01 260)",
+    "muted-foreground": "oklch(50% 0.01 260)",
+    "card": "oklch(100% 0 0)",
+    "card-foreground": "oklch(25% 0.01 260)",
+    "popover": "oklch(100% 0 0)",
+    "popover-foreground": "oklch(25% 0.01 260)",
+    "border": "oklch(90% 0.01 260)",
+    "input": "oklch(90% 0.01 260)",
+    "secondary": "oklch(95% 0.01 260)",
+    "secondary-foreground": "oklch(25% 0.01 260)",
+    "accent": "oklch(95% 0.01 260)",
+    "accent-foreground": "oklch(25% 0.01 260)",
+    "destructive": "oklch(65% 0.2 30)",
+    "destructive-foreground": "oklch(98% 0.01 260)",
+    "ring": "oklch(70% 0.1 260)"
+  }
 }
