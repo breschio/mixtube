@@ -17,6 +17,7 @@ interface DJControlsProps {
   rightChannelTitle?: string;
   forceShowTooltip?: boolean;
   mixTemplates?: React.ReactNode;
+  activeTemplate?: string; // Added activeTemplate prop
 }
 
 export default function DJControls({
@@ -31,7 +32,8 @@ export default function DJControls({
   leftChannelTitle,
   rightChannelTitle,
   forceShowTooltip = false,
-  mixTemplates
+  mixTemplates,
+  activeTemplate = "fade" // Added default value for activeTemplate
 }: DJControlsProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
@@ -181,68 +183,90 @@ export default function DJControls({
                   max={1}
                   step={0.01}
                   onValueChange={(value) => handleSliderChange('video', value)}
-                  className={cn(
-                    "flex-1 w-full", 
-                    "data-[state=active]:cursor-grabbing",
-                    "transition-all duration-200"
-                  )}
-                  onMouseEnter={showLabel}
-                  onMouseLeave={() => {
-                    if (!forceShowTooltip) {
-                      setIsVisible(false);
-                    }
+                  onValueCommit={() => {
+                    hideTooltipDelayed();
                   }}
+                  onPointerMove={() => {
+                    showLabel();
+                  }}
+                  onPointerEnter={() => {
+                    showLabel();
+                  }}
+                  onPointerLeave={() => {
+                    hideTooltipDelayed();
+                  }}
+                  className="cursor-pointer"
+                  thumbClassName={cn(
+                    "h-5 w-5 bg-white border-[3px] shadow-lg",
+                    {
+                      "border-blue-500": crossFader >= 0.48 && crossFader <= 0.52,
+                      "border-blue-500/30": crossFader < 0.48 || crossFader > 0.52,
+                    }
+                  )}
+                  trackClassName="h-5 rounded-md bg-gradient-to-r from-violet-500 to-blue-500 border border-accent/30"
                 />
               </div>
             </div>
           </div>
 
-          {/* Audio Level Slider */}
-          <div className="w-full">
-            <div className="flex items-center gap-2 w-full">
-              <div className="flex flex-col items-center min-w-[80px]">
-                <Volume2 className="h-6 w-6 text-muted-foreground mb-1" />
-                <span className="text-sm font-medium text-muted-foreground">Audio</span>
-              </div>
-              <div className="flex-1 w-full">
-                <div className="flex w-full justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-primary">L</span>
-                  <div
-                    className={cn(
-                      "text-sm font-medium px-2 py-0.5 rounded-md border",
-                      "transition-opacity duration-200",
+          {/* Audio Level Slider - Only show for Fade template */}
+          {mixTemplates && activeTemplate !== "side-by-side" && (
+            <div className="w-full">
+              <div className="flex items-center gap-2 w-full">
+                <div className="flex flex-col items-center min-w-[80px]">
+                  <Volume2 className="h-6 w-6 text-muted-foreground mb-1" />
+                  <span className="text-sm font-medium text-muted-foreground">Audio</span>
+                </div>
+                <div className="flex-1 w-full">
+                  <div className="flex w-full justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-primary">L</span>
+                    <div
+                      className={cn(
+                        "text-sm font-medium px-2 py-0.5 rounded-md border",
+                        "transition-opacity duration-200",
+                        {
+                          "opacity-100": isVisible || forceShowTooltip,
+                          "opacity-0": !(isVisible || forceShowTooltip),
+                          "bg-accent/5": isRightAudio,
+                          "bg-transparent": !isRightAudio
+                        }
+                      )}
+                    >
+                      {audioPercentage}% {isRightAudio ? "R" : "L"}
+                    </div>
+                    <span className="text-sm font-medium text-primary">R</span>
+                  </div>
+                  <Slider
+                    value={[audioFader]}
+                    max={1}
+                    step={0.01}
+                    onValueChange={(value) => handleSliderChange('audio', value)}
+                    onValueCommit={() => {
+                      hideTooltipDelayed();
+                    }}
+                    onPointerMove={() => {
+                      showLabel();
+                    }}
+                    onPointerEnter={() => {
+                      showLabel();
+                    }}
+                    onPointerLeave={() => {
+                      hideTooltipDelayed();
+                    }}
+                    className="cursor-pointer"
+                    thumbClassName={cn(
+                      "h-5 w-5 bg-white border-[3px] shadow-lg",
                       {
-                        "opacity-100": isVisible || forceShowTooltip,
-                        "opacity-0": !(isVisible || forceShowTooltip),
-                        "bg-accent/5": isRightAudio,
-                        "bg-transparent": !isRightAudio
+                        "border-blue-500": audioFader >= 0.48 && audioFader <= 0.52,
+                        "border-blue-500/30": audioFader < 0.48 || audioFader > 0.52,
                       }
                     )}
-                  >
-                    {audioPercentage}% {isRightAudio ? "R" : "L"}
-                  </div>
-                  <span className="text-sm font-medium text-primary">R</span>
+                    trackClassName="h-5 rounded-md bg-gradient-to-r from-violet-500 to-blue-500 border border-accent/30"
+                  />
                 </div>
-                <Slider
-                  value={[audioFader]}
-                  max={1}
-                  step={0.01}
-                  onValueChange={(value) => handleSliderChange('audio', value)}
-                  className={cn(
-                    "w-full", 
-                    "data-[state=active]:cursor-grabbing",
-                    "transition-all duration-200"
-                  )}
-                  onMouseEnter={showLabel}
-                  onMouseLeave={() => {
-                    if (!forceShowTooltip) {
-                      setIsVisible(false);
-                    }
-                  }}
-                />
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Right video */}
