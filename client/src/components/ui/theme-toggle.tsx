@@ -27,7 +27,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
   return (
     <div
       className={cn(
-        "flex w-16 h-8 items-center justify-between rounded-md bg-muted p-1 text-muted-foreground transition-all duration-300",
+        "flex w-16 h-8 items-center justify-between rounded-md bg-muted/30 p-1 text-muted-foreground transition-all duration-300",
         className
       )}
       onClick={toggleTheme}
@@ -36,27 +36,33 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     >
       <div 
         className={cn(
-          "flex justify-center items-center rounded-md transition-all duration-300",
+          "flex justify-center items-center rounded-md transition-all duration-300 text-xs font-medium",
           isDark 
             ? "size-6 bg-background text-foreground shadow-sm" 
-            : "size-6 text-muted-foreground"
+            : "size-6"
         )}
       >
         <Moon 
-          className="size-4" 
+          className={cn(
+            "size-4",
+            isDark ? "text-foreground" : "text-muted-foreground"
+          )}
           strokeWidth={1.5}
         />
       </div>
       <div 
         className={cn(
-          "flex justify-center items-center rounded-md transition-all duration-300",
+          "flex justify-center items-center rounded-md transition-all duration-300 text-xs font-medium",
           !isDark 
             ? "size-6 bg-background text-foreground shadow-sm" 
-            : "size-6 text-muted-foreground"
+            : "size-6"
         )}
       >
         <Sun 
-          className="size-4" 
+          className={cn(
+            "size-4",
+            !isDark ? "text-foreground" : "text-muted-foreground"
+          )}
           strokeWidth={1.5}
         />
       </div>
