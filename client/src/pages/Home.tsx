@@ -443,7 +443,7 @@ export default function Home() {
       )}
 
       <div className="relative mt-4 flex-1 overflow-auto">
-        {!isNewMode && (
+        {(!isNewMode || (isNewMode && mobileTab !== 'mix')) && (
           <MixList
             mixes={mixes}
             onPlayMix={handlePlayMix}
