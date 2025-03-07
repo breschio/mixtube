@@ -442,15 +442,16 @@ export default function Home() {
         </div>
       )}
 
-      <div className="relative mt-4 flex-1 overflow-auto">
-        {(!isNewMode || (isNewMode && mobileTab !== 'mix')) && (
+      {/* Only show MixList when not in mix tab */}
+      {mobileTab !== 'mix' && (
+        <div className="relative mt-4 flex-1 overflow-auto">
           <MixList
             mixes={mixes}
             onPlayMix={handlePlayMix}
             className="h-full"
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 
