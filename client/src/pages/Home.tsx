@@ -674,8 +674,7 @@ export default function Home() {
                 variant="default"
                 size="sm"
                 className={cn(
-                  "gap-1.5 px-3 h-9",
-                  !isNewMode && "bg-blue-600 text-white hover:bg-blue-700"
+                  "gap-1.5 px-3 h-9 bg-blue-600 text-white hover:bg-blue-700"
                 )}
                 onClick={isNewMode ? handleResetView : handleNewMix}
               >
