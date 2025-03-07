@@ -4,20 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes placeholderBlink {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 0.4; }
-}
-
-.animate-placeholder::placeholder {
-  animation: placeholderBlink 1.5s ease-in-out infinite;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.animate-placeholder:focus::placeholder {
-  opacity: 0.4;
-}
-
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -34,7 +20,7 @@
     --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Enhance theme transition with opacity */
+  /* Theme transition with opacity */
   :root[class*="theme-"] {
     transition: 
       background-color var(--transition-duration) var(--transition-timing),
@@ -43,38 +29,20 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    transition: 
-      background-color var(--transition-duration) var(--transition-timing),
-      color var(--transition-duration) var(--transition-timing),
-      opacity var(--transition-duration) var(--transition-timing);
+    font-family: 'Space Mono', monospace;
   }
 
-  /* Add transitions to common elements that change with theme */
+  /* Common element transitions */
   div, span, p, h1, h2, h3, h4, h5, h6, button, a {
     transition: 
       background-color var(--transition-duration) var(--transition-timing),
       color var(--transition-duration) var(--transition-timing),
       border-color var(--transition-duration) var(--transition-timing),
-      outline-color var(--transition-duration) var(--transition-timing),
-      box-shadow var(--transition-duration) var(--transition-timing),
       opacity var(--transition-duration) var(--transition-timing);
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Space Grotesk', sans-serif;
-  }
-
-  body {
-    font-family: 'Space Mono', monospace;
-  }
-}
-
-@keyframes slow-pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
   }
 }
 
@@ -82,8 +50,9 @@
   animation: slow-pulse 3s ease-in-out infinite;
 }
 
-.input {
-  @apply bg-background/50 backdrop-blur-sm;
+@keyframes slow-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 .mixtube-logo {
