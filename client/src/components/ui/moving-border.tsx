@@ -1,4 +1,3 @@
-
 "use client";
 import React from "react";
 import {
@@ -19,7 +18,7 @@ export function Button({
   borderClassName,
   duration,
   className,
-  showBorder = false,
+  showBorder,
   ...otherProps
 }: {
   borderRadius?: string;
@@ -35,7 +34,7 @@ export function Button({
   return (
     <Component
       className={cn(
-        "relative h-9 p-[1px] overflow-hidden",
+        "bg-transparent relative h-9 p-[1px] overflow-hidden",
         containerClassName
       )}
       style={{
@@ -51,7 +50,7 @@ export function Button({
           <MovingBorder duration={duration} rx="30%" ry="30%">
             <div
               className={cn(
-                "h-20 w-20 opacity-[0.8] bg-[radial-gradient(var(--primary)_40%,transparent_60%)]",
+                "h-20 w-20 opacity-[0.8] bg-[radial-gradient(hsl(var(--primary))_40%,transparent_60%)]",
                 borderClassName
               )}
             />
@@ -61,7 +60,7 @@ export function Button({
 
       <div
         className={cn(
-          "relative border border-border/50 backdrop-blur-xl flex items-center justify-center w-full h-full text-sm antialiased",
+          "relative bg-background border border-border/50 backdrop-blur-xl flex items-center justify-center w-full h-full text-sm antialiased",
           className
         )}
         style={{

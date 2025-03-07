@@ -1,5 +1,4 @@
-import { Button as UIButton } from "@/components/ui/button";
-import { Button as MovingBorderButton } from "@/components/ui/moving-border";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -7,6 +6,7 @@ import { PenLine, Shuffle, ThumbsUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { Button as MovingBorderButton } from "@/components/ui/moving-border";
 
 interface VideoInfoProps {
   title: string;
@@ -104,7 +104,7 @@ const VideoInfo = ({
                 autoFocus
               />
             ) : (
-              <UIButton
+              <button
                 onClick={() => setIsEditing(true)}
                 className="flex items-center gap-2 group w-full"
               >
@@ -112,14 +112,14 @@ const VideoInfo = ({
                   {mixName || "Name your mix"}
                 </span>
                 <PenLine className="h-4 w-4 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors" />
-              </UIButton>
+              </button>
             )}
           </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div>
-                  <UIButton
+                  <Button
                     variant="outline"
                     size="sm"
                     className={cn(
@@ -130,7 +130,7 @@ const VideoInfo = ({
                     disabled={!leftVideoSelected || !rightVideoSelected || isSubmitting}
                   >
                     {isSubmitting ? "Saving..." : "Post"}
-                  </UIButton>
+                  </Button>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -170,7 +170,7 @@ const VideoInfo = ({
           )}
         </div>
         <div className="flex items-center gap-2 mt-2"> {/* Moved controls up */}
-          <UIButton
+          <Button
             variant="outline"
             size="sm"
             className={cn(
@@ -182,12 +182,12 @@ const VideoInfo = ({
           >
             <ThumbsUp className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
             {likes > 0 ? likes : "Like"}
-          </UIButton>
-          <MovingBorderButton
+          </Button>
+          <Button
             variant="outline"
             size="sm"
             className={cn(
-              "gap-1.5 px-3 h-9", // Removed incorrect border class
+              "gap-1.5 px-3 h-9 border border-blue-600", 
               mixMode 
                 ? "bg-blue-600 text-white hover:bg-blue-700" 
                 : "text-blue-600 hover:bg-blue-100"
@@ -196,7 +196,7 @@ const VideoInfo = ({
           >
             <Shuffle className="h-4 w-4" />
             Mix
-          </MovingBorderButton>
+          </Button>
         </div>
       </div>
     </div>
