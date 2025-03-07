@@ -23,7 +23,7 @@ interface MixListProps {
   className?: string;
 }
 
-type SortType = "hot" | "new" | "top";
+type SortType = "hot" | "new";
 
 export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
   const [activeSort, setActiveSort] = useState<SortType>("hot");
@@ -34,13 +34,20 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
     const sortedArray = [...mixes];
     switch (activeSort) {
       case "hot":
-        return sortedArray.sort((a, b) => b.likes - a.likes);
+        // Sort by combined score of likes and views
+        return sortedArray.sort((a, b) => (b.likes + b.views) - (a.likes + a.views));
       case "new":
-        return sortedArray.sort((a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      case "top":
-        return sortedArray.sort((a, b) => b.views - a.views);
+        // Sort by recency (days ago) / plays (lower score = newer or less played)
+        return sortedArray.sort((a, b) => {
+          const daysA = (Date.now() - new Date(a.createdAt).getTime()) / (1000 * 60 * 60 * 24);
+          const daysB = (Date.now() - new Date(b.createdAt).getTime()) / (1000 * 60 * 60 * 24);
+          
+          // Lower score is better (newer or less played)
+          const scoreA = daysA / (a.views || 1); 
+          const scoreB = daysB / (b.views || 1);
+          
+          return scoreA - scoreB;
+        });
       default:
         return sortedArray;
     }
@@ -63,10 +70,9 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
     <div className={cn("h-full flex flex-col", className)}>
       <div className="shrink-0 mb-6">
         <Tabs value={activeSort} onValueChange={(value) => setActiveSort(value as SortType)} className="w-full">
-          <TabsList className="grid grid-cols-3 w-full bg-muted/30">
+          <TabsList className="grid grid-cols-2 w-full bg-muted/30">
             <TabsTrigger value="hot" className="text-xs font-medium">Hot</TabsTrigger>
             <TabsTrigger value="new" className="text-xs font-medium">New</TabsTrigger>
-            <TabsTrigger value="top" className="text-xs font-medium">Top</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
