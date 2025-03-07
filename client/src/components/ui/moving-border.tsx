@@ -1,3 +1,4 @@
+
 "use client";
 import React from "react";
 import {
@@ -18,6 +19,7 @@ export function Button({
   borderClassName,
   duration,
   className,
+  showBorder = false,
   ...otherProps
 }: {
   borderRadius?: string;
@@ -27,12 +29,13 @@ export function Button({
   borderClassName?: string;
   duration?: number;
   className?: string;
+  showBorder?: boolean;
   [key: string]: any;
 }) {
   return (
     <Component
       className={cn(
-        "bg-transparent relative text-xl h-16 w-40 p-[1px] overflow-hidden",
+        "relative h-9 p-[1px] overflow-hidden",
         containerClassName
       )}
       style={{
@@ -40,23 +43,25 @@ export function Button({
       }}
       {...otherProps}
     >
-      <div
-        className="absolute inset-0"
-        style={{ borderRadius: `calc(${borderRadius} * 0.96)` }}
-      >
-        <MovingBorder duration={duration} rx="30%" ry="30%">
-          <div
-            className={cn(
-              "h-20 w-20 opacity-[0.8] bg-[radial-gradient(var(--sky-500)_40%,transparent_60%)]",
-              borderClassName
-            )}
-          />
-        </MovingBorder>
-      </div>
+      {showBorder && (
+        <div
+          className="absolute inset-0"
+          style={{ borderRadius: `calc(${borderRadius} * 0.96)` }}
+        >
+          <MovingBorder duration={duration} rx="30%" ry="30%">
+            <div
+              className={cn(
+                "h-20 w-20 opacity-[0.8] bg-[radial-gradient(var(--primary)_40%,transparent_60%)]",
+                borderClassName
+              )}
+            />
+          </MovingBorder>
+        </div>
+      )}
 
       <div
         className={cn(
-          "relative bg-slate-900/[0.8] border border-slate-800 backdrop-blur-xl text-white flex items-center justify-center w-full h-full text-sm antialiased",
+          "relative border border-border/50 backdrop-blur-xl flex items-center justify-center w-full h-full text-sm antialiased",
           className
         )}
         style={{
@@ -137,3 +142,5 @@ export const MovingBorder = ({
     </>
   );
 };
+
+export default Button;
