@@ -158,7 +158,7 @@ const VideoInfo = ({
                       {channelTitle.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-xs font-medium text-blue-600"> {/* Blue text for author */}
+                  <span className="text-xs font-medium" style={{ color: "#799FDC" }}> {/* Custom blue color for author */}
                     {channelTitle}
                   </span>
                 </div>
