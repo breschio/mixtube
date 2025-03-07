@@ -153,16 +153,16 @@ const VideoInfo = ({
             <>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-6 w-6">
                     <AvatarFallback>
                       {channelTitle.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm font-medium text-blue-600"> {/* Blue text */}
+                  <span className="text-xs font-medium text-blue-600"> {/* Smaller text */}
                     {channelTitle}
                   </span>
                 </div>
-                <h3 className="text-sm font-[400] line-clamp-2 leading-[1.1] ml-10 text-blue-600"> {/* Blue text & positioned below avatar */}
+                <h3 className="text-lg font-medium line-clamp-2 leading-[1.2] ml-8 text-blue-600"> {/* Larger title text & positioned below avatar */}
                   {title}
                 </h3>
               </div>
