@@ -13,6 +13,8 @@ interface DJControlsProps {
   rightVideoId?: string | null;
   leftVideoTitle?: string;
   rightVideoTitle?: string;
+  leftChannelTitle?: string;
+  rightChannelTitle?: string;
   forceShowTooltip?: boolean;
   mixTemplates?: React.ReactNode;
 }
@@ -26,6 +28,8 @@ export default function DJControls({
   rightVideoId,
   leftVideoTitle,
   rightVideoTitle,
+  leftChannelTitle,
+  rightChannelTitle,
   forceShowTooltip = false,
   mixTemplates
 }: DJControlsProps) {
@@ -86,7 +90,7 @@ export default function DJControls({
   const isRightVideo = crossFader > 0.5;
   const isRightAudio = audioFader > 0.5;
 
-  const renderVideoThumbnail = (videoId: string | null | undefined, title?: string) => {
+  const renderVideoThumbnail = (videoId: string | null | undefined, title?: string, channelTitle?: string) => {
     if (!videoId) return null;
     return (
       <div className="flex flex-col gap-2">
@@ -106,15 +110,22 @@ export default function DJControls({
           </div>
         </a>
         {title && (
-          <a 
-            href={`https://www.youtube.com/watch?v=${videoId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-muted-foreground hover:text-foreground line-clamp-2 max-w-[12rem] transition-colors"
-            title={title}
-          >
-            {title}
-          </a>
+          <div className="flex flex-col gap-0.5">
+            <a 
+              href={`https://www.youtube.com/watch?v=${videoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-foreground hover:text-primary line-clamp-2 max-w-[12rem] transition-colors font-medium"
+              title={title}
+            >
+              {title}
+            </a>
+            {channelTitle && (
+              <span className="text-[10px] text-muted-foreground">
+                {channelTitle}
+              </span>
+            )}
+          </div>
         )}
       </div>
     );
@@ -129,7 +140,7 @@ export default function DJControls({
       <div className="grid grid-cols-[auto_1fr_auto] gap-8 bg-background rounded-lg p-4">
         {/* Left video */}
         <div className="flex items-start">
-          {renderVideoThumbnail(leftVideoId, leftVideoTitle)}
+          {renderVideoThumbnail(leftVideoId, leftVideoTitle, leftChannelTitle)}
         </div>
 
         {/* Center sliders */}
@@ -231,7 +242,7 @@ export default function DJControls({
 
         {/* Right video */}
         <div className="flex items-start justify-end">
-          {renderVideoThumbnail(rightVideoId, rightVideoTitle)}
+          {renderVideoThumbnail(rightVideoId, rightVideoTitle, rightChannelTitle)}
         </div>
       </div>
     </div>

@@ -359,6 +359,8 @@ export default function Home() {
           rightVideoId={videos.right?.id}
           leftVideoTitle={videos.left?.title}
           rightVideoTitle={videos.right?.title}
+          leftChannelTitle={videos.left?.channelTitle}
+          rightChannelTitle={videos.right?.channelTitle}
           forceShowTooltip={showTransitionTooltip}
           mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
         />
@@ -413,6 +415,8 @@ export default function Home() {
               rightVideoId={videos.right?.id}
               leftVideoTitle={videos.left?.title}
               rightVideoTitle={videos.right?.title}
+              leftChannelTitle={videos.left?.channelTitle}
+              rightChannelTitle={videos.right?.channelTitle}
               forceShowTooltip={showTransitionTooltip}
               mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
             />
@@ -517,6 +521,8 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       leftVideoTitle={videos.left?.title}
                       rightVideoTitle={videos.right?.title}
+                      leftChannelTitle={videos.left?.channelTitle}
+                      rightChannelTitle={videos.right?.channelTitle}
                       forceShowTooltip={showTransitionTooltip}
                       mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
                     />
@@ -584,6 +590,8 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       leftVideoTitle={videos.left?.title}
                       rightVideoTitle={videos.right?.title}
+                      leftChannelTitle={videos.left?.channelTitle}
+                      rightChannelTitle={videos.right?.channelTitle}
                       forceShowTooltip={showTransitionTooltip}
                       mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
                     />
