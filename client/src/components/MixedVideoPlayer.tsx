@@ -104,7 +104,7 @@ export default function MixedVideoPlayer({
       height="100%"
       playing={isPlaying}
       volume={audioLevels.left}
-      muted={true} // Start muted to bypass mobile autoplay restrictions
+      muted={false} 
       onReady={() => handleReady('left')}
       config={playerConfig}
       playsinline={true}
@@ -119,7 +119,7 @@ export default function MixedVideoPlayer({
       height="100%"
       playing={isPlaying}
       volume={audioLevels.right}
-      muted={true} // Start muted to bypass mobile autoplay restrictions
+      muted={false} 
       onReady={() => handleReady('right')}
       config={playerConfig}
       playsinline={true}
