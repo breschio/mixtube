@@ -190,15 +190,18 @@ export default function DJControls({
                   onValueChange={(value) => handleSliderChange('video', value)}
                   onPointerEnter={showLabel}
                   onPointerLeave={hideLabel}
-                  className="cursor-pointer"
-                  thumbClassName={cn(
-                    "h-5 w-5 bg-white border-[3px] shadow-lg",
-                    {
-                      "border-blue-500": crossFader >= 0.48 && crossFader <= 0.52,
-                      "border-blue-500/30": crossFader < 0.48 || crossFader > 0.52,
-                    }
+                  className={cn(
+                    "cursor-pointer h-5",
+                    "[&_[role=slider]]:h-5 [&_[role=slider]]:w-5",
+                    "[&_[role=slider]]:bg-white [&_[role=slider]]:border-[3px]",
+                    "[&_[role=slider]]:shadow-lg",
+                    crossFader >= 0.48 && crossFader <= 0.52
+                      ? "[&_[role=slider]]:border-blue-500"
+                      : "[&_[role=slider]]:border-blue-500/30",
+                    "[&_[role=track]]:h-5 [&_[role=track]]:rounded-md",
+                    "[&_[role=track]]:bg-gradient-to-r [&_[role=track]]:from-violet-500 [&_[role=track]]:to-blue-500",
+                    "[&_[role=track]]:border [&_[role=track]]:border-accent/30"
                   )}
-                  trackClassName="h-5 rounded-md bg-gradient-to-r from-violet-500 to-blue-500 border border-accent/30"
                 />
               </div>
             </div>
@@ -237,15 +240,18 @@ export default function DJControls({
                   onValueChange={(value) => handleSliderChange('audio', value)}
                   onPointerEnter={showLabel}
                   onPointerLeave={hideLabel}
-                  className="cursor-pointer"
-                  thumbClassName={cn(
-                    "h-5 w-5 bg-white border-[3px] shadow-lg",
-                    {
-                      "border-blue-500": audioFader >= 0.48 && audioFader <= 0.52,
-                      "border-blue-500/30": audioFader < 0.48 || audioFader > 0.52,
-                    }
+                  className={cn(
+                    "cursor-pointer h-5",
+                    "[&_[role=slider]]:h-5 [&_[role=slider]]:w-5",
+                    "[&_[role=slider]]:bg-white [&_[role=slider]]:border-[3px]",
+                    "[&_[role=slider]]:shadow-lg",
+                    audioFader >= 0.48 && audioFader <= 0.52
+                      ? "[&_[role=slider]]:border-blue-500"
+                      : "[&_[role=slider]]:border-blue-500/30",
+                    "[&_[role=track]]:h-5 [&_[role=track]]:rounded-md",
+                    "[&_[role=track]]:bg-gradient-to-r [&_[role=track]]:from-violet-500 [&_[role=track]]:to-blue-500",
+                    "[&_[role=track]]:border [&_[role=track]]:border-accent/30"
                   )}
-                  trackClassName="h-5 rounded-md bg-gradient-to-r from-violet-500 to-blue-500 border border-accent/30"
                 />
               </div>
             </div>
