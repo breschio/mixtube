@@ -522,7 +522,10 @@ export default function Home() {
 
           <ResizeHandle />
 
-          <ResizablePanel defaultSize={25} minSize={20}>
+          <ResizablePanel
+            defaultSize={25}
+            minSize={20}
+          >
             <div className={cn(
               "h-full flex flex-col pl-6",
               "transform transition-transform duration-300 ease-in-out",
