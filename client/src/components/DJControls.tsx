@@ -142,7 +142,7 @@ export default function DJControls({
       {mixTemplates}
 
       {/* Main controls container with three columns */}
-      <div className="grid grid-cols-[auto_1fr_auto] gap-8 bg-background rounded-lg p-4">
+      <div className="grid grid-cols-[auto_1fr] gap-8 bg-background rounded-lg p-4">
         {/* Left video */}
         <div className="hidden md:flex items-start"> {/* Added hidden class for mobile */}
           {renderVideoThumbnail(leftVideoId, leftVideoTitle, leftChannelTitle)}
