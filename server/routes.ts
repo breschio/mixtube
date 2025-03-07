@@ -212,7 +212,7 @@ export function registerRoutes(app: Express): Server {
     }
     
     try {
-      const { title, leftVideoId, rightVideoId, crossFaderValue, template } = req.body;
+      const { title, leftVideoId, rightVideoId, crossFaderValue, audioFaderValue, template } = req.body;
 
       // For testing: Using default user id instead of requiring authentication
       const defaultUserId = 1; // This matches our default user
@@ -229,6 +229,7 @@ export function registerRoutes(app: Express): Server {
         leftVideoId,
         rightVideoId,
         crossFaderValue,
+        audioFaderValue: audioFaderValue !== undefined ? audioFaderValue : crossFaderValue, // Save audio position
         template,
         views: 0, // Initialize views to 0
         likes: 0, // Initialize likes to 0

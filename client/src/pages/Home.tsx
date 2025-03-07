@@ -265,7 +265,9 @@ export default function Home() {
 
     setCrossFader(mix.crossFaderValue / 100);
     // Ensure we use the audioFaderValue if available, otherwise fallback to crossFaderValue
-    setAudioFader(mix.audioFaderValue !== undefined ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100);
+    // Use double check to handle both undefined and null cases
+    setAudioFader(mix.audioFaderValue != null ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100);
+    console.log('Setting audio fader to:', mix.audioFaderValue != null ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
     setShowMixControls(true);
     setCurrentMix(mix);
