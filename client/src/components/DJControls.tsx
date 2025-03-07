@@ -86,8 +86,8 @@ export default function DJControls({
       {/* Mix Templates at the top */}
       {mixTemplates}
 
-      {/* Sliders below mix templates */}
-      <div className="grid grid-cols-2 gap-4 bg-background rounded-lg p-4">
+      {/* Sliders stacked vertically */}
+      <div className="flex flex-col gap-6 bg-background rounded-lg p-4">
         {/* Video Opacity Slider */}
         <div>
           <div className="flex items-center gap-2">
