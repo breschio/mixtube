@@ -46,50 +46,12 @@ const VideoInfo = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(initialLikes);
-  const [leftVideoInfo, setLeftVideoInfo] = useState({ title: '', channelTitle: '', videoId: '' });
-  const [rightVideoInfo, setRightVideoInfo] = useState({ title: '', channelTitle: '', videoId: '' });
   const { toast } = useToast();
 
   useEffect(() => {
     setIsLiked(false);
     setLikes(initialLikes);
   }, [mixId, initialLikes]);
-  
-  // Get video information when videos are selected
-  useEffect(() => {
-    const getVideoInfo = () => {
-      try {
-        const leftPlayer = document.getElementById('left-player') as any;
-        const rightPlayer = document.getElementById('right-player') as any;
-        
-        if (leftVideoSelected && leftPlayer?.getVideoData) {
-          const data = leftPlayer.getVideoData();
-          const videoId = leftPlayer.getVideoUrl().split('v=')[1];
-          setLeftVideoInfo({
-            title: data.title || '',
-            channelTitle: data.author || '',
-            videoId
-          });
-        }
-        
-        if (rightVideoSelected && rightPlayer?.getVideoData) {
-          const data = rightPlayer.getVideoData();
-          const videoId = rightPlayer.getVideoUrl().split('v=')[1];
-          setRightVideoInfo({
-            title: data.title || '',
-            channelTitle: data.author || '',
-            videoId
-          });
-        }
-      } catch (error) {
-        console.error('Error getting video data:', error);
-      }
-    };
-    
-    // Small delay to ensure the YouTube API is loaded
-    const timer = setTimeout(getVideoInfo, 2000);
-    return () => clearTimeout(timer);
-  }, [leftVideoSelected, rightVideoSelected]);
 
   const handleLike = async () => {
     if (!mixId) return;
@@ -237,56 +199,6 @@ const VideoInfo = ({
           </Button>
         </div>
       </div>
-      
-      {/* Source Videos Information */}
-      {(leftVideoSelected || rightVideoSelected) && (
-        <div className="flex flex-col gap-2 mt-4 p-3 rounded-md bg-muted/30">
-          <h3 className="text-sm font-medium">Source Videos:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {leftVideoSelected && leftVideoInfo.videoId && (
-              <div className="flex flex-col">
-                <a 
-                  href={`https://www.youtube.com/watch?v=${leftVideoInfo.videoId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-medium hover:text-blue-500 transition-colors line-clamp-2"
-                >
-                  {leftVideoInfo.title || 'Loading...'}
-                </a>
-                <a 
-                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(leftVideoInfo.channelTitle)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {leftVideoInfo.channelTitle || 'Loading...'}
-                </a>
-              </div>
-            )}
-            
-            {rightVideoSelected && rightVideoInfo.videoId && (
-              <div className="flex flex-col">
-                <a 
-                  href={`https://www.youtube.com/watch?v=${rightVideoInfo.videoId}`}
-                  target="_blank"
-                  rel="noopener noreferrer" 
-                  className="text-xs font-medium hover:text-blue-500 transition-colors line-clamp-2"
-                >
-                  {rightVideoInfo.title || 'Loading...'}
-                </a>
-                <a 
-                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(rightVideoInfo.channelTitle)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {rightVideoInfo.channelTitle || 'Loading...'}
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
