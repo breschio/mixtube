@@ -16,11 +16,8 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
     --transition-duration: 800ms;
     --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
-    --radius: 0.5rem;
   }
 
   /* Theme transition with opacity */
@@ -49,9 +46,13 @@
   }
 }
 
-/* Explicitly define animation class */
 .animate-slow-pulse {
   animation: slow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes slow-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 .mixtube-logo {
