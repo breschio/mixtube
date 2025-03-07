@@ -199,7 +199,12 @@ const VideoInfo = ({
           </Button>
         </div>
       </div>
-    {/* Source Videos Information */}
+    </div>
+  );
+};
+
+export default VideoInfo;
+{/* Source Videos Information */}
       {(leftVideoSelected || rightVideoSelected) && (
         <div className="flex flex-col gap-2 mt-4 p-3 rounded-md bg-muted/30">
           <h3 className="text-sm font-medium">Source Videos:</h3>
@@ -222,8 +227,3 @@ const VideoInfo = ({
           </div>
         </div>
       )}
-    </div>
-  );
-};
-
-export default VideoInfo;
