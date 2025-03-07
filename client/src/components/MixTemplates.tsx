@@ -46,8 +46,10 @@ export default function MixTemplates({
           <Card
             key={template.id}
             className={cn(
-              "cursor-pointer transition-all",
-              isActive ? "bg-accent/20 border-primary/50" : "border-border/50 hover:border-border"
+              "cursor-pointer transition-all border",
+              isActive 
+                ? "bg-primary text-primary-foreground border-primary/50" 
+                : "bg-background text-muted-foreground hover:text-foreground border-border/50 hover:border-border"
             )}
             onClick={() => onSelectTemplate(template)}
           >
@@ -58,12 +60,11 @@ export default function MixTemplates({
               <Icon className={cn(
                 "shrink-0",
                 isMobile ? "h-5 w-5" : "h-6 w-6",
-                isActive ? "text-primary" : "text-muted-foreground"
+                isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
               )} />
               <span className={cn(
                 "font-medium whitespace-nowrap",
-                isMobile ? "text-sm" : "text-sm mt-1",
-                isActive && "text-primary"
+                isMobile ? "text-sm" : "text-sm mt-1"
               )}>
                 {template.name}
               </span>
