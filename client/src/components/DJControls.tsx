@@ -82,10 +82,10 @@ export default function DJControls({
   return (
     <div className="flex-1 grid grid-cols-2 gap-4 bg-background rounded-lg p-4">
       {/* Video Opacity Slider */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground mb-2">
-          <Video className="h-4 w-4" />
-          <span>Video</span>
+      <div className="space-y-4">
+        <div className="flex flex-col items-center gap-1">
+          <Video className="h-6 w-6 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground">Video</span>
         </div>
         <div className="flex w-full justify-between items-center">
           <span className="text-sm font-medium text-primary">L</span>
@@ -125,10 +125,10 @@ export default function DJControls({
       </div>
 
       {/* Audio Level Slider */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground mb-2">
-          <Volume2 className="h-4 w-4" />
-          <span>Audio</span>
+      <div className="space-y-4">
+        <div className="flex flex-col items-center gap-1">
+          <Volume2 className="h-6 w-6 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground">Audio</span>
         </div>
         <div className="flex w-full justify-between items-center">
           <span className="text-sm font-medium text-primary">L</span>
