@@ -443,7 +443,7 @@ export default function Home() {
       )}
 
       {/* Only show MixList when not in mix tab */}
-      {mobileTab !== 'mix' && !showMixControls && (
+      {mobileTab !== 'mix' && (
         <div className="relative mt-4 flex-1 overflow-auto">
           <MixList
             mixes={mixes}
