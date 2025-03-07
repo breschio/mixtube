@@ -17,7 +17,7 @@ interface DJControlsProps {
   rightChannelTitle?: string;
   forceShowTooltip?: boolean;
   mixTemplates?: React.ReactNode;
-  activeTemplate?: string; // Added activeTemplate prop
+  activeTemplate?: string;
 }
 
 export default function DJControls({
@@ -33,7 +33,7 @@ export default function DJControls({
   rightChannelTitle,
   forceShowTooltip = false,
   mixTemplates,
-  activeTemplate = "fade" // Added default value for activeTemplate
+  activeTemplate = "fade"
 }: DJControlsProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
@@ -51,6 +51,16 @@ export default function DJControls({
     }
   };
 
+  // Hide label with delay
+  const hideLabel = () => {
+    if (!forceShowTooltip) {
+      const newTimeoutId = setTimeout(() => {
+        setIsVisible(false);
+      }, 1000);
+      setTimeoutId(newTimeoutId);
+    }
+  };
+
   // Handle slider interactions
   const handleSliderChange = (type: 'video' | 'audio', value: number[]) => {
     showLabel();
@@ -59,14 +69,6 @@ export default function DJControls({
     } else {
       onAudioFaderChange(value[0]);
     }
-
-    // Set timeout to hide label after 3 seconds
-    const newTimeoutId = setTimeout(() => {
-      if (!forceShowTooltip) {
-        setIsVisible(false);
-      }
-    }, 3000);
-    setTimeoutId(newTimeoutId);
   };
 
   // Effect to handle forceShowTooltip prop
@@ -123,14 +125,9 @@ export default function DJControls({
               {title}
             </a>
             {channelTitle && (
-              <a 
-                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(channelTitle)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
-              >
+              <span className="text-[10px] text-muted-foreground">
                 {channelTitle}
-              </a>
+              </span>
             )}
           </div>
         )}
@@ -144,14 +141,14 @@ export default function DJControls({
       {mixTemplates}
 
       {/* Main controls container with three columns */}
-      <div className="grid grid-cols-[auto_1fr] gap-8 bg-background rounded-lg p-4 w-full"> {/* Added w-full class here */}
+      <div className="grid grid-cols-[auto_1fr_auto] gap-8 bg-background rounded-lg p-4">
         {/* Left video */}
-        <div className="hidden md:flex items-start"> {/* Added hidden class for mobile */}
+        <div className="flex items-start">
           {renderVideoThumbnail(leftVideoId, leftVideoTitle, leftChannelTitle)}
         </div>
 
         {/* Center sliders */}
-        <div className="flex flex-col gap-6 w-full"> {/* Added w-full class here */}
+        <div className="flex flex-col gap-6">
           {/* Video Opacity Slider */}
           <div>
             <div className="flex items-center gap-2">
@@ -183,18 +180,8 @@ export default function DJControls({
                   max={1}
                   step={0.01}
                   onValueChange={(value) => handleSliderChange('video', value)}
-                  onValueCommit={() => {
-                    hideTooltipDelayed();
-                  }}
-                  onPointerMove={() => {
-                    showLabel();
-                  }}
-                  onPointerEnter={() => {
-                    showLabel();
-                  }}
-                  onPointerLeave={() => {
-                    hideTooltipDelayed();
-                  }}
+                  onPointerEnter={showLabel}
+                  onPointerLeave={hideLabel}
                   className="cursor-pointer"
                   thumbClassName={cn(
                     "h-5 w-5 bg-white border-[3px] shadow-lg",
@@ -209,68 +196,56 @@ export default function DJControls({
             </div>
           </div>
 
-          {/* Audio Level Slider - Only show for Fade template */}
-          {mixTemplates && activeTemplate !== "side-by-side" && (
-            <div className="w-full">
-              <div className="flex items-center gap-2 w-full">
-                <div className="flex flex-col items-center min-w-[80px]">
-                  <Volume2 className="h-6 w-6 text-muted-foreground mb-1" />
-                  <span className="text-sm font-medium text-muted-foreground">Audio</span>
-                </div>
-                <div className="flex-1 w-full">
-                  <div className="flex w-full justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-primary">L</span>
-                    <div
-                      className={cn(
-                        "text-sm font-medium px-2 py-0.5 rounded-md border",
-                        "transition-opacity duration-200",
-                        {
-                          "opacity-100": isVisible || forceShowTooltip,
-                          "opacity-0": !(isVisible || forceShowTooltip),
-                          "bg-accent/5": isRightAudio,
-                          "bg-transparent": !isRightAudio
-                        }
-                      )}
-                    >
-                      {audioPercentage}% {isRightAudio ? "R" : "L"}
-                    </div>
-                    <span className="text-sm font-medium text-primary">R</span>
-                  </div>
-                  <Slider
-                    value={[audioFader]}
-                    max={1}
-                    step={0.01}
-                    onValueChange={(value) => handleSliderChange('audio', value)}
-                    onValueCommit={() => {
-                      hideTooltipDelayed();
-                    }}
-                    onPointerMove={() => {
-                      showLabel();
-                    }}
-                    onPointerEnter={() => {
-                      showLabel();
-                    }}
-                    onPointerLeave={() => {
-                      hideTooltipDelayed();
-                    }}
-                    className="cursor-pointer"
-                    thumbClassName={cn(
-                      "h-5 w-5 bg-white border-[3px] shadow-lg",
+          {/* Audio Level Slider */}
+          <div>
+            <div className="flex items-center gap-2">
+              <div className="flex flex-col items-center min-w-[80px]">
+                <Volume2 className="h-6 w-6 text-muted-foreground mb-1" />
+                <span className="text-sm font-medium text-muted-foreground">Audio</span>
+              </div>
+              <div className="flex-1">
+                <div className="flex w-full justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-primary">L</span>
+                  <div
+                    className={cn(
+                      "text-sm font-medium px-2 py-0.5 rounded-md border",
+                      "transition-opacity duration-200",
                       {
-                        "border-blue-500": audioFader >= 0.48 && audioFader <= 0.52,
-                        "border-blue-500/30": audioFader < 0.48 || audioFader > 0.52,
+                        "opacity-100": isVisible || forceShowTooltip,
+                        "opacity-0": !(isVisible || forceShowTooltip),
+                        "bg-accent/5": isRightAudio,
+                        "bg-transparent": !isRightAudio
                       }
                     )}
-                    trackClassName="h-5 rounded-md bg-gradient-to-r from-violet-500 to-blue-500 border border-accent/30"
-                  />
+                  >
+                    {audioPercentage}% {isRightAudio ? "R" : "L"}
+                  </div>
+                  <span className="text-sm font-medium text-primary">R</span>
                 </div>
+                <Slider
+                  value={[audioFader]}
+                  max={1}
+                  step={0.01}
+                  onValueChange={(value) => handleSliderChange('audio', value)}
+                  onPointerEnter={showLabel}
+                  onPointerLeave={hideLabel}
+                  className="cursor-pointer"
+                  thumbClassName={cn(
+                    "h-5 w-5 bg-white border-[3px] shadow-lg",
+                    {
+                      "border-blue-500": audioFader >= 0.48 && audioFader <= 0.52,
+                      "border-blue-500/30": audioFader < 0.48 || audioFader > 0.52,
+                    }
+                  )}
+                  trackClassName="h-5 rounded-md bg-gradient-to-r from-violet-500 to-blue-500 border border-accent/30"
+                />
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Right video */}
-        <div className="hidden md:flex items-start justify-end"> {/* Added hidden class for mobile */}
+        <div className="flex items-start justify-end">
           {renderVideoThumbnail(rightVideoId, rightVideoTitle, rightChannelTitle)}
         </div>
       </div>
