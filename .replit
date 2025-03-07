@@ -47,3 +47,13 @@ waitForPort = 5000
 [[deployment.rewrites]]
 from = "/*"
 to = "/index.html"
+
+[[deployment.responseHeaders]]
+path = "/*"
+name = "Access-Control-Allow-Origin"
+value = "*"
+
+[[deployment.responseHeaders]]
+path = "/*"
+name = "Cache-Control"
+value = "public, max-age=86400"
