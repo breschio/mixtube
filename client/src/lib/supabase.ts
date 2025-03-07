@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 
 // Initialize the Supabase client with error handling
 const getSupabaseClient = () => {
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const url = import.meta.env.VITE_SUPABASE_URL || window.ENV?.SUPABASE_URL;
+  const key = import.meta.env.VITE_SUPABASE_ANON_KEY || window.ENV?.SUPABASE_ANON_KEY;
 
   if (!url || !key) {
     throw new Error('Supabase credentials not found. Please ensure SUPABASE_URL and SUPABASE_ANON_KEY are set in your environment.');

@@ -11,11 +11,12 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 
 // Create a single Supabase client instance
 const createSupabaseClient = () => {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  // In production, these variables will be injected by the server
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || window.ENV?.SUPABASE_URL;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || window.ENV?.SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase configuration');
+    throw new Error('Missing Supabase configuration. Make sure SUPABASE_URL and SUPABASE_ANON_KEY are set in environment variables.');
   }
 
   return createClient(supabaseUrl, supabaseAnonKey);
