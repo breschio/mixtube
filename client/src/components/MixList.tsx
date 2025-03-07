@@ -110,7 +110,7 @@ export function MixList({ mixes, onPlayMix, className }: MixListProps) {
   return (
     <div className={cn("h-full flex flex-col", className)}>
       <div className="text-sm font-medium mb-4 text-primary">
-        {sortedMixes.length > 0 && onPlayMix ? sortedMixes[0].title : "Recent mixes"}
+        Recent mixes
       </div>
       <div className="shrink-0 mb-4">
         <Tabs value={activeSort} onValueChange={(value) => setActiveSort(value as SortType)} className="w-full">
