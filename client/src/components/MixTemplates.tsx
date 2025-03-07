@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { SplitSquareHorizontalIcon, LayersIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMobile } from "@/hooks/use-mobile";
@@ -36,42 +36,49 @@ export default function MixTemplates({
 }: MixTemplatesProps) {
   const isMobile = useMobile();
 
+  // Helper function to find template by id
+  const getTemplateById = (id: string) => mixTemplates.find(t => t.id === id);
+
   return (
-    <div className="grid grid-cols-2 gap-2 w-full">
+    <ToggleGroup
+      type="single"
+      value={activeTemplate}
+      onValueChange={(value) => {
+        if (value) {
+          const template = getTemplateById(value);
+          if (template) {
+            onSelectTemplate(template);
+          }
+        }
+      }}
+      className="grid grid-cols-2 gap-2 w-full"
+    >
       {mixTemplates.map((template) => {
         const Icon = template.icon;
         const isActive = activeTemplate === template.id;
 
         return (
-          <Card
+          <ToggleGroupItem
             key={template.id}
+            value={template.id}
             className={cn(
-              "cursor-pointer transition-all border",
-              isActive 
-                ? "bg-blue-600 text-white border-blue-500" 
-                : "bg-background text-muted-foreground hover:text-foreground border-border/50 hover:border-border"
-            )}
-            onClick={() => onSelectTemplate(template)}
-          >
-            <div className={cn(
-              "flex items-center gap-2.5",
+              "flex items-center gap-2 data-[state=on]:bg-blue-600 data-[state=on]:text-white",
               isMobile ? "justify-center px-3 py-2.5" : "flex-col text-center p-4"
+            )}
+          >
+            <Icon className={cn(
+              "shrink-0",
+              isMobile ? "h-5 w-5" : "h-6 w-6",
+            )} />
+            <span className={cn(
+              "font-medium whitespace-nowrap",
+              isMobile ? "text-sm" : "text-sm mt-1"
             )}>
-              <Icon className={cn(
-                "shrink-0",
-                isMobile ? "h-5 w-5" : "h-6 w-6",
-                isActive ? "text-white" : "text-muted-foreground group-hover:text-foreground"
-              )} />
-              <span className={cn(
-                "font-medium whitespace-nowrap",
-                isMobile ? "text-sm" : "text-sm mt-1"
-              )}>
-                {template.name}
-              </span>
-            </div>
-          </Card>
+              {template.name}
+            </span>
+          </ToggleGroupItem>
         );
       })}
-    </div>
+    </ToggleGroup>
   );
 }
