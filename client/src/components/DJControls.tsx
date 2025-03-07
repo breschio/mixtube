@@ -111,6 +111,7 @@ export default function DJControls({
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs text-muted-foreground hover:text-foreground line-clamp-2 max-w-[12rem] transition-colors"
+            title={title}
           >
             {title}
           </a>
