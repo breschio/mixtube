@@ -94,7 +94,7 @@ export default function Home() {
     }
   });
   const [crossFader, setCrossFader] = useState(0.6);
-  const [audioFader, setAudioFader] = useState(0.6); 
+  const [audioFader, setAudioFader] = useState(0.6);
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [mixName, setMixName] = useState('');
@@ -160,7 +160,7 @@ export default function Home() {
           rightTitle: videos.right.title,
           rightChannel: videos.right.channelTitle,
           crossFaderValue: Math.round(crossFader * 100),
-          audioFaderValue: Math.round(audioFader * 100), 
+          audioFaderValue: Math.round(audioFader * 100),
           template: activeTemplate,
         }),
       });
@@ -207,7 +207,7 @@ export default function Home() {
     setShowMixControls(true);
     setPlaying(false);
     setCrossFader(0.5);
-    setAudioFader(0.5); 
+    setAudioFader(0.5);
     setActiveTab("mix");
     setIsNewMode(true);
     setVideos({
@@ -232,14 +232,14 @@ export default function Home() {
   const handleTemplateSelect = (template: MixTemplate) => {
     setActiveTemplate(template.id);
     setCrossFader(template.crossFaderValue);
-    setAudioFader(template.crossFaderValue); 
+    setAudioFader(template.crossFaderValue);
   };
 
   const handleCrossFaderChange = (value: number) => {
     setCrossFader(value);
   };
 
-  const handleAudioFaderChange = (value: number) => { 
+  const handleAudioFaderChange = (value: number) => {
     setAudioFader(value);
   };
 
@@ -264,7 +264,7 @@ export default function Home() {
     });
 
     setCrossFader(mix.crossFaderValue / 100);
-    setAudioFader(mix.audioFaderValue ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100); 
+    setAudioFader(mix.audioFaderValue ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
     setShowMixControls(true);
     setCurrentMix(mix);
@@ -336,7 +336,7 @@ export default function Home() {
         leftVideoId={videos.left?.id || null}
         rightVideoId={videos.right?.id || null}
         crossFaderValue={crossFader}
-        audioFaderValue={audioFader} 
+        audioFaderValue={audioFader}
         playing={playing}
         onPlayPause={handlePlayPause}
         preview={false}
@@ -352,12 +352,13 @@ export default function Home() {
       <div className="space-y-8 p-6">
         <DJControls
           crossFader={crossFader}
-          audioFader={audioFader} 
+          audioFader={audioFader}
           onCrossFaderChange={handleCrossFaderChange}
-          onAudioFaderChange={handleAudioFaderChange} 
+          onAudioFaderChange={handleAudioFaderChange}
           leftVideoId={videos.left?.id}
           rightVideoId={videos.right?.id}
           forceShowTooltip={showTransitionTooltip}
+          mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
         />
         <div className="grid grid-cols-2 gap-2 w-full">
           <MixTemplates
@@ -376,7 +377,7 @@ export default function Home() {
           leftVideoId={videos.left?.id || null}
           rightVideoId={videos.right?.id || null}
           crossFaderValue={crossFader}
-          audioFaderValue={audioFader} 
+          audioFaderValue={audioFader}
           playing={playing}
           onPlayPause={handlePlayPause}
           preview={false}
@@ -385,7 +386,7 @@ export default function Home() {
           rightStartTime={videos.right?.startTime}
         />
       </div>
-      <div className="mt-3"> 
+      <div className="mt-3">
         <VideoInfo
           title={currentMix?.title || mixName || "New Mix"}
           channelTitle="MixTube"
@@ -409,12 +410,13 @@ export default function Home() {
           <div className="p-6">
             <DJControls
               crossFader={crossFader}
-              audioFader={audioFader} 
+              audioFader={audioFader}
               onCrossFaderChange={handleCrossFaderChange}
-              onAudioFaderChange={handleAudioFaderChange} 
+              onAudioFaderChange={handleAudioFaderChange}
               leftVideoId={videos.left?.id}
               rightVideoId={videos.right?.id}
               forceShowTooltip={showTransitionTooltip}
+              mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
             />
             <div className="mt-8">
               <MixTemplates
@@ -490,7 +492,7 @@ export default function Home() {
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div className="mt-3"> 
+              <div className="mt-3">
                 <VideoInfo
                   title={isNewMode ? (isPromptMode ? "Describe your mix" : "Name your mix") : "New Mix"}
                   channelTitle="MixTube"
@@ -516,12 +518,13 @@ export default function Home() {
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
-                      audioFader={audioFader} 
+                      audioFader={audioFader}
                       onCrossFaderChange={handleCrossFaderChange}
-                      onAudioFaderChange={handleAudioFaderChange} 
+                      onAudioFaderChange={handleAudioFaderChange}
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
+                      mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
                     />
                     <MixTemplates
                       onSelectTemplate={handleTemplateSelect}
@@ -560,7 +563,7 @@ export default function Home() {
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div className="mt-3"> 
+              <div className="mt-3">
                 <VideoInfo
                   title={currentMix?.title || mixName || "New Mix"}
                   channelTitle="MixTube"
@@ -584,12 +587,13 @@ export default function Home() {
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
-                      audioFader={audioFader} 
+                      audioFader={audioFader}
                       onCrossFaderChange={handleCrossFaderChange}
-                      onAudioFaderChange={handleAudioFaderChange} 
+                      onAudioFaderChange={handleAudioFaderChange}
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
+                      mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
                     />
                     <MixTemplates
                       onSelectTemplate={handleTemplateSelect}
@@ -616,7 +620,7 @@ export default function Home() {
                     <h2 className="text-lg font-semibold mb-4">Recent mixes</h2>
                     <div className="space-y-3">
                       {mixes.slice(0, 5).map((mix) => (
-                        <div key={mix.id} onClick={() => handlePlayMix(mix)}> 
+                        <div key={mix.id} onClick={() => handlePlayMix(mix)}>
                           <p>{mix.title}</p>
                         </div>
                       ))}
