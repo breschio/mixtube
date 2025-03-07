@@ -97,6 +97,7 @@
     --sidebar-border: 216 34% 17%;
     --sidebar-ring: 216 34% 17%;
   }
+}
 
   /* Theme transition with opacity */
   :root[class*="theme-"] {
