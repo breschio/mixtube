@@ -651,14 +651,7 @@ export default function Home() {
 
 
   const getMostLikedMixes = (mixesArray: Mix[]) => {
-    return [...mixesArray].sort((a, b) => {
-      // First sort by likes in descending order
-      if (b.likes !== a.likes) {
-        return b.likes - a.likes;
-      }
-      // If likes are equal, sort by creation date (newest first)
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
+    return [...mixesArray].sort((a, b) => b.likes - a.likes);
   };
 
   return (
