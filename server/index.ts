@@ -7,9 +7,20 @@ import { authRoutes } from "./auth";
 
 const app = express();
 
-// Basic health check endpoint
+// Basic health check endpoints
 app.get('/ping', (_req, res) => {
   res.status(200).send('OK');
+});
+
+// Root health check for Autoscale deployments
+app.get('/', (_req, res) => {
+  if (req.headers['accept']?.includes('text/html')) {
+    // For browser requests, let the static file handler take over
+    next();
+  } else {
+    // For health checks and other non-browser requests
+    res.status(200).send('OK');
+  }
 });
 
 // Configure CORS for both API and YouTube iframe communication

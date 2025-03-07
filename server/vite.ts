@@ -65,21 +65,34 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  app.use(express.static(path.resolve(__dirname, "../client/dist")));
+  // In production, the client files are in a different location
+  const clientDistPath = process.env.NODE_ENV === 'production' 
+    ? path.resolve(__dirname, "../client/dist") 
+    : path.resolve(__dirname, "../client/dist");
+  
+  app.use(express.static(clientDistPath));
+  
   app.get("*", (req, res) => {
-    const htmlPath = path.resolve(__dirname, "../client/dist/index.html");
-    let html = fs.readFileSync(htmlPath, 'utf-8');
+    try {
+      const htmlPath = path.resolve(clientDistPath, "index.html");
+      console.log(`Trying to serve HTML from: ${htmlPath}`);
+      
+      let html = fs.readFileSync(htmlPath, 'utf-8');
 
-    // Inject environment variables for client in production
-    const clientEnv = {
-      SUPABASE_URL: process.env.SUPABASE_URL,
-      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
-      YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY
-    };
+      // Inject environment variables for client in production
+      const clientEnv = {
+        SUPABASE_URL: process.env.SUPABASE_URL,
+        SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+        YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY
+      };
 
-    // Insert env variables before closing head tag
-    html = html.replace('</head>', `<script>window.ENV = ${JSON.stringify(clientEnv)};</script></head>`);
+      // Insert env variables before closing head tag
+      html = html.replace('</head>', `<script>window.ENV = ${JSON.stringify(clientEnv)};</script></head>`);
 
-    res.send(html);
+      res.send(html);
+    } catch (error) {
+      console.error('Error serving static file:', error);
+      res.status(500).send('Error loading application');
+    }
   });
 }
