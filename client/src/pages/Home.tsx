@@ -412,12 +412,6 @@ export default function Home() {
               forceShowTooltip={showTransitionTooltip}
               mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
             />
-            <div className="mt-8">
-              <MixTemplates
-                onSelectTemplate={handleTemplateSelect}
-                activeTemplate={activeTemplate}
-              />
-            </div>
           </div>
         </Card>
       )}
@@ -520,10 +514,6 @@ export default function Home() {
                       forceShowTooltip={showTransitionTooltip}
                       mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
                     />
-                    <MixTemplates
-                      onSelectTemplate={handleTemplateSelect}
-                      activeTemplate={activeTemplate}
-                    />
                   </div>
                 </Card>
               )}
@@ -588,10 +578,6 @@ export default function Home() {
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
                       mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
-                    />
-                    <MixTemplates
-                      onSelectTemplate={handleTemplateSelect}
-                      activeTemplate={activeTemplate}
                     />
                   </div>
                 </Card>
