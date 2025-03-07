@@ -442,16 +442,15 @@ export default function Home() {
         </div>
       )}
 
-      {/* Only show MixList when not in mix tab */}
-      {mobileTab !== 'mix' && (
-        <div className="relative mt-4 flex-1 overflow-auto">
+      <div className="relative mt-4 flex-1 overflow-auto">
+        {!isNewMode && (
           <MixList
             mixes={mixes}
             onPlayMix={handlePlayMix}
             className="h-full"
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 
@@ -463,7 +462,12 @@ export default function Home() {
       {isNewMode ? (
         <>
           <ResizablePanel defaultSize={25} minSize={20}>
-            <div className="h-full flex flex-col pr-6">
+            <div className={cn(
+              "h-full flex flex-col pr-6",
+              "transform transition-transform duration-300 ease-in-out",
+              isNewMode ? "translate-x-0" : "-translate-x-full",
+              "opacity-100"
+            )}>
               {renderControls('left')}
             </div>
           </ResizablePanel>
@@ -471,13 +475,13 @@ export default function Home() {
           <ResizeHandle />
 
           <ResizablePanel defaultSize={50} minSize={30}>
-            <div className="h-full flex flex-col px-6">
+            <div className="h-full flex flex-col px-6 space-y-6">
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div className="mt-6">
+              <div>
                 <VideoInfo
-                  title={currentMix?.title || mixName || "New Mix"}
+                  title={isNewMode ? (isPromptMode ? "Describe your mix" : "Name your mix") : "New Mix"}
                   channelTitle="MixTube"
                   onToggleMixMode={() => setShowMixControls(!showMixControls)}
                   mixMode={showMixControls}
@@ -488,6 +492,8 @@ export default function Home() {
                   user={user}
                   leftVideoSelected={!!videos.left?.id}
                   rightVideoSelected={!!videos.right?.id}
+                  isPromptMode={isPromptMode}
+                  onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
                   isCreateMode={isNewMode}
                   mixId={currentMix?.id}
                   initialLikes={currentMix?.likes}
@@ -495,7 +501,7 @@ export default function Home() {
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
+                <Card className="bg-background border-y border-r border-border/50 rounded-r-lg">
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
@@ -517,7 +523,12 @@ export default function Home() {
           <ResizeHandle />
 
           <ResizablePanel defaultSize={25} minSize={20}>
-            <div className="h-full flex flex-col pl-6">
+            <div className={cn(
+              "h-full flex flex-col pl-6",
+              "transform transition-transform duration-300 ease-in-out",
+              isNewMode ? "translate-x-0" : "translate-x-full",
+              "opacity-100"
+            )}>
               {renderControls('right')}
             </div>
           </ResizablePanel>
@@ -525,11 +536,11 @@ export default function Home() {
       ) : (
         <>
           <ResizablePanel
-            defaultSize={100}
-            minSize={100}
+            defaultSize={70}
+            minSize={65}
             className="transition-all duration-300 ease-in-out"
           >
-            <div className="h-full flex flex-col px-6">
+            <div className="h-full flex flex-col pr-6">
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
@@ -569,6 +580,24 @@ export default function Home() {
                   </div>
                 </Card>
               )}
+            </div>
+          </ResizablePanel>
+
+          <ResizeHandle />
+
+          <ResizablePanel
+            defaultSize={30}
+            minSize={25}
+            className="transition-all duration-300 ease-in-out"
+          >
+            <div className="h-[calc(100vh-5rem)] flex flex-col pl-6">
+              <div className="h-full overflow-auto">
+                <MixList
+                  mixes={mixes}
+                  onPlayMix={handlePlayMix}
+                  className="h-full"
+                />
+              </div>
             </div>
           </ResizablePanel>
         </>
