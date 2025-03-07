@@ -357,6 +357,8 @@ export default function Home() {
           onAudioFaderChange={handleAudioFaderChange}
           leftVideoId={videos.left?.id}
           rightVideoId={videos.right?.id}
+          leftVideoTitle={videos.left?.title}
+          rightVideoTitle={videos.right?.title}
           forceShowTooltip={showTransitionTooltip}
           mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
         />
@@ -409,6 +411,8 @@ export default function Home() {
               onAudioFaderChange={handleAudioFaderChange}
               leftVideoId={videos.left?.id}
               rightVideoId={videos.right?.id}
+              leftVideoTitle={videos.left?.title}
+              rightVideoTitle={videos.right?.title}
               forceShowTooltip={showTransitionTooltip}
               mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
             />
@@ -511,6 +515,8 @@ export default function Home() {
                       onAudioFaderChange={handleAudioFaderChange}
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
+                      leftVideoTitle={videos.left?.title}
+                      rightVideoTitle={videos.right?.title}
                       forceShowTooltip={showTransitionTooltip}
                       mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
                     />
@@ -576,6 +582,8 @@ export default function Home() {
                       onAudioFaderChange={handleAudioFaderChange}
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
+                      leftVideoTitle={videos.left?.title}
+                      rightVideoTitle={videos.right?.title}
                       forceShowTooltip={showTransitionTooltip}
                       mixTemplates={<MixTemplates onSelectTemplate={handleTemplateSelect} activeTemplate={activeTemplate} />}
                     />

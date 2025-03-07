@@ -90,21 +90,21 @@ export default function DJControls({
     if (!videoId) return null;
     return (
       <div className="flex flex-col gap-2">
-        <div className="relative w-24 aspect-video rounded-md overflow-hidden group">
+        <a 
+          href={`https://www.youtube.com/watch?v=${videoId}`} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="relative w-24 aspect-video rounded-md overflow-hidden group"
+        >
           <img 
             src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
-            alt="Video thumbnail"
+            alt={title || "Video thumbnail"}
             className="w-full h-full object-cover"
           />
-          <a 
-            href={`https://www.youtube.com/watch?v=${videoId}`} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-          >
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <ExternalLink className="w-5 h-5 text-white" />
-          </a>
-        </div>
+          </div>
+        </a>
         {title && (
           <a 
             href={`https://www.youtube.com/watch?v=${videoId}`}
