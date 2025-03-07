@@ -377,7 +377,7 @@ export default function Home() {
           rightStartTime={videos.right?.startTime}
         />
       </div>
-      <div className="mt-4">
+      <div className="mt-3"> {/* Changed from mt-4 */}
         <VideoInfo
           title={currentMix?.title || mixName || "New Mix"}
           channelTitle="MixTube"
@@ -480,7 +480,7 @@ export default function Home() {
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div>
+              <div className="mt-3"> {/* Changed from mt-6 */}
                 <VideoInfo
                   title={isNewMode ? (isPromptMode ? "Describe your mix" : "Name your mix") : "New Mix"}
                   channelTitle="MixTube"
@@ -502,7 +502,7 @@ export default function Home() {
                 />
               </div>
               {showMixControls && (
-                <Card className="bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
+                <Card className="mt-4 bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
@@ -548,7 +548,7 @@ export default function Home() {
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div className="mt-6">
+              <div className="mt-3"> {/* Changed from mt-6 */}
                 <VideoInfo
                   title={currentMix?.title || mixName || "New Mix"}
                   channelTitle="MixTube"
@@ -568,7 +568,7 @@ export default function Home() {
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-6 bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
+                <Card className="mt-4 bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}

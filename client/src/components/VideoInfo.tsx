@@ -146,11 +146,9 @@ const VideoInfo = ({
   }
 
   return (
-    <div className={cn("py-4", className)}>
-      <div className="flex items-center justify-between mb-2.5">
-        <h1 className="text-lg font-medium leading-tight">
-          {title}
-        </h1>
+    <div className={cn("py-2", className)}> {/* Reduced spacing */}
+      <div className="mb-2"> {/* Added margin */}
+        <h2 className="text-lg font-medium leading-tight text-blue-600">Recent mixes</h2> {/* Added label */}
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
@@ -162,19 +160,22 @@ const VideoInfo = ({
                     {channelTitle.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium">
+                <span className="text-sm font-medium text-blue-600"> {/* Blue text */}
                   {channelTitle}
                 </span>
               </div>
+              <h3 className="text-sm font-[400] line-clamp-2 leading-[1.1] mt-0.5 text-blue-600"> {/* Blue text & order changed */}
+                {title}
+              </h3>
             </>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-2"> {/* Moved controls up */}
           <Button
             variant="outline"
             size="sm"
             className={cn(
-              "gap-1.5 px-3 h-9",
+              "gap-1.5 px-3 h-9 border border-blue-600 text-blue-600 hover:bg-blue-100", {/* Outline style and blue text */}
               isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             onClick={handleLike}
@@ -187,7 +188,7 @@ const VideoInfo = ({
             variant="outline"
             size="sm"
             className={cn(
-              "gap-1.5 px-3 h-9",
+              "gap-1.5 px-3 h-9 border border-blue-600 text-blue-600 hover:bg-blue-100", {/* Outline style and blue text */}
               mixMode && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
             onClick={onToggleMixMode}

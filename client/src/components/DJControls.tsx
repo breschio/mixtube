@@ -71,7 +71,7 @@ export default function DJControls({
   return (
     <div className="flex-1 flex flex-col items-center gap-2 bg-background rounded-lg p-4">
       <div className="flex w-full justify-between items-center mb-2">
-        <span className="text-sm text-muted-foreground">Left</span>
+        <span className="text-sm font-medium text-primary">Left</span>
         <div
           className={cn(
             "text-sm font-medium px-4 py-1 rounded-md border",
@@ -86,7 +86,7 @@ export default function DJControls({
         >
           {percentage}% {isRightSide ? "Right" : "Left"}
         </div>
-        <span className="text-sm text-muted-foreground">Right</span>
+        <span className="text-sm font-medium text-primary">Right</span>
       </div>
       <Slider
         value={[crossFader]}
