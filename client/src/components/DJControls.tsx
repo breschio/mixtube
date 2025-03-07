@@ -144,7 +144,7 @@ export default function DJControls({
       {/* Main controls container with three columns */}
       <div className="grid grid-cols-[auto_1fr_auto] gap-8 bg-background rounded-lg p-4">
         {/* Left video */}
-        <div className="flex items-start">
+        <div className="hidden md:flex items-start"> {/* Added hidden class for mobile */}
           {renderVideoThumbnail(leftVideoId, leftVideoTitle, leftChannelTitle)}
         </div>
 
@@ -246,7 +246,7 @@ export default function DJControls({
         </div>
 
         {/* Right video */}
-        <div className="flex items-start justify-end">
+        <div className="hidden md:flex items-start justify-end"> {/* Added hidden class for mobile */}
           {renderVideoThumbnail(rightVideoId, rightVideoTitle, rightChannelTitle)}
         </div>
       </div>
