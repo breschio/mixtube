@@ -34,20 +34,13 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
     const sortedArray = [...mixes];
     switch (activeSort) {
       case "hot":
-        // Sort by combined score of likes and views
+        // Sort by combined score of likes and views (descending)
         return sortedArray.sort((a, b) => (b.likes + b.views) - (a.likes + a.views));
       case "new":
-        // Sort by recency (days ago) / plays (lower score = newer or less played)
-        return sortedArray.sort((a, b) => {
-          const daysA = (Date.now() - new Date(a.createdAt).getTime()) / (1000 * 60 * 60 * 24);
-          const daysB = (Date.now() - new Date(b.createdAt).getTime()) / (1000 * 60 * 60 * 24);
-          
-          // Lower score is better (newer or less played)
-          const scoreA = daysA / (a.views || 1); 
-          const scoreB = daysB / (b.views || 1);
-          
-          return scoreA - scoreB;
-        });
+        // Sort by most recent creation date (descending)
+        return sortedArray.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
       default:
         return sortedArray;
     }
