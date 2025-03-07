@@ -80,18 +80,18 @@ export default function DJControls({
   const isRightAudio = audioFader > 0.5;
 
   return (
-    <div className="flex-1 flex flex-col items-center gap-4 bg-background rounded-lg p-4">
+    <div className="flex-1 grid grid-cols-2 gap-4 bg-background rounded-lg p-4">
       {/* Video Opacity Slider */}
-      <div className="w-full space-y-2">
-        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
+      <div className="space-y-2">
+        <div className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground mb-2">
           <Video className="h-4 w-4" />
-          <span>Video Mix</span>
+          <span>Video</span>
         </div>
         <div className="flex w-full justify-between items-center">
-          <span className="text-sm font-medium text-primary">Left</span>
+          <span className="text-sm font-medium text-primary">L</span>
           <div
             className={cn(
-              "text-sm font-medium px-4 py-1 rounded-md border",
+              "text-sm font-medium px-2 py-0.5 rounded-md border",
               "transition-opacity duration-200",
               {
                 "opacity-100": isVisible || forceShowTooltip,
@@ -101,9 +101,9 @@ export default function DJControls({
               }
             )}
           >
-            {videoPercentage}% {isRightVideo ? "Right" : "Left"}
+            {videoPercentage}% {isRightVideo ? "R" : "L"}
           </div>
-          <span className="text-sm font-medium text-primary">Right</span>
+          <span className="text-sm font-medium text-primary">R</span>
         </div>
         <Slider
           value={[crossFader]}
@@ -125,16 +125,16 @@ export default function DJControls({
       </div>
 
       {/* Audio Level Slider */}
-      <div className="w-full space-y-2">
-        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
+      <div className="space-y-2">
+        <div className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground mb-2">
           <Volume2 className="h-4 w-4" />
-          <span>Audio Mix</span>
+          <span>Audio</span>
         </div>
         <div className="flex w-full justify-between items-center">
-          <span className="text-sm font-medium text-primary">Left</span>
+          <span className="text-sm font-medium text-primary">L</span>
           <div
             className={cn(
-              "text-sm font-medium px-4 py-1 rounded-md border",
+              "text-sm font-medium px-2 py-0.5 rounded-md border",
               "transition-opacity duration-200",
               {
                 "opacity-100": isVisible || forceShowTooltip,
@@ -144,9 +144,9 @@ export default function DJControls({
               }
             )}
           >
-            {audioPercentage}% {isRightAudio ? "Right" : "Left"}
+            {audioPercentage}% {isRightAudio ? "R" : "L"}
           </div>
-          <span className="text-sm font-medium text-primary">Right</span>
+          <span className="text-sm font-medium text-primary">R</span>
         </div>
         <Slider
           value={[audioFader]}
