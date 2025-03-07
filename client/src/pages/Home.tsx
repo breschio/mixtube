@@ -66,7 +66,7 @@ export default function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const [showMixControls, setShowMixControls] = useState(false);
+  const [showMixControls, setShowMixControls] = useState(true);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("mix");
   const [currentMix, setCurrentMix] = useState<Mix | null>(null);
