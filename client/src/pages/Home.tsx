@@ -462,12 +462,7 @@ export default function Home() {
       {isNewMode ? (
         <>
           <ResizablePanel defaultSize={25} minSize={20}>
-            <div className={cn(
-              "h-full flex flex-col pr-6",
-              "transform transition-transform duration-300 ease-in-out",
-              isNewMode ? "translate-x-0" : "-translate-x-full",
-              "opacity-100"
-            )}>
+            <div className="h-full flex flex-col pr-6">
               {renderControls('left')}
             </div>
           </ResizablePanel>
@@ -475,72 +470,7 @@ export default function Home() {
           <ResizeHandle />
 
           <ResizablePanel defaultSize={50} minSize={30}>
-            <div className="h-full flex flex-col px-6 space-y-6">
-              <div className="relative w-full aspect-video">
-                {mainVideoPlayer}
-              </div>
-              <div>
-                <VideoInfo
-                  title={isNewMode ? (isPromptMode ? "Describe your mix" : "Name your mix") : "New Mix"}
-                  channelTitle="MixTube"
-                  onToggleMixMode={() => setShowMixControls(!showMixControls)}
-                  mixMode={showMixControls}
-                  onSaveMix={(title) => {
-                    setMixName(title);
-                    handlePost(title);
-                  }}
-                  user={user}
-                  leftVideoSelected={!!videos.left?.id}
-                  rightVideoSelected={!!videos.right?.id}
-                  isPromptMode={isPromptMode}
-                  onTogglePromptMode={() => setIsPromptMode(!isPromptMode)}
-                  isCreateMode={isNewMode}
-                  mixId={currentMix?.id}
-                  initialLikes={currentMix?.likes}
-                  className="px-0"
-                />
-              </div>
-              {showMixControls && (
-                <Card className="bg-background border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8 flex flex-col gap-8">
-                    <DJControls
-                      crossFader={crossFader}
-                      onCrossFaderChange={handleCrossFaderChange}
-                      leftVideoId={videos.left?.id}
-                      rightVideoId={videos.right?.id}
-                      forceShowTooltip={showTransitionTooltip}
-                    />
-                    <MixTemplates
-                      onSelectTemplate={handleTemplateSelect}
-                      activeTemplate={activeTemplate}
-                    />
-                  </div>
-                </Card>
-              )}
-            </div>
-          </ResizablePanel>
-
-          <ResizeHandle />
-
-          <ResizablePanel defaultSize={25} minSize={20}>
-            <div className={cn(
-              "h-full flex flex-col pl-6",
-              "transform transition-transform duration-300 ease-in-out",
-              isNewMode ? "translate-x-0" : "translate-x-full",
-              "opacity-100"
-            )}>
-              {renderControls('right')}
-            </div>
-          </ResizablePanel>
-        </>
-      ) : (
-        <>
-          <ResizablePanel
-            defaultSize={70}
-            minSize={65}
-            className="transition-all duration-300 ease-in-out"
-          >
-            <div className="h-full flex flex-col pr-6">
+            <div className="h-full flex flex-col px-6">
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
@@ -585,19 +515,59 @@ export default function Home() {
 
           <ResizeHandle />
 
+          <ResizablePanel defaultSize={25} minSize={20}>
+            <div className="h-full flex flex-col pl-6">
+              {renderControls('right')}
+            </div>
+          </ResizablePanel>
+        </>
+      ) : (
+        <>
           <ResizablePanel
-            defaultSize={30}
-            minSize={25}
+            defaultSize={100}
+            minSize={100}
             className="transition-all duration-300 ease-in-out"
           >
-            <div className="h-[calc(100vh-5rem)] flex flex-col pl-6">
-              <div className="h-full overflow-auto">
-                <MixList
-                  mixes={mixes}
-                  onPlayMix={handlePlayMix}
-                  className="h-full"
+            <div className="h-full flex flex-col px-6">
+              <div className="relative w-full aspect-video">
+                {mainVideoPlayer}
+              </div>
+              <div className="mt-6">
+                <VideoInfo
+                  title={currentMix?.title || mixName || "New Mix"}
+                  channelTitle="MixTube"
+                  onToggleMixMode={() => setShowMixControls(!showMixControls)}
+                  mixMode={showMixControls}
+                  onSaveMix={(title) => {
+                    setMixName(title);
+                    handlePost(title);
+                  }}
+                  user={user}
+                  leftVideoSelected={!!videos.left?.id}
+                  rightVideoSelected={!!videos.right?.id}
+                  isCreateMode={isNewMode}
+                  mixId={currentMix?.id}
+                  initialLikes={currentMix?.likes}
+                  className="px-0"
                 />
               </div>
+              {showMixControls && (
+                <Card className="mt-6 bg-background border-y border-r border-border/50 rounded-r-lg">
+                  <div className="p-8 flex flex-col gap-8">
+                    <DJControls
+                      crossFader={crossFader}
+                      onCrossFaderChange={handleCrossFaderChange}
+                      leftVideoId={videos.left?.id}
+                      rightVideoId={videos.right?.id}
+                      forceShowTooltip={showTransitionTooltip}
+                    />
+                    <MixTemplates
+                      onSelectTemplate={handleTemplateSelect}
+                      activeTemplate={activeTemplate}
+                    />
+                  </div>
+                </Card>
+              )}
             </div>
           </ResizablePanel>
         </>
