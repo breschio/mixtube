@@ -665,7 +665,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        <div className="max-w-[1600px] mx-auto px-6 h-full">
+        <div className="max-w-[1200px] mx-auto px-6 h-full">
           {isMobile ? renderMobileLayout() : renderDesktopLayout()}
         </div>
       </main>
