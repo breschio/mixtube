@@ -611,7 +611,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col h-screen">
       <header className="w-full bg-background flex-none">
-        <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-8 md:px-12 py-4">
+        <div className="w-full max-w-[1600px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Shuffle className="h-7 w-7 text-[#455A7D] my-auto" />
