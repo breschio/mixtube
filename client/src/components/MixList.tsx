@@ -109,7 +109,7 @@ export function MixList({ mixes, onPlayMix, className }: MixListProps) {
 
   return (
     <div className={cn("h-full flex flex-col", className)}>
-      <div className="text-sm font-medium mb-2 text-primary">
+      <div className="text-sm font-medium mb-4 text-primary">
         Recent mixes
       </div>
       <div className="shrink-0 mb-4">
