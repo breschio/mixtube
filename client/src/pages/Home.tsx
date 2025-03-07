@@ -17,7 +17,7 @@ import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import VideoPreview from "@/components/VideoPreview";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ResizablePanels";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import MixList from "@/components/MixList";
+import { MixList } from "@/components/MixList";
 import DJControls from "@/components/DJControls";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
