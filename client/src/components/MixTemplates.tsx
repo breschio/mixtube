@@ -13,7 +13,7 @@ export interface MixTemplate {
 export const mixTemplates: MixTemplate[] = [
   {
     id: "side-by-side",
-    name: "Side by Side",
+    name: "Split",
     icon: SplitSquareHorizontalIcon,
     crossFaderValue: 0.6,
   },
