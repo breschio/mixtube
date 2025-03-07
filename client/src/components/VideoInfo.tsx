@@ -190,7 +190,7 @@ const VideoInfo = ({
               "gap-1.5 px-3 h-9",
               mixMode 
                 ? "bg-accent text-accent-foreground hover:bg-accent/90" 
-                : "text-blue-600 hover:bg-blue-100"
+                : "text-white hover:bg-blue-100/20"
             )}
             onClick={onToggleMixMode}
           >
