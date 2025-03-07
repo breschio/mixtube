@@ -25,7 +25,7 @@ import BorderBeam from "@/components/BorderBeam";
 
 const ResizeHandle = () => {
   return (
-    <div className="w-1 bg-border/50 rounded-full mx-2 transition-colors hover:bg-primary/50" />
+    <div className="w-1 rounded-full mx-2 transition-colors hover:bg-primary/50" />
   );
 };
 
