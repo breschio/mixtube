@@ -204,3 +204,26 @@ const VideoInfo = ({
 };
 
 export default VideoInfo;
+{/* Source Videos Information */}
+      {(leftVideoSelected || rightVideoSelected) && (
+        <div className="flex flex-col gap-2 mt-4 p-3 rounded-md bg-muted/30">
+          <h3 className="text-sm font-medium">Source Videos:</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {leftVideoSelected && (
+              <div className="flex flex-col">
+                <a href="#" className="text-xs font-medium hover:text-blue-500 transition-colors">
+                  Left Video
+                </a>
+              </div>
+            )}
+
+            {rightVideoSelected && (
+              <div className="flex flex-col">
+                <a href="#" className="text-xs font-medium hover:text-blue-500 transition-colors">
+                  Right Video
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
