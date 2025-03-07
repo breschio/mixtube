@@ -127,12 +127,7 @@ export default function Home() {
 
   useEffect(() => {
     if (mixes.length > 0 && !currentMix && !isNewMode) {
-      const mostLikedMix = [...mixes].sort((a, b) => {
-        if (b.likes !== a.likes) {
-          return b.likes - a.likes;
-        }
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      })[0];
+      const mostLikedMix = getMostLikedMixes(mixes)[0];
       handlePlayMix(mostLikedMix, false);
     }
   }, [mixes]);
@@ -306,9 +301,7 @@ export default function Home() {
     if (currentMix) {
       handlePlayMix(currentMix);
     } else if (mixes.length > 0) {
-      const latestMix = [...mixes].sort((a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )[0];
+      const latestMix = getMostLikedMixes(mixes)[0];
       handlePlayMix(latestMix);
     }
   };
@@ -471,7 +464,7 @@ export default function Home() {
       <div className="relative mt-4 flex-1 overflow-auto">
         {!isNewMode && (
           <MixList
-            mixes={mixes}
+            mixes={getMostLikedMixes(mixes)}
             onPlayMix={handlePlayMix}
             className="h-full"
           />
@@ -627,12 +620,12 @@ export default function Home() {
           >
             <div className="h-[calc(100vh-5rem)] flex flex-col pl-6">
               <div className="h-full overflow-auto">
-                <MixList mixes={mixes} onPlayMix={handlePlayMix} className="h-full" />
+                <MixList mixes={getMostLikedMixes(mixes)} onPlayMix={handlePlayMix} className="h-full" />
                 {mixes.length > 0 && !isNewMode && (
                   <div className="mt-6">
-                    <h2 className="text-lg font-semibold mb-4">Recent mixes</h2>
+                    <h2 className="text-lg font-semibold mb-4">Hot mixes</h2>
                     <div className="space-y-3">
-                      {mixes.slice(0, 5).map((mix) => (
+                      {getMostLikedMixes(mixes).slice(0, 5).map((mix) => (
                         <div key={mix.id} onClick={() => handlePlayMix(mix)}>
                           <p>{mix.title}</p>
                         </div>
@@ -656,6 +649,17 @@ export default function Home() {
     }
   }, [mixes]);
 
+
+  const getMostLikedMixes = (mixesArray: Mix[]) => {
+    return [...mixesArray].sort((a, b) => {
+      // First sort by likes in descending order
+      if (b.likes !== a.likes) {
+        return b.likes - a.likes;
+      }
+      // If likes are equal, sort by creation date (newest first)
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col h-screen">
