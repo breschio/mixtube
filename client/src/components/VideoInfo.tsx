@@ -44,6 +44,8 @@ const VideoInfo = ({
   const [isEditing, setIsEditing] = useState(false);
   const [mixName, setMixName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [leftVideoData, setLeftVideoData] = useState({ id: '', title: '', channelTitle: '' });
+  const [rightVideoData, setRightVideoData] = useState({ id: '', title: '', channelTitle: '' });
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(initialLikes);
   const { toast } = useToast();
@@ -52,6 +54,33 @@ const VideoInfo = ({
     setIsLiked(false);
     setLikes(initialLikes);
   }, [mixId, initialLikes]);
+
+  // Effect to fetch video data when videos are selected
+  useEffect(() => {
+    const fetchVideoData = async (elementId: string) => {
+      try {
+        const player = document.getElementById(elementId) as any;
+        if (player && player.getVideoData) {
+          const data = player.getVideoData();
+          return {
+            id: player.getVideoUrl().split('v=')[1],
+            title: data.title || '',
+            channelTitle: data.author || ''
+          };
+        }
+      } catch (error) {
+        console.error(`Error fetching data for ${elementId}:`, error);
+      }
+      return { id: '', title: '', channelTitle: '' };
+    };
+
+    if (leftVideoSelected) {
+      fetchVideoData('left-player').then(setLeftVideoData);
+    }
+    if (rightVideoSelected) {
+      fetchVideoData('right-player').then(setRightVideoData);
+    }
+  }, [leftVideoSelected, rightVideoSelected]);
 
   const handleLike = async () => {
     if (!mixId) return;
@@ -199,6 +228,56 @@ const VideoInfo = ({
           </Button>
         </div>
       </div>
+
+      {/* Video Source Information */}
+      {(leftVideoSelected || rightVideoSelected) && (
+        <div className="flex flex-col gap-2 mb-4 bg-muted/30 p-2 rounded-md">
+          <h3 className="text-sm font-medium">Source Videos:</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {leftVideoSelected && leftVideoData.id && (
+              <div className="flex flex-col">
+                <a 
+                  href={`https://www.youtube.com/watch?v=${leftVideoData.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium hover:text-blue-500 transition-colors"
+                >
+                  {leftVideoData.title || 'Left Video'} 
+                </a>
+                <a 
+                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(leftVideoData.channelTitle)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {leftVideoData.channelTitle || 'Unknown Channel'}
+                </a>
+              </div>
+            )}
+
+            {rightVideoSelected && rightVideoData.id && (
+              <div className="flex flex-col">
+                <a 
+                  href={`https://www.youtube.com/watch?v=${rightVideoData.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium hover:text-blue-500 transition-colors"
+                >
+                  {rightVideoData.title || 'Right Video'}
+                </a>
+                <a 
+                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(rightVideoData.channelTitle)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {rightVideoData.channelTitle || 'Unknown Channel'}
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

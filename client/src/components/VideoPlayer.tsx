@@ -38,10 +38,10 @@ export default function VideoPlayer({
                 <ExternalLink className="inline ml-1 h-4 w-4"/>
               </h3>
             </a>
-            <a href={`https://www.youtube.com/channel/${channelTitle}`} target="_blank" rel="noopener noreferrer">
-              <p className="text-xs text-muted-foreground">
+            <a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(channelTitle)}`} target="_blank" rel="noopener noreferrer">
+              <p className="text-xs text-muted-foreground hover:text-primary transition-colors">
                 {channelTitle || 'Unknown Channel'}
-                <ExternalLink className="inline ml-1 h-4 w-4"/>
+                <ExternalLink className="inline ml-1 h-3 w-3"/>
               </p>
             </a>
           </div>
