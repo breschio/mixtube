@@ -175,9 +175,10 @@ const VideoInfo = ({
             variant="outline"
             size="sm"
             className={cn(
-              "gap-1.5 px-3 h-9 border border-blue-600 text-blue-600 hover:bg-blue-100", {/* Outline style and blue text */}
+              "gap-1.5 px-3 h-9 border border-blue-600 text-blue-600 hover:bg-blue-100", 
               isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
             )}
+            {/* Outline style and blue text */}
             onClick={handleLike}
             disabled={!mixId}
           >
