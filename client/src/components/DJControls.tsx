@@ -198,13 +198,13 @@ export default function DJControls({
           </div>
 
           {/* Audio Level Slider */}
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="w-full">
+            <div className="flex items-center gap-2 w-full">
               <div className="flex flex-col items-center min-w-[80px]">
                 <Volume2 className="h-6 w-6 text-muted-foreground mb-1" />
                 <span className="text-sm font-medium text-muted-foreground">Audio</span>
               </div>
-              <div className="flex-1">
+              <div className="flex-1 w-full">
                 <div className="flex w-full justify-between items-center mb-2">
                   <span className="text-sm font-medium text-primary">L</span>
                   <div
@@ -229,7 +229,7 @@ export default function DJControls({
                   step={0.01}
                   onValueChange={(value) => handleSliderChange('audio', value)}
                   className={cn(
-                    "flex-1",
+                    "w-full",
                     "data-[state=active]:cursor-grabbing",
                     "transition-all duration-200"
                   )}
