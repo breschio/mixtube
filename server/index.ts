@@ -13,7 +13,7 @@ app.get('/ping', (_req, res) => {
 });
 
 // Root health check for Autoscale deployments
-app.get('/', (_req, res) => {
+app.get('/', (req, res, next) => {
   if (req.headers['accept']?.includes('text/html')) {
     // For browser requests, let the static file handler take over
     next();
