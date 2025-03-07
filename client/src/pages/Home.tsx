@@ -612,43 +612,43 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col h-screen">
       <header className="w-full bg-background flex-none">
-        <div className="w-full max-w-[1600px] mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Shuffle className="h-7 w-7 text-[#455A7D] my-auto" />
-              <Button
-                variant="ghost"
-                className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
-                onClick={handleResetView}
-              >
-                mixtube
-              </Button>
-            </div>
-            <div className="flex items-center gap-4">
-              <ThemeToggle />
-              <Button
-                variant="outline"
-                size="sm"
-                className={cn(
-                  "gap-1.5 px-3 h-9",
-                  isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
-                )}
-                onClick={isNewMode ? handleResetView : handleNewMix}
-              >
-                {isNewMode ? (
-                  <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-[360deg]" />
-                ) : (
-                  <Plus className={cn(
-                    "h-4 w-4 transition-all duration-300 ease-in-out",
-                    isButtonActive ? "rotate-[135deg]" : "rotate-0 hover:rotate-90"
-                  )} />
-                )}
-                {isNewMode ? 'Close' : 'New'}
-              </Button>
+          <div className="w-full max-w-[1200px] mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Shuffle className="h-7 w-7 text-[#455A7D] my-auto" />
+                <Button
+                  variant="ghost"
+                  className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
+                  onClick={handleResetView}
+                >
+                  mixtube
+                </Button>
+              </div>
+              <div className="flex items-center gap-4">
+                <ThemeToggle />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "gap-1.5 px-3 h-9",
+                    isNewMode && "bg-accent text-accent-foreground hover:bg-accent/90"
+                  )}
+                  onClick={isNewMode ? handleResetView : handleNewMix}
+                >
+                  {isNewMode ? (
+                    <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-[360deg]" />
+                  ) : (
+                    <Plus className={cn(
+                      "h-4 w-4 transition-all duration-300 ease-in-out",
+                      isButtonActive ? "rotate-[135deg]" : "rotate-0 hover:rotate-90"
+                    )} />
+                  )}
+                  {isNewMode ? 'Close' : 'New'}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
       <main className="flex-1 overflow-hidden">
         {showDatabaseWarning && (
