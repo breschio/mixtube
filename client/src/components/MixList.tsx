@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Play, ThumbsUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useMemo } from "react";
 
 interface Mix {
@@ -62,11 +62,13 @@ export default function MixList({ mixes, onPlayMix, className }: MixListProps) {
   return (
     <div className={cn("h-full flex flex-col", className)}>
       <div className="shrink-0 mb-6">
-        <ToggleGroup type="single" value={activeSort} onValueChange={(value) => value && setActiveSort(value as SortType)} className="border border-border/50 rounded-md w-full bg-muted/30">
-          <ToggleGroupItem value="hot" size="sm" className="flex-1 text-xs font-medium">Hot</ToggleGroupItem>
-          <ToggleGroupItem value="new" size="sm" className="flex-1 text-xs font-medium">New</ToggleGroupItem>
-          <ToggleGroupItem value="top" size="sm" className="flex-1 text-xs font-medium">Top</ToggleGroupItem>
-        </ToggleGroup>
+        <Tabs value={activeSort} onValueChange={(value) => setActiveSort(value as SortType)} className="w-full">
+          <TabsList className="grid grid-cols-3 w-full bg-muted/30">
+            <TabsTrigger value="hot" className="text-xs font-medium">Hot</TabsTrigger>
+            <TabsTrigger value="new" className="text-xs font-medium">New</TabsTrigger>
+            <TabsTrigger value="top" className="text-xs font-medium">Top</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
       <div className="space-y-4 overflow-y-auto flex-1">
         {sortedMixes.map((mix) => (
