@@ -16,6 +16,7 @@ interface Mix {
   leftVideoId: string;
   rightVideoId: string;
   crossFaderValue: number;
+  audioFaderValue?: number; // Added audioFaderValue field
   template: string;
 }
 

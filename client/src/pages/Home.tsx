@@ -268,20 +268,20 @@ export default function Home() {
     // Safely handle audio and cross fader values
     const crossFaderVal = typeof mix.crossFaderValue === 'number' ? mix.crossFaderValue / 100 : 0.5;
 
-    // First determine if audioFaderValue exists and is a number
-    let audioFaderVal;
-    if (typeof mix.audioFaderValue === 'number') {
-      audioFaderVal = mix.audioFaderValue / 100;
+    // Debug the mix object to see what values we're getting
+    console.log('Mix object:', JSON.stringify(mix, null, 2));
+
+    // Explicit checking for audioFaderValue with defined fallback logic
+    let audioValue;
+    if (mix.audioFaderValue !== undefined && mix.audioFaderValue !== null) {
+      audioValue = mix.audioFaderValue / 100;
+      console.log('Using audio fader value from mix:', audioValue);
     } else {
-      // Fall back to crossFaderValue if audioFaderValue is not available
-      audioFaderVal = crossFaderVal;
+      audioValue = mix.crossFaderValue / 100;
+      console.log('Falling back to cross fader value for audio:', audioValue);
     }
 
-    console.log('Setting cross fader to:', crossFaderVal);
-    console.log('Setting audio fader to:', audioFaderVal);
-
-    setCrossFader(crossFaderVal);
-    setAudioFader(audioFaderVal);
+    setAudioFader(audioValue);
     setActiveTemplate(mix.template);
     setShowMixControls(true);
     setCurrentMix(mix);
