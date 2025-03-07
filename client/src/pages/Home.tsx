@@ -264,7 +264,8 @@ export default function Home() {
     });
 
     setCrossFader(mix.crossFaderValue / 100);
-    setAudioFader(mix.audioFaderValue ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100);
+    // Ensure we use the audioFaderValue if available, otherwise fallback to crossFaderValue
+    setAudioFader(mix.audioFaderValue !== undefined ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100);
     setActiveTemplate(mix.template);
     setShowMixControls(true);
     setCurrentMix(mix);
