@@ -158,11 +158,11 @@ const VideoInfo = ({
                       {channelTitle.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-xs font-medium text-blue-600"> {/* Smaller text */}
+                  <span className="text-xs font-medium text-blue-600"> {/* Blue text for author */}
                     {channelTitle}
                   </span>
                 </div>
-                <h3 className="text-lg font-medium line-clamp-2 leading-[1.2] ml-8 text-blue-600"> {/* Larger title text & positioned below avatar */}
+                <h3 className="text-lg font-medium line-clamp-2 leading-[1.2] ml-0 text-white"> {/* White text for title and left-aligned */}
                   {title}
                 </h3>
               </div>
