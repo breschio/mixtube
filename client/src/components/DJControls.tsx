@@ -3,6 +3,7 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { Video, Volume2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useMobile } from "@/hooks/use-mobile";
 
 interface DJControlsProps {
   crossFader: number;
@@ -37,6 +38,7 @@ export default function DJControls({
 }: DJControlsProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const isMobile = useMobile();
 
   // Calculate percentage for both faders
   const getPercentage = (value: number) => {
@@ -141,9 +143,15 @@ export default function DJControls({
       {mixTemplates}
 
       {/* Main controls container with three columns */}
-      <div className="grid grid-cols-[auto_1fr_auto] gap-8 bg-background rounded-lg p-4">
+      <div className={cn(
+        "grid gap-8 bg-background rounded-lg p-4",
+        isMobile ? "grid-cols-1" : "grid-cols-[auto_1fr_auto]"
+      )}>
         {/* Left video */}
-        <div className="flex items-start">
+        <div className={cn(
+          "flex items-start",
+          isMobile && "hidden"
+        )}>
           {renderVideoThumbnail(leftVideoId, leftVideoTitle, leftChannelTitle)}
         </div>
 
@@ -245,7 +253,10 @@ export default function DJControls({
         </div>
 
         {/* Right video */}
-        <div className="flex items-start justify-end">
+        <div className={cn(
+          "flex items-start justify-end",
+          isMobile && "hidden"
+        )}>
           {renderVideoThumbnail(rightVideoId, rightVideoTitle, rightChannelTitle)}
         </div>
       </div>
