@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Music2 } from "lucide-react";
+import { Music2, ExternalLink } from 'lucide-react';
 
 interface VideoPlayerProps {
   videoId: string | null;
@@ -32,12 +32,18 @@ export default function VideoPlayer({
         />
         <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
           <div className="space-y-1">
-            <h3 className="font-medium leading-none line-clamp-2 text-sm">
-              {videoTitle || 'Untitled Video'}
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              {channelTitle || 'Unknown Channel'}
-            </p>
+            <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer">
+              <h3 className="font-medium leading-none line-clamp-2 text-sm">
+                {videoTitle || 'Untitled Video'}
+                <ExternalLink className="inline ml-1 h-4 w-4"/>
+              </h3>
+            </a>
+            <a href={`https://www.youtube.com/channel/${channelTitle}`} target="_blank" rel="noopener noreferrer">
+              <p className="text-xs text-muted-foreground">
+                {channelTitle || 'Unknown Channel'}
+                <ExternalLink className="inline ml-1 h-4 w-4"/>
+              </p>
+            </a>
           </div>
           <div className="flex items-center gap-2 mt-1">
             <div className="shrink-0 rounded-full bg-muted p-1.5">

@@ -121,9 +121,14 @@ export default function DJControls({
               {title}
             </a>
             {channelTitle && (
-              <span className="text-[10px] text-muted-foreground">
+              <a 
+                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(channelTitle)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
+              >
                 {channelTitle}
-              </span>
+              </a>
             )}
           </div>
         )}
