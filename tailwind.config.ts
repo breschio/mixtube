@@ -2,7 +2,10 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./client/index.html",
+    "./client/src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -84,16 +87,10 @@ export default {
           '75%': { transform: 'rotate3d(0, 1, 0, 270deg)' },
           '100%': { transform: 'rotate3d(0, 1, 0, 360deg)' }
         },
-        "border-beam": {
-          "100%": {
-            "offset-distance": "100%",
-          },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
       },
       transformStyle: {
         '3d': 'preserve-3d',
