@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { Video, Volume2 } from "lucide-react";
-import MixTemplates from "./MixTemplates";
-import type { MixTemplate } from "./MixTemplates";
 
 interface DJControlsProps {
   crossFader: number;
@@ -13,8 +11,6 @@ interface DJControlsProps {
   leftVideoId?: string | null;
   rightVideoId?: string | null;
   forceShowTooltip?: boolean;
-  activeTemplate: string;
-  onTemplateSelect: (template: MixTemplate) => void;
 }
 
 export default function DJControls({
@@ -24,9 +20,7 @@ export default function DJControls({
   onAudioFaderChange,
   leftVideoId,
   rightVideoId,
-  forceShowTooltip = false,
-  activeTemplate,
-  onTemplateSelect
+  forceShowTooltip = false
 }: DJControlsProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
@@ -87,17 +81,9 @@ export default function DJControls({
 
   return (
     <div className="flex-1 flex flex-col items-center gap-4 bg-background rounded-lg p-4">
-      {/* Mix Template Selection */}
-      <div className="w-full mb-2">
-        <MixTemplates
-          onSelectTemplate={onTemplateSelect}
-          activeTemplate={activeTemplate}
-        />
-      </div>
-
       {/* Video Opacity Slider */}
-      <div className="w-full space-y-1.5">
-        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-1">
+      <div className="w-full space-y-2">
+        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
           <Video className="h-4 w-4" />
           <span>Video Mix</span>
         </div>
@@ -139,8 +125,8 @@ export default function DJControls({
       </div>
 
       {/* Audio Level Slider */}
-      <div className="w-full space-y-1.5">
-        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-1">
+      <div className="w-full space-y-2">
+        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
           <Volume2 className="h-4 w-4" />
           <span>Audio Mix</span>
         </div>

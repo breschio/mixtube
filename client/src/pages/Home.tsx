@@ -13,7 +13,7 @@ import AuthModal from "@/components/AuthModal";
 import { useMobile } from '@/hooks/use-mobile';
 import SaveMixDialog from "@/components/SaveMixDialog";
 import type { YouTubeVideo } from '@/lib/youtube';
-//import MixTemplates, { MixTemplate } from "@/components/MixTemplates"; //Removed
+import MixTemplates, { MixTemplate } from "@/components/MixTemplates";
 import VideoPreview from "@/components/VideoPreview";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ResizablePanels";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -230,9 +230,10 @@ export default function Home() {
     setPlaying(!playing);
   };
 
-  const handleTemplateSelect = (template: string) => { // Updated handleTemplateSelect to accept string
-    setActiveTemplate(template);
-    //Assuming crossFader and audioFader values are handled elsewhere based on template
+  const handleTemplateSelect = (template: MixTemplate) => {
+    setActiveTemplate(template.id);
+    setCrossFader(template.crossFaderValue);
+    setAudioFader(template.crossFaderValue); // Initialize audioFader
   };
 
   const handleCrossFaderChange = (value: number) => {
@@ -352,18 +353,22 @@ export default function Home() {
 
   const mixControls = (
     <Card className="bg-background">
-      <div className="space-y-4 p-4">
+      <div className="space-y-8 p-6">
         <DJControls
           crossFader={crossFader}
-          audioFader={audioFader}
+          audioFader={audioFader} // Added audioFader prop
           onCrossFaderChange={handleCrossFaderChange}
-          onAudioFaderChange={handleAudioFaderChange}
+          onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
           leftVideoId={videos.left?.id}
           rightVideoId={videos.right?.id}
           forceShowTooltip={showTransitionTooltip}
-          activeTemplate={activeTemplate}
-          onTemplateSelect={handleTemplateSelect}
         />
+        <div className="grid grid-cols-2 gap-2 w-full">
+          <MixTemplates
+            onSelectTemplate={handleTemplateSelect}
+            activeTemplate={activeTemplate}
+          />
+        </div>
       </div>
     </Card>
   );
@@ -408,15 +413,19 @@ export default function Home() {
           <div className="p-6">
             <DJControls
               crossFader={crossFader}
-              audioFader={audioFader}
+              audioFader={audioFader} // Added audioFader prop
               onCrossFaderChange={handleCrossFaderChange}
-              onAudioFaderChange={handleAudioFaderChange}
+              onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
               leftVideoId={videos.left?.id}
               rightVideoId={videos.right?.id}
               forceShowTooltip={showTransitionTooltip}
-              activeTemplate={activeTemplate}
-              onTemplateSelect={handleTemplateSelect}
             />
+            <div className="mt-8">
+              <MixTemplates
+                onSelectTemplate={handleTemplateSelect}
+                activeTemplate={activeTemplate}
+              />
+            </div>
           </div>
         </Card>
       )}
@@ -511,14 +520,16 @@ export default function Home() {
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
-                      audioFader={audioFader}
+                      audioFader={audioFader} // Added audioFader prop
                       onCrossFaderChange={handleCrossFaderChange}
-                      onAudioFaderChange={handleAudioFaderChange}
+                      onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
+                    />
+                    <MixTemplates
+                      onSelectTemplate={handleTemplateSelect}
                       activeTemplate={activeTemplate}
-                      onTemplateSelect={handleTemplateSelect}
                     />
                   </div>
                 </Card>
@@ -577,14 +588,16 @@ export default function Home() {
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
-                      audioFader={audioFader}
+                      audioFader={audioFader} // Added audioFader prop
                       onCrossFaderChange={handleCrossFaderChange}
-                      onAudioFaderChange={handleAudioFaderChange}
+                      onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
+                    />
+                    <MixTemplates
+                      onSelectTemplate={handleTemplateSelect}
                       activeTemplate={activeTemplate}
-                      onTemplateSelect={handleTemplateSelect}
                     />
                   </div>
                 </Card>
