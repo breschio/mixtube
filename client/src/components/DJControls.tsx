@@ -182,7 +182,7 @@ export default function DJControls({
                   step={0.01}
                   onValueChange={(value) => handleSliderChange('video', value)}
                   className={cn(
-                    "flex-1",
+                    "flex-1 w-full", // Added w-full to the slider class
                     "data-[state=active]:cursor-grabbing",
                     "transition-all duration-200"
                   )}
@@ -229,7 +229,7 @@ export default function DJControls({
                   step={0.01}
                   onValueChange={(value) => handleSliderChange('audio', value)}
                   className={cn(
-                    "w-full",
+                    "w-full", // Added w-full to the slider class
                     "data-[state=active]:cursor-grabbing",
                     "transition-all duration-200"
                   )}
