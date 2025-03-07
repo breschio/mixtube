@@ -437,7 +437,7 @@ export default function Home() {
   );
 
   const renderMobileLayout = () => (
-    <div className="h-[calc(100vh-5rem)] flex flex-col">
+    <div className="flex flex-col">
       {mainContent}
 
       {isNewMode && (
@@ -461,12 +461,11 @@ export default function Home() {
         </div>
       )}
 
-      <div className="relative mt-4 flex-1 overflow-auto">
+      <div className="relative mt-4">
         {!isNewMode && (
           <MixList
             mixes={getMostLikedMixes(mixes)}
             onPlayMix={handlePlayMix}
-            className="h-full"
           />
         )}
       </div>
@@ -695,7 +694,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-hidden">
+      <main className="flex-1 overflow-y-auto">
         {showDatabaseWarning && (
           <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded shadow-sm">
             <div className="flex items-center">
@@ -711,7 +710,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        <div className="max-w-[1200px] mx-auto px-6 h-full">
+        <div className="max-w-[1200px] mx-auto px-6 pb-6">
           {isMobile ? renderMobileLayout() : renderDesktopLayout()}
         </div>
       </main>
