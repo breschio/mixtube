@@ -48,7 +48,7 @@ export default function MixTemplates({
             className={cn(
               "cursor-pointer transition-all border",
               isActive 
-                ? "bg-primary text-primary-foreground border-primary/50" 
+                ? "bg-blue-600 text-white border-blue-500" 
                 : "bg-background text-muted-foreground hover:text-foreground border-border/50 hover:border-border"
             )}
             onClick={() => onSelectTemplate(template)}
@@ -60,7 +60,7 @@ export default function MixTemplates({
               <Icon className={cn(
                 "shrink-0",
                 isMobile ? "h-5 w-5" : "h-6 w-6",
-                isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
+                isActive ? "text-white" : "text-muted-foreground group-hover:text-foreground"
               )} />
               <span className={cn(
                 "font-medium whitespace-nowrap",
