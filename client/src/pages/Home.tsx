@@ -110,7 +110,9 @@ export default function Home() {
       if (!response.ok) {
         throw new Error('Failed to fetch mixes');
       }
-      return response.json();
+      const data = await response.json();
+      console.log('Fetched mixes from server:', data);
+      return data;
     }
   });
 
@@ -263,11 +265,23 @@ export default function Home() {
       }
     });
 
-    setCrossFader(mix.crossFaderValue / 100);
-    // Ensure we use the audioFaderValue if available, otherwise fallback to crossFaderValue
-    // Use double check to handle both undefined and null cases
-    setAudioFader(mix.audioFaderValue != null ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100);
-    console.log('Setting audio fader to:', mix.audioFaderValue != null ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100);
+    // Safely handle audio and cross fader values
+    const crossFaderVal = typeof mix.crossFaderValue === 'number' ? mix.crossFaderValue / 100 : 0.5;
+
+    // First determine if audioFaderValue exists and is a number
+    let audioFaderVal;
+    if (typeof mix.audioFaderValue === 'number') {
+      audioFaderVal = mix.audioFaderValue / 100;
+    } else {
+      // Fall back to crossFaderValue if audioFaderValue is not available
+      audioFaderVal = crossFaderVal;
+    }
+
+    console.log('Setting cross fader to:', crossFaderVal);
+    console.log('Setting audio fader to:', audioFaderVal);
+
+    setCrossFader(crossFaderVal);
+    setAudioFader(audioFaderVal);
     setActiveTemplate(mix.template);
     setShowMixControls(true);
     setCurrentMix(mix);
@@ -633,6 +647,15 @@ export default function Home() {
       )}
     </ResizablePanelGroup>
   );
+
+  // Debug log to see what mixes we have
+  useEffect(() => {
+    if (mixes.length > 0) {
+      console.log('Mixes available in component:', mixes);
+      console.log('First mix audioFaderValue:', mixes[0]?.audioFaderValue);
+    }
+  }, [mixes]);
+
 
   return (
     <div className="min-h-screen bg-background flex flex-col h-screen">
