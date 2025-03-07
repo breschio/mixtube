@@ -19,6 +19,7 @@ export const mixes = pgTable("mixes", {
   rightTitle: text("right_title"),
   rightChannel: text("right_channel"),
   crossFaderValue: integer("cross_fader_value").notNull(),
+  audioFaderValue: integer("audio_fader_value").notNull().default(50), // Added audioFaderValue
   template: text("template").notNull(),
   views: integer("views").default(0).notNull(),
   likes: integer("likes").default(0).notNull(),

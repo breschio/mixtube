@@ -39,6 +39,7 @@ interface Mix {
   rightTitle: string;
   rightChannel: string;
   crossFaderValue: number;
+  audioFaderValue?: number; //Added audioFaderValue field
   template: string;
   createdAt: string;
   likes: number;
@@ -93,7 +94,7 @@ export default function Home() {
     }
   });
   const [crossFader, setCrossFader] = useState(0.6);
-  const [audioFader, setAudioFader] = useState(0.6); // Added audioFader state
+  const [audioFader, setAudioFader] = useState(0.6); 
   const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [mixName, setMixName] = useState('');
@@ -113,7 +114,6 @@ export default function Home() {
     }
   });
 
-  // Handle database connection status in an effect
   useEffect(() => {
     if (mixesResponse) {
       setDatabaseConnected(!!mixesResponse.databaseConnected);
@@ -126,11 +126,9 @@ export default function Home() {
   useEffect(() => {
     if (mixes.length > 0 && !currentMix && !isNewMode) {
       const mostLikedMix = [...mixes].sort((a, b) => {
-        // Sort by likes descending, if equal sort by date
         if (b.likes !== a.likes) {
           return b.likes - a.likes;
         }
-        // Secondary sort by date if likes are equal
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       })[0];
       handlePlayMix(mostLikedMix, false);
@@ -162,7 +160,7 @@ export default function Home() {
           rightTitle: videos.right.title,
           rightChannel: videos.right.channelTitle,
           crossFaderValue: Math.round(crossFader * 100),
-          audioFaderValue: Math.round(audioFader * 100), // Add audioFaderValue
+          audioFaderValue: Math.round(audioFader * 100), 
           template: activeTemplate,
         }),
       });
@@ -209,7 +207,7 @@ export default function Home() {
     setShowMixControls(true);
     setPlaying(false);
     setCrossFader(0.5);
-    setAudioFader(0.5); // Initialize audioFader
+    setAudioFader(0.5); 
     setActiveTab("mix");
     setIsNewMode(true);
     setVideos({
@@ -234,19 +232,18 @@ export default function Home() {
   const handleTemplateSelect = (template: MixTemplate) => {
     setActiveTemplate(template.id);
     setCrossFader(template.crossFaderValue);
-    setAudioFader(template.crossFaderValue); // Initialize audioFader
+    setAudioFader(template.crossFaderValue); 
   };
 
   const handleCrossFaderChange = (value: number) => {
     setCrossFader(value);
   };
 
-  const handleAudioFaderChange = (value: number) => { // Added handleAudioFaderChange
+  const handleAudioFaderChange = (value: number) => { 
     setAudioFader(value);
   };
 
   const handlePlayMix = async (mix: Mix, shouldAutoPlay: boolean = true) => {
-    // Set video info immediately
     setVideos({
       left: {
         id: mix.leftVideoId,
@@ -266,16 +263,14 @@ export default function Home() {
       }
     });
 
-    // Update mix state immediately
     setCrossFader(mix.crossFaderValue / 100);
-    setAudioFader(mix.crossFaderValue / 100); // Initialize audio fader to match video
+    setAudioFader(mix.audioFaderValue ? mix.audioFaderValue / 100 : mix.crossFaderValue / 100); 
     setActiveTemplate(mix.template);
     setShowMixControls(true);
     setCurrentMix(mix);
     setPlaying(shouldAutoPlay);
     setIsNewMode(false);
 
-    // Increment view count in background
     try {
       await fetch(`/api/mixes/${mix.id}/view`, { method: 'POST' });
       queryClient.invalidateQueries({ queryKey: ['/api/mixes'] });
@@ -341,7 +336,7 @@ export default function Home() {
         leftVideoId={videos.left?.id || null}
         rightVideoId={videos.right?.id || null}
         crossFaderValue={crossFader}
-        audioFaderValue={audioFader} // Added audioFaderValue prop
+        audioFaderValue={audioFader} 
         playing={playing}
         onPlayPause={handlePlayPause}
         preview={false}
@@ -357,9 +352,9 @@ export default function Home() {
       <div className="space-y-8 p-6">
         <DJControls
           crossFader={crossFader}
-          audioFader={audioFader} // Added audioFader prop
+          audioFader={audioFader} 
           onCrossFaderChange={handleCrossFaderChange}
-          onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
+          onAudioFaderChange={handleAudioFaderChange} 
           leftVideoId={videos.left?.id}
           rightVideoId={videos.right?.id}
           forceShowTooltip={showTransitionTooltip}
@@ -381,7 +376,7 @@ export default function Home() {
           leftVideoId={videos.left?.id || null}
           rightVideoId={videos.right?.id || null}
           crossFaderValue={crossFader}
-          audioFaderValue={audioFader} // Added audioFaderValue prop
+          audioFaderValue={audioFader} 
           playing={playing}
           onPlayPause={handlePlayPause}
           preview={false}
@@ -390,7 +385,7 @@ export default function Home() {
           rightStartTime={videos.right?.startTime}
         />
       </div>
-      <div className="mt-3"> {/* Changed from mt-4 */}
+      <div className="mt-3"> 
         <VideoInfo
           title={currentMix?.title || mixName || "New Mix"}
           channelTitle="MixTube"
@@ -414,9 +409,9 @@ export default function Home() {
           <div className="p-6">
             <DJControls
               crossFader={crossFader}
-              audioFader={audioFader} // Added audioFader prop
+              audioFader={audioFader} 
               onCrossFaderChange={handleCrossFaderChange}
-              onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
+              onAudioFaderChange={handleAudioFaderChange} 
               leftVideoId={videos.left?.id}
               rightVideoId={videos.right?.id}
               forceShowTooltip={showTransitionTooltip}
@@ -495,7 +490,7 @@ export default function Home() {
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div className="mt-3"> {/* Changed from mt-6 */}
+              <div className="mt-3"> 
                 <VideoInfo
                   title={isNewMode ? (isPromptMode ? "Describe your mix" : "Name your mix") : "New Mix"}
                   channelTitle="MixTube"
@@ -521,9 +516,9 @@ export default function Home() {
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
-                      audioFader={audioFader} // Added audioFader prop
+                      audioFader={audioFader} 
                       onCrossFaderChange={handleCrossFaderChange}
-                      onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
+                      onAudioFaderChange={handleAudioFaderChange} 
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
@@ -565,7 +560,7 @@ export default function Home() {
               <div className="relative w-full aspect-video">
                 {mainVideoPlayer}
               </div>
-              <div className="mt-3"> {/* Changed from mt-6 */}
+              <div className="mt-3"> 
                 <VideoInfo
                   title={currentMix?.title || mixName || "New Mix"}
                   channelTitle="MixTube"
@@ -589,9 +584,9 @@ export default function Home() {
                   <div className="p-8 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
-                      audioFader={audioFader} // Added audioFader prop
+                      audioFader={audioFader} 
                       onCrossFaderChange={handleCrossFaderChange}
-                      onAudioFaderChange={handleAudioFaderChange} // Added onAudioFaderChange prop
+                      onAudioFaderChange={handleAudioFaderChange} 
                       leftVideoId={videos.left?.id}
                       rightVideoId={videos.right?.id}
                       forceShowTooltip={showTransitionTooltip}
@@ -621,7 +616,7 @@ export default function Home() {
                     <h2 className="text-lg font-semibold mb-4">Recent mixes</h2>
                     <div className="space-y-3">
                       {mixes.slice(0, 5).map((mix) => (
-                        <div key={mix.id} onClick={() => handlePlayMix(mix)}> {/* Added onClick handler */}
+                        <div key={mix.id} onClick={() => handlePlayMix(mix)}> 
                           <p>{mix.title}</p>
                         </div>
                       ))}
