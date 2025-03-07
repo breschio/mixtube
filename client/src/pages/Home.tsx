@@ -671,23 +671,23 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <ThemeToggle />
               <Button
-                variant="default"
-                size="sm"
-                className={cn(
-                  "gap-1.5 px-3 h-9 bg-blue-600 text-white hover:bg-blue-700"
-                )}
-                onClick={isNewMode ? handleResetView : handleNewMix}
-              >
-                {isNewMode ? (
-                  <X className="h-4 w-4 transition-all duration-300 ease-in-out rotate-[360deg]" />
-                ) : (
-                  <Plus className={cn(
-                    "h-4 w-4 transition-all duration-300 ease-in-out",
-                    isButtonActive ? "rotate-[135deg]" : "rotate-0 hover:rotate-90"
-                  )} />
-                )}
-                {isNewMode ? 'Close' : 'New'}
-              </Button>
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "gap-1.5 px-3 h-9",
+                    isNewMode
+                      ? "bg-accent text-accent-foreground hover:bg-accent/90"
+                      : "text-white hover:bg-blue-100/20"
+                  )}
+                  onClick={isNewMode ? handleResetView : handleNewMix}
+                >
+                  {isNewMode ? (
+                    <X className="h-4 w-4" />
+                  ) : (
+                    <Plus className="h-4 w-4" />
+                  )}
+                  {isNewMode ? 'Close' : 'New'}
+                </Button>
             </div>
           </div>
         </div>
