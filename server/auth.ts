@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { Request, Response } from 'express';
+import { config } from './config';
 
-// Create a single Supabase client instance
-const supabase = createClient(
-  process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '',
-  process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || ''
+export const supabase = createClient(
+  config.supabase.url,
+  config.supabase.anonKey
 );
 
 export const authRoutes = {

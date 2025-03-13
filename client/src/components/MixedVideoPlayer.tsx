@@ -3,6 +3,8 @@ import ReactPlayer from 'react-player/youtube';
 import { Card } from '@/components/ui/card';
 import VideoOverlay from './VideoOverlay';
 import { useVideoSync } from '@/hooks/use-video-sync';
+import { cn, componentStyles, uiStyles } from "@/lib/theme";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface MixedVideoPlayerProps {
   leftVideoId: string | null;
@@ -156,7 +158,7 @@ export default function MixedVideoPlayer({
 
   return (
     <div className="aspect-video bg-black rounded-lg overflow-hidden relative flex">
-      {activeTemplate === 'side-by-side' ? (
+      {activeTemplate === 'split' ? (
         <>
           <div className="h-full transition-[width] duration-200" style={{ width: `${Math.max(20, Math.min(80, (1 - crossFaderValue) * 100))}%` }}>
             {leftPlayer}

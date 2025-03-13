@@ -4,18 +4,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .dark-outline {
+    @apply dark:border-gray-700;
+  }
+}
+
 @keyframes placeholderBlink {
-  0%, 100% { opacity: 0.7; }
+  0%, 100% { opacity: 0.8; }
   50% { opacity: 0.4; }
 }
 
 .animate-placeholder::placeholder {
-  animation: placeholderBlink 1.5s ease-in-out infinite;
-  transition: opacity 0.2s ease-in-out;
+  animation: placeholderBlink 2s ease-in-out infinite;
 }
 
 .animate-placeholder:focus::placeholder {
-  opacity: 0.4;
+  animation: none;
 }
 
 @layer utilities {
@@ -23,7 +28,7 @@
     display: none;
   }
   .no-scrollbar {
-    -ms-overflow-hidden: none;
+    -ms-overflow-style: none;
     scrollbar-width: none;
   }
 }
@@ -34,37 +39,75 @@
   }
 
   :root {
-    --transition-duration: 800ms;
-    --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+    /* Light mode - with gray-950 as base text and button color */
+    --background: 0 0% 100%; /* white */
+    --foreground: 215 32% 8%; /* gray-950 - darker for better contrast */
+    --card: 0 0% 100%; /* white */
+    --card-foreground: 215 32% 8%; /* gray-950 - darker for better contrast */
+    --popover: 0 0% 100%; /* white */
+    --popover-foreground: 215 32% 8%; /* gray-950 - darker for better contrast */
+    --primary: 215 32% 8%; /* gray-950 - even darker for primary elements */
+    --primary-foreground: 210 20% 98%; /* gray-50 */
+    --secondary: 220 16% 90%; /* slightly darker than before for better visibility */
+    --secondary-foreground: 215 32% 8%; /* gray-950 - darker for better contrast */
+    --muted: 220 16% 90%; /* slightly darker for better visibility */
+    --muted-foreground: 215 28% 17%; /* gray-800 */
+    --accent: 220 14% 80%; /* more visible accent */
+    --accent-foreground: 215 32% 8%; /* gray-950 - darker for better contrast */
+    --destructive: 0 84% 60%; /* red-500 */
+    --destructive-foreground: 210 20% 98%; /* gray-50 */
+    --border: 220 13% 75%; /* darker border for better visibility */
+    --input: 220 13% 75%; /* darker input background */
+    --ring: 215 32% 8%; /* gray-950 for ring focus */
+    --radius: 0.5rem;
+
+    /* Additional color tokens */
+    --success: 142 69% 40%; /* darker success color */
+    --success-foreground: 210 20% 98%;
+    --warning: 38 92% 40%; /* darker warning color */
+    --warning-foreground: 210 20% 98%;
+    --info: 221 83% 43%; /* darker info color */
+    --info-foreground: 210 20% 98%;
   }
 
-  /* Enhance theme transition with opacity */
-  :root[class*="theme-"] {
-    transition: 
-      background-color var(--transition-duration) var(--transition-timing),
-      color var(--transition-duration) var(--transition-timing);
+  .dark {
+    /* Dark mode - using Gray-950 as background */
+    --background: 215 32% 8%; /* gray-950 */
+    --foreground: 210 20% 98%; /* gray-50 */
+    --card: 215 32% 8%; /* gray-950 */
+    --card-foreground: 210 20% 98%; /* gray-50 */
+    --popover: 215 32% 8%; /* gray-950 */
+    --popover-foreground: 210 20% 98%; /* gray-50 */
+    --primary: 210 20% 98%; /* gray-50 */
+    --primary-foreground: 215 32% 8%; /* gray-950 */
+    --secondary: 215 30% 11%; /* gray-900 - slightly lighter than background */
+    --secondary-foreground: 210 20% 98%; /* gray-50 */
+    --muted: 215 28% 17%; /* gray-800 - updated for tabs background */
+    --muted-foreground: 217.9 10.6% 64.9%; /* gray-400 */
+    --accent: 215 30% 11%; /* gray-900 - updated to match gray-900 */
+    --accent-foreground: 210 20% 98%; /* gray-50 */
+    --destructive: 0 63% 31%; /* darker red */
+    --destructive-foreground: 210 20% 98%; /* gray-50 */
+    --border: 215 30% 11%; /* gray-900 - for subtle borders on gray-950 */
+    --input: 215 30% 11%; /* gray-900 - slightly lighter than background */
+    --ring: 217.9 10.6% 64.9%; /* gray-400 */
+
+    /* Additional color tokens */
+    --success: 142 70% 45%;
+    --success-foreground: 210 20% 98%;
+    --warning: 35 92% 33%;
+    --warning-foreground: 210 20% 98%;
+    --info: 214 100% 35%;
+    --info-foreground: 210 40% 98%;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-    transition: 
-      background-color var(--transition-duration) var(--transition-timing),
-      color var(--transition-duration) var(--transition-timing),
-      opacity var(--transition-duration) var(--transition-timing);
-  }
-
-  /* Add transitions to common elements that change with theme */
-  div, span, p, h1, h2, h3, h4, h5, h6, button, a {
-    transition: 
-      background-color var(--transition-duration) var(--transition-timing),
-      color var(--transition-duration) var(--transition-timing),
-      border-color var(--transition-duration) var(--transition-timing),
-      outline-color var(--transition-duration) var(--transition-timing),
-      box-shadow var(--transition-duration) var(--transition-timing),
-      opacity var(--transition-duration) var(--transition-timing);
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
     font-family: 'Space Grotesk', sans-serif;
   }
 
@@ -78,19 +121,20 @@
     opacity: 1;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.7;
   }
 }
 
 .animate-slow-pulse {
-  animation: slow-pulse 3s ease-in-out infinite;
+  animation: slow-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .input {
-  @apply bg-background/50 backdrop-blur-sm;
+  @apply rounded-md;
 }
 
 .mixtube-logo {
+  @apply select-none;
   font-family: 'Space Grotesk', sans-serif;
   @apply text-2xl font-light tracking-tight;
 }

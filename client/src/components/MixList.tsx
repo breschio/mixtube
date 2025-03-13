@@ -115,7 +115,7 @@ export function MixList({ mixes, onPlayMix, className }: MixListProps) {
       </div>
       <div className="shrink-0 mb-4">
         <Tabs value={activeSort} onValueChange={(value) => setActiveSort(value as SortType)} className="w-full">
-          <TabsList className="grid grid-cols-2 w-full bg-muted/30">
+          <TabsList className="grid grid-cols-2 w-full bg-muted/60">
             <TabsTrigger value="hot" className="text-xs font-medium text-primary">
               Hot
             </TabsTrigger>

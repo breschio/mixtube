@@ -95,7 +95,7 @@ export default function Home() {
   });
   const [crossFader, setCrossFader] = useState(0.6);
   const [audioFader, setAudioFader] = useState(0.6);
-  const [activeTemplate, setActiveTemplate] = useState<string>("side-by-side");
+  const [activeTemplate, setActiveTemplate] = useState<string>("split");
   const [showTransitionTooltip, setShowTransitionTooltip] = useState(false);
   const [mixName, setMixName] = useState('');
   const [databaseConnected, setDatabaseConnected] = useState(false);
@@ -358,8 +358,8 @@ export default function Home() {
   );
 
   const mixControls = (
-    <Card className="bg-background">
-      <div className="space-y-8 p-6">
+    <Card className="bg-muted/60 p-2 rounded-lg border-0">
+      <div className="p-4">
         <DJControls
           crossFader={crossFader}
           audioFader={audioFader}
@@ -414,8 +414,8 @@ export default function Home() {
         />
       </div>
       {showMixControls && !isNewMode && (
-        <Card className="mt-4 bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
-          <div className="p-6">
+        <Card className="bg-muted/60 p-2 rounded-lg border-0">
+          <div className="p-4">
             <DJControls
               crossFader={crossFader}
               audioFader={audioFader}
@@ -519,8 +519,8 @@ export default function Home() {
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-4 bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8 flex flex-col gap-8">
+                <Card className="bg-muted/60 p-2 rounded-lg border-0">
+                  <div className="p-4 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
                       audioFader={audioFader}
@@ -588,8 +588,8 @@ export default function Home() {
                 />
               </div>
               {showMixControls && (
-                <Card className="mt-4 bg-muted/30 border-y border-r border-border/50 rounded-r-lg">
-                  <div className="p-8 flex flex-col gap-8">
+                <Card className="bg-muted/60 p-2 rounded-lg border-0">
+                  <div className="p-4 flex flex-col gap-8">
                     <DJControls
                       crossFader={crossFader}
                       audioFader={audioFader}
@@ -659,7 +659,7 @@ export default function Home() {
         <div className="w-full max-w-[1200px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Shuffle className="h-7 w-7 text-[#455A7D] my-auto" />
+              <Shuffle className="h-7 w-7 text-muted-foreground my-auto" />
               <Button
                 variant="ghost"
                 className="font-sans font-[400] text-2xl tracking-wider hover:text-primary transition-colors duration-200 bg-transparent hover:bg-transparent p-0"
@@ -677,7 +677,7 @@ export default function Home() {
                     "gap-1.5 px-3 h-9",
                     isNewMode
                       ? "bg-accent text-accent-foreground hover:bg-accent/90"
-                      : "text-white hover:bg-blue-100/20"
+                      : "hover:bg-accent/10"
                   )}
                   onClick={isNewMode ? handleResetView : handleNewMix}
                 >

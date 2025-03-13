@@ -1,9 +1,11 @@
+import './config';  // Import this first to load environment variables
 import express, { type Request, Response, NextFunction } from "express";
 import session from 'express-session';
 import cors from 'cors';
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { authRoutes } from "./auth";
+import { config } from './config';
 
 const app = express();
 
@@ -23,24 +25,12 @@ app.get('/', (req, res, next) => {
   }
 });
 
-// Configure CORS for both API and YouTube iframe communication
+// Configure CORS for development
 app.use(cors({
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      'https://www.youtube.com',
-      'https://youtube.com',
-      process.env.VITE_APP_URL || 'http://localhost:5000'
-    ];
-
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.indexOf(origin) === -1) {
-      return callback(null, true); // Just allow all origins in development
-    }
-    return callback(null, true);
-  },
-  credentials: true
+  origin: true, // Allow all origins in development
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 app.use(express.json());
@@ -50,10 +40,11 @@ app.use(express.urlencoded({ extended: false }));
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true, // Changed to true for development
   cookie: { 
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' as const : 'lax' as const
+    secure: false, // Set to false for development
+    sameSite: 'lax' as const,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 };
 
@@ -127,46 +118,38 @@ app.use((req, res, next) => {
       serveStatic(app);
     }
 
-    // Start server with fallback port handling
-    const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
-    const FALLBACK_PORT = 3333;
+    const startServer = (port: number) => {
+      return new Promise((resolve, reject) => {
+        server.listen(port, "0.0.0.0")
+          .once('listening', () => {
+            log(`Server is running on http://localhost:${port}`);
+            resolve(true);
+          })
+          .once('error', (err: any) => {
+            if (err.code === 'EADDRINUSE') {
+              log(`Port ${port} is in use`);
+              resolve(false);
+            } else {
+              reject(err);
+            }
+          });
+      });
+    };
 
-    // Try the primary port first
-    server.listen(PORT, "0.0.0.0", () => {
-      log(`Server is running on http://0.0.0.0:${PORT}`);
-      log('Server initialization complete');
-    }).on('error', (e: any) => {
-      if (e.code === 'EADDRINUSE') {
-        // If primary port is in use, try the fallback port
-        log(`Port ${PORT} is in use, trying alternative port ${FALLBACK_PORT}`);
-        server.listen(FALLBACK_PORT, "0.0.0.0", () => {
-          log(`Server is running on http://0.0.0.0:${FALLBACK_PORT}`);
-          log('Server initialization complete with fallback port');
-        });
-      } else {
-        throw e;
+    // Try ports in sequence
+    const ports = [5000, 3333, 3000, 8080];
+    
+    for (const port of ports) {
+      const success = await startServer(port);
+      if (success) {
+        log('Server initialization complete');
+        break;
       }
-    });
+      if (port === ports[ports.length - 1]) {
+        throw new Error('No available ports found');
+      }
+    }
 
-    // Handle server errors
-    server.on('error', (error: any) => {
-      if (error.syscall !== 'listen') {
-        throw error;
-      }
-
-      switch (error.code) {
-        case 'EACCES':
-          console.error(`Port ${PORT} requires elevated privileges`);
-          process.exit(1);
-          break;
-        case 'EADDRINUSE':
-          console.error(`Port ${PORT} is already in use`);
-          process.exit(1);
-          break;
-        default:
-          throw error;
-      }
-    });
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);

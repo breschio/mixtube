@@ -146,10 +146,10 @@ const VideoInfo = ({
                 onClick={() => setIsEditing(true)}
                 className="flex items-center gap-2 group w-full"
               >
-                <span className="text-lg font-medium text-muted-foreground/60 group-hover:text-muted-foreground transition-colors text-left flex-1">
+                <span className="text-lg font-medium text-muted-foreground/60 group-hover:text-muted-foreground text-left flex-1">
                   {mixName || "Name your mix"}
                 </span>
-                <PenLine className="h-4 w-4 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors" />
+                <PenLine className="h-4 w-4 text-muted-foreground/60 group-hover:text-muted-foreground" />
               </button>
             )}
           </div>
@@ -192,33 +192,35 @@ const VideoInfo = ({
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <Avatar className="h-6 w-6">
-                    <AvatarFallback>
+                    <AvatarFallback className="bg-muted">
                       {channelTitle.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-xs font-medium" style={{ color: "#799FDC" }}> {/* Custom blue color for author */}
+                  <span className="text-xs font-medium text-muted-foreground">
                     {channelTitle}
                   </span>
                 </div>
-                <h3 className="text-lg font-medium line-clamp-2 leading-[1.2] ml-0 text-white"> {/* White text for title and left-aligned */}
+                <h3 className="text-lg font-medium line-clamp-2 leading-[1.2] ml-0"> {/* Using default text color */}
                   {title}
                 </h3>
               </div>
             </>
           )}
         </div>
-        <div className="flex items-center gap-2 mt-2"> {/* Moved controls up */}
+        <div className="flex items-center gap-2 mt-2">
           <Button
             variant="outline"
             size="sm"
             className={cn(
               "gap-1.5 px-3 h-9",
-              isLiked && "bg-accent text-accent-foreground hover:bg-accent/90"
+              isLiked && "bg-accent text-accent-foreground hover:bg-accent/90",
+              "active:scale-95 transition-[transform] duration-100",
+              "dark:border-gray-600"
             )}
             onClick={handleLike}
             disabled={!mixId}
           >
-            <ThumbsUp className={cn("h-4 w-4", isLiked && "rotate-12 transition-transform")} />
+            <ThumbsUp className={cn("h-4 w-4", isLiked && "rotate-12")} />
             {likes > 0 ? likes : "Like"}
           </Button>
           <Button
@@ -226,9 +228,11 @@ const VideoInfo = ({
             size="sm"
             className={cn(
               "gap-1.5 px-3 h-9",
-              mixMode 
-                ? "bg-accent text-accent-foreground hover:bg-accent/90" 
-                : "text-white hover:bg-blue-100/20"
+              {
+                "bg-muted/60 hover:bg-muted/50": mixMode,
+                "hover:bg-muted/10": !mixMode
+              },
+              "dark:border-gray-600"
             )}
             onClick={onToggleMixMode}
           >

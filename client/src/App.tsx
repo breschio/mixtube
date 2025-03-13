@@ -64,7 +64,7 @@ function App() {
   }
 
   return (
-    <ThemeProvider defaultTheme="light" storageKey="mixtube-ui-theme">
+    <ThemeProvider defaultTheme="dark">
       <SessionContextProvider supabaseClient={supabaseClient}>
         <QueryClientProvider client={queryClient}>
           <Router />

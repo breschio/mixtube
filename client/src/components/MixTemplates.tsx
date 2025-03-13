@@ -1,6 +1,7 @@
+import React from 'react';
+import { SplitIcon, LayersIcon } from "lucide-react";
+import { cn, componentStyles } from "@/lib/theme";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SplitSquareHorizontalIcon, LayersIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useMobile } from "@/hooks/use-mobile";
 
 export interface MixTemplate {
@@ -10,18 +11,19 @@ export interface MixTemplate {
   crossFaderValue: number;
 }
 
-export const mixTemplates: MixTemplate[] = [
+// Predefined mix templates
+const mixTemplates: MixTemplate[] = [
   {
-    id: "side-by-side",
+    id: "split",
     name: "Split",
-    icon: SplitSquareHorizontalIcon,
-    crossFaderValue: 0.6,
+    icon: SplitIcon,
+    crossFaderValue: 0.5, // Center position for 50/50 split
   },
   {
     id: "fade-through",
     name: "Fade",
     icon: LayersIcon,
-    crossFaderValue: 0.6,
+    crossFaderValue: 1, // Right position for full fade
   },
 ];
 
@@ -36,43 +38,42 @@ export default function MixTemplates({
 }: MixTemplatesProps) {
   const isMobile = useMobile();
 
-  // Helper function to find template by id
+  // Helper to get template by ID
   const getTemplateById = (id: string) => mixTemplates.find(t => t.id === id);
 
+  const handleTemplateChange = (value: string) => {
+    const template = getTemplateById(value);
+    if (template) {
+      onSelectTemplate(template);
+    }
+  };
+
   return (
-    <Tabs
-      value={activeTemplate}
-      onValueChange={(value) => {
-        const template = getTemplateById(value);
-        if (template) {
-          onSelectTemplate(template);
-        }
-      }}
-      className="w-full"
-    >
-      <TabsList className="grid w-full grid-cols-2">
-        {mixTemplates.map((template) => {
-          const Icon = template.icon;
-          return (
-            <TabsTrigger
-              key={template.id}
-              value={template.id}
-              className={cn(
-                "flex items-center gap-2",
-                isMobile ? "px-3 py-2.5" : "px-4 py-2"
-              )}
-            >
-              <Icon className={cn(
-                "shrink-0",
-                isMobile ? "h-4 w-4" : "h-5 w-5",
-              )} />
-              <span className="font-medium">
-                {template.name}
-              </span>
-            </TabsTrigger>
-          );
-        })}
-      </TabsList>
-    </Tabs>
+    <div className="w-full">
+      <Tabs 
+        defaultValue={activeTemplate} 
+        value={activeTemplate} 
+        onValueChange={handleTemplateChange}
+        className="w-full"
+      >
+        <TabsList className={cn(componentStyles.djControls.tabs)}>
+          {mixTemplates.map((template) => {
+            const Icon = template.icon;
+            return (
+              <TabsTrigger 
+                key={template.id} 
+                value={template.id}
+                className={cn(componentStyles.djControls.tabItem)}
+              >
+                <div className="flex items-center gap-2">
+                  <Icon className="h-4 w-4" />
+                  <span>{template.name}</span>
+                </div>
+              </TabsTrigger>
+            );
+          })}
+        </TabsList>
+      </Tabs>
+    </div>
   );
 }
